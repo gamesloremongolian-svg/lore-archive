@@ -136,15 +136,96 @@ Object.assign(dict,{
 "Бүх мэдээллийг хайх":["Search all knowledge","すべての情報を検索","모든 정보 검색"]
 });
 
+
+Object.assign(dict,{
+"Үндсэн нүүр":["Home","ホーム","홈"],
+"Нэгдсэн Lore Archive":["Unified Lore Archive","統合Loreアーカイブ","통합 Lore 아카이브"],
+"Тоглоом, анимэ, манга, зохиолын ертөнц, бүтээл, дүр, тэдгээрийн холбоо болон timeline мэдээллийг нэг дороос хайж судлаарай.":["Explore games, anime, manga, fictional worlds, works, characters, their relationships and timelines in one place.","ゲーム、アニメ、マンガ、架空の世界、作品、キャラクター、その関係性や年表を一か所で検索・調査できます。","게임, 애니메이션, 만화, 가상 세계, 작품, 캐릭터, 관계 및 타임라인 정보를 한곳에서 검색하고 살펴보세요."],
+"Ертөнц, бүтээлийн нэрээр хайх...":["Search worlds or titles...","世界・作品名で検索...","세계 또는 작품명 검색..."],
+"Хэл":["Language","言語","언어"],
+"Бүгд":["All","すべて","전체"],
+"Нийтлэгдсэн архивын мэдээлэл ачаалж байна...":["Loading published archive entries...","公開済みアーカイブを読み込み中...","게시된 아카이브 정보를 불러오는 중..."],
+"Нүүр хуудас":["Home","ホーム","홈"],
+"Хувийн чат руу нэвтрэх":["Sign in to private chat","プライベートチャットにログイン","비공개 채팅 로그인"],
+"Бусад гишүүдтэй хувийн мессежээр харилцахын тулд бүртгэлтэй аккаунтаараа нэвтэрнэ үү.":["Sign in to exchange private messages with other members.","他のメンバーとプライベートメッセージをやり取りするには、アカウントでログインしてください。","다른 회원과 비공개 메시지를 주고받으려면 계정으로 로그인하세요."],
+"Таны нэр":["Your name","お名前","이름"],
+"Шинэ аккаунт үүсгэх":["Create a new account","新しいアカウントを作成","새 계정 만들기"],
+"Хувийн зурвасыг зөвхөн тухайн ярианд оролцож буй хоёр хэрэглэгч уншина. Зочин / anonymous аккаунтаар хувийн чат ашиглах боломжгүй.":["Only the two participants can read a private conversation. Guest/anonymous accounts cannot use private chat.","プライベートメッセージを読めるのは会話に参加している2人だけです。ゲスト／匿名アカウントでは利用できません。","비공개 대화는 참여자 두 명만 읽을 수 있습니다. 게스트/익명 계정은 비공개 채팅을 이용할 수 없습니다."],
+"Шууд мессеж":["Direct messages","ダイレクトメッセージ","다이렉트 메시지"],
+"Гишүүдтэй хувийн чатлах":["Chat privately with members","メンバーとプライベートチャット","회원과 비공개 채팅"],
+"ГИШҮҮН ХАЙХ":["FIND MEMBERS","メンバーを検索","회원 검색"],
+"Нэрээр хайх...":["Search by name...","名前で検索...","이름으로 검색..."],
+"Гишүүд ачаалж байна…":["Loading members…","メンバーを読み込み中…","회원 불러오는 중…"],
+"ТАНЫ ЯРИАНУУД":["YOUR CONVERSATIONS","あなたの会話","내 대화"],
+"Одоогоор чат алга.":["No conversations yet.","まだ会話はありません。","아직 대화가 없습니다."],
+"Профайл засах":["Edit profile","プロフィールを編集","프로필 수정"],
+"Харилцах гишүүнээ сонгоно уу":["Select a member to chat with","チャットするメンバーを選択してください","대화할 회원을 선택하세요"],
+"Шууд харилцаа":["Direct conversation","ダイレクトメッセージ","다이렉트 대화"],
+"Зүүн талаас гишүүн сонгоод шинэ яриа эхлүүлээрэй. Таны хувийн зурвас бусдад харагдахгүй.":["Choose a member on the left to start a conversation. Your private messages are not visible to others.","左側からメンバーを選んで会話を始めてください。プライベートメッセージは他の人には表示されません。","왼쪽에서 회원을 선택해 대화를 시작하세요. 비공개 메시지는 다른 사람에게 보이지 않습니다."],
+"Мессежээ бичнэ үү… (илгээхийн тулд эхлээд гишүүн сонгоно)":["Write a message… (select a member first)","メッセージを入力…（先にメンバーを選択）","메시지를 입력하세요… (먼저 회원을 선택하세요)"],
+"Илгээх":["Send","送信","보내기"],
+"Профайл тохируулах":["Edit profile","プロフィール設定","프로필 설정"],
+"Гишүүдэд харагдах нэр болон профайл зургаа өөрчилнө үү.":["Change the name and profile picture visible to members.","メンバーに表示される名前とプロフィール画像を変更してください。","회원에게 표시되는 이름과 프로필 사진을 변경하세요."],
+"Профайл зураг":["Profile picture","プロフィール画像","프로필 사진"],
+"Болих":["Cancel","キャンセル","취소"],
+"Хадгалах":["Save","保存","저장"],
+"Game Lore Archive":["Game Lore Archive","ゲームLoreアーカイブ","게임 Lore 아카이브"],
+"Тоглоом бүрийн ертөнц, дүрүүд, түүх, фракц болон нууцыг тус тусын архиваас судлаарай.":["Explore each game's world, characters, stories, factions and mysteries in its dedicated archive.","各ゲームの専用アーカイブで、世界観、キャラクター、物語、派閥、謎を調べましょう。","각 게임 전용 아카이브에서 세계관, 캐릭터, 이야기, 세력 및 비밀을 살펴보세요."],
+"← Нүүр хуудас":["← Home","← ホーム","← 홈"],
+"Тивүүд, Архонууд, дүрүүд болон Тейватын нууц.":["The nations, Archons, characters and secrets of Teyvat.","テイワットの国々、七神、キャラクター、そして謎。","티바트의 지역, 집정관, 캐릭터와 비밀."],
+"Оддын аялал, гаргууд, фракц болон дүрүүд.":["Starfaring journeys, planets, factions and characters.","星々を巡る旅、惑星、派閥、キャラクター。","별을 향한 여정, 행성, 세력 및 캐릭터."],
+"Сонирхолтой бүсүүд, Resonator болон түүх.":["Regions, Resonators and the story.","地域、共鳴者、そして物語。","지역, 공명자 및 이야기."],
+"New Eridu, Hollows болон агентууд.":["New Eridu, Hollows and agents.","ニューエリドゥ、ホロウ、エージェント。","뉴에리두, 공동 및 에이전트."],
+"Terra ертөнц, улс төр, операторуудын түүх.":["The world of Terra, its politics and Operators.","テラの世界、政治、オペレーターたちの物語。","테라 세계, 정치 및 오퍼레이터들의 이야기."],
+"Kivotos хот, академиуд болон сурагчдын түүх.":["The city of Kivotos, its academies and students.","キヴォトスの街、学園、生徒たちの物語。","키보토스 도시, 학원 및 학생들의 이야기."],
+"Ертөнц, хот, дүрүүд болон судалгааны архив.":["Worlds, cities, characters and research archive.","世界、都市、キャラクター、研究アーカイブ。","세계, 도시, 캐릭터 및 연구 아카이브."],
+"АРХИВ НЭЭХ ↗":["OPEN ARCHIVE ↗","アーカイブを開く ↗","아카이브 열기 ↗"]
+});
+
 const langNames={mn:"Монгол",en:"English",ja:"日本語",ko:"한국어"};
 let active="mn";
 const pairs=Object.entries(dict).sort((a,b)=>b[0].length-a[0].length);
+const originalText=new WeakMap();
+const originalAttrs=new WeakMap();
+const skipSelector='script,style,code,pre,svg,[data-no-i18n],[contenteditable="true"],.bubble,.message-name,.conversation,.member';
 function translateText(s,lang){if(!s||lang==="mn")return s;let out=s;for(const [src,vals] of pairs){const to=vals[({en:0,ja:1,ko:2})[lang]];if(out===src)return to;if(out.includes(src))out=out.split(src).join(to);}return out;}
-function walk(root){if(!root)return;const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;while((n=walker.nextNode())){if(!n.nodeValue.trim()||n.parentElement?.closest("script,style,code,pre,svg"))continue;const original=n.__mnOriginal??n.nodeValue;if(!n.__mnOriginal)n.__mnOriginal=original;n.nodeValue=translateText(original,active);}
-root.querySelectorAll?.("input[placeholder],textarea[placeholder],button[aria-label],select[aria-label],img[alt],input[aria-label]").forEach(el=>{for(const attr of ["placeholder","aria-label","alt"]){if(!el.hasAttribute(attr))continue;const key="__mn_"+attr;if(!el[key])el[key]=el.getAttribute(attr);el.setAttribute(attr,translateText(el[key],active));}});
+function translateNode(node){
+ if(!node||!node.nodeValue?.trim()||node.parentElement?.closest(skipSelector))return;
+ if(!originalText.has(node))originalText.set(node,node.nodeValue);
+ node.nodeValue=translateText(originalText.get(node),active);
 }
-function apply(lang){active=["mn","en","ja","ko"].includes(lang)?lang:"mn";document.documentElement.lang=active;document.title=active==="mn"?"LOREVERSE — Every Universe Has a Story":active==="en"?"LOREVERSE — Every Universe Has a Story":active==="ja"?"LOREVERSE — すべての世界に物語がある":"LOREVERSE — 모든 세계에는 이야기가 있습니다";walk(document.body);document.querySelectorAll("#lang option").forEach(o=>{o.textContent=langNames[o.value]||o.textContent;});}
+function translateAttributes(root){
+ root.querySelectorAll?.("input[placeholder],textarea[placeholder],button[aria-label],select[aria-label],img[alt],[title]").forEach(el=>{
+  if(el.closest(skipSelector))return;
+  let saved=originalAttrs.get(el);if(!saved){saved=new Map();originalAttrs.set(el,saved);}
+  for(const attr of ["placeholder","aria-label","alt","title"]){
+   if(!el.hasAttribute(attr))continue;
+   if(!saved.has(attr))saved.set(attr,el.getAttribute(attr));
+   el.setAttribute(attr,translateText(saved.get(attr),active));
+  }
+ });
+}
+function walk(root){
+ if(!root)return;
+ if(root.nodeType===Node.TEXT_NODE){translateNode(root);return;}
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;
+ while((n=walker.nextNode()))translateNode(n);
+ translateAttributes(root);
+}
+function apply(lang){
+ active=["mn","en","ja","ko"].includes(lang)?lang:"mn";
+ document.documentElement.lang=active;
+ document.title=active==="mn"?"LOREVERSE — Every Universe Has a Story":active==="en"?"LOREVERSE — Every Universe Has a Story":active==="ja"?"LOREVERSE — すべての世界に物語がある":"LOREVERSE — 모든 세계에는 이야기가 있습니다";
+ walk(document.body);
+ document.querySelectorAll("#lang option,#publicArchiveLang option,#siteLang option").forEach(o=>{o.textContent=langNames[o.value]||o.textContent;});
+ document.querySelectorAll("#lang,#publicArchiveLang,#siteLang").forEach(sel=>{if(sel.value!==active)sel.value=active;});
+}
 window.LOREVERSE_I18N={apply,get language(){return active;},t:(s)=>translateText(s,active)};
-const selector=document.getElementById("lang");if(selector){const saved=localStorage.getItem("loreverse-language")||selector.value||"mn";selector.value=saved;apply(saved);selector.addEventListener("change",()=>{localStorage.setItem("loreverse-language",selector.value);apply(selector.value);});}
-new MutationObserver(records=>{if(active==="mn")return;for(const r of records){for(const n of r.addedNodes){if(n.nodeType===Node.TEXT_NODE){const original=n.nodeValue;if(original.trim())n.nodeValue=translateText(original,active);}else if(n.nodeType===Node.ELEMENT_NODE)walk(n);}}}).observe(document.body,{childList:true,subtree:true});
+const selectors=[...document.querySelectorAll("#lang,#publicArchiveLang,#siteLang")];
+if(selectors.length){
+ const saved=localStorage.getItem("loreverse-language")||selectors[0].value||"mn";
+ selectors.forEach(sel=>{sel.value=saved;sel.addEventListener("change",()=>{const lang=sel.value;localStorage.setItem("loreverse-language",lang);apply(lang);});});
+ apply(saved);
+}
+new MutationObserver(records=>{if(active==="mn")return;for(const r of records)for(const n of r.addedNodes)walk(n);}).observe(document.body,{childList:true,subtree:true});
 })();
