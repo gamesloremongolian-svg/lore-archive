@@ -315,7 +315,7 @@ section[id]{scroll-margin-top:92px}
 
 <section class="section archive" id="publishedLore">
  <div class="section-head"><div><div class="eyebrow">EDITORIAL DATABASE</div><h2>Нийтлэгдсэн lore</h2><p>Редакцын нийтэлсэн бодит нийтлэлүүд. Хадгалж, алдаа эсвэл эх сурвалжийн санал илгээж болно.</p></div></div>
- <div class="toolbar"><input id="publishedSearch" class="search" type="search" placeholder="Нийтлэл хайх..."><label class="chip"><input id="bookmarksOnly" type="checkbox" style="accent-color:#c07bff"> Зөвхөн хадгалсан</label></div>
+ <div class="toolbar" style="flex-wrap:wrap"><input id="publishedSearch" class="search" type="search" placeholder="Гарчиг, дүр, тоглоом, агуулгаар хайх..."><select class="form-field" id="publishedType"><option value="all">Бүх төрөл</option><option value="lore">Lore судалгаа</option><option value="game">Тоглоом</option><option value="anime">Анимэ</option><option value="manga">Манга</option><option value="news">Мэдээ</option><option value="guide">Гарын авлага</option></select><select class="form-field" id="publishedGame"><option value="all">Бүх ертөнц</option><option>Genshin Impact</option><option>Wuthering Waves</option><option>ANANTA</option><option>Honkai: Star Rail</option><option>Zenless Zone Zero</option><option>Arknights</option><option>Blue Archive</option><option>Бусад</option></select><label class="chip"><input id="bookmarksOnly" type="checkbox" style="accent-color:#c07bff"> Зөвхөн хадгалсан</label></div><div class="portal-note" id="publishedCount"></div>
  <div id="publishedPosts" class="articles"><p class="portal-note">Нийтлэл ачаалж байна…</p></div>
  <div id="publishedStatus" class="portal-note"></div>
 </section>
@@ -606,7 +606,7 @@ supabase.auth.onAuthStateChange(()=>{setTimeout(()=>{loadAccountPanel();loadAcco
 let publishedPosts=[],myBookmarks=new Set();
 async function loadPublishedLore(){
  const el=$("publishedPosts");
- const {data,error}=await supabase.from("content_posts").select("id,title,summary,body,content_type,language_code,published_at,slug").eq("status","published").order("published_at",{ascending:false}).limit(100);
+ const {data,error}=await supabase.from("content_posts").select("id,title,summary,body,content_type,language_code,published_at,slug,game_title,character_name,source_urls,cover_image_url").eq("status","published").order("published_at",{ascending:false}).limit(100);
  if(error){el.textContent="Нийтлэл ачаалж чадсангүй: "+error.message;return;}
  publishedPosts=data||[];
  const {data:{user}}=await supabase.auth.getUser();
@@ -614,14 +614,15 @@ async function loadPublishedLore(){
  renderPublishedLore();
 }
 function renderPublishedLore(){
- const q=$("publishedSearch").value.trim().toLocaleLowerCase(),only=$("bookmarksOnly").checked;
- const rows=publishedPosts.filter(p=>(!only||myBookmarks.has(p.id))&&[p.title,p.summary,p.content_type,p.language_code].join(" ").toLocaleLowerCase().includes(q));
- $("publishedPosts").innerHTML=rows.map(p=>'<article class="article"><div class="tag">'+safeText(p.content_type)+' · '+safeText(p.language_code)+'</div><h3>'+safeText(p.title)+'</h3><p>'+safeText(p.summary||"Товч тайлбар оруулаагүй.")+'</p><div class="row" style="margin-top:auto;flex-wrap:wrap"><button type="button" data-read-post="'+p.id+'">Унших</button><button type="button" data-bookmark="'+p.id+'">'+(myBookmarks.has(p.id)?"★ Хадгалсан":"☆ Хадгалах")+'</button><button type="button" data-feedback="'+p.id+'">Санал өгөх</button></div></article>').join("")||'<p class="portal-note">Тохирох нийтлэл алга.</p>';
+ const q=$("publishedSearch").value.trim().toLocaleLowerCase(),only=$("bookmarksOnly").checked;const type=$("publishedType").value,game=$("publishedGame").value;
+ const rows=publishedPosts.filter(p=>(!only||myBookmarks.has(p.id))&&(type==="all"||p.content_type===type)&&(game==="all"||p.game_title===game)&&[p.title,p.summary,p.content_type,p.language_code,p.game_title,p.character_name].join(" ").toLocaleLowerCase().includes(q));
+ $("publishedCount").textContent=rows.length+" нийтлэл · Нийт "+publishedPosts.length;
+ $("publishedPosts").innerHTML=rows.map(p=>'<article class="article"><div class="tag">'+safeText(p.game_title||"Ерөнхий")+' · '+safeText(p.content_type)+' · '+safeText(p.language_code)+'</div><h3>'+safeText(p.title)+'</h3><p>'+safeText(p.summary||"Товч тайлбар оруулаагүй.")+'</p><div class="row" style="margin-top:auto;flex-wrap:wrap"><button type="button" data-read-post="'+p.id+'">Унших</button><button type="button" data-bookmark="'+p.id+'">'+(myBookmarks.has(p.id)?"★ Хадгалсан":"☆ Хадгалах")+'</button><button type="button" data-feedback="'+p.id+'">Санал өгөх</button></div></article>').join("")||'<p class="portal-note">Тохирох нийтлэл алга.</p>';
  $("publishedPosts").querySelectorAll("[data-read-post]").forEach(b=>b.onclick=()=>{const p=publishedPosts.find(x=>x.id===b.dataset.readPost);if(!p)return;$("modalGame").textContent=p.content_type+" / "+p.language_code;$("modalTitle").textContent=p.title;const body=p.body&&typeof p.body==="object"?(p.body.text||JSON.stringify(p.body,null,2)):String(p.body||"");$("modalBody").textContent=body;$("modal").classList.add("open");});
  $("publishedPosts").querySelectorAll("[data-bookmark]").forEach(b=>b.onclick=async()=>{try{const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Хадгалахдаа эхлээд нэвтэрнэ үү.");const id=b.dataset.bookmark;if(myBookmarks.has(id)){const {error}=await supabase.from("article_bookmarks").delete().eq("post_id",id).eq("user_id",user.id);if(error)throw error;myBookmarks.delete(id);}else{const {error}=await supabase.from("article_bookmarks").insert({post_id:id,user_id:user.id});if(error)throw error;myBookmarks.add(id);}renderPublishedLore();}catch(e){$("publishedStatus").textContent=e.message;}});
  $("publishedPosts").querySelectorAll("[data-feedback]").forEach(b=>b.onclick=()=>{$("feedbackPostId").value=b.dataset.feedback;$("feedbackStatus").textContent="";$("feedbackModal").classList.add("open");});
 }
-$("publishedSearch").addEventListener("input",renderPublishedLore);$("bookmarksOnly").addEventListener("change",renderPublishedLore);
+$("publishedSearch").addEventListener("input",renderPublishedLore);$("bookmarksOnly").addEventListener("change",renderPublishedLore);$("publishedType").addEventListener("change",renderPublishedLore);$("publishedGame").addEventListener("change",renderPublishedLore);
 $("feedbackClose").onclick=()=>$("feedbackModal").classList.remove("open");
 $("feedbackModal").addEventListener("click",e=>{if(e.target.id==="feedbackModal")$("feedbackModal").classList.remove("open");});
 $("feedbackForm").addEventListener("submit",async e=>{
