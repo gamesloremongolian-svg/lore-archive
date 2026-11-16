@@ -2313,4 +2313,137 @@ document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBank
  document.addEventListener("click",e=>{const a=e.target.closest("a.anime-poster,a#heroAnimeVisual,a[data-anime-id]");if(!a)return;let id=a.dataset.animeId;const match=(a.getAttribute("href")||"").match(/(?:anilist\.co\/anime\/|#anime-)(\d+)/);if(!id&&match)id=match[1];if(id){e.preventDefault();e.stopPropagation();open(id)}},true);
  const initial=location.hash.match(/^#anime-(\d+)$/);if(initial)open(initial[1]);window.LOREVERSE_OPEN_ANIME_DETAIL=open;
 })();</script>
+
+<script id="LOREVERSE_FULL_SITE_ENGLISH_I18N">
+/* Persistent whole-site language support shared by the website and Capacitor APK. */
+(function(){
+  const selector=document.getElementById("lang");
+  if(!selector)return;
+  const supported=["mn","en","ja","ko"];
+  let selected="mn";
+  try{selected=localStorage.getItem("loreverse_language")||"mn";}catch(_){}
+  if(!supported.includes(selected))selected="mn";
+  document.documentElement.lang=selected;
+  selector.value=selected;
+
+  const englishEndpoint="https://nfacspfctvunwbxtvvyi.supabase.co/functions/v1/translate-to-english";
+  const publishableKey="sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1";
+  const cachePrefix="loreverse_en_ui_v1:";
+  const cyrillic=/[А-Яа-яЁёӨөҮү]/;
+  const pending=[];
+  const seenText=new WeakSet();
+  const seenAttrs=new WeakMap();
+  let running=false;
+  let observer=null;
+
+  function hash(value){
+    let h=2166136261;
+    for(let i=0;i<value.length;i++){h^=value.charCodeAt(i);h=Math.imul(h,16777619);}
+    return (h>>>0).toString(16);
+  }
+  function cached(value){
+    try{return localStorage.getItem(cachePrefix+hash(value));}catch(_){return null;}
+  }
+  function save(value,translated){
+    try{localStorage.setItem(cachePrefix+hash(value),translated);}catch(_){}
+  }
+  function addText(node){
+    if(!node||node.nodeType!==Node.TEXT_NODE||seenText.has(node))return;
+    const value=(node.nodeValue||"").trim();
+    if(!value||!cyrillic.test(value))return;
+    const parent=node.parentElement;
+    if(!parent||parent.closest("script,style,noscript,textarea,input,code,pre,svg,select,option,[data-no-translate]"))return;
+    seenText.add(node);
+    const saved=cached(value);
+    if(saved){node.nodeValue=node.nodeValue.replace(value,saved);return;}
+    pending.push({value,apply:translated=>{if(node.isConnected)node.nodeValue=node.nodeValue.replace(value,translated);}});
+  }
+  function addAttribute(el,name){
+    if(!el||!el.getAttribute)return;
+    const value=el.getAttribute(name);
+    if(!value||!cyrillic.test(value))return;
+    let record=seenAttrs.get(el);
+    if(!record){record=new Set();seenAttrs.set(el,record);}
+    const key=name+"\n"+value;
+    if(record.has(key))return;
+    record.add(key);
+    const saved=cached(value);
+    if(saved){el.setAttribute(name,saved);return;}
+    pending.push({value,apply:translated=>{if(el.isConnected&&el.getAttribute(name)===value)el.setAttribute(name,translated);}});
+  }
+  function collect(root){
+    if(!root)return;
+    if(root.nodeType===Node.TEXT_NODE){addText(root);return;}
+    const base=root.nodeType===Node.DOCUMENT_NODE?root.body:root;
+    if(!base)return;
+    const walker=document.createTreeWalker(base,NodeFilter.SHOW_TEXT);
+    let node;while((node=walker.nextNode()))addText(node);
+    const elements=[];
+    if(base.nodeType===Node.ELEMENT_NODE)elements.push(base);
+    if(base.querySelectorAll)elements.push(...base.querySelectorAll("*"));
+    for(const el of elements){
+      for(const attr of ["placeholder","aria-label","title","alt"])addAttribute(el,attr);
+    }
+    if(base.querySelectorAll){
+      base.querySelectorAll('meta[name="description"]').forEach(el=>addAttribute(el,"content"));
+    }
+  }
+  async function drain(){
+    if(running||selected!=="en")return;
+    running=true;
+    try{
+      while(pending.length&&selected==="en"){
+        const batch=[];let chars=0;
+        while(pending.length&&batch.length<12){
+          const item=pending[0];
+          if(batch.length&&chars+item.value.length>6000)break;
+          batch.push(pending.shift());chars+=item.value.length;
+        }
+        try{
+          const response=await fetch(englishEndpoint,{
+            method:"POST",
+            headers:{"Content-Type":"application/json","apikey":publishableKey},
+            body:JSON.stringify({texts:batch.map(x=>x.value)})
+          });
+          if(!response.ok)throw new Error("HTTP "+response.status);
+          const data=await response.json();
+          if(!Array.isArray(data.translations)||data.translations.length!==batch.length)throw new Error("Invalid translation response");
+          batch.forEach((item,i)=>{
+            const translated=String(data.translations[i]||"").trim();
+            if(translated){save(item.value,translated);item.apply(translated);}
+          });
+        }catch(error){
+          console.warn("LOREVERSE English localization:",error.message);
+          /* Keep the original Mongolian text if the translation service is unavailable. */
+        }
+      }
+    }finally{running=false;}
+  }
+  function schedule(){if(selected==="en")setTimeout(drain,180);}
+  function startEnglish(){
+    document.documentElement.lang="en";
+    selector.value="en";
+    collect(document.body);
+    if(!observer){
+      observer=new MutationObserver(records=>{
+        for(const record of records){
+          if(record.type==="childList")record.addedNodes.forEach(collect);
+          else if(record.type==="attributes")addAttribute(record.target,record.attributeName);
+        }
+        schedule();
+      });
+      observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["placeholder","aria-label","title","alt","content"]});
+    }
+    schedule();
+  }
+  selector.addEventListener("change",function(event){
+    const next=supported.includes(event.target.value)?event.target.value:"mn";
+    try{localStorage.setItem("loreverse_language",next);}catch(_){}
+    if(next==="en"){selected="en";startEnglish();}
+    else{selected=next;location.reload();}
+  });
+  if(selected==="en")startEnglish();
+})();
+</script>
+
 </body></html>
