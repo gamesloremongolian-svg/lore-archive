@@ -279,7 +279,7 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
 <div class="modal" id="profileModal" role="dialog" aria-modal="true"><div class="dialog">
  <div class="dialogtop"><div><div class="eyebrow">LOREVERSE ACCOUNT</div><h2>Миний профайл</h2></div><button class="close" id="profileClose" type="button">✕</button></div>
  <p id="profileIdentity">Нэвтэрч орно уу.</p>
- <div class="portal-panel" style="padding:14px;margin:12px 0"><h3 style="margin:0 0 8px">Бүртгэл / Нэвтрэх</h3><label for="accountEmail">Имэйл</label><input class="form-field" id="accountEmail" type="email" autocomplete="email" placeholder="name@example.com"><label for="accountPassword">Нууц үг</label><input class="form-field" id="accountPassword" type="password" autocomplete="current-password" minlength="8" placeholder="Дор хаяж 8 тэмдэгт"><div class="row"><button class="btn primary" id="accountLogin" type="button">Нэвтрэх</button><button class="btn" id="accountSignup" type="button">Бүртгүүлэх</button><button class="btn" id="accountLogout" type="button">Гарах</button></div></div>
+ <div class="portal-panel" style="padding:14px;margin:12px 0"><h3 style="margin:0 0 8px">Бүртгэл / Нэвтрэх</h3><label for="accountEmail">Имэйл</label><input class="form-field" id="accountEmail" type="email" autocomplete="email" placeholder="name@example.com"><label for="accountPassword">Нууц үг</label><input class="form-field" id="accountPassword" type="password" autocomplete="current-password" minlength="8" placeholder="Дор хаяж 8 тэмдэгт"><div class="row"><button class="btn primary" id="accountLogin" type="button">Нэвтрэх</button><button class="btn" id="accountSignup" type="button">Бүртгүүлэх</button><button class="btn" id="accountLogout" type="button" hidden>Гарах</button></div></div>
  <label for="profileName">Харагдах нэр</label><input class="form-field" id="profileName" maxlength="40" placeholder="Lore Explorer">
  <label for="profileAvatar">Avatar зурагны HTTPS холбоос</label><input class="form-field" id="profileAvatar" type="url" placeholder="https://...">
  <button class="btn primary" id="profileSave" type="button">Профайл хадгалах</button><div class="portal-note" id="profileStatus"></div>
@@ -895,6 +895,7 @@ async function loadAccountPanel(){
 }
 async function loadAccountProfile(){
  const {data:{user}}=await supabase.auth.getUser();
+ $("accountLogout").hidden=!user;
  if(!user){$("profileIdentity").textContent="Профайл харахын тулд нэвтэрнэ үү.";return;}
  const {data,error}=await supabase.from("profiles").select("display_name,avatar_url").eq("id",user.id).maybeSingle();
  $("profileIdentity").textContent=user.email||"Нэвтэрсэн хэрэглэгч";
