@@ -495,6 +495,7 @@ body{
     </div>
     <small class="portal-note" id="communityPostStatus">Зураг 15 MB хүртэл. Нийтлэхийн тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ.</small>
    </form>
+   <div id="communityPostAccessNotice" class="feed-empty" hidden>Нийтлэл оруулах эрх одоогоор танд олгогдоогүй байна. Эрх хүсэх бол LOREVERSE админтай холбогдоно уу.</div>
    <div id="communityPostList" aria-live="polite"><div class="feed-empty">Нийтлэлүүд ачаалж байна…</div></div>
   </div>
   <aside class="feed-side">
@@ -807,13 +808,32 @@ async function loadCommunityFeed(){
 }
 $("communityFeedTabs")?.addEventListener("click",e=>{const b=e.target.closest("[data-feed-tab]");if(!b)return;communityFeedTab=b.dataset.feedTab;$("communityFeedTabs").querySelectorAll(".feed-tab").forEach(x=>x.classList.toggle("active",x===b));loadCommunityFeed().catch(e=>$("communityPostList").textContent=e.message);});
 $("communityGameList")?.addEventListener("click",e=>{const b=e.target.closest("[data-game]");if(!b)return;communityFeedGame=b.dataset.game;$("communityGameList").querySelectorAll(".feed-game").forEach(x=>x.classList.toggle("active",x===b));loadCommunityFeed().catch(e=>$("communityPostList").textContent=e.message);});
+async function refreshCommunityPostAccess(){
+ const form=$("communityPostForm"),notice=$("communityPostAccessNotice");
+ if(!form||!notice)return false;
+ try{
+  const {data:{user}}=await supabase.auth.getUser();
+  if(!user||user.is_anonymous){form.hidden=true;notice.hidden=false;notice.textContent="Нийтлэл оруулахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.";return false;}
+  const [permission,staff]=await Promise.all([
+   supabase.from("community_post_permissions").select("active").eq("user_id",user.id).maybeSingle(),
+   supabase.from("staff_members").select("role,active").eq("user_id",user.id).eq("active",true).maybeSingle()
+  ]);
+  if(permission.error)throw permission.error;
+  if(staff.error)throw staff.error;
+  const allowed=permission.data?.active===true||(staff.data?.active===true&&["owner","admin","editor"].includes(staff.data.role));
+  form.hidden=!allowed;notice.hidden=allowed;
+  notice.textContent="Нийтлэл оруулах эрх одоогоор танд олгогдоогүй байна. Эрх хүсэх бол LOREVERSE админтай холбогдоно уу.";
+  return allowed;
+ }catch(err){form.hidden=true;notice.hidden=false;notice.textContent="Нийтлэх эрхийг шалгаж чадсангүй: "+(err.message||"Алдаа");return false;}
+}
+refreshCommunityPostAccess();
 $("communityPostForm")?.addEventListener("submit",async e=>{
  e.preventDefault();const button=$("communityPostSubmit"),body=$("communityPostBody").value.trim(),file=$("communityPostImage").files[0];
  if(!body){$("communityPostStatus").textContent="Нийтлэлийн текстээ бичнэ үү.";return;}
  if(file&&(!/^image\/(jpeg|png|webp|gif)$/.test(file.type)||file.size>15*1024*1024)){$("communityPostStatus").textContent="JPG, PNG, WEBP, GIF зураг 15 MB хүртэл зөвшөөрнө.";return;}
  button.disabled=true;
  try{
-  const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Нийтлэл оруулахын тулд профайлаасаа бүртгүүлж эсвэл нэвтэрнэ үү.");
+  const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Нийтлэл оруулахын тулд профайлаасаа бүртгүүлж эсвэл нэвтэрнэ үү.");if(!(await refreshCommunityPostAccess()))throw new Error("Танд Community Feed-д нийтлэл оруулах эрх олгогдоогүй байна.");
   const {data:post,error}=await supabase.from("community_posts").insert({author_id:u.id,game_slug:$("communityPostGame").value,category:$("communityPostCategory").value,body,spoiler_level:$("communityPostSpoiler").value}).select("id").single();if(error)throw error;
   if(file){const path=u.id+"/"+post.id+"/"+crypto.randomUUID()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");const upload=await supabase.storage.from("community-media").upload(path,file,{contentType:file.type,upsert:false});if(upload.error)throw upload.error;const {data:publicUrl}=supabase.storage.from("community-media").getPublicUrl(path);const saved=await supabase.from("community_post_media").insert({post_id:post.id,author_id:u.id,media_url:publicUrl.publicUrl,media_type:"image"});if(saved.error)throw saved.error;}
   $("communityPostBody").value="";$("communityPostImage").value="";$("communityPostStatus").textContent="Нийтлэл амжилттай нийтлэгдлээ.";communityFeedTab="global";$("communityFeedTabs").querySelectorAll(".feed-tab").forEach(x=>x.classList.toggle("active",x.dataset.feedTab==="global"));await loadCommunityFeed();
