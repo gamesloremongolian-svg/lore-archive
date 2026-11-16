@@ -72,16 +72,14 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 </section>
 <section class="panel hidden" id="queue" class="panel hidden"><div class="row"><div><div class="eyebrow">EDITORIAL REVIEW QUEUE</div><h2 style="margin:4px 0">Ноорог ба хяналт</h2></div><button id="refresh" class="secondary right">Шинэчлэх</button></div><p class="muted">Editor нооргийг хяналтад илгээнэ. Owner/Admin шалгасны дараа нийтэлнэ.</p><div id="draftList" class="status">Ачаалж байна…</div></section>
 </main>
-<script type="module">
-let createClient;
-try {
- ({createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"));
-} catch (e) {
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+if(!window.supabase?.createClient){
  const box=document.getElementById("authMsg");
- if(box) box.textContent="Системийн сан ачаалж чадсангүй. Интернэт холболтоо шалгаад хуудсыг дахин ачаална уу. Дэлгэрэнгүй: "+(e?.message||"CDN алдаа");
- throw e;
+ if(box) box.textContent="Supabase сан ачаалсангүй. Интернэт холболт эсвэл CDN хандалтаа шалгана уу.";
+ throw new Error("Supabase UMD library unavailable");
 }
-const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
+const supabase=window.supabase.createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
 const $=id=>document.getElementById(id);
 let user=null,role=null,currentDraft=null,savedId=null;
 const say=(id,msg)=>$(id).textContent=msg;
