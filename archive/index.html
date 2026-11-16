@@ -38,7 +38,7 @@ h1{font-size:clamp(34px,5vw,58px);line-height:1.08;letter-spacing:-.04em;margin:
   <button class="chip active" data-archive-category="all">Бүгд</button><button class="chip" data-archive-category="game">Game</button><button class="chip" data-archive-category="anime">Anime</button><button class="chip" data-archive-category="manga">Manga</button><button class="chip" data-archive-category="light_novel">Light Novel</button><button class="chip" data-archive-category="web_novel">Web Novel</button><button class="chip" data-archive-category="mixed">Universe</button>
  </div>
  <div class="muted" id="publicArchiveStatus" role="status">Нийтлэгдсэн архивын мэдээлэл ачаалж байна...</div>
- <div class="articles" id="publicArchiveResults"></div>
+ <div class="articles" id="publicArchiveResults" data-no-i18n></div>
 </section>
 </main><footer class="wrap footer"><span>© 2026 LOREVERSE · Фэнүүдийн бүтээсэн, албан бус мэдлэгийн платформ.</span><a href="../">LOREVERSE үндсэн нүүр</a></footer>
 <script type="module">
@@ -132,4 +132,4 @@ const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publi
 })();
 
 
-</script></body></html>
+</script><script src="../assets/js/i18n.js" defer></script></body></html>
