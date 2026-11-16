@@ -113,6 +113,13 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
 @media(max-width:850px){.lore-emblem{min-height:310px}}
 @media(max-width:560px){.lore-emblem{min-height:250px}.lore-logo{width:min(86%,290px)}}
 
+
+/* Artwork thumbnails for all scrolling cards */
+.carousel-track .media-card{background-size:cover;background-position:center 28%;isolation:isolate;border-color:#8a6b9e;box-shadow:0 12px 30px #0006}
+.carousel-track .media-card::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#08081705 0%,#08081730 35%,#080817ed 100%);transition:background .2s}
+.carousel-track .media-card:hover::before{background:linear-gradient(180deg,#08081700 0%,#08081718 25%,#080817f2 100%)}
+.carousel-track .media-card small,.carousel-track .media-card strong,.carousel-track .media-card span{position:relative;text-shadow:0 2px 9px #000}
+
 </style>
 </head>
 <body>
@@ -166,33 +173,33 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
 <section class="section" id="anime">
  <div class="section-head"><div><div class="eyebrow">ANIME COLLECTION</div><h2>Анимэ ертөнц</h2><p>Онцлох анимэ болон тэдгээрийн түүхийн сан.</p></div></div>
  <div class="carousel-track">
-  <a class="media-card" href="#archive"><small>ANIME · LORE</small><strong>Frieren: Beyond Journey's End</strong><span>Дурсамж, цаг хугацаа, аялал</span></a>
-  <a class="media-card" href="#archive"><small>ANIME · LORE</small><strong>Attack on Titan</strong><span>Дэлхийн нууц ба түүх</span></a>
-  <a class="media-card" href="#archive"><small>ANIME · LORE</small><strong>Jujutsu Kaisen</strong><span>Хараал ба жюү-жицү</span></a>
-  <a class="media-card" href="#archive"><small>ANIME · LORE</small><strong>Solo Leveling</strong><span>Хаалга ба ангуучид</span></a>
-  <a class="media-card" href="#archive"><small>ANIME · LORE</small><strong>Made in Abyss</strong><span>Ёроолгүй ангалын нууц</span></a>
+  <a class="media-card" href="#archive" style="background-image:url('https://ogre.natalie.mu/media/news/comic/2023/0823/frieren_kv0823.jpg?impolicy=pp')"><small>ANIME · LORE</small><strong>Frieren: Beyond Journey's End</strong><span>Дурсамж, цаг хугацаа, аялал</span></a>
+  <a class="media-card" href="#archive" style="background-image:url('https://images.animageplus.jp/articles/34000/34807/OG/3a3dd1cdcb1c0ca8dad079ab93b6f101.jpg')"><small>ANIME · LORE</small><strong>Attack on Titan</strong><span>Дэлхийн нууц ба түүх</span></a>
+  <a class="media-card" href="#archive" style="background-image:url('https://animeanime.jp/imgs/zoom/400458.jpg')"><small>ANIME · LORE</small><strong>Jujutsu Kaisen</strong><span>Хараал ба жюү-жицү</span></a>
+  <a class="media-card" href="#archive" style="background-image:url('https://m.media-amazon.com/images/M/MV5BM2M4YzdkMTEtMjUyYy00ZWY0LWI5ODQtNGRkZWQ1MzU5MWM2XkEyXkFqcGc%40._V1_.jpg')"><small>ANIME · LORE</small><strong>Solo Leveling</strong><span>Хаалга ба ангуучид</span></a>
+  <a class="media-card" href="#archive" style="background-image:url('https://image.tmdb.org/t/p/original/4CRy0qVUZwpAdRZBZub3NQkkbVb.jpg')"><small>ANIME · LORE</small><strong>Made in Abyss</strong><span>Ёроолгүй ангалын нууц</span></a>
  </div>
 </section>
 <section class="section" id="games">
  <div class="section-head"><div><div class="eyebrow">GAME UNIVERSES</div><h2>Тоглоомын ертөнц</h2><p>Тоглоом тус бүрийн lore архив руу шууд нэвтэр.</p></div></div>
  <div class="carousel-track">
-  <a class="media-card" href="games/genshin-impact/"><small>HOYOVERSE</small><strong>Genshin Impact</strong><span>Teyvat-ийн долоон үндэстэн</span></a>
-  <a class="media-card" href="games/wuthering-waves/"><small>KURO GAMES</small><strong>Wuthering Waves</strong><span>Solaris-3-ийн ертөнц</span></a>
-  <a class="media-card" href="games/ananta/"><small>NETEASE</small><strong>ANANTA</strong><span>Нууцлаг хотын амьдрал</span></a>
-  <a class="media-card" href="games/honkai-star-rail/"><small>HOYOVERSE</small><strong>Honkai: Star Rail</strong><span>Оддын аялал</span></a>
-  <a class="media-card" href="games/zenless-zone-zero/"><small>HOYOVERSE</small><strong>Zenless Zone Zero</strong><span>New Eridu</span></a>
-  <a class="media-card" href="games/arknights/"><small>HYPERGRYPH</small><strong>Arknights</strong><span>Terra-ийн түүх</span></a>
-  <a class="media-card" href="games/blue-archive/"><small>NEXON GAMES</small><strong>Blue Archive</strong><span>Kivotos-ийн архив</span></a>
+  <a class="media-card" href="games/genshin-impact/" style="background-image:url('https://p2.bahamut.com.tw/B/2KU/11/2da6cdcbb80f2feb8505f3022c1a1kj5.JPG')"><small>HOYOVERSE</small><strong>Genshin Impact</strong><span>Teyvat-ийн долоон үндэстэн</span></a>
+  <a class="media-card" href="games/wuthering-waves/" style="background-image:url('https://image.api.playstation.com/vulcan/ap/rnd/202601/2802/f13923ff103b618e9ecf29584af018fd983f0df57d4f33b2.png')"><small>KURO GAMES</small><strong>Wuthering Waves</strong><span>Solaris-3-ийн ертөнц</span></a>
+  <a class="media-card" href="games/ananta/" style="background-image:url('https://pbs.twimg.com/media/G1jeBicWsAAlbI7.jpg')"><small>NETEASE</small><strong>ANANTA</strong><span>Нууцлаг хотын амьдрал</span></a>
+  <a class="media-card" href="games/honkai-star-rail/" style="background-image:url('https://images.igdb.com/igdb/image/upload/t_original/ar5bjo.jpg')"><small>HOYOVERSE</small><strong>Honkai: Star Rail</strong><span>Оддын аялал</span></a>
+  <a class="media-card" href="games/zenless-zone-zero/" style="background-image:url('https://cdn.spaziogames.it/storage/media/2024/07/17382/zenless-zone-zero-recensione-cover.jpg?aspect_ratio=16%3A9&width=1260')"><small>HOYOVERSE</small><strong>Zenless Zone Zero</strong><span>New Eridu</span></a>
+  <a class="media-card" href="games/arknights/" style="background-image:url('https://i0.wp.com/anitrendz.net/news/wp-content/uploads/2023/09/arknightsperishinfrost_keyvisual-1-scaled-e1695201337364.jpg?resize=696%2C394&ssl=1')"><small>HYPERGRYPH</small><strong>Arknights</strong><span>Terra-ийн түүх</span></a>
+  <a class="media-card" href="games/blue-archive/" style="background-image:url('https://assets.st-note.com/img/1652714623464-cukHkwJRNJ.jpg?fit=bounds&height=2000&quality=85&width=2000')"><small>NEXON GAMES</small><strong>Blue Archive</strong><span>Kivotos-ийн архив</span></a>
  </div>
 </section>
 <section class="section" id="manga">
  <div class="section-head"><div><div class="eyebrow">MANGA LIBRARY</div><h2>Манга ертөнц</h2><p>Манганы цуврал, дүрүүд болон ертөнцийн мэдээлэл.</p></div></div>
  <div class="carousel-track">
-  <a class="media-card" href="#archive"><small>MANGA · LORE</small><strong>One Piece</strong><span>Далай, түүх ба нууц</span></a>
-  <a class="media-card" href="#archive"><small>MANGA · LORE</small><strong>Berserk</strong><span>Midland ба Eclipse</span></a>
-  <a class="media-card" href="#archive"><small>MANGA · LORE</small><strong>Chainsaw Man</strong><span>Чөтгөрүүдийн ертөнц</span></a>
-  <a class="media-card" href="#archive"><small>MANGA · LORE</small><strong>Kingdom</strong><span>Хятадын нэгдлийн түүх</span></a>
-  <a class="media-card" href="#archive"><small>MANGA · LORE</small><strong>Vagabond</strong><span>Самурайн замнал</span></a>
+  <a class="media-card" href="#archive" style="background-image:url('https://img.4gamers.com.tw/puku-clone-version/fba616446a26abd268e06b1fe30a116b05995e35.jpeg')"><small>MANGA · LORE</small><strong>One Piece</strong><span>Далай, түүх ба нууц</span></a>
+  <a class="media-card" href="#archive" style="background-image:url('https://cdn11.bigcommerce.com/s-89ffd/images/stencil/1280x1280/products/154490/674965/hakusensha-berserk-vol.14-young-animal-comics-manga-japanese-language__42582.1737730738.jpg?c=2%3Fimbypass%3Don')"><small>MANGA · LORE</small><strong>Berserk</strong><span>Midland ба Eclipse</span></a>
+  <a class="media-card" href="#archive" style="background-image:url('https://creativefreaks.net/language/wp-content/uploads/2023/02/csm_KV_20220705_logobilling.png')"><small>MANGA · LORE</small><strong>Chainsaw Man</strong><span>Чөтгөрүүдийн ертөнц</span></a>
+  <a class="media-card" href="#archive" style="background-image:url('https://travellingman.com/cdn/shop/files/81BkEYmif6L._SL1500_1200x1200.jpg?v=1761567840')"><small>MANGA · LORE</small><strong>Kingdom</strong><span>Хятадын нэгдлийн түүх</span></a>
+  <a class="media-card" href="#archive" style="background-image:url('https://i.pinimg.com/originals/73/e9/94/73e9941b6851b5b0664efde81010afda.png')"><small>MANGA · LORE</small><strong>Vagabond</strong><span>Самурайн замнал</span></a>
  </div>
 </section>
 <section class="section portal-grid" id="payment">
