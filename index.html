@@ -398,7 +398,7 @@ section[id]{scroll-margin-top:92px}
 </section>
 
 <section class="section portal-grid" id="payment">
- <div class="portal-panel"><div class="eyebrow">PAYMENT CENTER</div><h2>Төлбөр хийх</h2><p>LOREVERSE Premium-ийн төлбөрийг хоёр аргаар хүлээн авна: QPay V2 динамик QR болон банкны шилжүүлэг.</p><div class="portal-grid"><div class="feature"><h3>QPay автомат төлбөр</h3><p>Нэхэмжлэл үүсгэж, QPay талаас төлбөр баталгаажсаны дараа Premium эрх идэвхжинэ.</p><span class="portal-note">Интеграцийн шалгалт хийгдэж байна.</span></div><div class="feature"><h3>Банкны шилжүүлэг</h3><p>Гүйлгээний баримтыг илгээж, админ баталгаажуулсны дараа Premium эрх олгоно.</p><span class="portal-note">Дансны мэдээлэл нийтлэгдсэний дараа идэвхжинэ.</span></div></div><p class="portal-note">Одоогоор төлбөрийн товч түр хаалттай. Төлбөрийн баталгаажуулалт дуусаагүй байхад эрх олгохгүй.</p></div>
+ <div class="portal-panel"><div class="eyebrow">PAYMENT CENTER</div><h2>Төлбөр хийх</h2><p>LOREVERSE Premium-ийн төлбөрийг QPay автомат төлбөр эсвэл Хаан Банкны шилжүүлгээр төлөх боломжтой.</p><div class="portal-grid"><div class="feature"><h3>QPay автомат төлбөр</h3><p>Динамик нэхэмжлэл үүсгэж, QPay талаас төлбөр баталгаажсаны дараа Premium эрх идэвхжинэ.</p><span class="portal-note">Автомат холболт одоогоор хийгдэж байна.</span></div><div class="feature"><h3>Хаан Банк · Шилжүүлэг</h3><p><b>Данс эзэмшигч:</b> Батравжих Батаа</p><p><b>Дансны дугаар:</b> <strong style="font-size:20px;letter-spacing:.08em">5622218472</strong></p><p><b>Банк:</b> Хаан Банк</p><p>Гүйлгээний утгад LOREVERSE хэрэглэгчийн имэйл болон сонгосон багцаа бичнэ үү.</p><button class="btn" type="button" id="copyBankAccount">Дансны дугаар хуулах</button><span class="portal-note" id="bankCopyStatus"></span></div></div><p class="portal-note">Шилжүүлэг хийсний дараа “Админтай холбогдох” хэсэгт Төлбөр ангиллаар хүсэлт нээж, гүйлгээний баримт эсвэл гүйлгээний дугаараа хавсаргана уу. Админ шалгаж баталгаажуулсны дараа эрх олгоно. Зөвхөн шилжүүлэг хийснээр Premium автоматаар идэвхжихгүй.</p></div>
  </section>
 
 <section class="section" id="admin">
@@ -719,6 +719,8 @@ $("loreAiForm").addEventListener("submit",async e=>{
  }finally{$("loreAiSend").disabled=false;loreAiQuestion.focus();}
 });
 
+
+document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBankAccount"){try{await navigator.clipboard.writeText("5622218472");$("bankCopyStatus").textContent="Дансны дугаар хууллаа.";}catch(_){$("bankCopyStatus").textContent="Дугаар: 5622218472";}}});
 </script>
 
 
