@@ -38,6 +38,32 @@ jobs:
         run: npx cap add android
       - name: Sync Capacitor
         run: npx cap sync android
+      - name: Generate LOREVERSE launcher icons
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y librsvg2-bin
+          RES="android/app/src/main/res"
+          mkdir -p "$RES/drawable-nodpi" "$RES/mipmap-anydpi-v26" "$RES/values"
+          rsvg-convert -w 432 -h 432 assets/loreverse-adaptive-foreground.svg -o "$RES/drawable-nodpi/ic_launcher_foreground.png"
+          for item in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do
+            density="${item%%:*}"
+            size="${item##*:}"
+            mkdir -p "$RES/mipmap-$density"
+            rsvg-convert -w "$size" -h "$size" assets/loreverse-app-icon.svg -o "$RES/mipmap-$density/ic_launcher.png"
+            cp "$RES/mipmap-$density/ic_launcher.png" "$RES/mipmap-$density/ic_launcher_round.png"
+          done
+          cat > "$RES/values/loreverse_icon_colors.xml" <<'EOF'
+          <resources><color name="loreverse_icon_background">#080914</color></resources>
+          EOF
+          cat > "$RES/mipmap-anydpi-v26/ic_launcher.xml" <<'EOF'
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+            <background android:drawable="@color/loreverse_icon_background"/>
+            <foreground android:drawable="@drawable/ic_launcher_foreground"/>
+          </adaptive-icon>
+          EOF
+          cp "$RES/mipmap-anydpi-v26/ic_launcher.xml" "$RES/mipmap-anydpi-v26/ic_launcher_round.xml"
+
       - name: Build debug APK
         run: cd android && ./gradlew assembleDebug
       - name: Upload Android APK
