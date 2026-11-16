@@ -352,7 +352,7 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
 
 
 
-<section class="section archive" id="archive"><span id="publishedLore" aria-hidden="true"></span>
+<section class="section archive" id="archive" hidden><span id="publishedLore" aria-hidden="true"></span>
  <div class="section-head"><div><div class="eyebrow">EDITORIAL DATABASE</div><h2>Бүх Lore — нэгдсэн архив</h2><p>Тоглоом, анимэ, манга болон бусад ертөнцийн нийтлэгдсэн lore судалгаа, дүрийн мэдээлэл, мэдээ, гарын авлагыг нэг хайлт, нэг шүүлтүүрээр үзнэ. Зөвхөн редакц нийтэлсэн материал энд харагдана.</p></div></div>
  <div class="toolbar" style="flex-wrap:wrap"><input id="publishedSearch" class="search" type="search" placeholder="Гарчиг, дүр, тоглоом, агуулгаар хайх..."><select class="form-field" id="publishedType"><option value="all">Бүх төрөл</option><option value="lore">Lore судалгаа</option><option value="game">Тоглоом</option><option value="anime">Анимэ</option><option value="manga">Манга</option><option value="news">Мэдээ</option><option value="guide">Гарын авлага</option><option value="work">Бүтээл</option><option value="character">Дүр</option><option value="location">Байршил</option><option value="faction">Фракц</option><option value="event">Үйл явдал</option></select><select class="form-field" id="publishedGame"><option value="all">Бүх ертөнц</option><option>Genshin Impact</option><option>Wuthering Waves</option><option>ANANTA</option><option>Honkai: Star Rail</option><option>Zenless Zone Zero</option><option>Arknights</option><option>Blue Archive</option><option>Бусад</option></select><label class="chip"><input id="bookmarksOnly" type="checkbox" style="accent-color:#c07bff"> Зөвхөн хадгалсан</label></div><div class="portal-note" id="publishedCount"></div>
  <div id="publishedPosts" class="articles"><p class="portal-note">Нийтлэл ачаалж байна…</p></div>
@@ -569,7 +569,7 @@ async function loreverseSignOut(button,note){
  finally{if(button)button.disabled=false;}
 }
 $("memberLogout").onclick=()=>loreverseSignOut($("memberLogout"),$("memberAuthNote"));
-supabase.auth.onAuthStateChange(()=>{setTimeout(refreshMember,0);});
+supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{await refreshMember();await loadPublishedLore();},0);});
 loadMembershipPlans();refreshMember();
 
 let activeQpayPaymentId=null;
@@ -949,13 +949,22 @@ supabase.auth.onAuthStateChange(()=>{setTimeout(()=>{loadAccountPanel();loadAcco
 /* Published lore, bookmarks and editorial feedback */
 let publishedPosts=[],structuredLore=[],myBookmarks=new Set();
 async function loadPublishedLore(){
- const el=$("publishedPosts");
+ const section=$("archive"),el=$("publishedPosts");
+ section.hidden=true;
+ publishedPosts=[];myBookmarks=new Set();
+ const {data:{user},error:userError}=await supabase.auth.getUser();
+ if(userError){el.textContent="Нэвтрэлтийн төлөв шалгаж чадсангүй.";return;}
+ if(!user||user.is_anonymous){el.textContent="Нэгдсэн Lore архивыг үзэхийн тулд идэвхтэй Premium эрхтэй нэвтэрнэ үү.";return;}
+ const {data:membership,error:membershipError}=await supabase.from("memberships").select("id").eq("user_id",user.id).eq("status","active").gt("ends_at",new Date().toISOString()).order("ends_at",{ascending:false}).limit(1).maybeSingle();
+ if(membershipError){el.textContent="Premium эрхийг шалгаж чадсангүй: "+membershipError.message;return;}
+ if(!membership){el.textContent="Нэгдсэн Lore архив зөвхөн идэвхтэй Premium эрхтэй хэрэглэгчдэд нээлттэй.";return;}
+ section.hidden=false;
  const {data,error}=await supabase.from("content_posts").select("id,title,summary,body,content_type,language_code,published_at,slug,game_title,character_name,source_urls,cover_image_url").eq("status","published").order("published_at",{ascending:false}).limit(100);
  if(error){el.textContent="Нийтлэл ачаалж чадсангүй: "+error.message;return;}
  publishedPosts=data||[];
  await loadStructuredLore();
- const {data:{user}}=await supabase.auth.getUser();
- if(user){const {data:marks}=await supabase.from("article_bookmarks").select("post_id").eq("user_id",user.id);myBookmarks=new Set((marks||[]).map(x=>x.post_id));}
+ const {data:marks}=await supabase.from("article_bookmarks").select("post_id").eq("user_id",user.id);
+ myBookmarks=new Set((marks||[]).map(x=>x.post_id));
  renderPublishedLore();
 }
 async function loadStructuredLore(){
