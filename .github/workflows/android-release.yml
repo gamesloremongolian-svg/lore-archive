@@ -1,0 +1,94 @@
+name: LOREVERSE Android Release AAB
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android-release:
+    name: Build Android release AAB
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build web assets
+        run: npm run build
+
+      - name: Generate Android project
+        run: npx cap add android
+
+      - name: Sync Capacitor Android
+        run: npx cap sync android
+
+      - name: Set Google Play target API 36
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          path = Path("android/variables.gradle")
+          if not path.exists():
+              raise SystemExit("Expected android/variables.gradle was not generated.")
+          content = path.read_text()
+          for key in ("compileSdkVersion", "targetSdkVersion"):
+              pattern = rf"({key}\\s*=\\s*)\\d+"
+              content, count = re.subn(pattern, rf"\\g<1>36", content, count=1)
+              if count != 1:
+                  raise SystemExit(f"Could not safely set {key} to API 36.")
+          path.write_text(content)
+          print("compileSdkVersion=36 and targetSdkVersion=36")
+          PY
+
+      - name: Build release Android App Bundle
+        working-directory: android
+        run: ./gradlew bundleRelease
+
+      - name: Sign AAB when upload-key secrets are configured
+        id: sign
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          AAB="android/app/build/outputs/bundle/release/app-release.aab"
+          test -s "$AAB"
+          mkdir -p release-artifact
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ] && [ -n "$ANDROID_KEYSTORE_PASSWORD" ] && [ -n "$ANDROID_KEY_ALIAS" ] && [ -n "$ANDROID_KEY_PASSWORD" ]; then
+            KEYSTORE="$RUNNER_TEMP/loreverse-upload-key.jks"
+            printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE"
+            jarsigner -keystore "$KEYSTORE" -storepass "$ANDROID_KEYSTORE_PASSWORD" -keypass "$ANDROID_KEY_PASSWORD" -sigalg SHA256withRSA -digestalg SHA-256 "$AAB" "$ANDROID_KEY_ALIAS"
+            jarsigner -verify "$AAB"
+            cp "$AAB" release-artifact/LOREVERSE-release-signed.aab
+            echo "artifact_name=LOREVERSE-release-signed" >> "$GITHUB_OUTPUT"
+            echo "Signing completed and verified."
+          else
+            cp "$AAB" release-artifact/LOREVERSE-release-unsigned.aab
+            echo "artifact_name=LOREVERSE-release-unsigned-TEST-ONLY" >> "$GITHUB_OUTPUT"
+            echo "::warning::Upload-key secrets are missing. This AAB is unsigned and cannot be submitted to Google Play."
+          fi
+
+      - name: Upload Android App Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.sign.outputs.artifact_name }}
+          path: release-artifact/*.aab
+          if-no-files-found: error
+          retention-days: 14
