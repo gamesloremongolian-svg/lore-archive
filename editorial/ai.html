@@ -9,7 +9,21 @@ body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -12%,#3
 .brand{font-weight:950;letter-spacing:.14em;color:var(--text);text-decoration:none;font-size:16px}.brand span{color:#b99aff}
 .topbar{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:8px 2px 18px}
 .panel{margin-top:18px;background:linear-gradient(145deg,#171a32f5,#101326f5);border:1px solid #343957;border-radius:20px;padding:clamp(17px,3vw,28px);box-shadow:var(--shadow);backdrop-filter:blur(14px)}
-#authPanel{max-width:780px;margin:34px auto 18px}
+#authPanel{max-width:520px;margin:clamp(34px,8vh,90px) auto 22px;padding:clamp(22px,5vw,38px);background:linear-gradient(150deg,#191a38f7,#101326f7);border-color:#514779;position:relative;overflow:hidden}
+#authPanel:before{content:"";position:absolute;width:240px;height:240px;border-radius:50%;right:-115px;top:-135px;background:#9270ff24;filter:blur(8px);pointer-events:none}
+.auth-head,.auth-form,.auth-foot{position:relative;z-index:1}
+.auth-mark{width:54px;height:54px;border-radius:17px;display:grid;place-items:center;font-size:25px;margin:0 0 20px;background:linear-gradient(145deg,#a47cff,#586fe8);box-shadow:0 10px 30px #8064ed44}
+.auth-form{display:grid;gap:5px;margin-top:24px}
+.auth-form label{margin:10px 0 3px}
+.auth-input-wrap{position:relative}
+.auth-input-wrap input{padding-right:52px}
+#togglePassword{position:absolute;right:7px;top:7px;min-height:34px;width:38px;padding:0;background:#252a45;border:1px solid #41486a;color:#d9d5f4}
+#login{width:100%;min-height:49px;margin-top:15px}
+#authMsg{min-height:48px;margin-top:17px}
+.auth-foot{margin-top:17px;padding-top:14px;border-top:1px solid #343957;color:#969bb8;font-size:11px}
+.auth-label{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.auth-label span{font-size:10px;color:#8f94b2;font-weight:500}
+@media(max-width:650px){#authPanel{margin:35px auto 18px;padding:22px 18px}.auth-mark{width:48px;height:48px}}
 .eyebrow{font-size:10px;letter-spacing:.22em;color:var(--cyan);font-weight:850}
 .title{font-size:clamp(25px,4vw,34px);line-height:1.2;letter-spacing:-.035em;margin:8px 0 12px}
 h2{letter-spacing:-.02em}
@@ -42,9 +56,19 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 @media(max-width:650px){.wrap{width:min(100% - 22px,1080px);margin:14px auto 40px}.grid{grid-template-columns:1fr;gap:8px}.full{grid-column:auto}.panel{padding:16px;border-radius:16px}.topbar{align-items:flex-start}.topbar .btn{font-size:12px;padding:8px 10px}.row button{flex:1 1 auto}.title{font-size:26px}#queue .draft .row button{flex:1 1 100%}}
 </style></head><body><main class="wrap">
 <p class="topbar"><a class="brand" href="../index.html">✦ LORE<span>VERSE</span></a><span class="right"></span><a class="btn secondary" href="../admin/">Админ самбар</a></p>
-<section class="panel" id="authPanel"><div class="eyebrow">SECURE EDITORIAL WORKSPACE</div><h1 class="title">AI редактор</h1><p class="muted">Зөвхөн идэвхтэй owner, admin, editor эрхтэй багийн гишүүд ашиглана.</p>
-<div class="grid"><div><label>Имэйл</label><input id="email" type="email" autocomplete="username"></div><div><label>Нууц үг</label><input id="password" type="password" autocomplete="current-password"></div></div>
-<div class="row" style="margin-top:12px"><button id="login">Нэвтрэх</button><button id="logout" class="secondary hidden">Гарах</button></div><div id="authMsg" class="status">Нэвтэрч редакцын эрхээ баталгаажуулна уу.</div></section>
+<section class="panel" id="authPanel">
+<div class="auth-head"><div class="auth-mark">✦</div><div class="eyebrow">LOREVERSE · SECURE ACCESS</div><h1 class="title">Редакцын нэвтрэх хэсэг</h1><p class="muted">Зөвхөн идэвхтэй Owner, Admin, Editor эрхтэй багийн гишүүд нэвтрэх боломжтой.</p></div>
+<div class="auth-form">
+<label for="email"><span class="auth-label">Имэйл <span>Бүртгэлтэй имэйл хаяг</span></span></label>
+<input id="email" type="email" autocomplete="username" placeholder="name@example.com" required>
+<label for="password"><span class="auth-label">Нууц үг <span>Supabase бүртгэлийн нууц үг</span></span></label>
+<div class="auth-input-wrap"><input id="password" type="password" autocomplete="current-password" placeholder="Нууц үгээ оруулна уу" required><button type="button" id="togglePassword" aria-label="Нууц үг харах" title="Нууц үг харах">◉</button></div>
+<button id="login" type="button">Нэвтрэх</button>
+<button id="logout" class="secondary hidden" type="button">Гарах</button>
+</div>
+<div id="authMsg" class="status" role="status" aria-live="polite">Нэвтрэх мэдээллээ оруулж, редакцын эрхээ баталгаажуулна уу.</div>
+<div class="auth-foot">Холболт Supabase Authentication-ээр хамгаалагдана. Нууц үг энэ сайтад хадгалагдахгүй.</div>
+</section>
 
 <section class="panel hidden" id="workspace" class="panel hidden"><div class="eyebrow">AI-ASSISTED DRAFTING</div><h1 class="title">Шинэ lore ноорог үүсгэх</h1><p class="muted">AI зөвхөн ноорог үүсгэнэ. Автоматаар нийтлэхгүй. Эх сурвалжийг редактор өөрөө шалгана.</p>
 <div class="grid">
@@ -84,31 +108,47 @@ const $=id=>document.getElementById(id);
 let user=null,role=null,currentDraft=null,savedId=null;
 const say=(id,msg)=>$(id).textContent=msg;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let entering=false;
 async function enter(){
- const {data:{user:u},error:authError}=await supabase.auth.getUser();
- if(authError)throw authError;
- if(!u){say("authMsg","Нэвтрэлт баталгаажаагүй байна. Дахин нэвтэрнэ үү.");return;}
- const {data:staff,error}=await supabase.from("staff_members").select("role,active").eq("user_id",u.id).maybeSingle();
- if(error){say("authMsg","Эрхийн мэдээлэл уншиж чадсангүй: "+error.message);return;}
- if(!staff?.active||!["owner","admin","editor"].includes(staff.role)){say("authMsg","Энэ бүртгэлд AI редакцын эрх олгогдоогүй байна.");return;}
- user=u;role=staff.role;$("workspace").classList.remove("hidden");$("queue").classList.remove("hidden");$("logout").classList.remove("hidden");say("authMsg",u.email+" · "+role+" эрхээр нэвтэрлээ.");await loadDrafts();
+ if(entering)return;entering=true;
+ try{
+  const {data:{user:u},error:authError}=await supabase.auth.getUser();
+  if(authError)throw authError;
+  if(!u){say("authMsg","Нэвтрэлт баталгаажаагүй байна. Дахин нэвтэрнэ үү.");return;}
+  const {data:staff,error}=await supabase.from("staff_members").select("role,active").eq("user_id",u.id).maybeSingle();
+  if(error)throw new Error("Эрхийн мэдээлэл уншиж чадсангүй: "+error.message);
+  if(!staff?.active||!["owner","admin","editor"].includes(staff.role)){
+   user=null;role=null;await supabase.auth.signOut();
+   say("authMsg","Энэ бүртгэлд AI редакцын идэвхтэй эрх олгогдоогүй байна.");return;
+  }
+  user=u;role=staff.role;
+  $("workspace").classList.remove("hidden");$("queue").classList.remove("hidden");
+  $("logout").classList.remove("hidden");$("login").classList.add("hidden");
+  $("email").disabled=true;$("password").disabled=true;$("togglePassword").disabled=true;
+  say("authMsg",u.email+" · "+role.toUpperCase()+" эрхээр амжилттай нэвтэрлээ.");
+  await loadDrafts();
+ }catch(e){say("authMsg","Нэвтрэлтийн шалгалтад алдаа гарлаа: "+(e?.message||"Дахин оролдоно уу."));}
+ finally{entering=false;}
 }
 async function login(){
  const email=$("email").value.trim(),password=$("password").value;
  if(!email||!password){say("authMsg","Имэйл болон нууц үгээ бүрэн оруулна уу.");return;}
- const btn=$("login");btn.disabled=true;btn.textContent="Нэвтэрч байна…";say("authMsg","Supabase сервертэй холбогдож байна…");
+ if(!$("email").checkValidity()){say("authMsg","Имэйл хаягийн форматаа шалгана уу.");return;}
+ const btn=$("login");btn.disabled=true;btn.textContent="Шалгаж байна…";
+ say("authMsg","Бүртгэлийг баталгаажуулж байна…");
  try{
   const {data,error}=await supabase.auth.signInWithPassword({email,password});
-  if(error){say("authMsg","Нэвтрэхэд алдаа: "+error.message);return;}
-  if(!data?.user){say("authMsg","Нэвтрэлт баталгаажаагүй байна. Дахин оролдоно уу.");return;}
+  if(error)throw error;
+  if(!data?.user)throw new Error("Хэрэглэгчийн бүртгэл баталгаажаагүй байна.");
   await enter();
- }catch(e){say("authMsg","Холболтын алдаа: "+(e?.message||"Сервертэй холбогдож чадсангүй."));}
+ }catch(e){say("authMsg","Нэвтрэхэд алдаа: "+(e?.message||"Холболтоо шалгаад дахин оролдоно уу."));}
  finally{btn.disabled=false;btn.textContent="Нэвтрэх";}
 }
 $("login").addEventListener("click",login);
 $("password").addEventListener("keydown",e=>{if(e.key==="Enter")login();});
-$("logout").onclick=async()=>{await supabase.auth.signOut();location.reload();};
-supabase.auth.onAuthStateChange((_event,session)=>{if(session?.user&&!user)setTimeout(enter,0);});
+$("togglePassword").addEventListener("click",()=>{const p=$("password"),show=p.type==="password";p.type=show?"text":"password";$("togglePassword").textContent=show?"◎":"◉";$("togglePassword").setAttribute("aria-label",show?"Нууц үг нуух":"Нууц үг харах");});
+$("logout").onclick=async()=>{const {error}=await supabase.auth.signOut();if(error){say("authMsg","Гарахад алдаа: "+error.message);return;}location.reload();};
+supabase.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_IN"&&session?.user&&!user)setTimeout(()=>enter(),0);});
 function generate(){
  const topic=$("topic").value.trim();if(topic.length<3){say("genState","Сэдвээ 3-аас дээш тэмдэгтээр оруулна уу.");return;}
  const sourceList=$("sources").value.split(/\n+/).map(x=>x.trim()).filter(Boolean);
