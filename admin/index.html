@@ -23,10 +23,14 @@
 <div id="supportTab" class="hidden"><h2>Support Desk · Хэрэглэгчийн хүсэлтүүд</h2><p class="muted">Хүсэлтүүдийг ангиллаар шалгаж, хариу бичих, төлөв өөрчлөх боломжтой.</p><div class="row"><select id="supportStatusFilter"><option value="all">Бүх төлөв</option><option value="open">Нээлттэй</option><option value="in_progress">Шалгаж байна</option><option value="waiting_user">Хэрэглэгчийн хариу хүлээж байна</option><option value="resolved">Шийдвэрлэсэн</option><option value="closed">Хаасан</option></select><button id="reloadSupportTickets" type="button">Шинэчлэх</button></div><div id="adminTicketsList" class="status">Хүсэлтүүдийг ачаална уу.</div><div id="adminTicketThread" class="list" hidden></div></div><div id="notificationsTab" class="hidden"><h2>Хэрэглэгчид мэдэгдэл илгээх</h2><p class="muted">Нэг хэрэглэгчийн Auth UUID шаардлагатай. Бүх хэрэглэгч рүү бөөнөөр илгээх функцийг спамын эрсдэлээс шалтгаалан нэмж өгөөгүй.</p><label>Хэрэглэгчийн UUID</label><input id="noticeUserId" placeholder="Auth user UUID"><label>Гарчиг</label><input id="noticeTitle" maxlength="160"><label>Мэдэгдлийн төрөл</label><select id="noticeType"><option value="system">Систем</option><option value="content">Шинэ контент</option><option value="reward">Шагнал</option><option value="membership">Premium</option><option value="community">Community</option><option value="event">Event</option></select><label>Тайлбар</label><textarea id="noticeBody" maxlength="2000"></textarea><label>Холбоос (заавал биш)</label><input id="noticeUrl" placeholder="/#publishedLore"><button id="sendNotice" type="button">Мэдэгдэл илгээх</button><div id="noticeMsg" class="status"></div></div>
 <div id="communityTab" class="hidden"><h2>Community moderation</h2><p class="muted">Гомдол шалгах, мессеж устгах, хэрэглэгчийг 24 цаг mute хийх. Бүх үйлдэл админы бүртгэлтэй хадгалагдана.</p><button id="reloadCommunity">Шинэчлэх</button><div id="communityReports" class="status">Гомдлуудыг ачаалж байна…</div><h3>Сүүлийн мессежүүд · Pin удирдлага</h3><div id="communityPins" class="status">Мессежүүдийг ачаалж байна…</div><h3>XP / Lore Coins шагнал олгох</h3><p class="muted">Зөвхөн баталгаажсан хувь нэмэрт олгоно. Reference ID нь давхар шагналаас хамгаална.</p><label>Хэрэглэгчийн UUID</label><input id="rewardUserId" placeholder="Auth user UUID"><div class="row"><div><label>Үйл явдлын төрөл</label><input id="rewardEvent" value="approved_contribution"></div><div><label>Reference ID (давтагдашгүй)</label><input id="rewardRef" placeholder="post-id эсвэл review-id"></div></div><div class="row"><div><label>XP (0–500)</label><input id="rewardXp" type="number" min="0" max="500" value="20"></div><div><label>Lore Coins (0–500)</label><input id="rewardCoins" type="number" min="0" max="500" value="5"></div></div><button id="grantReward">Шагнал олгох</button><div id="rewardMsg" class="status"></div></div>
 </section></main>
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/+esm';
-const supabase=createClient('https://nfacspfctvunwbxtvvyi.supabase.co','sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1');
-document.getElementById('authMsg').textContent='Supabase холболт амжилттай. Нэвтрэх мэдээллээ оруулна уу.';
+<script>
+(async()=>{
+  const authMsg=document.getElementById('authMsg');
+  try {
+    authMsg.textContent='Supabase сан ачаалж байна…';
+    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/+esm');
+    const supabase=createClient('https://nfacspfctvunwbxtvvyi.supabase.co','sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1');
+    authMsg.textContent='Supabase клиент бэлэн. Нэвтрэх мэдээллээ оруулна уу.';
 const $=id=>document.getElementById(id), say=(id,msg)=>$(id).textContent=msg;
 async function enter(){const {data:{user}}=await supabase.auth.getUser();if(!user)return;const {data:staff,error}=await supabase.from('staff_members').select('role,active').eq('user_id',user.id).maybeSingle();if(error){say('authMsg','Эрхийн мэдээлэл шалгахад алдаа гарлаа: '+error.message);return}if(!staff||!staff.active){say('authMsg','Бүртгэл амжилттай. Админ эзэмшигч таныг багийн гишүүнээр баталгаажуулсны дараа самбар нээгдэнэ.');return} $('authPanel').classList.add('hidden');$('dash').classList.remove('hidden');say('welcome',user.email+' · '+staff.role);await loadCounts();await loadAds();await loadPlans();}
 async function loadCounts(){for(const [table,id] of [['content_posts','postCount'],['advertisements','adCount'],['memberships','memberCount']]){const {count}=await supabase.from(table).select('*',{count:'exact',head:true});$(id).textContent=count??'—'}}
@@ -184,4 +188,9 @@ async function openAdminTicket(id){
 $('reloadSupportTickets').onclick=loadAdminTickets;
 $('supportStatusFilter').onchange=loadAdminTickets;
 
+  } catch(error) {
+    console.error('LOREVERSE Admin initialization error:', error);
+    if(authMsg) authMsg.textContent='Supabase ачааллахад алдаа гарлаа: '+(error?.message || String(error))+' · Хуудсыг Ctrl+Shift+R дарж шинэчилнэ үү.';
+  }
+})();
 </script><script src="../assets/js/i18n.js" defer></script></body></html>
