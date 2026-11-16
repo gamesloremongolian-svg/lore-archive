@@ -363,7 +363,17 @@ const pairs=Object.entries(dict).sort((a,b)=>b[0].length-a[0].length);
 const originalText=new WeakMap();
 const originalAttrs=new WeakMap();
 const skipSelector='script,style,code,pre,svg,[data-no-i18n],[contenteditable="true"],.bubble,.message-name,.conversation,.member';
-function translateText(s,lang){if(!s||lang==="mn")return s;let out=s;for(const [src,vals] of pairs){const to=vals[({en:0,ja:1,ko:2})[lang]];if(out===src)return to;if(out.includes(src))out=out.split(src).join(to);}return out;}
+const englishPairs=Object.entries(dict).map(([mn,vals])=>[vals[0],mn]).filter(([en,mn])=>en&&mn&&en!==mn).sort((a,b)=>b[0].length-a[0].length);
+function translateText(s,lang){
+ if(!s)return s;
+ let out=s;
+ if(lang==="mn"){
+  for(const [en,mn] of englishPairs){if(out===en)return mn;if(out.includes(en))out=out.split(en).join(mn);}
+  return out;
+ }
+ for(const [src,vals] of pairs){const to=vals[({en:0,ja:1,ko:2})[lang]];if(out===src)return to;if(out.includes(src))out=out.split(src).join(to);}
+ return out;
+}
 function translateNode(node){
  if(!node||!node.nodeValue?.trim()||node.parentElement?.closest(skipSelector))return;
  if(!originalText.has(node))originalText.set(node,node.nodeValue);
@@ -398,7 +408,7 @@ function apply(lang){
 window.LOREVERSE_I18N={apply,get language(){return active;},t:(s)=>translateText(s,active)};
 const selectors=[...document.querySelectorAll("#lang,#publicArchiveLang,#siteLang")];
 if(selectors.length){
- const saved=localStorage.getItem("loreverse-language")||selectors[0].value||"mn";
+ const languageDefaultKey="loreverse-language-default-mn-v1";if(!localStorage.getItem(languageDefaultKey)){localStorage.setItem("loreverse-language","mn");localStorage.setItem(languageDefaultKey,"1");}const saved=localStorage.getItem("loreverse-language")||"mn";
  selectors.forEach(sel=>{sel.value=saved;sel.addEventListener("change",()=>{const lang=sel.value;localStorage.setItem("loreverse-language",lang);apply(lang);});});
  apply(saved);
 }
