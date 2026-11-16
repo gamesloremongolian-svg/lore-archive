@@ -708,23 +708,9 @@ body{
 <section class="section portal-grid" id="payment">
  <div class="portal-panel"><div class="eyebrow">PAYMENT CENTER</div><h2>Premium төлбөр</h2><p>Бүртгэлтэй хэрэглэгч Premium багцаа сонгоод QPay QR нэхэмжлэл үүсгэнэ. Төлбөр баталгаажсаны дараа эрх идэвхжинэ.</p><div class="portal-grid"><div class="feature"><h3>QPay автомат төлбөр</h3><p>Сарын болон жилийн багцынхаа төлбөрийг QPay апп-аар уншуулна.</p><div class="portal-actions" style="flex-wrap:wrap"><button class="btn primary" type="button" data-qpay-plan="monthly">Сарын багц · 5,000₮</button><button class="btn" type="button" data-qpay-plan="yearly">Жилийн багц · 60,000₮</button></div><p class="portal-note" id="qpayStatus" aria-live="polite">Төлбөр үүсгэхийн тулд эхлээд имэйлээр нэвтэрнэ үү.</p><div id="qpayInvoice" hidden class="feature" style="margin-top:14px"><h3 id="qpayInvoiceTitle">QPay нэхэмжлэл</h3><div id="qpayQrWrap" style="text-align:center"></div><p id="qpayInvoiceText" class="portal-note"></p><div id="qpayLinks" class="portal-actions" style="flex-wrap:wrap"></div><button class="btn primary" id="qpayCheckPayment" type="button" disabled>Төлбөр шалгах</button><p id="qpayCheckStatus" class="portal-note" aria-live="polite"></p></div></div><div class="feature"><h3>Хаан Банк · Шилжүүлэг</h3><p><b>Данс эзэмшигч:</b> Батравжих Батаа</p><p><b>Дансны дугаар:</b> <strong style="font-size:20px;letter-spacing:.08em">5622218472</strong></p><p><b>Банк:</b> Хаан Банк</p><p>Гүйлгээний утгад LOREVERSE хэрэглэгчийн имэйл болон сонгосон багцаа бичнэ үү.</p><button class="btn" type="button" id="copyBankAccount">Дансны дугаар хуулах</button><span class="portal-note" id="bankCopyStatus"></span><p class="portal-note">Шилжүүлгийн баримтыг Support хэсгийн Төлбөр ангиллаар илгээнэ. Админ баталгаажуулсны дараа эрх олгоно.</p></div></div><p class="portal-note">QPay төлбөрийн төлөвийг зөвхөн QPay серверээс шалгаж баталгаажуулна. QR код үүссэн нь төлбөр амжилттай болсон гэсэн үг биш.</p></div>
  
- <div class="portal-panel" id="advertiserRequestPanel"><div class="eyebrow">ADVERTISE WITH LOREVERSE</div><h2>Зар оруулах</h2><p>Бүтээгдэхүүн, үйлчилгээ, тоглоом эсвэл төслөө LOREVERSE-ийн уншигчдад танилцуулах зарын хүсэлтээ энд илгээнэ үү. Админ хянаж зөвшөөрсний дараа нийтлэгдэнэ.</p>
- <div class="ad-form-grid" id="adRequest" style="margin-top:22px">
-  <div class="wide"><div class="eyebrow">ADVERTISER REQUEST</div><h3 style="margin:5px 0">Зарын хүсэлт илгээх</h3><p class="portal-note">Хүсэлт илгээхийн тулд LOREVERSE-д нэвтэрсэн байх шаардлагатай. Админ хянаж зөвшөөрсний дараа зар нийтлэгдэнэ.</p></div>
-  <div><label for="adAdvertiser">Байгууллага / зарлагчийн нэр</label><input class="form-field" id="adAdvertiser" maxlength="100" required placeholder="Байгууллагын нэр"></div>
-  <div><label for="adEmail">Холбоо барих имэйл</label><input class="form-field" id="adEmail" type="email" maxlength="254" required placeholder="name@example.com"></div>
-  <div class="wide"><label for="adTitle">Зарын гарчиг</label><input class="form-field" id="adTitle" maxlength="90" required placeholder="Таны зарын гарчиг"></div>
-  <div class="wide"><label for="adDescription">Тайлбар</label><textarea class="form-field" id="adDescription" maxlength="500" rows="3" required placeholder="Бүтээгдэхүүн, үйлчилгээ эсвэл төслийн товч танилцуулга"></textarea></div>
-  <div><label for="adImage">Зургийн HTTPS холбоос</label><input class="form-field" id="adImage" type="url" required placeholder="https://..."></div>
-  <div><label for="adTarget">Зарын очих холбоос (HTTPS)</label><input class="form-field" id="adTarget" type="url" required placeholder="https://..."></div>
-  <div><label for="adPlacement">Байршлын төрөл</label><select class="form-field" id="adPlacement"><option value="featured">Онцлох баннер</option><option value="standard">Энгийн зар</option></select></div>
-  <div><label for="adStart">Эхлэх өдөр (заавал биш)</label><input class="form-field" id="adStart" type="date"></div>
-  <div><label for="adEnd">Дуусах өдөр (заавал биш)</label><input class="form-field" id="adEnd" type="date"></div>
-  <div class="wide"><button class="btn primary" id="adSubmit" type="submit" form="adRequestForm">Зарын хүсэлт илгээх</button><span class="ad-status" id="adFormStatus" role="status" aria-live="polite"></span></div>
- </div>
- <form id="adRequestForm" hidden></form>
- </div>
+
  </section>
+ <div class="portal-panel ad-empty-promo-panel" aria-label="Зарын байршуулалтын талбар"><div class="ad-empty-promo"><span>ТАНЫ ЗАР ЭНД БАЙРШИНА<small>LOREVERSE · ADVERTISE HERE</small></span></div></div>
 
 <section class="section ad-zone" id="advertise"><div class="ad-zone-head"><div><div class="eyebrow">LOREVERSE PARTNERS · SPONSORED</div><h2>Зар сурталчилгаа</h2><p>LOREVERSE-ийн хамтрагчдын нийтэлсэн зарууд.</p></div></div><div class="ad-grid" id="adPublicList"><p class="portal-note">Заруудыг ачаалж байна…</p></div></section>
 
