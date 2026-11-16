@@ -183,7 +183,23 @@ section[id]{scroll-margin-top:92px}
 @media(min-width:761px){.nav{display:flex!important}}
 
 #accountTools{position:relative;z-index:8}#accountTools[hidden]{display:none}#accountTools .portal-panel{margin-bottom:12px}.actions{align-items:center}.actions .ghost{padding:8px 10px;font-size:11px;white-space:nowrap}#notificationCount{display:inline-grid;place-items:center;min-width:18px;height:18px;border-radius:99px;background:#e76fbc;color:#fff;font-size:10px;font-weight:900;margin-left:3px}
-</style>
+
+<style id="loreAiStyles">
+#loreAiLauncher{position:fixed;right:18px;bottom:22px;z-index:9998;border:0;border-radius:999px;padding:13px 18px;background:linear-gradient(120deg,#8d5be8,#d65cae);color:white;font-weight:800;box-shadow:0 8px 30px #0008;cursor:pointer}
+#loreAiPanel{position:fixed;right:14px;bottom:82px;width:min(410px,calc(100vw - 28px));height:min(620px,calc(100dvh - 115px));z-index:9999;background:#171522;border:1px solid #6f5791;border-radius:18px;box-shadow:0 18px 60px #000b;display:none;flex-direction:column;overflow:hidden;color:#f5efff}
+#loreAiPanel.open{display:flex}
+#loreAiHead{padding:14px 16px;background:linear-gradient(120deg,#34204f,#542c67);display:flex;align-items:center;justify-content:space-between}
+#loreAiHead button{background:transparent;border:0;color:white;font-size:22px}
+#loreAiMessages{padding:14px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:10px}
+.lore-ai-msg{padding:11px 13px;border-radius:13px;max-width:92%;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5;font-size:14px}
+.lore-ai-msg.bot{align-self:flex-start;background:#29243a}
+.lore-ai-msg.user{align-self:flex-end;background:#573c7d}
+#loreAiForm{padding:12px;border-top:1px solid #453854;display:flex;gap:8px}
+#loreAiQuestion{min-width:0;flex:1;resize:none;background:#262235;border:1px solid #65527b;border-radius:12px;color:white;padding:11px;font:inherit}
+#loreAiForm button{border:0;border-radius:12px;background:#a56ae5;color:#160d20;padding:0 15px;font-weight:800}
+#loreAiMeta{padding:0 14px 9px;color:#b9a9ca;font-size:11px}
+@media(max-width:480px){#loreAiLauncher{right:12px;bottom:14px}#loreAiPanel{right:8px;bottom:70px;width:calc(100vw - 16px);height:calc(100dvh - 92px)}}
+</style></style>
 </head>
 <body>
 <header class="wrap topbar"><a class="brand" href="#"><span class="mark">✦</span> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх">☰</button><nav class="nav" id="mainNav"><a href="#anime">Анимэ</a><a href="#games">Тоглоомууд</a><a href="#community">Нэгдсэн чат</a><a href="#events">Event</a><a href="#publishedLore">Мэдээллийн сан</a><a href="#archive">Lore сан</a><a href="#ranks">Rank & Bonus</a></nav><div class="actions"><button class="ghost" id="profileOpen" type="button">Миний профайл</button><button class="ghost" id="notificationsOpen" type="button" aria-label="Мэдэгдэл">🔔 <span id="notificationCount">0</span></button><select class="select" id="lang" aria-label="Language"><option value="mn">MN</option><option value="en">EN</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div></header>
@@ -681,5 +697,37 @@ $("supportTicketForm").addEventListener("submit",async e=>{
 });
 $("reloadMyTickets").onclick=loadMySupportTickets;
 
+
+/* LOREVERSE AI chat */
+const loreAiPanel=$("loreAiPanel"),loreAiMessages=$("loreAiMessages"),loreAiQuestion=$("loreAiQuestion");
+function loreAiMessage(text,who){const node=document.createElement("div");node.className="lore-ai-msg "+who;node.textContent=text;loreAiMessages.appendChild(node);loreAiMessages.scrollTop=loreAiMessages.scrollHeight;return node;}
+$("loreAiLauncher").onclick=()=>loreAiPanel.classList.add("open");
+$("loreAiClose").onclick=()=>loreAiPanel.classList.remove("open");
+$("loreAiForm").addEventListener("submit",async e=>{
+ e.preventDefault();const question=loreAiQuestion.value.trim();if(!question)return;
+ const {data:{user}}=await supabase.auth.getUser();
+ if(!user||user.is_anonymous){loreAiMessage("LORE AI ашиглахын тулд эхлээд имэйлээр бүртгүүлж нэвтэрнэ үү.","bot");return;}
+ loreAiMessage(question,"user");loreAiQuestion.value="";
+ const pending=loreAiMessage("Хариулт боловсруулж байна…","bot");
+ $("loreAiSend").disabled=true;
+ try{
+  const {data,error}=await supabase.functions.invoke("lore-ai",{body:{question}});
+  if(error)throw error;
+  if(data?.error)throw new Error(data.error);
+  pending.textContent=data.answer||"Хариулт ирсэнгүй.";
+  $("loreAiMeta").textContent="Өнөөдөр үлдсэн асуулт: "+data.remaining+" · Өдөрт 10 асуулт";
+ }catch(err){
+  pending.textContent=err.message||"AI туслахтай холбогдож чадсангүй. Дахин оролдоно уу.";
+ }finally{$("loreAiSend").disabled=false;loreAiQuestion.focus();}
+});
+
 </script>
+
+<button id="loreAiLauncher" type="button" aria-label="LORE AI туслах нээх">✦ LORE AI</button>
+<section id="loreAiPanel" role="dialog" aria-label="LOREVERSE AI туслах">
+ <header id="loreAiHead"><div><b>✦ LOREVERSE AI</b><div style="font-size:11px;opacity:.8">Монгол хэл дээрх Lore судлаач</div></div><button id="loreAiClose" type="button" aria-label="Хаах">×</button></header>
+ <div id="loreAiMessages" aria-live="polite"><div class="lore-ai-msg bot">Сайн байна уу! Би LOREVERSE-ийн AI туслах. Тоглоом, дүр, ертөнцийн lore-ийн талаар асуугаарай. Хариултаа нийтлэгдсэн LOREVERSE мэдээллийн сантай тулгана.</div></div>
+ <div id="loreAiMeta">Нэвтэрсэн хэрэглэгчид өдөрт 10 асуулт · API хэрэглээ төлбөртэй</div>
+ <form id="loreAiForm"><textarea id="loreAiQuestion" rows="2" maxlength="1800" placeholder="Lore-ийн талаар асуугаарай..." required></textarea><button id="loreAiSend" type="submit">Илгээх</button></form>
+</section>
 </body></html>
