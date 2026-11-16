@@ -180,7 +180,6 @@ async function boot(){
   $("authWrap").classList.remove("hidden");$("appShell").classList.add("hidden");
  }
 }
-supabase.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_OUT"){currentUser=null;}else if(session?.user&&!session.user.is_anonymous){currentUser=session.user;setTimeout(()=>enterChat().catch(err=>note(err.message)),0);}});
 boot();
 </script>
 </body>
