@@ -460,6 +460,95 @@ body{
 @media(max-width:760px){#payment{grid-template-columns:1fr}.ad-mascot-stage{min-height:250px}.ad-mascot-character{height:250px}.ad-mascot-board{min-height:145px}}
 @media(prefers-reduced-motion:reduce){.ad-mascot-character,.mascot-float,.mascot-eye,.ad-mascot-board,.ad-mascot-spark{animation:none!important}}
 
+
+/* LOREVERSE balanced cosmic palette v1 */
+:root{
+ --bg:#090d1c;
+ --panel:#12182b;
+ --panel2:#1a2038;
+ --line:#343b5b;
+ --text:#f2efff;
+ --muted:#b2b5cc;
+ --violet:#a98bff;
+ --cyan:#79dce8;
+ --pink:#e6a2d4;
+ --gold:#e7c58d;
+}
+html{background:var(--bg)}
+body{
+ background:
+  radial-gradient(ellipse at 14% 8%,rgba(89,75,151,.23),transparent 38%),
+  radial-gradient(ellipse at 88% 34%,rgba(36,113,145,.18),transparent 34%),
+  radial-gradient(ellipse at 55% 92%,rgba(125,73,143,.12),transparent 40%),
+  var(--bg);
+ color:var(--text);
+}
+.topbar{border-bottom-color:rgba(169,139,255,.2)}
+.nav,.nav a{color:#c0c2d7}
+.nav a:hover,.world a,.portal-note a{color:var(--cyan)}
+.mark{background:linear-gradient(140deg,var(--violet),var(--cyan));color:#101426}
+.hero-brand-logo{filter:drop-shadow(0 0 18px rgba(169,139,255,.22))}
+.gradient{background-image:linear-gradient(100deg,#c0a5ff 0%,var(--cyan) 68%,var(--pink) 100%)}
+.btn,.select,.ghost,.form-field,.search,.channel-btn{
+ background-color:#171d33;
+ border-color:rgba(145,151,198,.34);
+ color:var(--text);
+}
+.btn.primary{
+ background:linear-gradient(110deg,#8c70df,#5a9fb9);
+ box-shadow:0 8px 24px rgba(111,101,193,.24);
+ color:#fff;
+}
+.btn:hover,.channel-btn:hover{border-color:rgba(169,139,255,.7)}
+.section-head h2,.portal-panel h3,.catalog-card h3{color:#f2efff}
+.section-head p,.portal-note,.stat span,.world p{color:var(--muted)}
+.stat,.portal-panel,.feature,.feed-panel,.feed-side,.live-box,.archive,
+.community-side,.community-main,.rank-card,.knowledge-hub-card{
+ background:linear-gradient(145deg,rgba(25,32,57,.94),rgba(16,22,41,.96));
+ border-color:rgba(135,145,190,.28);
+}
+.world{
+ background:linear-gradient(145deg,#202746,#141b30);
+ border-color:rgba(135,145,190,.3);
+}
+.world:after{background:linear-gradient(180deg,rgba(8,13,28,.05),rgba(8,13,28,.9))}
+.catalog-card,.ad-card,.media-card{
+ border-color:rgba(135,145,190,.3);
+}
+.archive{background:rgba(17,24,44,.92)}
+.search:focus,.form-field:focus,.chat-compose input:focus{
+ border-color:var(--violet);
+ box-shadow:0 0 0 3px rgba(169,139,255,.13);
+}
+.portal-panel h3,.knowledge-hub-card strong{color:#f4f0ff}
+.eyebrow{color:var(--cyan)}
+.code{background:rgba(169,139,255,.15);color:#d2c2ff}
+.channel-btn.active,.channel-btn:hover{
+ background:rgba(169,139,255,.16);
+ border-color:rgba(169,139,255,.55);
+}
+.chat-message,.chat-feed,.chat-compose{
+ background:rgba(11,17,33,.72);
+ border-color:rgba(135,145,190,.25);
+}
+.footer{border-top-color:rgba(135,145,190,.25);color:var(--muted)}
+.ad-mascot{
+ background:
+  radial-gradient(ellipse at 18% 12%,rgba(66,174,191,.17),transparent 43%),
+  radial-gradient(ellipse at 88% 88%,rgba(166,117,203,.17),transparent 45%),
+  linear-gradient(145deg,#17223c,#1b1b3a 58%,#142b40);
+ border-color:rgba(169,139,255,.55);
+}
+.ad-mascot-board{
+ border-color:rgba(169,139,255,.82);
+ background:linear-gradient(145deg,rgba(26,55,82,.94),rgba(44,30,75,.96));
+ box-shadow:0 0 17px rgba(169,139,255,.28),inset 0 0 16px rgba(121,220,232,.12);
+}
+.ad-mascot-line{background:rgba(14,22,42,.88);border-color:rgba(169,139,255,.4)}
+@media(prefers-reduced-motion:reduce){
+ *,*:before,*:after{scroll-behavior:auto!important}
+}
+
 </style>
 </head>
 <body>
