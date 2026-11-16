@@ -1,0 +1,59 @@
+name: LOREVERSE Mobile Build
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'package.json'
+      - 'capacitor.config.ts'
+      - 'index.html'
+      - 'chat/**'
+      - 'assets/**'
+      - 'scripts/prepare-web.mjs'
+      - '.github/workflows/mobile-build.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  android-debug:
+    name: Android debug APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install
+      - run: npm run build
+      - run: npx cap add android
+      - run: npx cap sync android
+      - name: Build debug APK
+        run: cd android && ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: loreverse-android-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+  ios-simulator:
+    name: iOS simulator build (unsigned)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install
+      - run: npm run build
+      - run: npx cap add ios
+      - run: npx cap sync ios
+      - name: Build iOS simulator app
+        run: xcodebuild -workspace ios/App/App.xcworkspace -scheme App -sdk iphonesimulator -configuration Debug -derivedDataPath build CODE_SIGNING_ALLOWED=NO build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: loreverse-ios-simulator
+          path: build/Build/Products/Debug-iphonesimulator/App.app
+          if-no-files-found: error
