@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#090817">
+<meta name="description" content="LOREVERSE Unified Lore Archive — тоглоом, анимэ, манга, зохиолын ертөнцийн нэгдсэн архив.">
+<title>Unified Lore Archive — LOREVERSE</title>
+<style>
+:root{color-scheme:dark;--bg:#090817;--panel:#17132a;--line:#49345f;--text:#fff8ff;--muted:#c0b4d2;--pink:#ff8bcf;--cyan:#75e7ff;--violet:#c07bff}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),radial-gradient(ellipse at 88% 22%,#174b7066 0,transparent 34%),linear-gradient(180deg,#0b0818,#100b20 52%,#090817);color:var(--text);font:15px/1.65 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit;text-decoration:none}button,input,select{font:inherit}.wrap{width:min(1180px,calc(100% - 40px));margin:auto}
+header{height:76px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid #f4caff20}
+.brand{font-weight:950;letter-spacing:.1em;font-size:18px}.brand span{display:inline-grid;place-items:center;width:38px;height:38px;margin-right:9px;border-radius:12px;background:linear-gradient(140deg,#ff8bcf,#a66bff 55%,#69e6ff);color:#090914}
+.back{border:1px solid #624477;border-radius:12px;padding:9px 14px;background:#1a1230;color:#fff}
+.hero{padding:64px 0 30px}.eyebrow{font-size:10px;letter-spacing:.24em;font-weight:900;color:var(--cyan);text-transform:uppercase}
+h1{font-size:clamp(34px,5vw,58px);line-height:1.08;letter-spacing:-.04em;margin:12px 0;background:linear-gradient(100deg,#ff9ed8,#c39aff 48%,#80eaff);color:transparent;background-clip:text}
+.hero p{max-width:720px;color:var(--muted);margin:0}
+.archive{padding:clamp(16px,3vw,30px);border:1px solid #624477;border-radius:24px;background:linear-gradient(145deg,#1a1230ed,#11182be8);box-shadow:0 25px 70px #0004;margin-bottom:70px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 16px}.search{flex:1;min-width:240px;padding:13px 15px;background:#100b1e;border:1px solid #563c6d;border-radius:12px;color:var(--text);outline:none}.search:focus,select:focus{border-color:var(--pink)}
+.select{padding:12px 14px;background:#1a1230;border:1px solid #624477;border-radius:12px;color:var(--text)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px}.chip{border:1px solid #563c6d;background:transparent;color:#d2c2df;border-radius:999px;padding:9px 14px;font-size:12px;cursor:pointer}.chip.active,.chip:hover{color:#fff0fb;border-color:var(--pink);background:#ff8bcf20}
+.status{color:var(--muted);font-size:12px;margin:12px 0 18px}.articles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.article-card{min-width:0;padding:20px;border:1px solid #59406d;border-radius:18px;background:linear-gradient(145deg,#28193b,#14172a);overflow-wrap:anywhere}
+.article-card h3{font-size:20px;line-height:1.3;margin:8px 0}.article-card p{color:#d0c3df;font-size:13px}.article-card img{display:block;width:100%;max-height:250px;object-fit:cover;border-radius:12px;margin-bottom:14px}
+.list{padding:12px 0;border-top:1px solid #49345f}.list p{margin:5px 0}.list small{color:var(--muted)}details{margin-top:10px;color:#e8d8f2}summary{cursor:pointer;color:#ffabe0;font-weight:700}
+.empty{padding:28px;color:var(--muted);text-align:center}.footer{padding:24px 0 36px;border-top:1px solid #f4caff24;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media(max-width:760px){.articles{grid-template-columns:1fr}.hero{padding:42px 0 24px}.archive{border-radius:18px}.search{min-width:100%}.toolbar .select{flex:1}}
+@media(max-width:420px){.wrap{width:calc(100% - 24px)}header{height:66px}.brand{font-size:14px}.back{font-size:12px;padding:8px 10px}.chip{font-size:11px;padding:8px 11px}}
+</style></head>
+<body><header class="wrap"><a class="brand" href="../"><span>✦</span> LOREVERSE</a><a class="back" href="../">← Үндсэн нүүр</a></header>
+<main class="wrap"><section class="hero"><div class="eyebrow">UNIFIED DATABASE · SUPABASE</div><h1>Нэгдсэн Lore Archive</h1><p>Тоглоом, анимэ, манга, зохиолын ертөнц, бүтээл, дүр, тэдгээрийн холбоо болон timeline мэдээллийг нэг дороос хайж судлаарай.</p></section>
+<section class="archive" id="publicArchive">
+ 
+ <div class="toolbar">
+  <input class="search" id="publicArchiveSearch" type="search" placeholder="Ертөнц, бүтээлийн нэрээр хайх...">
+  <select class="select" id="publicArchiveLang" aria-label="Хэл"><option value="mn">Монгол</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option></select>
+ </div>
+ <div class="filters" id="publicArchiveFilters">
+  <button class="chip active" data-archive-category="all">Бүгд</button><button class="chip" data-archive-category="game">Game</button><button class="chip" data-archive-category="anime">Anime</button><button class="chip" data-archive-category="manga">Manga</button><button class="chip" data-archive-category="light_novel">Light Novel</button><button class="chip" data-archive-category="web_novel">Web Novel</button><button class="chip" data-archive-category="mixed">Universe</button>
+ </div>
+ <div class="muted" id="publicArchiveStatus" role="status">Нийтлэгдсэн архивын мэдээлэл ачаалж байна...</div>
+ <div class="articles" id="publicArchiveResults"></div>
+</section>
+</main><footer class="wrap footer"><span>© 2026 LOREVERSE · Фэнүүдийн бүтээсэн, албан бус мэдлэгийн платформ.</span><a href="../">LOREVERSE үндсэн нүүр</a></footer>
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
+const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
+
+(()=>{
+ const root=document.getElementById("publicArchive");
+ if(!root)return;
+ const searchInput=document.getElementById("publicArchiveSearch");
+ const languageInput=document.getElementById("publicArchiveLang");
+ const filters=document.getElementById("publicArchiveFilters");
+ const results=document.getElementById("publicArchiveResults");
+ const status=document.getElementById("publicArchiveStatus");
+ const escapeHTML=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+ let records=[],category="all",timer=null;
+ const labels={game:"GAME",anime:"ANIME",manga:"MANGA",light_novel:"LIGHT NOVEL",web_novel:"WEB NOVEL",mixed:"UNIVERSE"};
+ function render(){
+  const term=searchInput.value.trim().toLocaleLowerCase();
+  const lang=languageInput.value;
+  const filtered=records.filter(item=>{
+   if(category!=="all"&&item.category!==category)return false;
+   const hay=[item.name,item.description,...item.works.flatMap(w=>[w.canonical_title,w.translation?.title,w.translation?.synopsis])].join(" ").toLocaleLowerCase();
+   return !term||hay.includes(term);
+  });
+  if(!filtered.length){results.innerHTML='<div class="empty">Энэ хэл болон ангилалд нийтлэгдсэн мэдээлэл одоогоор алга.</div>';return;}
+  results.innerHTML=filtered.map(item=>{
+   const worksHtml=item.works.map(w=>{
+    const tr=w.translation,title=tr?.title||w.canonical_title,synopsis=tr?.synopsis||"";
+    const entityHtml=(w.entities||[]).map(en=>'<div class="list"><b>'+escapeHTML(en.translation?.display_name||en.canonical_name)+'</b> · '+escapeHTML(en.entity_type)+(en.translation?.description?'<p>'+escapeHTML(en.translation.description)+'</p>':'')+(en.relations?.length?'<small>'+en.relations.map(r=>escapeHTML(r.relation_type)+': '+escapeHTML(r.other_name)).join(' · ')+'</small>':'')+'</div>').join("");
+    const timelineHtml=(w.events||[]).map(ev=>'<div class="list"><b>'+escapeHTML(ev.translation?.title||ev.event_key)+'</b> · #'+escapeHTML(ev.sort_order)+(ev.in_universe_date?' · '+escapeHTML(ev.in_universe_date):'')+(ev.translation?.summary?'<p>'+escapeHTML(ev.translation.summary)+'</p>':'')+'<small> SPOILER: '+escapeHTML(ev.spoiler_level)+'</small></div>').join("");
+    return '<div class="list" style="padding:12px 0;border-top:1px solid var(--line,#554466)"><strong>'+escapeHTML(title)+'</strong><span class="code">'+escapeHTML(w.work_type.toUpperCase().replaceAll("_"," "))+'</span>'+(synopsis?'<p>'+escapeHTML(synopsis)+'</p>':'')+(tr?'<small>'+escapeHTML(tr.canon_status.toUpperCase().replaceAll("_"," "))+' · SPOILER: '+escapeHTML(tr.spoiler_level)+'</small>':'<small>Энэ хэлний орчуулга хараахан нийтлэгдээгүй.</small>')+(entityHtml?'<details><summary>Дүр ба холбоо ('+w.entities.length+')</summary>'+entityHtml+'</details>':'')+(timelineHtml?'<details><summary>Timeline ('+w.events.length+')</summary>'+timelineHtml+'</details>':'')+'</div>';
+   }).join("");
+   const franchiseEntities=(item.entities||[]).map(en=>'<div class="list"><b>'+escapeHTML(en.translation?.display_name||en.canonical_name)+'</b> · '+escapeHTML(en.entity_type)+(en.translation?.description?'<p>'+escapeHTML(en.translation.description)+'</p>':'')+'</div>').join("");
+   return '<article class="article-card" style="padding:18px;margin:14px 0;border:1px solid var(--line,#554466);border-radius:14px">'+(item.cover_image_url?'<img src="'+escapeHTML(item.cover_image_url)+'" alt="" loading="lazy" style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-bottom:12px">':'')+'<div class="eyebrow">'+escapeHTML(labels[item.category]||item.category)+'</div><h3>'+escapeHTML(item.name)+'</h3>'+(item.description?'<p>'+escapeHTML(item.description)+'</p>':'')+franchiseEntities+worksHtml+'</article>';
+  }).join("");
+ }
+ async function load(){
+  status.textContent="Архивын мэдээлэл ачаалж байна...";
+  const {data:franchises,error}=await supabase.from("archive_franchises").select("id,name,category,description,cover_image_url").eq("status","published").order("name").limit(150);
+  if(error){status.textContent="Архив ачаалж чадсангүй. Дараа дахин оролдоно уу.";console.error("Public archive:",error.message);return;}
+  const ids=(franchises||[]).map(x=>x.id);
+  if(!ids.length){records=[];status.textContent="Одоогоор нийтлэгдсэн франчайз алга. Редакторын баг шинэ мэдээлэл нийтэлсний дараа энд харагдана.";render();return;}
+  const {data:works,error:workError}=await supabase.from("archive_works").select("id,franchise_id,canonical_title,work_type").in("franchise_id",ids).eq("status","published").order("canonical_title").limit(500);
+  if(workError){status.textContent="Бүтээлийн мэдээлэл уншихад алдаа гарлаа.";console.error("Archive works:",workError.message);return;}
+  const workIds=(works||[]).map(x=>x.id);
+  let translations=[];
+  if(workIds.length){
+   const {data,error:translationError}=await supabase.from("archive_work_translations").select("work_id,language_code,title,synopsis,canon_status,spoiler_level").in("work_id",workIds).eq("editorial_status","published").eq("language_code",languageInput.value).limit(1000);
+   if(translationError){status.textContent="Орчуулгын мэдээлэл уншихад алдаа гарлаа.";console.error("Archive translations:",translationError.message);return;}
+   translations=data||[];
+  }
+  const byWork=new Map(translations.map(x=>[x.work_id,x]));
+  const {data:entities,error:entityError}=await supabase.from("archive_entities").select("id,franchise_id,work_id,entity_type,canonical_name").in("franchise_id",ids).eq("status","published").limit(1000);
+  if(entityError){status.textContent="Дүрийн мэдээлэл уншихад алдаа гарлаа.";console.error(entityError.message);return;}
+  const entityIds=(entities||[]).map(x=>x.id);
+  let entityTranslations=[],relations=[];
+  if(entityIds.length){
+   const {data:et,error:ete}=await supabase.from("archive_entity_translations").select("entity_id,display_name,description").in("entity_id",entityIds).eq("editorial_status","published").eq("language_code",languageInput.value);
+   if(ete){status.textContent="Дүрийн орчуулга уншихад алдаа гарлаа.";return;}entityTranslations=et||[];
+   const {data:rel,error:relError}=await supabase.from("archive_entity_relations").select("from_entity_id,to_entity_id,relation_type,description").in("from_entity_id",entityIds).eq("status","published").limit(2000);
+   if(relError){status.textContent="Дүрүүдийн холбоос уншихад алдаа гарлаа.";return;}relations=rel||[];
+  }
+  const entityTr=new Map(entityTranslations.map(x=>[x.entity_id,x]));
+  const entityNames=new Map((entities||[]).map(x=>[x.id,entityTr.get(x.id)?.display_name||x.canonical_name]));
+  const entityRows=(entities||[]).map(x=>({...x,translation:entityTr.get(x.id)||null,relations:relations.filter(r=>r.from_entity_id===x.id).map(r=>({...r,other_name:entityNames.get(r.to_entity_id)||"Entity"}))}));
+  const {data:events,error:eventError}=workIds.length?await supabase.from("archive_timeline_events").select("id,work_id,event_key,sort_order,in_universe_date,spoiler_level").in("work_id",workIds).eq("status","published").order("sort_order").limit(2000):{data:[],error:null};
+  if(eventError){status.textContent="Timeline уншихад алдаа гарлаа.";return;}
+  const eventIds=(events||[]).map(x=>x.id);
+  let eventTranslations=[];
+  if(eventIds.length){
+   const {data:et,error:ete}=await supabase.from("archive_timeline_translations").select("event_id,title,summary").in("event_id",eventIds).eq("editorial_status","published").eq("language_code",languageInput.value);
+   if(ete){status.textContent="Timeline орчуулга уншихад алдаа гарлаа.";return;}eventTranslations=et||[];
+  }
+  const eventTr=new Map(eventTranslations.map(x=>[x.event_id,x]));
+  records=(franchises||[]).map(f=>({...f,entities:entityRows.filter(x=>x.franchise_id===f.id&&!x.work_id),works:(works||[]).filter(w=>w.franchise_id===f.id).map(w=>({...w,translation:byWork.get(w.id)||null,entities:entityRows.filter(x=>x.work_id===w.id),events:(events||[]).filter(ev=>ev.work_id===w.id).map(ev=>({...ev,translation:eventTr.get(ev.id)||null}))}))}));
+  const count=records.reduce((n,x)=>n+x.works.length,0); const entityCount=entityRows.length; const eventCount=(events||[]).length;
+  status.textContent=records.length+" франчайз · "+count+" бүтээл · "+entityCount+" дүр/объект · "+eventCount+" timeline үйл явдал";
+  render();
+ }
+ filters.addEventListener("click",e=>{
+  const button=e.target.closest("[data-archive-category]");
+  if(!button)return;
+  category=button.dataset.archiveCategory;
+  filters.querySelectorAll("[data-archive-category]").forEach(x=>x.classList.toggle("active",x===button));
+  render();
+ });
+ searchInput.addEventListener("input",render);
+ languageInput.addEventListener("change",load);
+ load();
+})();
+
+
+</script></body></html>

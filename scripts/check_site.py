@@ -44,8 +44,6 @@ def main():
     required = {
         "catalogTabs", "catalogSearch", "catalogGo", "catalogStatus",
         "catalogResults", "catalogMore", "publishedPosts", "loreAiLauncher",
-        "publicArchive", "publicArchiveResults", "publicArchiveLang",
-        "publicArchiveFilters",
     }
 
     for path in pages:
@@ -71,6 +69,18 @@ def main():
                 f"{path}: unbalanced script tags "
                 f"({parser.scripts} open, {parser.script_closes} close)"
             )
+
+        if path == Path("archive/index.html"):
+            archive_required = {
+                "publicArchive", "publicArchiveResults", "publicArchiveLang",
+                "publicArchiveFilters", "publicArchiveSearch",
+            }
+            missing = sorted(archive_required - set(parser.ids))
+            if missing:
+                errors.append(
+                    "archive/index.html: missing required archive elements: "
+                    + ", ".join(missing)
+                )
 
         if path == Path("index.html"):
             missing = sorted(required - set(parser.ids))
