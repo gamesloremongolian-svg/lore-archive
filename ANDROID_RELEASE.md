@@ -21,7 +21,7 @@ Create a dedicated upload key on a trusted computer with Java's `keytool`:
 keytool -genkeypair -v -keystore loreverse-upload-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias loreverse-upload
 ```
 
-Back up `loreverse-upload-key.jks securely in at least two private locations. Losing it can complicate app updates. Do not regenerate it for later releases.
+Back up `loreverse-upload-key.jks` securely in at least two private locations. Losing it can complicate app updates. Do not regenerate it for later releases.
 
 Convert the keystore to Base64:
 
