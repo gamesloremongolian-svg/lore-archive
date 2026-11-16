@@ -87,6 +87,23 @@ Object.assign(dict,{
 "Франчайз, бүтээл, орчуулга. Нийтлэх эрхийг Supabase RLS шалгана.":["Manage franchises, works and translations. Publishing permissions are enforced by Supabase RLS.","フランチャイズ、作品、翻訳を管理します。公開権限はSupabase RLSで制御されます。","프랜차이즈, 작품 및 번역을 관리합니다. 게시 권한은 Supabase RLS가 적용합니다."]
 });
 
+
+Object.assign(dict,{
+"Төлбөрийн хэсэг рүү":["Go to payment section","お支払いセクションへ","결제 섹션으로 이동"],
+"Эхний нийтлэлүүд нь архивын танилцуулга контент. Албан ёсны эх сурвалжаар нягталсан судалгааг редакцын шалгалтын дараа нийтэлнэ.":["The initial articles are introductory archive content. Research verified against official sources will be published after editorial review.","初期の記事はアーカイブの紹介コンテンツです。公式情報を確認した研究記事は編集審査後に公開します。","초기 게시글은 아카이브 소개 콘텐츠입니다. 공식 출처를 확인한 연구 글은 편집 검토 후 게시됩니다."],
+"Эхний нийтлэлүүд нь архивын танилцуулга контент. Албан ёсны эх сурвалжаар нягталсан судалгааг редакц шалгалтын дараа нийтэлнэ.":["The initial articles are introductory archive content. Research verified against official sources will be published after editorial review.","初期の記事はアーカイブの紹介コンテンツです。公式情報を確認した研究記事は編集審査後に公開します。","초기 게시글은 아카이브 소개 콘텐츠입니다. 공식 출처를 확인한 연구 글은 편집 검토 후 게시됩니다."],
+"Асуудлаа товч бичнэ үү":["Briefly describe your issue","問題の概要を入力してください","문제를 간단히 설명해 주세요"],
+"Юу болсон, хэзээнээс эхэлсэн, ямар төхөөрөмж ашиглаж байгаагаа бичнэ үү.":["Describe what happened, when it started, and which device you are using.","何が起きたか、いつから発生しているか、使用している端末を記入してください。","문제가 발생한 상황과 시작 시점, 사용 중인 기기를 적어 주세요."],
+"Зураг / баримтын холбоос (заавал биш)":["Image / document link (optional)","画像 / 資料リンク（任意）","이미지 / 문서 링크 (선택 사항)"],
+"Гарчиг":["Subject","件名","제목"],
+"Дэлгэрэнгүй тайлбар":["Detailed description","詳細説明","상세 설명"],
+"Админд хүсэлт илгээх":["Send support request","サポートリクエストを送信","관리자에게 문의 보내기"],
+"Админтай холбогдох":["Contact support","管理者に問い合わせ","관리자에게 문의"],
+"Аккаунт, төлбөр, Premium болон техникийн асуудлаа хүсэлтээр илгээнэ. Хариуг энэ хэсгээс хянах боломжтой.":["Submit requests about your account, payments, Premium membership, or technical issues. Track replies here.","アカウント、支払い、Premium、技術的な問題についてお問い合わせください。回答はこのセクションで確認できます。","계정, 결제, 프리미엄 및 기술 문제를 문의하세요. 답변은 이 섹션에서 확인할 수 있습니다."],
+"Тайлбар:":["Details:","詳細：","안내:"],
+"Тайлбар: Эхний нийтлэлүүд нь архивын танилцуулга контент.":["Note: The initial articles are introductory archive content.","注：初期の記事はアーカイブの紹介コンテンツです。","안내: 초기 게시글은 아카이브 소개 콘텐츠입니다."]
+});
+
 const langNames={mn:"Монгол",en:"English",ja:"日本語",ko:"한국어"};
 let active="mn";
 const pairs=Object.entries(dict).sort((a,b)=>b[0].length-a[0].length);
