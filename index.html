@@ -469,7 +469,7 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
 
 <section class="section archive" id="archive"><span id="publishedLore" aria-hidden="true"></span>
  <div class="section-head"><div><div class="eyebrow">EDITORIAL DATABASE</div><h2>Бүх Lore — нэгдсэн архив</h2><p>Тоглоом, анимэ, манга болон бусад ертөнцийн нийтлэгдсэн lore судалгаа, дүрийн мэдээлэл, мэдээ, гарын авлагыг нэг хайлт, нэг шүүлтүүрээр үзнэ. Зөвхөн редакц нийтэлсэн материал энд харагдана.</p></div></div>
- <div class="toolbar" style="flex-wrap:wrap"><input id="publishedSearch" class="search" type="search" placeholder="Гарчиг, дүр, тоглоом, агуулгаар хайх..."><select class="form-field" id="publishedType"><option value="all">Бүх төрөл</option><option value="lore">Lore судалгаа</option><option value="game">Тоглоом</option><option value="anime">Анимэ</option><option value="manga">Манга</option><option value="news">Мэдээ</option><option value="guide">Гарын авлага</option></select><select class="form-field" id="publishedGame"><option value="all">Бүх ертөнц</option><option>Genshin Impact</option><option>Wuthering Waves</option><option>ANANTA</option><option>Honkai: Star Rail</option><option>Zenless Zone Zero</option><option>Arknights</option><option>Blue Archive</option><option>Бусад</option></select><label class="chip"><input id="bookmarksOnly" type="checkbox" style="accent-color:#c07bff"> Зөвхөн хадгалсан</label></div><div class="portal-note" id="publishedCount"></div>
+ <div class="toolbar" style="flex-wrap:wrap"><input id="publishedSearch" class="search" type="search" placeholder="Гарчиг, дүр, тоглоом, агуулгаар хайх..."><select class="form-field" id="publishedType"><option value="all">Бүх төрөл</option><option value="lore">Lore судалгаа</option><option value="game">Тоглоом</option><option value="anime">Анимэ</option><option value="manga">Манга</option><option value="news">Мэдээ</option><option value="guide">Гарын авлага</option><option value="work">Бүтээл</option><option value="character">Дүр</option><option value="location">Байршил</option><option value="faction">Фракц</option><option value="event">Үйл явдал</option></select><select class="form-field" id="publishedGame"><option value="all">Бүх ертөнц</option><option>Genshin Impact</option><option>Wuthering Waves</option><option>ANANTA</option><option>Honkai: Star Rail</option><option>Zenless Zone Zero</option><option>Arknights</option><option>Blue Archive</option><option>Бусад</option></select><label class="chip"><input id="bookmarksOnly" type="checkbox" style="accent-color:#c07bff"> Зөвхөн хадгалсан</label></div><div class="portal-note" id="publishedCount"></div>
  <div id="publishedPosts" class="articles"><p class="portal-note">Нийтлэл ачаалж байна…</p></div>
  <div id="publishedStatus" class="portal-note"></div>
 </section>
@@ -968,21 +968,59 @@ supabase.auth.onAuthStateChange(()=>{setTimeout(()=>{loadAccountPanel();loadAcco
 
 
 /* Published lore, bookmarks and editorial feedback */
-let publishedPosts=[],myBookmarks=new Set();
+let publishedPosts=[],structuredLore=[],myBookmarks=new Set();
 async function loadPublishedLore(){
  const el=$("publishedPosts");
  const {data,error}=await supabase.from("content_posts").select("id,title,summary,body,content_type,language_code,published_at,slug,game_title,character_name,source_urls,cover_image_url").eq("status","published").order("published_at",{ascending:false}).limit(100);
  if(error){el.textContent="Нийтлэл ачаалж чадсангүй: "+error.message;return;}
  publishedPosts=data||[];
+ await loadStructuredLore();
  const {data:{user}}=await supabase.auth.getUser();
  if(user){const {data:marks}=await supabase.from("article_bookmarks").select("post_id").eq("user_id",user.id);myBookmarks=new Set((marks||[]).map(x=>x.post_id));}
  renderPublishedLore();
 }
+async function loadStructuredLore(){
+ structuredLore=[];
+ try{
+  const {data:franchises,error:fe}=await supabase.from("archive_franchises").select("id,name").eq("status","published").limit(200);
+  if(fe)throw fe;
+  const franchiseById=new Map((franchises||[]).map(f=>[f.id,f.name]));
+  const ids=(franchises||[]).map(f=>f.id);if(!ids.length)return;
+  const {data:entities,error:ee}=await supabase.from("archive_entities").select("id,franchise_id,work_id,entity_type,canonical_name").in("franchise_id",ids).eq("status","published").limit(1000);
+  if(ee)throw ee;
+  const entityIds=(entities||[]).map(x=>x.id);
+  const {data:entityTranslations,error:ete}=entityIds.length?await supabase.from("archive_entity_translations").select("entity_id,language_code,display_name,description").in("entity_id",entityIds).eq("editorial_status","published").eq("language_code",document.documentElement.lang||"mn").limit(1500):{data:[],error:null};
+  if(ete)throw ete;
+  const entityTr=new Map((entityTranslations||[]).map(x=>[x.entity_id,x]));
+  const entityKinds={character:"Дүр",location:"Байршил",faction:"Фракц",item:"Эд зүйл",species:"Зүйл",concept:"Ойлголт",other:"Бусад"};
+  const entityRows=(entities||[]).map(x=>{const tr=entityTr.get(x.id);return{id:x.id,kind:x.entity_type,kind_label:entityKinds[x.entity_type]||x.entity_type,title:tr?.display_name||x.canonical_name,canonical:x.canonical_name,summary:tr?.description||"",game_title:franchiseById.get(x.franchise_id)||"Ерөнхий",language_code:tr?.language_code||"",};});
+  const {data:works,error:we}=await supabase.from("archive_works").select("id,franchise_id,canonical_title,work_type").in("franchise_id",ids).eq("status","published").limit(700);
+  if(we)throw we;
+  const workIds=(works||[]).map(x=>x.id);
+  const {data:workTranslations,error:wte}=workIds.length?await supabase.from("archive_work_translations").select("work_id,language_code,title,synopsis").in("work_id",workIds).eq("editorial_status","published").eq("language_code",document.documentElement.lang||"mn").limit(1000):{data:[],error:null};
+  if(wte)throw wte;
+  const workTr=new Map((workTranslations||[]).map(x=>[x.work_id,x]));
+  const workRows=(works||[]).map(x=>{const tr=workTr.get(x.id);return{id:x.id,kind:"work",kind_label:"Бүтээл",title:tr?.title||x.canonical_title,canonical:x.canonical_title,summary:tr?.synopsis||"",game_title:franchiseById.get(x.franchise_id)||"Ерөнхий",language_code:tr?.language_code||""};});
+  const {data:events,error:ve}=workIds.length?await supabase.from("archive_timeline_events").select("id,work_id,event_key,sort_order,in_universe_date,spoiler_level").in("work_id",workIds).eq("status","published").order("sort_order").limit(1500):{data:[],error:null};
+  if(ve)throw ve;
+  const eventIds=(events||[]).map(x=>x.id);
+  const {data:eventTranslations,error:vte}=eventIds.length?await supabase.from("archive_timeline_translations").select("event_id,language_code,title,summary").in("event_id",eventIds).eq("editorial_status","published").eq("language_code",document.documentElement.lang||"mn").limit(1800):{data:[],error:null};
+  if(vte)throw vte;
+  const eventTr=new Map((eventTranslations||[]).map(x=>[x.event_id,x]));
+  const workById=new Map((works||[]).map(x=>[x.id,x]));
+  const eventRows=(events||[]).map(x=>{const tr=eventTr.get(x.id),work=workById.get(x.work_id);return{id:x.id,kind:"event",kind_label:"Үйл явдал",title:tr?.title||x.event_key,canonical:x.event_key,summary:[tr?.summary,x.in_universe_date?"Огноо: "+x.in_universe_date:"","Spoiler: "+(x.spoiler_level||"unknown")].filter(Boolean).join(" · "),game_title:franchiseById.get(work?.franchise_id)||"Ерөнхий",language_code:tr?.language_code||""};});
+  structuredLore=[...entityRows,...workRows,...eventRows];
+ }catch(error){console.warn("Structured archive search:",error.message);$("publishedStatus").textContent="Бүтэцтэй архивын зарим мэдээллийг хайлтанд холбож чадсангүй.";}
+}
 function renderPublishedLore(){
  const q=$("publishedSearch").value.trim().toLocaleLowerCase(),only=$("bookmarksOnly").checked;const type=$("publishedType").value,game=$("publishedGame").value;
  const rows=publishedPosts.filter(p=>(!only||myBookmarks.has(p.id))&&(type==="all"||p.content_type===type)&&(game==="all"||p.game_title===game)&&[p.title,p.summary,p.body&&typeof p.body==="object"?(p.body.text||JSON.stringify(p.body)):p.body,p.content_type,p.language_code,p.game_title,p.character_name,(p.source_urls||[]).join(" ")].join(" ").toLocaleLowerCase().includes(q));
- $("publishedCount").textContent=rows.length+" нийтлэл · Нийт "+publishedPosts.length;
- $("publishedPosts").innerHTML=rows.map(p=>'<article class="article"><div class="tag">'+safeText(p.game_title||"Ерөнхий")+' · '+safeText(p.content_type)+' · '+safeText(p.language_code)+'</div><h3>'+safeText(p.title)+'</h3><p>'+safeText(p.summary||"Товч тайлбар оруулаагүй.")+'</p><div class="row" style="margin-top:auto;flex-wrap:wrap"><button type="button" data-read-post="'+p.id+'">Унших</button><button type="button" data-bookmark="'+p.id+'">'+(myBookmarks.has(p.id)?"★ Хадгалсан":"☆ Хадгалах")+'</button><button type="button" data-feedback="'+p.id+'">Санал өгөх</button></div></article>').join("")||'<p class="portal-note">Тохирох нийтлэл алга.</p>';
+ const structured=structuredLore.filter(x=>!only&&(type==="all"||x.kind===type)&&(game==="all"||x.game_title===game)&&[x.title,x.summary,x.kind,x.game_title,x.canonical].join(" ").toLocaleLowerCase().includes(q));
+ $("publishedCount").textContent=(rows.length+structured.length)+" үр дүн · "+rows.length+" нийтлэл · "+structured.length+" бүтэцтэй мэдээлэл";
+ const postCards=rows.map(p=>'<article class="article"><div class="tag">'+safeText(p.game_title||"Ерөнхий")+' · '+safeText(p.content_type)+' · '+safeText(p.language_code)+'</div><h3>'+safeText(p.title)+'</h3><p>'+safeText(p.summary||"Товч тайлбар оруулаагүй.")+'</p><div class="row" style="margin-top:auto;flex-wrap:wrap"><button type="button" data-read-post="'+p.id+'">Унших</button><button type="button" data-bookmark="'+p.id+'">'+(myBookmarks.has(p.id)?"★ Хадгалсан":"☆ Хадгалах")+'</button><button type="button" data-feedback="'+p.id+'">Санал өгөх</button></div></article>').join("");
+ const structuredCards=structured.map(x=>'<article class="article"><div class="tag">'+safeText(x.game_title)+' · '+safeText(x.kind_label)+' · '+safeText(x.language_code||"CANON")+'</div><h3>'+safeText(x.title)+'</h3><p>'+safeText(x.summary||"Нэмэлт тайлбар одоогоор алга.")+'</p><button type="button" data-structured-open="'+safeText(x.id)+'">Дэлгэрэнгүй харах →</button></article>').join("");
+ $("publishedPosts").innerHTML=postCards+structuredCards||'<p class="portal-note">Тохирох нийтлэл, дүр, байршил, фракц эсвэл үйл явдал олдсонгүй.</p>';
+ $("publishedPosts").querySelectorAll("[data-structured-open]").forEach(b=>b.onclick=()=>{const x=structuredLore.find(item=>item.id===b.dataset.structuredOpen);if(!x)return;$("modalGame").textContent=x.game_title+" / "+x.kind_label;$("modalTitle").textContent=x.title;$("modalBody").textContent=x.summary||"Нэмэлт мэдээлэл хараахан нийтлэгдээгүй.";$("modal").classList.add("open");});
  $("publishedPosts").querySelectorAll("[data-read-post]").forEach(b=>b.onclick=()=>{const p=publishedPosts.find(x=>x.id===b.dataset.readPost);if(!p)return;$("modalGame").textContent=p.content_type+" / "+p.language_code;$("modalTitle").textContent=p.title;const body=p.body&&typeof p.body==="object"?(p.body.text||JSON.stringify(p.body,null,2)):String(p.body||"");$("modalBody").textContent=body;$("modal").classList.add("open");});
  $("publishedPosts").querySelectorAll("[data-bookmark]").forEach(b=>b.onclick=async()=>{try{const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Хадгалахдаа эхлээд нэвтэрнэ үү.");const id=b.dataset.bookmark;if(myBookmarks.has(id)){const {error}=await supabase.from("article_bookmarks").delete().eq("post_id",id).eq("user_id",user.id);if(error)throw error;myBookmarks.delete(id);}else{const {error}=await supabase.from("article_bookmarks").insert({post_id:id,user_id:user.id});if(error)throw error;myBookmarks.add(id);}renderPublishedLore();}catch(e){$("publishedStatus").textContent=e.message;}});
  $("publishedPosts").querySelectorAll("[data-feedback]").forEach(b=>b.onclick=()=>{$("feedbackPostId").value=b.dataset.feedback;$("feedbackStatus").textContent="";$("feedbackModal").classList.add("open");});
