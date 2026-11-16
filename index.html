@@ -153,49 +153,39 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
 
 /* Unified community chat */
 .chat-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}.chat-tools input{flex:1;min-width:140px}.chat-pinned{padding:10px 13px;border:1px solid #b38b54;border-radius:12px;background:#382b1d55;margin:8px 0;color:#ffe0aa}.chat-message{position:relative}.chat-message .chat-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.chat-message .chat-actions button{font-size:11px;padding:4px 8px;border:1px solid #514267;border-radius:9px;background:#211832;color:#eee;cursor:pointer}.chat-message .chat-actions button:hover{border-color:#b77cff}.chat-message .chat-reactions{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}.chat-message .chat-reactions button{font-size:12px;padding:3px 7px;border:1px solid #514267;border-radius:20px;background:#171326;color:#fff;cursor:pointer}.reply-preview{padding:8px 12px;margin:8px 0;border-left:3px solid #a879ff;background:#201833;border-radius:7px;font-size:12px}.chat-foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:7px}.chat-message.is-pinned{border-color:#b38b54}.chat-message .msg-meta{display:flex;justify-content:space-between;gap:8px;align-items:center}.chat-message .msg-meta small{color:#b8a9ca}
+
+/* Navigation and layout polish */
+.topbar{position:sticky;top:0;z-index:30;background:#0c0918eF;backdrop-filter:blur(18px);padding-inline:4px}
+.nav{align-items:center;flex-wrap:wrap}
+.nav a{white-space:nowrap}
+.mobile-nav-toggle{display:none;border:1px solid var(--line);background:#1a1230;color:var(--text);border-radius:11px;padding:8px 12px;font-size:18px;cursor:pointer}
+section[id]{scroll-margin-top:92px}
+.section{margin-top:22px;margin-bottom:22px}
+.section-head{margin-bottom:20px}
+.section-head h2{letter-spacing:-.025em}
+.section-head p{max-width:680px}
+#community,#ranks,#catalog,#archive{scroll-margin-top:100px}
+#community .community-grid{align-items:start}
+#community .community-side,#community .community-main{min-width:0}
+#community .chat-feed{overflow-y:auto;overscroll-behavior:contain}
+#archive,#catalog{margin-top:30px}
+#premium,#payment,#admin{margin-top:18px}
+.footer{margin-top:40px}
+@media(max-width:760px){
+ .topbar{height:auto;min-height:64px;flex-wrap:wrap;padding:10px 0}
+ .mobile-nav-toggle{display:inline-flex;align-items:center;justify-content:center;margin-left:auto}
+ .actions{order:3}
+ .nav{display:none;order:4;width:100%;padding:10px 0 4px;gap:8px;flex-direction:column;align-items:stretch}
+ .nav.open{display:flex}
+ .nav a{padding:10px 12px;border:1px solid #ffffff12;border-radius:10px;background:#171127}
+ .hero{padding-top:42px}
+}
+@media(min-width:761px){.nav{display:flex!important}}
 </style>
 </head>
 <body>
-<header class="wrap topbar"><a class="brand" href="#"><span class="mark">✦</span> LOREVERSE</a><nav class="nav"><a href="#worlds">Тоглоомууд</a><a href="#community">Нэгдсэн чат</a><a href="#archive">Lore сан</a><a href="rank/">Rank & Bonus</a><a href="#about">Төслийн тухай</a></nav><div class="actions"><select class="select" id="lang" aria-label="Language"><option value="mn">MN</option><option value="en">EN</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div></header>
+<header class="wrap topbar"><a class="brand" href="#"><span class="mark">✦</span> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх">☰</button><nav class="nav" id="mainNav"><a href="#games">Тоглоомууд</a><a href="#community">Нэгдсэн чат</a><a href="#archive">Lore сан</a><a href="rank/">Rank & Bonus</a><a href="#about">Төслийн тухай</a></nav><div class="actions"><select class="select" id="lang" aria-label="Language"><option value="mn">MN</option><option value="en">EN</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div></header>
 <main class="wrap">
-<section class="hero"><div><div class="eyebrow">ANIME · GAMES · STORIES</div><h1>EVERY UNIVERSE<br>HAS A <span class="gradient">STORY.</span></h1><p>Анимэ болон тоглоомын ертөнцийн түүх, дүрүүд, нууц, онол, судалгааг нэг дороос нээ. Дуртай ертөнцийнхөө гүн рүү аял.</p><div class="hero-buttons"><a class="btn primary" href="#games">Ертөнцүүдийг нээх ↗</a><a class="btn" href="#archive">Lore архив үзэх</a></div></div><div class="visual lore-emblem">
-<svg class="lore-logo" viewBox="0 0 600 600" role="img" aria-label="LOREVERSE алтан луужин доторх нээлттэй ном">
- <defs>
-  <radialGradient id="goldGlow"><stop offset="0" stop-color="#ffe9a3"/><stop offset=".48" stop-color="#d9a94c"/><stop offset="1" stop-color="#6b3d18"/></radialGradient>
-  <linearGradient id="bookGold" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff0b6"/><stop offset=".55" stop-color="#d9a44c"/><stop offset="1" stop-color="#75401d"/></linearGradient>
-  <filter id="goldBlur"><feGaussianBlur stdDeviation="8"/></filter>
- </defs>
- <circle cx="300" cy="300" r="282" fill="#08070a" stroke="#f5c542" stroke-width="5"/>
- <circle cx="300" cy="300" r="245" fill="none" stroke="#9b6b2e" stroke-opacity=".38"/>
- <g fill="#f8d77e">
-  <path d="M300 82l12 34-12 24-12-24z"/><path d="M300 518l12-34-12-24-12 24z"/>
-  <path d="M82 300l34-12 24 12-24 12z"/><path d="M518 300l-34-12-24 12 24 12z"/>
-  <path d="M145 145l30 14-16 16z"/><path d="M455 145l-30 14 16 16z"/>
-  <path d="M145 455l30-14-16-16z"/><path d="M455 455l-30-14 16-16z"/>
- </g>
- <g stroke="url(#goldGlow)" stroke-width="5" fill="none" stroke-linejoin="round">
-  <circle cx="300" cy="300" r="196"/>
-  <path d="M300 104L336 175 425 175 461 264 496 300 461 336 425 425 336 425 300 496 264 425 175 425 139 336 104 300 139 264 175 175 264 175Z"/>
-  <path d="M300 104V204M496 300H396M300 496V396M104 300H204"/>
-  <path d="M161 161L232 232M439 161L368 232M439 439L368 368M161 439L232 368"/>
- </g>
- <circle cx="300" cy="300" r="118" fill="#d79e3c" opacity=".13" filter="url(#goldBlur)"/>
- <g transform="translate(0 18)">
-  <path d="M155 278Q222 245 300 286Q378 245 445 278V390Q372 358 300 397Q228 358 155 390Z" fill="#4a2415" stroke="#e4b45c" stroke-width="8"/>
-  <path d="M165 272Q231 244 300 283V386Q230 350 165 379Z" fill="url(#bookGold)" stroke="#ffe6a0" stroke-width="5"/>
-  <path d="M435 272Q369 244 300 283V386Q370 350 435 379Z" fill="url(#bookGold)" stroke="#ffe6a0" stroke-width="5"/>
-  <path d="M300 284V389" stroke="#6d3b1c" stroke-width="7"/>
-  <path d="M181 296Q238 278 281 301M181 319Q238 301 281 324M181 342Q238 324 281 347M419 296Q362 278 319 301M419 319Q362 301 319 324M419 342Q362 324 319 347" stroke="#b27b35" stroke-width="3" fill="none" opacity=".7"/>
-  <path d="M151 390Q225 363 300 405Q375 363 449 390L435 407Q370 384 300 418Q230 384 165 407Z" fill="#8b4d22" stroke="#e8bd6a" stroke-width="4"/>
- </g>
- <path d="M300 176l13 39-13 28-13-28z" fill="#ffd45e"/><path d="M300 176v-33" stroke="#f5d17a" stroke-width="5"/>
- <g fill="#ffe5a1"><circle cx="207" cy="205" r="4"/><circle cx="395" cy="210" r="3"/><circle cx="180" cy="370" r="3"/><circle cx="420" cy="370" r="4"/><path d="M220 130v18m-9-9h18M380 445v18m-9-9h18"/></g>
-</svg>
-<div class="visual-label">LOREVERSE · EVERY UNIVERSE HAS A STORY</div>
-</div></section>
-<section class="stats"><div class="stat"><strong>07</strong><span>Эхний тоглоомын ертөнц</span></div><div class="stat"><strong>01</strong><span>Нэгдсэн lore архив</span></div><div class="stat"><strong>04</strong><span>Интерфэйсийн хэл</span></div></section>
-
-
 <section class="section" id="intro">
  <div class="section-head"><div><div class="eyebrow">WELCOME TO LOREVERSE</div><h2>Нэг платформ. Олон ертөнц.</h2><p>Анимэ, тоглоом, манганы түүхийг нэг дороос судал.</p></div></div>
  <div class="portal-grid">
@@ -203,6 +193,7 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
   <div class="portal-panel"><div class="eyebrow">ADVERTISE WITH US</div><h3>Платформд зар байршуулах</h3><p>Брэнд, тоглоом, үйлчилгээний сурталчилгаагаа LOREVERSE-ийн уншигчдад хүргэх хүсэлт илгээнэ.</p><div class="portal-actions"><a class="btn" href="#advertise">Зарын хүсэлт</a></div></div>
  </div>
 </section>
+
 <section class="section" id="anime">
  <div class="section-head"><div><div class="eyebrow">ANIME COLLECTION</div><h2>Анимэ ертөнц</h2><p>Онцлох анимэ болон тэдгээрийн түүхийн сан.</p></div></div>
  <div class="carousel-track">
@@ -213,6 +204,7 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
   <a class="media-card" href="#archive" style="background-image:url('https://image.tmdb.org/t/p/original/4CRy0qVUZwpAdRZBZub3NQkkbVb.jpg')"><small>ANIME · LORE</small><strong>Made in Abyss</strong><span>Ёроолгүй ангалын нууц</span></a>
  </div>
 </section>
+
 <section class="section" id="games">
  <div class="section-head"><div><div class="eyebrow">GAME UNIVERSES</div><h2>Тоглоомын ертөнц</h2><p>Тоглоом тус бүрийн lore архив руу шууд нэвтэр.</p></div></div>
  <div class="carousel-track">
@@ -224,35 +216,6 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
   <a class="media-card" href="games/arknights/" style="background-image:url('https://i0.wp.com/anitrendz.net/news/wp-content/uploads/2023/09/arknightsperishinfrost_keyvisual-1-scaled-e1695201337364.jpg?resize=696%2C394&ssl=1')"><small>HYPERGRYPH</small><strong>Arknights</strong><span>Terra-ийн түүх</span></a>
   <a class="media-card" href="games/blue-archive/" style="background-image:url('https://assets.st-note.com/img/1652714623464-cukHkwJRNJ.jpg?fit=bounds&height=2000&quality=85&width=2000')"><small>NEXON GAMES</small><strong>Blue Archive</strong><span>Kivotos-ийн архив</span></a>
  </div>
-</section>
-<section class="section" id="manga">
- <div class="section-head"><div><div class="eyebrow">MANGA LIBRARY</div><h2>Манга ертөнц</h2><p>Манганы цуврал, дүрүүд болон ертөнцийн мэдээлэл.</p></div></div>
- <div class="carousel-track">
-  <a class="media-card" href="#archive" style="background-image:url('https://img.4gamers.com.tw/puku-clone-version/fba616446a26abd268e06b1fe30a116b05995e35.jpeg')"><small>MANGA · LORE</small><strong>One Piece</strong><span>Далай, түүх ба нууц</span></a>
-  <a class="media-card" href="#archive" style="background-image:url('https://cdn11.bigcommerce.com/s-89ffd/images/stencil/1280x1280/products/154490/674965/hakusensha-berserk-vol.14-young-animal-comics-manga-japanese-language__42582.1737730738.jpg?c=2%3Fimbypass%3Don')"><small>MANGA · LORE</small><strong>Berserk</strong><span>Midland ба Eclipse</span></a>
-  <a class="media-card" href="#archive" style="background-image:url('https://creativefreaks.net/language/wp-content/uploads/2023/02/csm_KV_20220705_logobilling.png')"><small>MANGA · LORE</small><strong>Chainsaw Man</strong><span>Чөтгөрүүдийн ертөнц</span></a>
-  <a class="media-card" href="#archive" style="background-image:url('https://travellingman.com/cdn/shop/files/81BkEYmif6L._SL1500_1200x1200.jpg?v=1761567840')"><small>MANGA · LORE</small><strong>Kingdom</strong><span>Хятадын нэгдлийн түүх</span></a>
-  <a class="media-card" href="#archive" style="background-image:url('https://i.pinimg.com/originals/73/e9/94/73e9941b6851b5b0664efde81010afda.png')"><small>MANGA · LORE</small><strong>Vagabond</strong><span>Самурайн замнал</span></a>
- </div>
-</section>
-<section class="section" id="premium">
- <div class="section-head"><div><div class="eyebrow">LOREVERSE PREMIUM</div><h2>Гишүүнчлэл ба тусгай архив</h2><p>Нээлттэй нийтлэлүүд үнэгүй. Premium судалгаа, дэлгэрэнгүй lore-г гишүүнчлэлээр нээнэ.</p></div></div>
- <div class="portal-grid">
-  <div class="portal-panel"><div class="eyebrow">MEMBER ACCESS</div><h3 id="memberHeading">Premium эрхээ нээх</h3><p id="memberStatus">Имэйлээр бүртгүүлж эсвэл нэвтэрч, гишүүнчлэлийн төлөвөө шалгана уу.</p>
-   <label for="memberEmail">Имэйл</label><input class="form-field" id="memberEmail" type="email" autocomplete="email" placeholder="name@example.com">
-   <label for="memberPassword">Нууц үг</label><input class="form-field" id="memberPassword" type="password" autocomplete="current-password" placeholder="Хамгийн багадаа 8 тэмдэгт">
-   <div class="portal-actions"><button class="btn primary" id="memberLogin" type="button">Нэвтрэх</button><button class="btn" id="memberSignup" type="button">Бүртгүүлэх</button><button class="btn" id="memberLogout" type="button" hidden>Гарах</button></div>
-   <p class="portal-note" id="memberAuthNote">Бүртгүүлсний дараа имэйл баталгаажуулалт шаардагдаж болно.</p>
-  </div>
-  <div class="portal-panel"><div class="eyebrow">MEMBERSHIP PLANS</div><h3>Premium багцууд</h3><div id="membershipPlans"><p>Багцын мэдээлэл ачаалж байна…</p></div><p class="portal-note">Багцын үнэ админ тохиргоогоор тогтоно. QPay V2 автомат төлбөр холбогдсоны дараа эндээс нэхэмжлэл үүсгэнэ.</p></div>
- </div>
- <div class="portal-panel" style="margin-top:16px"><div class="eyebrow">MEMBERS ONLY ARCHIVE</div><h3>Premium lore сан</h3><p>Таны эрхэд нийцсэн Premium нийтлэлүүд энд харагдана.</p><div id="premiumArticles" class="articles"><p class="portal-note">Нэвтэрсний дараа эрхтэй нийтлэлүүдийг шалгана.</p></div></div>
-</section>
-<section class="section portal-grid" id="payment">
- <div class="portal-panel"><div class="eyebrow">PAYMENT CENTER</div><h2>Төлбөр хийх</h2><p>Premium гишүүнчлэл болон нэмэлт үйлчилгээний төлбөрийг QPay V2 динамик нэхэмжлэлээр хүлээн авах хэсэг.</p><div class="portal-actions"><button class="btn primary" type="button" disabled>QPay төлбөр удахгүй</button></div><p class="portal-note">Таны хэвлэмэл QR код ажиллаж байгаа. Харин автомат төлбөр баталгаажуулалт, Premium эрх идэвхжүүлэлт одоогоор холбогдоогүй тул энэ товчийг түр идэвхгүй байлгав.</p></div>
- </section>
-<section class="section" id="admin">
- <div class="portal-panel"><div class="eyebrow">EDITORIAL WORKSPACE</div><h2>Админ нийтлэх хэсэг</h2><p>Редактор, админ эрхтэй багийн гишүүд нийтлэл үүсгэх, засварлах, хянах, нийтлэх ажлаа удирдана.</p><div class="portal-actions"><a class="btn primary" href="admin/">Админ хэсэгт нэвтрэх ↗</a></div></div>
 </section>
 
 <section class="section" id="community">
@@ -269,6 +232,7 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
   </div>
  </div>
 </section>
+
 <section class="section" id="ranks">
  <div class="section-head"><div><div class="eyebrow">XP · LORE COINS · SEASONS</div><h2>Rank ба Bonus</h2><p>Lifetime Rank тогтмол хадгалагдана. Seasonal Rank улирал бүр шинэчлэгдэнэ.</p></div></div>
  <div class="rank-card">
@@ -282,7 +246,8 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
   <div class="portal-panel"><div class="eyebrow">LEADERBOARD</div><h3>Шилдэг Lorekeepers</h3><div id="loreLeaderboard">Жагсаалт ачаалж байна…</div></div>
  </div>
 </section>
-\n<section class="section" id="activity">
+
+<section class="section" id="activity">
  <div class="section-head"><div><div class="eyebrow">SITE ACTIVITY</div><h2>Сайтын идэвх</h2><p>Орон нутгийн цаг болон хэрэглэгчийн идэвхийн хэмжүүр.</p></div></div>
  <div class="live-strip">
   <div class="live-box"><strong id="localClock">--:--:--</strong><span>Одоогийн цаг · Улаанбаатар</span></div>
@@ -292,7 +257,6 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
  <p class="portal-note">Цаг бодит төхөөрөмжийн бүсийн тохиргоогоор ажиллана. Онлайн болон нийт зочлолын тоолуурыг үнэн зөв харуулахын тулд серверийн presence/analytics холболт шаардлагатай; одоогоор тоо зохиомлоор харуулахгүй.</p>
 </section>
 
-
 <section class="section archive" id="catalog">
  <div class="section-head"><div><div class="eyebrow">LOREVERSE KNOWLEDGE DATABASE</div><h2>Анимэ · Тоглоом · Манга каталог</h2><p>Нэрээр хайж, танилцуулга, төрөл, бүтээгч, дүр болон үндсэн мэдээллийг нээнэ.</p></div></div>
  <div class="filters" id="catalogTabs"><button class="chip active" data-kind="ANIME">Анимэ</button><button class="chip" data-kind="MANGA">Манга</button><button class="chip" data-kind="GAME">Тоглоом</button></div>
@@ -301,7 +265,31 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
  <div class="articles" id="catalogResults"></div>
  <div class="portal-actions"><button class="btn" id="catalogMore" type="button">Дараагийн үр дүн</button></div>
 </section>
-\n<section class="section archive" id="archive"><div class="section-head"><div><div class="eyebrow">LORE DATABASE</div><h2>Lore архив</h2><p>Нийтлэл, дүр, ертөнцийн мэдээллийг хайж үзээрэй.</p></div></div><div class="toolbar"><input id="search" class="search" type="search" placeholder="Нийтлэл, дүр, сэдэв хайх..."><select id="sort" class="select"><option value="new">Шинэ нь эхэнд</option><option value="az">Нэрээр A–Z</option></select></div><div class="filters" id="filters"><button class="chip active" data-game="all">Бүгд</button><button class="chip" data-game="Genshin Impact">Genshin</button><button class="chip" data-game="Wuthering Waves">Wuthering Waves</button><button class="chip" data-game="ANANTA">ANANTA</button><button class="chip" data-game="Honkai: Star Rail">Honkai: Star Rail</button><button class="chip" data-game="Zenless Zone Zero">Zenless Zone Zero</button><button class="chip" data-game="Arknights">Arknights</button><button class="chip" data-game="Blue Archive">Blue Archive</button></div><div class="articles" id="articles"></div><div class="empty" id="empty">Тохирох нийтлэл олдсонгүй.</div><p class="note">Тайлбар: Эхний нийтлэлүүд нь архивын танилцуулга контент. Албан ёсны эх сурвалжаар нягталсан судалгааг редакцын шалгалтын дараа нийтэлнэ.</p></section>
+
+<section class="section archive" id="archive"><div class="section-head"><div><div class="eyebrow">LORE DATABASE</div><h2>Lore архив</h2><p>Нийтлэл, дүр, ертөнцийн мэдээллийг хайж үзээрэй.</p></div></div><div class="toolbar"><input id="search" class="search" type="search" placeholder="Нийтлэл, дүр, сэдэв хайх..."><select id="sort" class="select"><option value="new">Шинэ нь эхэнд</option><option value="az">Нэрээр A–Z</option></select></div><div class="filters" id="filters"><button class="chip active" data-game="all">Бүгд</button><button class="chip" data-game="Genshin Impact">Genshin</button><button class="chip" data-game="Wuthering Waves">Wuthering Waves</button><button class="chip" data-game="ANANTA">ANANTA</button><button class="chip" data-game="Honkai: Star Rail">Honkai: Star Rail</button><button class="chip" data-game="Zenless Zone Zero">Zenless Zone Zero</button><button class="chip" data-game="Arknights">Arknights</button><button class="chip" data-game="Blue Archive">Blue Archive</button></div><div class="articles" id="articles"></div><div class="empty" id="empty">Тохирох нийтлэл олдсонгүй.</div><p class="note">Тайлбар: Эхний нийтлэлүүд нь архивын танилцуулга контент. Албан ёсны эх сурвалжаар нягталсан судалгааг редакцын шалгалтын дараа нийтэлнэ.</p></section>
+
+<section class="section" id="premium">
+ <div class="section-head"><div><div class="eyebrow">LOREVERSE PREMIUM</div><h2>Гишүүнчлэл ба тусгай архив</h2><p>Нээлттэй нийтлэлүүд үнэгүй. Premium судалгаа, дэлгэрэнгүй lore-г гишүүнчлэлээр нээнэ.</p></div></div>
+ <div class="portal-grid">
+  <div class="portal-panel"><div class="eyebrow">MEMBER ACCESS</div><h3 id="memberHeading">Premium эрхээ нээх</h3><p id="memberStatus">Имэйлээр бүртгүүлж эсвэл нэвтэрч, гишүүнчлэлийн төлөвөө шалгана уу.</p>
+   <label for="memberEmail">Имэйл</label><input class="form-field" id="memberEmail" type="email" autocomplete="email" placeholder="name@example.com">
+   <label for="memberPassword">Нууц үг</label><input class="form-field" id="memberPassword" type="password" autocomplete="current-password" placeholder="Хамгийн багадаа 8 тэмдэгт">
+   <div class="portal-actions"><button class="btn primary" id="memberLogin" type="button">Нэвтрэх</button><button class="btn" id="memberSignup" type="button">Бүртгүүлэх</button><button class="btn" id="memberLogout" type="button" hidden>Гарах</button></div>
+   <p class="portal-note" id="memberAuthNote">Бүртгүүлсний дараа имэйл баталгаажуулалт шаардагдаж болно.</p>
+  </div>
+  <div class="portal-panel"><div class="eyebrow">MEMBERSHIP PLANS</div><h3>Premium багцууд</h3><div id="membershipPlans"><p>Багцын мэдээлэл ачаалж байна…</p></div><p class="portal-note">Багцын үнэ админ тохиргоогоор тогтоно. QPay V2 автомат төлбөр холбогдсоны дараа эндээс нэхэмжлэл үүсгэнэ.</p></div>
+ </div>
+ <div class="portal-panel" style="margin-top:16px"><div class="eyebrow">MEMBERS ONLY ARCHIVE</div><h3>Premium lore сан</h3><p>Таны эрхэд нийцсэн Premium нийтлэлүүд энд харагдана.</p><div id="premiumArticles" class="articles"><p class="portal-note">Нэвтэрсний дараа эрхтэй нийтлэлүүдийг шалгана.</p></div></div>
+</section>
+
+<section class="section portal-grid" id="payment">
+ <div class="portal-panel"><div class="eyebrow">PAYMENT CENTER</div><h2>Төлбөр хийх</h2><p>Premium гишүүнчлэл болон нэмэлт үйлчилгээний төлбөрийг QPay V2 динамик нэхэмжлэлээр хүлээн авах хэсэг.</p><div class="portal-actions"><button class="btn primary" type="button" disabled>QPay төлбөр удахгүй</button></div><p class="portal-note">Таны хэвлэмэл QR код ажиллаж байгаа. Харин автомат төлбөр баталгаажуулалт, Premium эрх идэвхжүүлэлт одоогоор холбогдоогүй тул энэ товчийг түр идэвхгүй байлгав.</p></div>
+ </section>
+
+<section class="section" id="admin">
+ <div class="portal-panel"><div class="eyebrow">EDITORIAL WORKSPACE</div><h2>Админ нийтлэх хэсэг</h2><p>Редактор, админ эрхтэй багийн гишүүд нийтлэл үүсгэх, засварлах, хянах, нийтлэх ажлаа удирдана.</p><div class="portal-actions"><a class="btn primary" href="admin/">Админ хэсэгт нэвтрэх ↗</a></div></div>
+</section>
+
 <section class="section feature-row" id="about"><div class="feature"><div class="eyebrow">OUR MISSION</div><h3>Нэг платформ. Олон ертөнц.</h3><p>Тоглоом, анимэ сонирхогчдод зориулсан lore, дүр, түүх, судалгааны нэгдсэн сан бүтээнэ.</p></div><div class="feature"><div class="eyebrow">EDITORIAL STANDARD</div><h3>Баримт ба таамгийг ялгана.</h3><p>Албан ёсны өгүүлэмж, тоглоом доторх эшлэл, баталгаажаагүй онолыг тусад нь тэмдэглэж, эх сурвалжийг ил тод дурдана.</p></div></section>
 </main><footer class="wrap footer"><span>© 2026 LOREVERSE</span><span>Фэнүүдийн бүтээсэн, албан бус мэдлэгийн платформ.</span></footer>
 <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="dialog"><div class="dialogtop"><div><div class="eyebrow" id="modalGame"></div><h2 id="modalTitle"></h2></div><button class="close" id="close" aria-label="Close">✕</button></div><p id="modalBody"></p><div class="note">Эх сурвалжийг нийтлэхийн өмнө редакцаар нягтална.</div></div></div>
@@ -440,5 +428,9 @@ async function loadLoreLeaderboard(){
 $("dailyReward").onclick=async()=>{try{const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Өдрийн бонус авахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.");const {data,error}=await supabase.rpc("claim_daily_lore_reward");if(error)throw error;$("dailyRewardStatus").textContent=data.message||"Бонус шалгагдлаа.";await refreshGamification();}catch(e){$("dailyRewardStatus").textContent=e.message;}};
 supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=await supabase.auth.getUser();communityUser=user;await refreshGamification();await loadCoinStore();},0)});
 (async()=>{try{await ensureCommunityUser();$("chatStatus").textContent="Нэгдсэн чатад холбогдлоо.";await loadChatChannels();await selectChatChannel("global","# Global Chat");await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();await updatePresence();await loadOnlineCount();setInterval(async()=>{await updatePresence();await loadOnlineCount();},45000);}catch(e){$("chatStatus").textContent=e.message;$("dailyRewardStatus").textContent="Бонус авахын тулд бүртгэлтэй хэрэглэгч шаардлагатай.";}})();
+</script>
+
+<script>
+(()=>{const b=document.getElementById('navToggle'),n=document.getElementById('mainNav');if(!b||!n)return;b.addEventListener('click',()=>{const open=n.classList.toggle('open');b.setAttribute('aria-expanded',String(open));b.textContent=open?'✕':'☰';});n.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{n.classList.remove('open');b.setAttribute('aria-expanded','false');b.textContent='☰';}));})();
 </script>
 </body></html>
