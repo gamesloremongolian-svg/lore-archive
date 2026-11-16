@@ -170,7 +170,7 @@ section[id]{scroll-margin-top:92px}
 #community .chat-feed{overflow-y:auto;overscroll-behavior:contain}
 #archive,#catalog{margin-top:30px}
 #premium,#payment,#admin{margin-top:18px}
-.footer{margin-top:40px}
+.footer{margin-top:40px;align-items:flex-start}.footer-nav{display:flex;gap:14px;flex-wrap:wrap}.footer-nav a{color:var(--muted)}.footer-nav a:hover{color:var(--cyan)}
 @media(max-width:760px){
  .topbar{height:auto;min-height:64px;flex-wrap:wrap;padding:10px 0}
  .mobile-nav-toggle{display:inline-flex;align-items:center;justify-content:center;margin-left:auto}
@@ -184,7 +184,7 @@ section[id]{scroll-margin-top:92px}
 </style>
 </head>
 <body>
-<header class="wrap topbar"><a class="brand" href="#"><span class="mark">✦</span> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх">☰</button><nav class="nav" id="mainNav"><a href="#games">Тоглоомууд</a><a href="#community">Нэгдсэн чат</a><a href="#archive">Lore сан</a><a href="rank/">Rank & Bonus</a><a href="#about">Төслийн тухай</a></nav><div class="actions"><select class="select" id="lang" aria-label="Language"><option value="mn">MN</option><option value="en">EN</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div></header>
+<header class="wrap topbar"><a class="brand" href="#"><span class="mark">✦</span> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх">☰</button><nav class="nav" id="mainNav"><a href="#anime">Анимэ</a><a href="#games">Тоглоомууд</a><a href="#community">Нэгдсэн чат</a><a href="#archive">Lore сан</a><a href="#ranks">Rank & Bonus</a></nav><div class="actions"><select class="select" id="lang" aria-label="Language"><option value="mn">MN</option><option value="en">EN</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div></header>
 <main class="wrap">
 <section class="hero"><div><div class="eyebrow">ANIME · GAMES · STORIES</div><h1>EVERY UNIVERSE<br>HAS A <span class="gradient">STORY.</span></h1><p>Анимэ болон тоглоомын ертөнцийн түүх, дүрүүд, нууц, онол, судалгааг нэг дороос нээ. Дуртай ертөнцийнхөө гүн рүү аял.</p><div class="hero-buttons"><a class="btn primary" href="#games">Ертөнцүүдийг нээх ↗</a><a class="btn" href="#archive">Lore архив үзэх</a></div></div><div class="visual lore-emblem">
 <svg class="lore-logo" viewBox="0 0 600 600" role="img" aria-label="LOREVERSE алтан луужин доторх нээлттэй ном">
@@ -222,14 +222,6 @@ section[id]{scroll-margin-top:92px}
 <div class="visual-label">LOREVERSE · EVERY UNIVERSE HAS A STORY</div>
 </div></section>
 <section class="stats"><div class="stat"><strong>07</strong><span>Эхний тоглоомын ертөнц</span></div><div class="stat"><strong>01</strong><span>Нэгдсэн lore архив</span></div><div class="stat"><strong>04</strong><span>Интерфэйсийн хэл</span></div></section>
-<section class="section" id="intro">
- <div class="section-head"><div><div class="eyebrow">WELCOME TO LOREVERSE</div><h2>Нэг платформ. Олон ертөнц.</h2><p>Анимэ, тоглоом, манганы түүхийг нэг дороос судал.</p></div></div>
- <div class="portal-grid">
-  <div class="portal-panel"><div class="eyebrow">PREMIUM MEMBERSHIP</div><h3>LOREVERSE Premium</h3><p>Заргүй унших, тусгай нийтлэл болон гишүүдэд зориулсан боломжууд. Гишүүнчлэлийн үнэ, хугацааг төлбөрийн систем бүрэн холбогдсоны дараа харуулна.</p><div class="portal-actions"><a class="btn primary" href="#payment">Төлбөрийн хэсэг рүү</a></div></div>
-  <div class="portal-panel"><div class="eyebrow">ADVERTISE WITH US</div><h3>Платформд зар байршуулах</h3><p>Брэнд, тоглоом, үйлчилгээний сурталчилгаагаа LOREVERSE-ийн уншигчдад хүргэх хүсэлт илгээнэ.</p><div class="portal-actions"><a class="btn" href="#advertise">Зарын хүсэлт</a></div></div>
- </div>
-</section>
-
 <section class="section" id="anime">
  <div class="section-head"><div><div class="eyebrow">ANIME COLLECTION</div><h2>Анимэ ертөнц</h2><p>Онцлох анимэ болон тэдгээрийн түүхийн сан.</p></div></div>
  <div class="carousel-track">
@@ -304,6 +296,14 @@ section[id]{scroll-margin-top:92px}
 
 <section class="section archive" id="archive"><div class="section-head"><div><div class="eyebrow">LORE DATABASE</div><h2>Lore архив</h2><p>Нийтлэл, дүр, ертөнцийн мэдээллийг хайж үзээрэй.</p></div></div><div class="toolbar"><input id="search" class="search" type="search" placeholder="Нийтлэл, дүр, сэдэв хайх..."><select id="sort" class="select"><option value="new">Шинэ нь эхэнд</option><option value="az">Нэрээр A–Z</option></select></div><div class="filters" id="filters"><button class="chip active" data-game="all">Бүгд</button><button class="chip" data-game="Genshin Impact">Genshin</button><button class="chip" data-game="Wuthering Waves">Wuthering Waves</button><button class="chip" data-game="ANANTA">ANANTA</button><button class="chip" data-game="Honkai: Star Rail">Honkai: Star Rail</button><button class="chip" data-game="Zenless Zone Zero">Zenless Zone Zero</button><button class="chip" data-game="Arknights">Arknights</button><button class="chip" data-game="Blue Archive">Blue Archive</button></div><div class="articles" id="articles"></div><div class="empty" id="empty">Тохирох нийтлэл олдсонгүй.</div><p class="note">Тайлбар: Эхний нийтлэлүүд нь архивын танилцуулга контент. Албан ёсны эх сурвалжаар нягталсан судалгааг редакцын шалгалтын дараа нийтэлнэ.</p></section>
 
+<section class="section" id="support">
+ <div class="section-head"><div><div class="eyebrow">HELP & SERVICES</div><h2>Туслах цэс ба үйлчилгээ</h2><p>Үндсэн мэдээлэл, архивын дараа гишүүнчлэл болон платформын нэмэлт үйлчилгээг эндээс сонгоорой.</p></div></div>
+ <div class="portal-grid">
+  <div class="portal-panel"><div class="eyebrow">PREMIUM MEMBERSHIP</div><h3>LOREVERSE Premium</h3><p>Заргүй унших, тусгай нийтлэл болон гишүүдэд зориулсан боломжууд. Гишүүнчлэлийн үнэ, хугацааг төлбөрийн систем бүрэн холбогдсоны дараа харуулна.</p><div class="portal-actions"><a class="btn primary" href="#payment">Төлбөрийн хэсэг рүү</a></div></div>
+  <div class="portal-panel"><div class="eyebrow">ADVERTISE WITH US</div><h3>Платформд зар байршуулах</h3><p>Брэнд, тоглоом, үйлчилгээний сурталчилгаагаа LOREVERSE-ийн уншигчдад хүргэх хүсэлт илгээнэ.</p><div class="portal-actions"><a class="btn" href="#admin">Хамтын ажиллагаа</a></div></div>
+ </div>
+</section>
+
 <section class="section" id="premium">
  <div class="section-head"><div><div class="eyebrow">LOREVERSE PREMIUM</div><h2>Гишүүнчлэл ба тусгай архив</h2><p>Нээлттэй нийтлэлүүд үнэгүй. Premium судалгаа, дэлгэрэнгүй lore-г гишүүнчлэлээр нээнэ.</p></div></div>
  <div class="portal-grid">
@@ -327,7 +327,7 @@ section[id]{scroll-margin-top:92px}
 </section>
 
 <section class="section feature-row" id="about"><div class="feature"><div class="eyebrow">OUR MISSION</div><h3>Нэг платформ. Олон ертөнц.</h3><p>Тоглоом, анимэ сонирхогчдод зориулсан lore, дүр, түүх, судалгааны нэгдсэн сан бүтээнэ.</p></div><div class="feature"><div class="eyebrow">EDITORIAL STANDARD</div><h3>Баримт ба таамгийг ялгана.</h3><p>Албан ёсны өгүүлэмж, тоглоом доторх эшлэл, баталгаажаагүй онолыг тусад нь тэмдэглэж, эх сурвалжийг ил тод дурдана.</p></div></section>
-</main><footer class="wrap footer"><span>© 2026 LOREVERSE</span><span>Фэнүүдийн бүтээсэн, албан бус мэдлэгийн платформ.</span></footer>
+</main><footer class="wrap footer"><div><b>© 2026 LOREVERSE</b><div>Фэнүүдийн бүтээсэн, албан бус мэдлэгийн платформ.</div></div><nav class="footer-nav" aria-label="Туслах цэс"><a href="#support">Туслах цэс</a><a href="#premium">Premium</a><a href="#payment">Төлбөр</a><a href="#admin">Админ</a><a href="#about">Төслийн тухай</a><a href="rank/">Rank & Bonus</a></nav></footer>
 <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="dialog"><div class="dialogtop"><div><div class="eyebrow" id="modalGame"></div><h2 id="modalTitle"></h2></div><button class="close" id="close" aria-label="Close">✕</button></div><p id="modalBody"></p><div class="note">Эх сурвалжийг нийтлэхийн өмнө редакцаар нягтална.</div></div></div>
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
