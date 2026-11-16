@@ -277,6 +277,43 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
 .event-list-head{margin:26px 0 15px}.event-list-head h3{font-size:20px;margin:5px 0}.event-list-head p{margin:0;color:var(--muted);font-size:12px}
 .event-rewards{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px;padding:14px 17px;border:1px solid #624477;border-radius:14px;background:#17132a}.event-rewards strong{color:#ffcae8}.event-rewards span{color:var(--muted);font-size:12px}
 @media(max-width:650px){.event-types{grid-template-columns:1fr}.event-type{padding:18px}.event-symbol{margin-bottom:12px}}
+
+/* LOREVERSE visual refresh — screenshot-inspired violet archive theme */
+:root{color-scheme:dark;--bg:#0b0a16;--panel:#171426;--panel2:#211a35;--line:#493568;--text:#f6f2ff;--muted:#b9b1ca;--violet:#a855f7;--cyan:#b98aff;--pink:#d56bff;--gold:#c9a6ff;--radius:20px}
+body{background:radial-gradient(ellipse at 12% -8%,#45206c66 0,transparent 38%),radial-gradient(ellipse at 88% 28%,#29205255 0,transparent 35%),#0b0a16;color:#f6f2ff}
+.topbar{background:#0d0b18eF;border-bottom:1px solid #50376d;backdrop-filter:blur(14px)}
+.mark{background:linear-gradient(145deg,#d56bff,#8545df 60%,#6b74ff);color:#fff;box-shadow:0 0 25px #a855f755}
+.nav{color:#c7bdd8}.nav a:hover{color:#d9a0ff}
+.select,.ghost,.form-field{background:#151122;border-color:#594077;color:#f6f2ff}
+.btn{background:linear-gradient(145deg,#211831,#151122);border-color:#594077;color:#f8f3ff}
+.btn.primary{background:linear-gradient(110deg,#c05bea,#874be8 58%,#6578ef);box-shadow:0 10px 30px #8e45d944}
+.hero{position:relative;padding:42px 30px;margin:22px 0 42px;border:1px solid #594077;border-radius:24px;background:radial-gradient(ellipse at 78% 15%,#7845b533,transparent 40%),linear-gradient(120deg,#171426f5,#111022f2 58%,#1b1430f5);box-shadow:0 20px 65px #0006;overflow:hidden}
+.hero:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 45%,#9e62ff0b)}
+.hero>div{position:relative;z-index:1}.hero h1{font-size:clamp(38px,5.4vw,64px);text-shadow:0 3px 24px #a855f733}
+.gradient{background:linear-gradient(100deg,#d58aff,#a68aff 55%,#82b7ff);color:transparent;background-clip:text}
+.hero p{color:#d0c8dc}.hero-slogan{color:#d9b4ff}
+.visual{border-color:#68468b;background:radial-gradient(circle at 50% 45%,#9e5be944,transparent 42%),linear-gradient(145deg,#2a1a42,#151329 65%,#18213d);box-shadow:0 18px 55px #0008}
+.lore-emblem{background:radial-gradient(circle at 50% 48%,#3a2056 0%,#171126 54%,#0b0a16 100%);border-color:#9d6bd4}
+.lore-logo{filter:hue-rotate(245deg) saturate(1.15) drop-shadow(0 0 25px #a855f755)}
+.lore-emblem .visual-label{color:#d6b2ff}
+.stats .stat,.portal-panel,.feature,.feed-panel,.feed-side,.live-box{background:linear-gradient(145deg,#1b1730,#121020);border-color:#493568}
+.world,.article,.event-type{border-color:#493568;background-color:#171426}
+.world:hover,.article:hover{border-color:#b06aff;box-shadow:0 15px 38px #8e45d922}
+.archive{background:linear-gradient(145deg,#171426,#111020);border-color:#594077}
+.search{background:#100e1b;border-color:#594077;color:#f6f2ff}
+.search:focus,.form-field:focus{border-color:#bd78ff;outline:none;box-shadow:0 0 0 3px #a855f722}
+.chip{border-color:#594077;color:#c9bdd9}.chip.active,.chip:hover{color:#fff;border-color:#b36bff;background:#a855f72b}
+.tag,.eyebrow{color:#c99aff}
+.stat strong,.event-rewards strong{color:#d5a5ff}
+.event-type{background:radial-gradient(circle at 100% 0%,#a855f72b,transparent 45%),linear-gradient(145deg,#211832,#121020)}
+.event-type:nth-child(2){background:radial-gradient(circle at 100% 0%,#6578ef2b,transparent 45%),linear-gradient(145deg,#1b1b38,#121020)}
+.event-type:nth-child(3){background:radial-gradient(circle at 100% 0%,#d56bff2b,transparent 45%),linear-gradient(145deg,#2b1837,#121020)}
+.event-symbol{color:#e0b5ff;border-color:#8058a5;background:#a855f71c}
+.event-rewards{background:#171426;border-color:#493568}
+.footer{border-top-color:#493568}
+@media(max-width:850px){.hero{padding:30px 22px}}
+@media(max-width:560px){.hero{padding:24px 16px;margin-top:14px;border-radius:18px}.hero h1{font-size:39px}}
+
 </style>
 </head>
 <body>
