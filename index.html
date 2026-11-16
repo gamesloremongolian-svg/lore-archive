@@ -486,7 +486,7 @@ body{
 
 
 <section class="section ad-zone" id="advertise">
- <div class="ad-zone-head"><div><div class="eyebrow">LOREVERSE PARTNERS · SPONSORED</div><h2>Зар сурталчилгаа</h2><p>LOREVERSE-ийн уншигчдад бүтээгдэхүүн, үйлчилгээ, төслөө танилцуулаарай.</p></div><a class="btn primary" href="#adRequest">Зар байршуулах ↗</a></div>
+ <div class="ad-zone-head"><div><div class="eyebrow">LOREVERSE PARTNERS · SPONSORED</div><h2>Зар сурталчилгаа</h2><p>LOREVERSE-ийн уншигчдад бүтээгдэхүүн, үйлчилгээ, төслөө танилцуулаарай.</p></div></div>
  
  <div class="ad-admin" id="adAdminPanel" hidden><div class="eyebrow">MODERATION · STAFF ONLY</div><h3>Зарын хүсэлт хянах</h3><div id="adAdminList">Хүсэлтүүдийг ачаалж байна…</div></div>
 </section>
@@ -1126,7 +1126,7 @@ async function loadPublicAds(){
  const host=$("adPublicList");if(!host)return;
  const {data,error}=await supabase.from("advertisement_requests").select("id,title,description,image_url,target_url,placement").eq("status","approved").or("start_date.is.null,start_date.lte."+new Date().toISOString().slice(0,10)).or("end_date.is.null,end_date.gte."+new Date().toISOString().slice(0,10)).order("placement").order("created_at",{ascending:false}).limit(9);
  if(error){host.innerHTML='<p class="portal-note">Заруудыг ачаалж чадсангүй.</p>';return;}
- host.innerHTML=(data||[]).map(ad=>'<article class="ad-card"><img src="'+safeText(ad.image_url)+'" alt="'+safeText(ad.title)+'" loading="lazy" referrerpolicy="no-referrer"><div class="ad-card-body"><span class="ad-label">'+(ad.placement==="featured"?"ОНЦЛОХ ЗАР":"SPONSORED")+'</span><h3>'+safeText(ad.title)+'</h3><p>'+safeText(ad.description)+'</p><a href="'+safeText(ad.target_url)+'" target="_blank" rel="noopener noreferrer nofollow sponsored">Дэлгэрэнгүй ↗</a></div></article>').join("")||'<p class="portal-note">Одоогоор нийтлэгдсэн зар алга. Эхний зарын хүсэлтээ илгээгээрэй.</p>';
+ host.innerHTML=(data||[]).map(ad=>'<article class="ad-card"><img src="'+safeText(ad.image_url)+'" alt="'+safeText(ad.title)+'" loading="lazy" referrerpolicy="no-referrer"><div class="ad-card-body"><span class="ad-label">'+(ad.placement==="featured"?"ОНЦЛОХ ЗАР":"SPONSORED")+'</span><h3>'+safeText(ad.title)+'</h3><p>'+safeText(ad.description)+'</p><a href="'+safeText(ad.target_url)+'" target="_blank" rel="noopener noreferrer nofollow sponsored">Дэлгэрэнгүй ↗</a></div></article>').join("")||'';
 }
 async function loadAdAdmin(){
  const panel=$("adAdminPanel");if(!panel)return;
