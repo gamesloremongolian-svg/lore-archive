@@ -372,6 +372,27 @@ body{
 @keyframes loreTwinkle{0%,100%{opacity:.45;transform:scale(.8) rotate(0)}50%{opacity:1;transform:scale(1.18) rotate(18deg)}}
 @media(prefers-reduced-motion:reduce){.hero .visual::before{animation:none}}
 
+
+/* Subtle anime + game motion accents */
+.visual::before{content:"";position:absolute;inset:-20%;pointer-events:none;background:radial-gradient(circle at 18% 24%,#ffb2e833 0 2px,transparent 3px),radial-gradient(circle at 78% 32%,#8deeff55 0 1.5px,transparent 3px),radial-gradient(circle at 62% 78%,#d7b4ff66 0 2px,transparent 4px),radial-gradient(circle at 34% 70%,#fff4c955 0 1px,transparent 3px);background-size:180px 180px;animation:loreParticles 24s linear infinite}
+.ring{animation:loreRingFloat 7s ease-in-out infinite}
+.core{animation:loreCoreGlow 4s ease-in-out infinite}
+.float{animation:loreTagFloat 5s ease-in-out infinite}
+.f2{animation-delay:-1.7s}.f3{animation-delay:-3.1s}
+.world{transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease}
+.world::after{transition:opacity .35s ease}
+.world:hover{transform:translateY(-6px) scale(1.012)}
+.world:hover::after{opacity:.82}
+.catalog-card{transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease}
+.catalog-card:hover{transform:translateY(-5px);border-color:#d98bff;box-shadow:0 15px 38px #b45aff25}
+.catalog-card img{transition:transform .55s ease}
+.catalog-card:hover img{transform:scale(1.035)}
+@keyframes loreParticles{from{transform:translate3d(0,0,0)}to{transform:translate3d(35px,-24px,0)}}
+@keyframes loreRingFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-8px) rotate(2deg)}}
+@keyframes loreCoreGlow{0%,100%{filter:drop-shadow(0 0 8px #d7b4ff66)}50%{filter:drop-shadow(0 0 24px #8deeffaa)}}
+@keyframes loreTagFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@media(prefers-reduced-motion:reduce){.visual::before,.ring,.core,.float{animation:none!important}.world,.catalog-card,.catalog-card img{transition:none!important}.world:hover,.catalog-card:hover{transform:none}}
+
 </style>
 </head>
 <body>
