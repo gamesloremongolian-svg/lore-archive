@@ -15,7 +15,16 @@
 <div><label>Нийтлэлийн төрөл</label><select id="type"><option value="lore">Lore судалгаа</option><option value="game">Тоглоом</option><option value="anime">Анимэ</option><option value="manga">Манга</option><option value="guide">Гарын авлага</option><option value="news">Мэдээ</option></select></div>
 <div><label>Редакторын чиглэл</label><input id="notes" placeholder="Хамрах хүрээ, өнцөг, урт..."></div>
 <div class="full"><label>Эх сурвалжийн HTTPS холбоосууд (мөр бүрт нэг)</label><textarea id="sources" placeholder="https://..."></textarea><p class="muted">Эх сурвалж өгөөгүй бол AI баталгаагүй хэсгийг тэмдэглэнэ. Хуурамч URL зохиохгүй.</p></div>
-</div><div class="row"><button id="generate">AI ноорог үүсгэх</button><span id="genState" class="muted"></span></div>
+</div><div class="row"><button id="generate">ChatGPT-д зориулсан заавар бэлтгэх</button><span id="genState" class="muted"></span></div>
+<div id="manualPanel" class="draft hidden">
+<h3>1. ChatGPT-д илгээх заавар</h3>
+<p class="muted">Доорх зааврыг хуулж ChatGPT-д илгээнэ. API түлхүүр шаардлагагүй.</p>
+<textarea id="chatPrompt" style="min-height:220px"></textarea>
+<div class="row"><button id="copyPrompt" class="secondary">Заавар хуулах</button></div>
+<label>2. ChatGPT-ийн JSON хариуг энд буулгана</label>
+<textarea id="chatResponse" style="min-height:220px" placeholder='{"title":"...","slug":"...","summary":"...","body":"...","canon_status":"unknown","editorial_warnings":[]}'></textarea>
+<div class="row"><button id="importResponse">Ноорог редакторт оруулах</button></div>
+</div>
 <div id="editor" class="hidden"><div class="status warning" id="warnings"></div><div class="grid">
 <div class="full"><label>Гарчиг</label><input id="draftTitle"></div>
 <div><label>Slug</label><input id="draftSlug"></div><div><label>Canon төлөв</label><select id="canon"><option value="unknown">Тодорхойгүй</option><option value="canon">Canon</option><option value="non_canon">Non-canon</option><option value="theory">Онол / таамаг</option></select></div>
@@ -41,23 +50,45 @@ async function enter(){
 $("login").onclick=async()=>{const {error}=await supabase.auth.signInWithPassword({email:$("email").value,password:$("password").value});if(error){say("authMsg",error.message);return;}await enter();};
 $("logout").onclick=async()=>{await supabase.auth.signOut();location.reload();};
 supabase.auth.onAuthStateChange((_event,session)=>{if(session?.user&&!user)setTimeout(enter,0);});
-async function generate(){
+function generate(){
  const topic=$("topic").value.trim();if(topic.length<3){say("genState","Сэдвээ 3-аас дээш тэмдэгтээр оруулна уу.");return;}
- const {data:{session}}=await supabase.auth.getSession();if(!session){say("genState","Дахин нэвтэрнэ үү.");return;}
- $("generate").disabled=true;say("genState","AI ноорог боловсруулж байна…");
- const sourceList=$("sources").value.split(/\n+/).map(x=>x.trim()).filter(Boolean);
- if(sourceList.some(x=>!x.startsWith("https://"))){say("genState","Эх сурвалж бүр HTTPS холбоос байх ёстой.");$("generate").disabled=false;return;}
- try{
-  const res=await fetch("https://nfacspfctvunwbxtvvyi.supabase.co/functions/v1/editorial-ai-draft",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":"sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1"},body:JSON.stringify({topic,universe:$("universe").value,content_type:$("type").value,notes:$("notes").value,sources:sourceList})});
-  const out=await res.json();if(!res.ok)throw new Error(out.error||"AI хүсэлт амжилтгүй.");
-  currentDraft={...out.draft,source_urls:out.source_urls,topic,universe:$("universe").value,content_type:$("type").value};savedId=null;
-  $("draftTitle").value=currentDraft.title;$("draftSlug").value=currentDraft.slug;$("draftSummary").value=currentDraft.summary;$("draftBody").value=currentDraft.body;$("canon").value=currentDraft.canon_status;
-  $("warnings").textContent=(out.draft.editorial_warnings||[]).join("\n")||"AI-ийн анхааруулга алга. Гэхдээ бүх баримт, эх сурвалжийг редактор шалгах ёстой.";
-  $("editor").classList.remove("hidden");say("genState","Ноорог бэлэн. Одоо шалгаад хадгална уу.");
- }catch(e){say("genState",e.message||"Алдаа гарлаа.");}
- finally{$("generate").disabled=false;}
+ const sourceList=$("sources").value.split(/\\n+/).map(x=>x.trim()).filter(Boolean);
+ if(sourceList.some(x=>!x.startsWith("https://"))){say("genState","Эх сурвалж бүр HTTPS холбоос байх ёстой.");return;}
+ const prompt=[
+ "Та LOREVERSE-ийн мэргэжлийн редакцын туслах. Монгол хэлээр гүнзгий, мэргэжлийн нийтлэлийн ноорог бэлтгэ.",
+ "ЗӨВХӨН хүчинтэй JSON object буцаа. Markdown code fence болон JSON-оос гадуурх тайлбар бүү нэм.",
+ "JSON түлхүүрүүд: title, slug, summary, body, canon_status, editorial_warnings.",
+ "canon_status нь canon, non_canon, theory, unknown-ийн нэг байна. Баталгаагүй зүйлийг canon гэж бүү бич.",
+ "Эх сурвалж зохиож болохгүй. Өгсөн эх сурвалжийг ашиглаж, эх сурвалж хүрэлцэхгүй бол editorial_warnings-д тодорхой тэмдэглэ.",
+ "Зохиогчийн эрхтэй эхийг уртаар хуулбарлахгүй, өөрийн үгээр тайлбарла. body талбарт Markdown нийтлэл бич.",
+ "Сэдэв: "+topic,
+ "Ертөнц/бүтээл: "+($("universe").value.trim()||"Тодорхойлоогүй"),
+ "Нийтлэлийн төрөл: "+$("type").selectedOptions[0].textContent,
+ "Редакторын чиглэл: "+($("notes").value.trim()||"Нэмэлт чиглэлгүй"),
+ "Эх сурвалжууд:\\n"+(sourceList.length?sourceList.join("\\n"):"Эх сурвалж өгөөгүй. Баримтыг баталгаагүй гэж тэмдэглэ."),
+ "Нийтлэлд танилцуулга, үндсэн хэсэг, canon ба онолын ялгаа, эх сурвалжийн хязгаарлалт, дүгнэлт оруул."
+ ].join("\\n\\n");
+ $("chatPrompt").value=prompt;$("chatResponse").value="";$("manualPanel").classList.remove("hidden");
+ say("genState","Заавар бэлэн. Хуулаад ChatGPT-д илгээнэ үү.");$("manualPanel").scrollIntoView({behavior:"smooth",block:"nearest"});
 }
-$("generate").onclick=generate;
+$("copyPrompt").onclick=async()=>{try{await navigator.clipboard.writeText($("chatPrompt").value);say("genState","Заавар хууллаа. ChatGPT-д буулгана уу.");}catch{say("genState","Зааврыг гараар сонгож хуулна уу.");}};
+$("importResponse").onclick=()=>{
+ try{
+  const d=JSON.parse($("chatResponse").value.trim());
+  const topic=$("topic").value.trim();
+  const title=String(d.title||topic).trim();
+  const slug=String(d.slug||topic.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")).trim();
+  const body=String(d.body||"").trim();
+  if(!title||!slug||body.length<100)throw new Error("Гарчиг, slug эсвэл нийтлэлийн агуулга дутуу байна.");
+  const canon=["canon","non_canon","theory","unknown"].includes(d.canon_status)?d.canon_status:"unknown";
+  const sourceList=$("sources").value.split(/\\n+/).map(x=>x.trim()).filter(Boolean);
+  currentDraft={title,slug,summary:String(d.summary||""),body,canon_status:canon,editorial_warnings:Array.isArray(d.editorial_warnings)?d.editorial_warnings:[],source_urls:sourceList,topic,universe:$("universe").value,content_type:$("type").value};savedId=null;
+  $("draftTitle").value=title;$("draftSlug").value=slug;$("draftSummary").value=currentDraft.summary;$("draftBody").value=body;$("canon").value=canon;
+  $("warnings").textContent=currentDraft.editorial_warnings.join("\\n")||"ChatGPT-ийн тусгай анхааруулга алга. Баримт, эх сурвалжийг редактор өөрөө шалгана.";
+  $("editor").classList.remove("hidden");say("genState","Ноорог редакторт орлоо. Шалгаад хадгална уу.");$("editor").scrollIntoView({behavior:"smooth"});
+ }catch(e){say("genState","JSON уншиж чадсангүй: "+e.message);}
+};
+
 $("discard").onclick=()=>{$("editor").classList.add("hidden");currentDraft=null;savedId=null;};
 async function saveDraft(){
  if(!currentDraft){say("saveMsg","Эхлээд AI ноорог үүсгэнэ үү.");return;}
