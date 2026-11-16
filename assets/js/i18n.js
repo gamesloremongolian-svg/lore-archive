@@ -18,6 +18,22 @@ const dict={
 "Бүх нийтлэл":["All articles","すべての記事","모든 게시글"],"Дэлгэрэнгүй":["Details","詳細","자세히"],"Оролцох":["Join","参加","참여"],"Бүртгүүлсэн":["Joined","参加済み","참여 완료"],"Одоогоор нийтлэгдсэн арга хэмжээ алга.":["No published events at this time.","現在公開中のイベントはありません。","현재 게시된 이벤트가 없습니다."],
 "Нэвтрэхийн тулд имэйлээ ашиглана уу.":["Please use your email to log in.","メールアドレスでログインしてください。","이메일을 사용해 로그인하세요."]
 };
+
+// Additional translations for game, character and Rank subpages.
+Object.assign(dict,{
+"Нүүр хуудас":["Home","ホーム","홈"],"Бүх ангилал":["All categories","すべてのカテゴリー","모든 카테고리"],
+"Бүс бүрийн соёл, түүх, Архон, гол дүрүүд, газар орны нууц, даалгаврын холбоосыг тусад нь эмхэтгэнэ.":["Explore each region's culture, history, Archons, characters, mysteries and quest connections.","各地域の文化、歴史、執政、主要人物、謎、任務のつながりを整理します。","각 지역의 문화, 역사, 집정관, 주요 인물, 비밀 및 퀘스트 연결을 정리합니다."],
+"Ертөнцийн тухай":["About the universe","世界について","세계관 소개"],"Судалгааны ангиллууд":["Research categories","研究カテゴリー","연구 카테고리"],"Баримт ба таамгийг ялгана":["Separating facts from theories","事実と考察を区別","사실과 추측 구분"],"Дүрүүдийн архив":["Character archive","キャラクターアーカイブ","캐릭터 아카이브"],"Дүрийн мэдээллийг сонгон дэлгэрүүлж үзнэ.":["Select a character to view more details.","キャラクターを選択して詳細を確認できます。","캐릭터를 선택해 자세한 정보를 확인하세요."],"Бүх бүс нутаг":["All regions","すべての地域","모든 지역"],"Бүх элемент":["All elements","すべての元素","모든 원소"],"Тохирох дүр олдсонгүй.":["No matching characters found.","該当するキャラクターが見つかりません。","일치하는 캐릭터가 없습니다."],"Хайлтын үгээ өөрчилнө үү.":["Try changing your search.","検索語を変更してください。","검색어를 변경해 보세요."],
+"Дүрийн танилцуулга":["Character profile","キャラクタープロフィール","캐릭터 프로필"],"Гарал үүсэл ба багш":["Origins and mentor","出自と師匠","기원과 스승"],"Чухал холбоо харилцаа":["Key relationships","重要な関係","주요 관계"],"Нэгдсэн Lore сан":["Unified Lore archive","統合Loreアーカイブ","통합 Lore 아카이브"],"Архив үзэх ↓":["Explore archive ↓","アーカイブを見る ↓","아카이브 보기 ↓"],"Судалгааны бүх ангилал":["All research categories","すべての研究カテゴリー","모든 연구 카테고리"],
+"Өдөр тутмын бонус":["Daily reward","デイリーボーナス","일일 보상"],"Өнөөдрийн бонус авах":["Claim today's reward","今日の報酬を受け取る","오늘의 보상 받기"],"Нийт XP":["Total XP","合計XP","총 XP"],"Lore Coins":["Lore Coins","Lore Coins","Lore Coins"],"Нэвтрэх":["Log in","ログイン","로그인"],"Нүүр хуудсанд нэвтэрсэн бол энэ хуудсанд автоматаар танигдана.":["If you are logged in on the home page, you will be recognized automatically here.","ホームページでログイン済みの場合、このページでも自動的に認識されます。","홈페이지에 로그인되어 있으면 이 페이지에서도 자동으로 인식됩니다。"],
+"Үндэстэн ба бүс нутаг":["Nations and regions","国と地域","국가 및 지역"],"Судалгааны бүх ангилал":["All research categories","すべての研究カテゴリー","모든 연구 카테고리"],"Эх сурвалж":["Sources","出典","출처"],"Спойлерын анхааруулга:":["Spoiler warning:","ネタバレ注意：","스포일러 주의:"],
+"Нууцлаг хотын амьдрал, дүрүүд болон ертөнцийн нууцыг нэг дороос судал.":["Explore the mysterious city's life, characters and secrets in one place.","謎めいた都市の暮らし、キャラクター、世界の秘密をまとめて調べましょう。","수수께끼의 도시 생활, 캐릭터 및 세계의 비밀을 한곳에서 살펴보세요."],
+"Оддын аялал, Aeon, Path болон галактик даяарх түүхийн холбоосыг тайл.":["Explore the Astral Express journey, Aeons, Paths and stories across the galaxy.","星穹列車の旅、星神、運命の道、銀河各地の物語を探ります。","은하 열차의 여정, 에이언즈, 운명의 길과 은하 전역의 이야기를 살펴보세요."],
+"New Eridu, Hollow үзэгдэл болон хотын нууцлаг амьдралын цаадах түүхийг нээ.":["Uncover the stories behind New Eridu, Hollows and the city's mysterious life.","新エリー都、ホロウ現象、都市の謎めいた暮らしの裏にある物語を探ります。","뉴에리두, 공동 현상과 도시의 신비로운 삶 뒤에 숨은 이야기를 밝혀보세요."],
+"Terra-ийн улс орнууд, Catastrophe, Originium болон түүхэн зөрчлийг судал.":["Explore Terra's nations, Catastrophes, Originium and historical conflicts.","テラの国々、カタストロフィ、源石、歴史的な対立を研究します。","테라의 국가, 재앙, 오리지늄 및 역사적 갈등을 연구합니다."],
+"Kivotos-ийн сургуулиуд, клубүүд, сурагчид болон хотын нууцыг судал.":["Explore Kivotos' schools, clubs, students and urban mysteries.","キヴォトスの学園、部活、生徒、都市の謎を調べます。","키보토스의 학교, 동아리, 학생 및 도시의 비밀을 살펴봅니다."]
+});
+
 const langNames={mn:"Монгол",en:"English",ja:"日本語",ko:"한국어"};
 let active="mn";
 const pairs=Object.entries(dict).sort((a,b)=>b[0].length-a[0].length);
