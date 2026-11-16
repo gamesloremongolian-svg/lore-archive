@@ -341,6 +341,21 @@ section[id]{scroll-margin-top:92px}
   <div class="portal-panel"><div class="eyebrow">PREMIUM MEMBERSHIP</div><h3>LOREVERSE Premium</h3><p>Заргүй унших, тусгай нийтлэл болон гишүүдэд зориулсан боломжууд. Гишүүнчлэлийн үнэ, хугацааг төлбөрийн систем бүрэн холбогдсоны дараа харуулна.</p><div class="portal-actions"><a class="btn primary" href="#payment">Төлбөрийн хэсэг рүү</a></div></div>
   <div class="portal-panel"><div class="eyebrow">ADVERTISE WITH US</div><h3>Платформд зар байршуулах</h3><p>Брэнд, тоглоом, үйлчилгээний сурталчилгаагаа LOREVERSE-ийн уншигчдад хүргэх хүсэлт илгээнэ.</p><div class="portal-actions"><a class="btn" href="#admin">Хамтын ажиллагаа</a></div></div>
  </div>
+
+ <div class="portal-panel" style="margin-top:16px" id="supportTickets">
+  <div class="eyebrow">CONTACT ADMIN · SUPPORT DESK</div><h3>Админтай холбогдох</h3>
+  <p>Аккаунт, төлбөр, Premium болон техникийн асуудлаа хүсэлтээр илгээнэ. Хариуг энэ хэсгээс хянах боломжтой.</p>
+  <form id="supportTicketForm">
+   <label for="ticketCategory">Асуудлын төрөл</label><select class="form-field" id="ticketCategory"><option value="account">Аккаунт / нэвтрэх</option><option value="payment">Төлбөр</option><option value="premium">Premium эрх</option><option value="technical">Техникийн алдаа</option><option value="community">Community / чат</option><option value="other">Бусад</option></select>
+   <label for="ticketSubject">Гарчиг</label><input class="form-field" id="ticketSubject" maxlength="160" minlength="3" required placeholder="Асуудлаа товч бичнэ үү">
+   <label for="ticketMessage">Дэлгэрэнгүй тайлбар</label><textarea class="form-field" id="ticketMessage" minlength="10" maxlength="5000" rows="4" required placeholder="Юу болсон, хэзээнээс эхэлсэн, ямар төхөөрөмж ашиглаж байгаагаа бичнэ үү."></textarea>
+   <label for="ticketAttachment">Зураг / баримтын холбоос (заавал биш)</label><input class="form-field" id="ticketAttachment" type="url" placeholder="https://...">
+   <button class="btn primary" type="submit">Админд хүсэлт илгээх</button><span class="portal-note" id="ticketCreateStatus" role="status"></span>
+  </form>
+  <h3 style="margin-top:22px">Миний хүсэлтүүд</h3><button class="btn" id="reloadMyTickets" type="button">Шинэчлэх</button>
+  <div id="myTicketsList"><p class="portal-note">Нэвтэрсний дараа хүсэлтүүд харагдана.</p></div>
+  <div id="ticketThread" class="portal-panel" hidden style="margin-top:14px"></div>
+ </div>
  <div class="portal-panel" style="margin-top:16px" id="staffApplication">
   <div class="eyebrow">JOIN THE LOREVERSE TEAM</div><h3>Ажилд орох анкет</h3>
   <p>LOREVERSE-ийн багт нэгдэх хүсэлтээ илгээнэ үү. Админ таны өргөдлийг шалгаж, шийдвэр гаргана.</p>
@@ -537,7 +552,7 @@ async function loadLoreLeaderboard(){
 }
 $("dailyReward").onclick=async()=>{try{const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Өдрийн бонус авахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.");const {data,error}=await supabase.rpc("claim_daily_lore_reward");if(error)throw error;$("dailyRewardStatus").textContent=data.message||"Бонус шалгагдлаа.";await refreshGamification();}catch(e){$("dailyRewardStatus").textContent=e.message;}};
 supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=await supabase.auth.getUser();communityUser=user;await refreshGamification();await loadCoinStore();},0)});
-(async()=>{try{await ensureCommunityUser();$("chatStatus").textContent="Нэгдсэн чатад холбогдлоо.";await loadChatChannels();await selectChatChannel("global","# Global Chat");await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();await loadPublishedLore();await loadCommunityEvents();await loadAccountPanel();await updatePresence();await loadOnlineCount();setInterval(async()=>{await updatePresence();await loadOnlineCount();},45000);}catch(e){$("chatStatus").textContent=e.message;$("dailyRewardStatus").textContent="Бонус авахын тулд бүртгэлтэй хэрэглэгч шаардлагатай.";}})();
+(async()=>{try{await ensureCommunityUser();$("chatStatus").textContent="Нэгдсэн чатад холбогдлоо.";await loadChatChannels();await selectChatChannel("global","# Global Chat");await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();await loadPublishedLore();await loadCommunityEvents();await loadAccountPanel();await loadMySupportTickets();await updatePresence();await loadOnlineCount();setInterval(async()=>{await updatePresence();await loadOnlineCount();},45000);}catch(e){$("chatStatus").textContent=e.message;$("dailyRewardStatus").textContent="Бонус авахын тулд бүртгэлтэй хэрэглэгч шаардлагатай.";}})();
 </script>
 
 <script>
@@ -584,7 +599,7 @@ $("profileSave").onclick=async()=>{
   $("rankDisplayName").textContent=display_name;
  }catch(e){$("profileStatus").textContent=e.message||"Алдаа гарлаа.";}
 };
-supabase.auth.onAuthStateChange(()=>{setTimeout(()=>{loadAccountPanel();loadAccountProfile();loadPublishedLore();loadCommunityEvents();},0);});
+supabase.auth.onAuthStateChange(()=>{setTimeout(()=>{loadAccountPanel();loadAccountProfile();loadPublishedLore();loadCommunityEvents();loadMySupportTickets();},0);});
 
 
 /* Published lore, bookmarks and editorial feedback */
@@ -629,6 +644,41 @@ async function loadCommunityEvents(){
  el.innerHTML=(data||[]).map(e=>'<article class="article"><div class="tag">'+safeText(e.event_type)+' · EVENT</div><h3>'+safeText(e.title)+'</h3><p>'+safeText(e.description)+'</p><p class="portal-note">'+new Date(e.starts_at).toLocaleString("mn-MN")+' – '+new Date(e.ends_at).toLocaleString("mn-MN")+'</p><p class="portal-note">Шагналын сан: '+e.reward_xp+' XP · '+e.reward_coins+' Coins</p><button type="button" data-join-event="'+e.id+'" '+(joined.has(e.id)?'disabled':'')+'>'+(joined.has(e.id)?'Бүртгүүлсэн':'Оролцох')+'</button></article>').join("")||'<p class="portal-note">Одоогоор нийтлэгдсэн арга хэмжээ алга.</p>';
  el.querySelectorAll("[data-join-event]").forEach(b=>b.onclick=async()=>{try{const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Оролцохын тулд нэвтэрнэ үү.");const {error}=await supabase.from("event_participants").insert({event_id:b.dataset.joinEvent,user_id:user.id});if(error)throw error;$("publicEventsStatus").textContent="Арга хэмжээнд бүртгүүллээ." ;await loadCommunityEvents();}catch(e){$("publicEventsStatus").textContent=e.message;}});
 }
+
+
+/* User support ticket center */
+let activeSupportTicket=null;
+const ticketCategoryName={account:"Аккаунт",payment:"Төлбөр",premium:"Premium",technical:"Техникийн алдаа",community:"Community",other:"Бусад"};
+async function loadMySupportTickets(){
+ const {data:{user}}=await supabase.auth.getUser(),el=$("myTicketsList");
+ if(!user){el.innerHTML='<p class="portal-note">Хүсэлт илгээж, хариугаа харахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.</p>';return;}
+ const {data,error}=await supabase.from("support_tickets").select("id,ticket_number,category,subject,status,created_at,updated_at,last_reply_at").eq("user_id",user.id).order("updated_at",{ascending:false}).limit(30);
+ if(error){el.textContent=error.message;return;}
+ el.innerHTML=(data||[]).map(t=>'<article class="chat-message"><div class="tag">#'+t.ticket_number+' · '+safeText(ticketCategoryName[t.category]||t.category)+' · '+safeText(t.status)+'</div><b>'+safeText(t.subject)+'</b><p class="portal-note">'+new Date(t.updated_at).toLocaleString("mn-MN")+'</p><button class="btn" type="button" data-open-ticket="'+t.id+'">Хүсэлт харах / хариулах</button></article>').join("")||'<p class="portal-note">Та одоогоор хүсэлт илгээгээгүй байна.</p>';
+ el.querySelectorAll("[data-open-ticket]").forEach(b=>b.onclick=()=>openSupportTicket(b.dataset.openTicket));
+}
+async function openSupportTicket(id){
+ const {data:{user}}=await supabase.auth.getUser();if(!user)return;
+ const {data:t,error}=await supabase.from("support_tickets").select("*").eq("id",id).eq("user_id",user.id).single();
+ const panel=$("ticketThread");panel.hidden=false;
+ if(error){panel.textContent=error.message;return;}
+ activeSupportTicket=t.id;
+ const {data:replies,rerr}=await supabase.from("support_ticket_replies").select("id,sender_id,message,attachment_url,is_staff,created_at").eq("ticket_id",t.id).order("created_at");
+ if(rerr){panel.textContent=rerr.message;return;}
+ panel.innerHTML='<div class="eyebrow">SUPPORT REQUEST #'+t.ticket_number+'</div><h3>'+safeText(t.subject)+'</h3><p class="portal-note">'+safeText(ticketCategoryName[t.category]||t.category)+' · '+safeText(t.status)+'</p><div class="chat-message"><b>Таны анхны хүсэлт</b><p>'+safeText(t.initial_message)+'</p>'+(t.attachment_url?'<a href="'+safeText(t.attachment_url)+'" target="_blank" rel="noopener">Хавсралт нээх</a>':'')+'</div>'+(replies||[]).map(r=>'<div class="chat-message"><b>'+(r.is_staff?'LOREVERSE Support':'Та')+'</b><p>'+safeText(r.message)+'</p>'+(r.attachment_url?'<a href="'+safeText(r.attachment_url)+'" target="_blank" rel="noopener">Хавсралт нээх</a>':'')+'<small class="portal-note">'+new Date(r.created_at).toLocaleString("mn-MN")+'</small></div>').join("")+(["resolved","closed"].includes(t.status)?'<p class="portal-note">Энэ хүсэлт хаагдсан байна. Шинэ асуудал гарвал шинэ хүсэлт үүсгэнэ үү.</p>':'<form id="ticketReplyForm"><label for="ticketReplyMessage">Хариу бичих</label><textarea class="form-field" id="ticketReplyMessage" minlength="1" maxlength="5000" required rows="3"></textarea><button class="btn primary" type="submit">Хариу илгээх</button><span id="ticketReplyStatus" class="portal-note"></span></form>');
+ const form=$("ticketReplyForm");if(form)form.onsubmit=async e=>{e.preventDefault();try{const {data:{user}}=await supabase.auth.getUser();const message=$("ticketReplyMessage").value.trim();const {error}=await supabase.from("support_ticket_replies").insert({ticket_id:t.id,sender_id:user.id,message,is_staff:false});if(error)throw error;await openSupportTicket(t.id);await loadMySupportTickets();}catch(err){$("ticketReplyStatus").textContent=err.message;}};
+ panel.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+$("supportTicketForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ try{const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Хүсэлт илгээхийн тулд эхлээд бүртгүүлж нэвтэрнэ үү.");
+ const attachment=$("ticketAttachment").value.trim()||null;if(attachment&&!/^https:\/\//i.test(attachment))throw new Error("Хавсралтын холбоос HTTPS байх ёстой.");
+ const {data,error}=await supabase.from("support_tickets").insert({user_id:user.id,category:$("ticketCategory").value,subject:$("ticketSubject").value.trim(),initial_message:$("ticketMessage").value.trim(),attachment_url:attachment}).select("id,ticket_number").single();
+ if(error)throw error;$("ticketCreateStatus").textContent="Хүсэлт #"+data.ticket_number+" амжилттай илгээгдлээ.";
+ $("supportTicketForm").reset();await loadMySupportTickets();await openSupportTicket(data.id);
+ }catch(err){$("ticketCreateStatus").textContent=err.message||"Илгээхэд алдаа гарлаа.";}
+});
+$("reloadMyTickets").onclick=loadMySupportTickets;
 
 </script>
 </body></html>
