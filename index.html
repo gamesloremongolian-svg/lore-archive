@@ -440,7 +440,7 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
   <div class="live-box"><strong id="onlineCount">—</strong><span>Яг одоо онлайн</span></div>
   <div class="live-box"><strong id="visitCount">—</strong><span>Нийт зочлол</span></div>
  </div>
- <p class="portal-note">Цаг бодит төхөөрөмжийн бүсийн тохиргоогоор ажиллана. Онлайн болон нийт зочлолын тоолуурыг үнэн зөв харуулахын тулд серверийн presence/analytics холболт шаардлагатай; одоогоор тоо зохиомлоор харуулахгүй.</p>
+ <p class="portal-note">Нийт зочлол — серверт бүртгэгдсэн хуудас үзэлтийн нийлбэр. Онлайн — сүүлийн 5 минутын идэвхтэй session; тоо 60 секунд тутам шинэчлэгдэнэ.</p>
 </section>
 
 <section class="section" id="all-categories">
@@ -558,7 +558,9 @@ try{
  const day=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Ulaanbaatar",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date()).replace(/-/g,"");
  const key="loreverse_visit_"+day;let visitId=localStorage.getItem(key);
  if(!visitId){visitId="lv_"+day+"_"+(crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2)+Date.now().toString(36));localStorage.setItem(key,visitId);}
- supabase.rpc("track_loreverse_visit",{p_session_id:visitId}).then(({error})=>{if(error)console.warn("Analytics:",error.message);});
+ const updateActivity=async()=>{try{await supabase.rpc("touch_loreverse_presence",{p_session_id:visitId});const {data,error}=await supabase.rpc("get_loreverse_site_stats");if(error)throw error;const stats=data||{};const fmt=n=>Number(n||0).toLocaleString("mn-MN");$("visitCount").textContent=fmt(stats.total_visits);$("onlineCount").textContent=fmt(stats.online_now);}catch(error){console.warn("Analytics:",error.message);$("visitCount").textContent="—";$("onlineCount").textContent="—";}};
+ supabase.rpc("track_loreverse_visit",{p_session_id:visitId}).then(async({error})=>{if(error)console.warn("Analytics:",error.message);await updateActivity();});
+ window.setInterval(updateActivity,60000);
 }catch(e){console.warn("Analytics unavailable:",e.message);}
 
 const memberMsg=t=>{$("memberStatus").textContent=t;};
