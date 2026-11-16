@@ -1097,6 +1097,10 @@ input[type=checkbox]{accent-color:#a98bff}a:focus-visible,button:focus-visible,i
 
 <section class="section" id="manga">
  <div class="section-head"><div><div class="eyebrow">MANGA ARCHIVE</div><h2>Манганы ертөнц</h2><p>Манга бүтээлүүдийг нэрээр хайж, нүүр зураг болон товч танилцуулгыг үзээрэй.</p></div></div>
+ <div class="manga-featured">
+  <div class="manga-rail-head"><strong>ТРЕНД БОЛЖ БУЙ МАНГА</strong><span>Автоматаар гүйлгэнэ · Хулгана эсвэл хуруугаар түр зогсоож болно</span></div>
+  <div class="carousel-viewport" id="mangaRailViewport"><div class="carousel-track" id="mangaPopularRail"><div class="media-card"><strong>Мэдээлэл ачаалж байна…</strong></div></div></div>
+ </div>
  <div class="archive">
   <div class="toolbar"><input class="search" id="mangaSearch" type="search" placeholder="Манганы нэрээр хайх..."><button class="btn primary" id="mangaSearchBtn" type="button">Манга хайх</button></div>
   <p class="portal-note" id="mangaStatus" aria-live="polite">AniList каталогоос манганы мэдээлэл хайна.</p>
@@ -2078,6 +2082,53 @@ document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBank
   nodes.forEach((node,i)=>{if(translated[i]&&translated[i]!==originals[i])node.textContent=translated[i];});
  };
 })(); 
+
+/* Manga featured rail — matched to the Game Universe cards */
+#manga .manga-featured{margin:0 0 20px;padding:17px;border:1px solid #594077;border-radius:20px;background:linear-gradient(145deg,#1b1730,#111020)}
+#manga .manga-rail-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+#manga .manga-rail-head strong{font-size:11px;letter-spacing:.14em;color:#d9b4ff}
+#manga .manga-rail-head span{font-size:10px;color:var(--muted)}
+#manga .carousel-viewport{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;mask-image:linear-gradient(90deg,transparent,#000 2%,#000 98%,transparent)}
+#manga .carousel-viewport::-webkit-scrollbar{display:none}
+#manga .carousel-track{width:max-content;min-width:100%;animation:none!important;transform:none!important}
+#manga .carousel-track .media-card{flex:0 0 230px;min-height:175px}
+@media(max-width:650px){#manga .manga-featured{padding:12px}#manga .carousel-track .media-card{flex-basis:195px}}
+@media(prefers-reduced-motion:reduce){#manga .carousel-viewport{scroll-behavior:auto}}
+
+/* Trending Manga cards + seamless auto-scroll */
+(()=>{
+ const rail=document.getElementById("mangaPopularRail"),viewport=document.getElementById("mangaRailViewport");
+ if(!rail||!viewport)return;
+ const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#39;"}[c]));
+ const gql='query{Page(page:1,perPage:18){media(type:MANGA,isAdult:false,sort:TRENDING_DESC){siteUrl title{romaji english userPreferred} coverImage{large medium} format startDate{year}}}}';
+ fetch("https://graphql.anilist.co",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({query:gql})})
+ .then(r=>{if(!r.ok)throw new Error("AniList "+r.status);return r.json();})
+ .then(payload=>{
+  const rows=payload.data?.Page?.media||[];if(!rows.length)throw new Error("Манга олдсонгүй");
+  const cards=rows.map(m=>{
+   const title=m.title?.userPreferred||m.title?.english||m.title?.romaji||"Манга";
+   const cover=m.coverImage?.large||m.coverImage?.medium||"";
+   const year=m.startDate?.year||"";
+   return '<a class="media-card" href="'+esc(m.siteUrl||"https://anilist.co")+'" target="_blank" rel="noopener noreferrer" style="background-image:linear-gradient(0deg,#080817ed 0%,#08081730 70%),url(\''+esc(cover)+'\')"><small> MANGA · '+esc(m.format||"COMIC")+'</small><strong>'+esc(title)+'</strong><span>'+esc(year||"AniList каталог")+'</span></a>';
+  }).join("");
+  rail.innerHTML=cards+cards;
+  Array.from(rail.children).slice(rows.length).forEach(node=>{node.setAttribute("aria-hidden","true");node.querySelectorAll("a,button").forEach(a=>a.tabIndex=-1);});
+  let raf=0,last=0,paused=false,resumeTimer=0;
+  const half=()=>rail.scrollWidth/2;
+  function tick(t){if(!last)last=t;const dt=Math.min(40,t-last);last=t;if(!paused&&half()>viewport.clientWidth){viewport.scrollLeft+=dt*.035;if(viewport.scrollLeft>=half())viewport.scrollLeft-=half();}raf=requestAnimationFrame(tick);}
+  function pause(){paused=true;clearTimeout(resumeTimer);}
+  function resume(){clearTimeout(resumeTimer);resumeTimer=setTimeout(()=>{paused=false;},1300);}
+  viewport.addEventListener("pointerdown",pause,{passive:true});
+  viewport.addEventListener("pointerup",resume,{passive:true});
+  viewport.addEventListener("pointercancel",resume,{passive:true});
+  viewport.addEventListener("mouseenter",pause);
+  viewport.addEventListener("mouseleave",resume);
+  viewport.addEventListener("focusin",pause);
+  viewport.addEventListener("focusout",resume);
+  if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches)raf=requestAnimationFrame(tick);
+  document.addEventListener("visibilitychange",()=>{if(document.hidden){cancelAnimationFrame(raf);last=0;}else if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches){last=0;raf=requestAnimationFrame(tick);}});
+ }).catch(error=>{rail.innerHTML='<div class="media-card"><strong>Манганы мэдээлэл түр ачаалж чадсангүй</strong><span>Доорх хайлтаар бүтээлээ хайж болно.</span></div>';console.warn("Manga rail:",error);});
+})();
 
 /* Dedicated Manga archive search */
 (()=>{
