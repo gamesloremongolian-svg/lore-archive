@@ -1189,12 +1189,46 @@ input[type=checkbox]{accent-color:#a98bff}a:focus-visible,button:focus-visible,i
  </div>
  <p class="portal-note">Нийт зочлол — серверт бүртгэгдсэн хуудас үзэлтийн нийлбэр. Онлайн — сүүлийн 5 минутын идэвхтэй session; тоо 60 секунд тутам шинэчлэгдэнэ.</p>
 </section>
-
-
-
-
-
-
+<script id="loreverseActivityClock">
+(()=>{const el=document.getElementById("localClock");if(!el)return;const tick=()=>{try{el.textContent=new Intl.DateTimeFormat("mn-MN",{timeZone:"Asia/Ulaanbaatar",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(new Date())}catch(e){el.textContent="Цаг ачаалж чадсангүй"}};tick();setInterval(tick,1000);})();
+</script>
+<script type="module" id="loreverseActivityAnalytics">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
+const client=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
+const $id=id=>document.getElementById(id);
+const fmt=n=>Number(n||0).toLocaleString("mn-MN");
+(async()=>{
+ const online=$id("onlineCount"),visits=$id("visitCount");
+ try{
+  const day=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Ulaanbaatar",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date()).replace(/-/g,"");
+  const key="loreverse_visit_"+day;
+  let visitId="";
+  try{visitId=localStorage.getItem(key)||""}catch(_){}
+  if(!/^[A-Za-z0-9_-]{16,100}$/.test(visitId)){
+   const uuid=globalThis.crypto?.randomUUID?.()||Math.random().toString(36).slice(2)+Date.now().toString(36);
+   visitId="lv_"+day+"_"+uuid;
+   try{localStorage.setItem(key,visitId)}catch(_){}
+  }
+  const refresh=async()=>{
+   const touched=await client.rpc("touch_loreverse_presence",{p_session_id:visitId});
+   if(touched.error)throw touched.error;
+   const result=await client.rpc("get_loreverse_site_stats");
+   if(result.error)throw result.error;
+   const stats=result.data||{};
+   visits.textContent=fmt(stats.total_visits);
+   online.textContent=fmt(stats.online_now);
+  };
+  const tracked=await client.rpc("track_loreverse_visit",{p_session_id:visitId});
+  if(tracked.error)throw tracked.error;
+  await refresh();
+  setInterval(()=>refresh().catch(err=>console.warn("LOREVERSE activity refresh:",err.message)),60000);
+ }catch(err){
+  console.error("LOREVERSE activity:",err);
+  if(online)online.textContent="—";
+  if(visits)visits.textContent="—";
+ }
+})();
+</script>
 
 
 <section class="section archive" id="legacyArchive" hidden><div class="section-head"><div><div class="eyebrow">LORE DATABASE</div><h2>Lore архив</h2><p>Хуучин танилцуулгын жишээ хэсэг. Нийтлэгдсэн бүх материал үндсэн нэгдсэн архивт байна.</p></div></div><div class="toolbar"><input id="search" class="search" type="search" placeholder="Нийтлэл, дүр, сэдэв хайх..."><select id="sort" class="select"><option value="new">Шинэ нь эхэнд</option><option value="az">Нэрээр A–Z</option></select></div><div class="filters" id="filters"><button class="chip active" data-game="all">Бүгд</button><button class="chip" data-game="Genshin Impact">Genshin</button><button class="chip" data-game="Wuthering Waves">Wuthering Waves</button><button class="chip" data-game="ANANTA">ANANTA</button><button class="chip" data-game="Honkai: Star Rail">Honkai: Star Rail</button><button class="chip" data-game="Zenless Zone Zero">Zenless Zone Zero</button><button class="chip" data-game="Arknights">Arknights</button><button class="chip" data-game="Blue Archive">Blue Archive</button></div><div class="articles" id="articles"></div><div class="empty" id="empty">Тохирох нийтлэл олдсонгүй.</div><p class="note">Тайлбар: Эхний нийтлэлүүд нь архивын танилцуулга контент. Албан ёсны эх сурвалжаар нягталсан судалгааг редакцын шалгалтын дараа нийтэлнэ.</p></section>
@@ -1329,14 +1363,7 @@ import { Browser } from "@capacitor/browser";
 import { Capacitor } from "@capacitor/core";
 const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
 const $=id=>document.getElementById(id);
-try{
- const day=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Ulaanbaatar",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date()).replace(/-/g,"");
- const key="loreverse_visit_"+day;let visitId=localStorage.getItem(key);
- if(!visitId){visitId="lv_"+day+"_"+(crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2)+Date.now().toString(36));localStorage.setItem(key,visitId);}
- const updateActivity=async()=>{try{await supabase.rpc("touch_loreverse_presence",{p_session_id:visitId});const {data,error}=await supabase.rpc("get_loreverse_site_stats");if(error)throw error;const stats=data||{};const fmt=n=>Number(n||0).toLocaleString("mn-MN");$("visitCount").textContent=fmt(stats.total_visits);$("onlineCount").textContent=fmt(stats.online_now);}catch(error){console.warn("Analytics:",error.message);$("visitCount").textContent="—";$("onlineCount").textContent="—";}};
- supabase.rpc("track_loreverse_visit",{p_session_id:visitId}).then(async({error})=>{if(error)console.warn("Analytics:",error.message);await updateActivity();});
- window.setInterval(updateActivity,60000);
-}catch(e){console.warn("Analytics unavailable:",e.message);}
+/* Site activity is initialized by an isolated script below the activity section. */
 
 
 
