@@ -45,7 +45,7 @@
  <main class="main">
   <div class="chat-head"><div style="display:flex;align-items:center;gap:10px"><button class="btn mobile-back" id="mobileBack" type="button">←</button><div><h2 id="chatTitle">Хувийн чат</h2><p id="chatSubtitle">Харилцах гишүүнээ сонгоно уу</p></div></div><span class="status" id="onlineStatus">● PRIVATE</span></div>
   <div class="messages" id="messageList"><div class="empty"><div class="symbol">✦</div><h2>Шууд харилцаа</h2><p>Зүүн талаас гишүүн сонгоод шинэ яриа эхлүүлээрэй. Таны хувийн зурвас бусдад харагдахгүй.</p></div></div>
-  <form class="compose" id="messageForm"><textarea class="field" id="messageInput" rows="1" maxlength="2000" disabled placeholder="Эхлээд зүүн талаас гишүүн сонгоно уу…"></textarea><button class="btn primary" id="sendButton" type="submit" disabled>Илгээх</button></form>
+  <form class="compose" id="messageForm"><textarea class="field" id="messageInput" rows="1" maxlength="2000" placeholder="Мессежээ бичнэ үү… (илгээхийн тулд эхлээд гишүүн сонгоно)"></textarea><button class="btn primary" id="sendButton" type="submit" disabled>Илгээх</button></form>
  </main>
 </div>
 
@@ -171,7 +171,7 @@ $("messageForm").addEventListener("submit",async e=>{
 $("messageInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("messageForm").requestSubmit();}});
 $("refreshButton").onclick=async()=>{await loadMembers($("memberSearch").value);await loadConversations();if(activeConversation)await loadMessages();};
 $("mobileBack").onclick=()=>$("appShell").classList.add("hide-sidebar");
-$("logoutButton").onclick=async()=>{if(refreshPresenceTimer)clearInterval(refreshPresenceTimer);if(messageChannel)await supabase.removeChannel(messageChannel);await supabase.auth.signOut({scope:"local"});currentUser=null;activeConversation=null;$("messageInput").disabled=true;$("sendButton").disabled=true;$("messageInput").placeholder="Эхлээд зүүн талаас гишүүн сонгоно уу…";$("appShell").classList.add("hidden");$("authWrap").classList.remove("hidden");setAuthMode("login");};
+$("logoutButton").onclick=async()=>{if(refreshPresenceTimer)clearInterval(refreshPresenceTimer);if(messageChannel)await supabase.removeChannel(messageChannel);await supabase.auth.signOut({scope:"local"});currentUser=null;activeConversation=null;$("messageInput").disabled=false;$("sendButton").disabled=true;$("messageInput").value="";$("messageInput").placeholder="Мессежээ бичнэ үү… (илгээхийн тулд эхлээд гишүүн сонгоно)";$("appShell").classList.add("hidden");$("authWrap").classList.remove("hidden");setAuthMode("login");};
 async function boot(){
  const {data:{user}}=await supabase.auth.getUser();
  if(user&&!user.is_anonymous){currentUser=user;try{await enterChat();}catch(err){$("authWrap").classList.remove("hidden");note(err.message||"Профайл ачаалж чадсангүй.");}}
