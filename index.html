@@ -231,6 +231,7 @@ section[id]{scroll-margin-top:92px}
 #loreAiQuestion{min-width:0;flex:1;resize:none;background:#262235;border:1px solid #65527b;border-radius:12px;color:white;padding:11px;font:inherit}
 #loreAiForm button{border:0;border-radius:12px;background:#a56ae5;color:#160d20;padding:0 15px;font-weight:800}
 #loreAiMeta{padding:0 14px 9px;color:#b9a9ca;font-size:11px}
+#loreAiContactAdmin{margin:0 12px 12px;padding:10px 12px;border:1px solid #8060a4;border-radius:11px;background:#211832;color:#f6dfff;font-weight:750;cursor:pointer}#loreAiContactAdmin:hover{background:#35214b;border-color:#d58bff}
 @media(max-width:480px){#loreAiLauncher{right:12px;bottom:14px}#loreAiPanel{right:8px;bottom:70px;width:calc(100vw - 16px);height:calc(100dvh - 92px)}}
 
 /* Mobile viewport safety and responsive overflow fixes */
@@ -1886,6 +1887,7 @@ supabase.auth.onAuthStateChange(()=>{setTimeout(()=>{loadAdAdmin();},0);});
  <div id="loreAiMessages" aria-live="polite"><div class="lore-ai-msg bot">Сайн байна уу! Би LOREVERSE-ийн AI туслах. Тоглоом, дүр, ертөнцийн lore-ийн талаар асуугаарай. Хариултаа нийтлэгдсэн LOREVERSE мэдээллийн сантай тулгана.</div></div>
  <div id="loreAiMeta">Нэвтэрсэн хэрэглэгчид өдөрт 10 асуулт · API хэрэглээ төлбөртэй</div>
  <form id="loreAiForm"><textarea id="loreAiQuestion" rows="2" maxlength="1800" placeholder="Lore-ийн талаар асуугаарай..." required></textarea><button id="loreAiSend" type="submit">Илгээх</button></form>
+ <button id="loreAiContactAdmin" type="button">Админтай холбогдох</button>
 </section>
 <style id="loreAiEmergencyLauncherFix">
 #loreAiLauncher{position:fixed!important;right:18px!important;bottom:22px!important;z-index:2147483647!important;display:flex!important;align-items:center!important;justify-content:center!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;touch-action:manipulation!important;cursor:pointer!important}
@@ -1893,7 +1895,7 @@ supabase.auth.onAuthStateChange(()=>{setTimeout(()=>{loadAdAdmin();},0);});
 #loreAiPanel.open{display:flex!important}
 </style>
 <script id="loreAiEmergencyLauncherFixScript">
-(()=>{const launch=document.getElementById("loreAiLauncher"),panel=document.getElementById("loreAiPanel"),close=document.getElementById("loreAiClose");if(!launch||!panel)return;launch.addEventListener("click",()=>{panel.classList.add("open");panel.setAttribute("aria-hidden","false");},{capture:true});if(close)close.addEventListener("click",()=>{panel.classList.remove("open");panel.setAttribute("aria-hidden","true");},{capture:true});})();
+(()=>{const launch=document.getElementById("loreAiLauncher"),panel=document.getElementById("loreAiPanel"),close=document.getElementById("loreAiClose");if(!launch||!panel)return;launch.addEventListener("click",()=>{panel.classList.add("open");panel.setAttribute("aria-hidden","false");},{capture:true});if(close)close.addEventListener("click",()=>{panel.classList.remove("open");panel.setAttribute("aria-hidden","true");},{capture:true});const contact=document.getElementById("loreAiContactAdmin");if(contact)contact.addEventListener("click",()=>{panel.classList.remove("open");panel.setAttribute("aria-hidden","true");const target=document.getElementById("supportTickets");if(target){target.scrollIntoView({behavior:"smooth",block:"start"});target.setAttribute("tabindex","-1");setTimeout(()=>target.focus({preventScroll:true}),450);}},{capture:true});})();
 </script>
 <script>
 (()=>{const b=document.getElementById('navToggle'),n=document.getElementById('mainNav');if(!b||!n)return;b.addEventListener('click',()=>{const open=n.classList.toggle('open');b.setAttribute('aria-expanded',String(open));b.textContent=open?'✕':'☰';});n.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{n.classList.remove('open');b.setAttribute('aria-expanded','false');b.textContent='☰';}));})();
