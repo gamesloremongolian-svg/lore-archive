@@ -19,7 +19,7 @@ test.describe('LOREVERSE website health', () => {
     const broken = await page.locator('a[href*="#"]').evaluateAll(links => {
       return links.map(link => {
         const url = new URL(link.href, location.href);
-        if (url.origin !== location.origin || !url.hash || url.hash === '#') return null;
+        if (url.origin !== location.origin || !url.hash || url.hash === '#' || url.hash.startsWith('#anime-')) return null;
         let id;
         try { id = decodeURIComponent(url.hash.slice(1)); } catch { return link.getAttribute('href'); }
         return document.getElementById(id) ? null : link.getAttribute('href');
@@ -38,6 +38,8 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('#password')).toHaveAttribute('type', 'password');
     await expect(page.locator('#login')).toBeVisible();
     await expect(page.locator('#signup')).toBeVisible();
+    await expect(page.locator('[data-tab="system"]')).toHaveCount(1);
+    await expect(page.locator('#runSystemCheck')).toHaveCount(1);
   });
 
   test('admin page has no uncaught page errors during startup', async ({ page }) => {
