@@ -11,11 +11,11 @@
 </section>
 <section class="panel hidden" id="recoveryPanel"><div class="eyebrow">ACCOUNT RECOVERY</div><h2 class="title">Нууц үг сэргээх</h2><p class="muted">Имэйлээр ирсэн сэргээх холбоосоор нээсний дараа шинэ нууц үгээ оруулна.</p><label>Шинэ нууц үг</label><input id="newPassword" type="password" autocomplete="new-password" minlength="8" placeholder="Хамгийн багадаа 8 тэмдэгт"><label>Шинэ нууц үг давтах</label><input id="confirmPassword" type="password" autocomplete="new-password" minlength="8" placeholder="Нууц үгээ дахин оруулна уу"><button id="savePassword">Шинэ нууц үг хадгалах</button><div id="recoveryMsg" class="status"></div></section>
 <section class="panel hidden" id="dash"><div class="eyebrow">LOREVERSE CONTROL CENTER</div><h1 class="title">Удирдлагын самбар</h1><div id="welcome" class="status"></div><div class="statgrid"><div class="stat"><span class="muted">Нийтлэл</span><b id="postCount">—</b></div><div class="stat"><span class="muted">Хүлээгдэж буй зар</span><b id="adCount">—</b></div><div class="stat"><span class="muted">Гишүүнчлэл</span><b id="memberCount">—</b></div></div>
-<div class="tabs"><button data-tab="post">Нийтлэл</button><button data-tab="ads">Зар</button><button data-tab="team">Баг</button><button data-tab="premium">Premium</button><button data-tab="community">Community</button><button id="logout">Гарах</button></div>
+<div class="tabs"><button data-tab="post">Нийтлэл</button><button data-tab="ads">Зар</button><button data-tab="team">Баг</button><button data-tab="premium">Premium</button><button data-tab="community">Community</button><button data-tab="users">Бүртгэлүүд</button><button id="logout">Гарах</button></div>
 <div id="postTab"><h2>Нийтлэл үүсгэх</h2><label>Агуулгын төрөл</label><select id="type"><option value="anime">Анимэ</option><option value="game">Тоглоом</option><option value="manga">Манга</option><option value="lore">Lore</option><option value="news">Мэдээ</option><option value="guide">Гарын авлага</option></select><label>Гарчиг</label><input id="postTitle" placeholder="Нийтлэлийн гарчиг"><label>URL slug (латин)</label><input id="slug" placeholder="article-slug"><label>Товч тайлбар</label><textarea id="summary" placeholder="Товч танилцуулга"></textarea><label>Үндсэн агуулга (текст)</label><textarea id="body" placeholder="Нийтлэлийн агуулга"></textarea><label>Нүүр зургийн URL</label><input id="cover" placeholder="https://..."><label><input id="isPremium" type="checkbox"> Premium гишүүдэд зориулсан нийтлэл</label><div class="row"><button id="draft">Ноорог хадгалах</button><button id="publish">Нийтлэх</button></div><div id="postMsg" class="status"></div></div>
 <div id="adsTab" class="hidden"><h2>Зарын хүсэлтүүд</h2><div id="adsList" class="muted">Зар татаж байна…</div></div>
 <div id="teamTab" class="hidden"><h2>Багийн эрх</h2><p class="muted">Owner/Admin нь багийн гишүүдийг удирдана. Шинэ гишүүнийг эхлээд хэрэглэгчээр бүртгүүлсний дараа эрх олгоно.</p><label>Багийн гишүүний хэрэглэгчийн UUID</label><input id="staffId" placeholder="Auth user UUID"><label>Эрх</label><select id="staffRole"><option value="editor">Editor — нийтлэл</option><option value="ads_manager">Ads manager — зар</option><option value="admin">Admin — удирдлага</option></select><button id="addStaff">Эрх олгох</button><div id="teamMsg" class="status"></div></div><div id="premiumTab" class="hidden"><h2>Premium багцын үнэ</h2><p class="muted">Үнэ MNT-ээр тохируулна. QPay автомат нэхэмжлэл хараахан холбогдоогүй.</p><div id="planList">Багцуудыг ачаалж байна…</div><div id="planMsg" class="status"></div></div>
-</div><div id="communityTab" class="hidden"><h2>Community moderation</h2><p class="muted">Гомдол шалгах, мессеж устгах, хэрэглэгчийг 24 цаг mute хийх. Бүх үйлдэл админы бүртгэлтэй хадгалагдана.</p><button id="reloadCommunity">Шинэчлэх</button><div id="communityReports" class="status">Гомдлуудыг ачаалж байна…</div><h3>Сүүлийн мессежүүд · Pin удирдлага</h3><div id="communityPins" class="status">Мессежүүдийг ачаалж байна…</div><h3>XP / Lore Coins шагнал олгох</h3><p class="muted">Зөвхөн баталгаажсан хувь нэмэрт олгоно. Reference ID нь давхар шагналаас хамгаална.</p><label>Хэрэглэгчийн UUID</label><input id="rewardUserId" placeholder="Auth user UUID"><div class="row"><div><label>Үйл явдлын төрөл</label><input id="rewardEvent" value="approved_contribution"></div><div><label>Reference ID (давтагдашгүй)</label><input id="rewardRef" placeholder="post-id эсвэл review-id"></div></div><div class="row"><div><label>XP (0–500)</label><input id="rewardXp" type="number" min="0" max="500" value="20"></div><div><label>Lore Coins (0–500)</label><input id="rewardCoins" type="number" min="0" max="500" value="5"></div></div><button id="grantReward">Шагнал олгох</button><div id="rewardMsg" class="status"></div></div>
+</div><div id="usersTab" class="hidden"><h2>Хэрэглэгчийн бүртгэл</h2><p class="muted">Бүртгэлүүдийг харах болон шаардлагатай үед Auth бүртгэлийг устгах. Идэвхтэй багийн гишүүд болон өөрийн админ бүртгэлийг устгах боломжгүй. Устгал буцаах боломжгүй.</p><div class="row"><button id="reloadUsers" type="button">Жагсаалт шинэчлэх</button></div><div id="usersMsg" class="status">Хэрэглэгчдийн жагсаалтыг ачаална уу.</div><div id="usersList"></div></div><div id="communityTab" class="hidden"><h2>Community moderation</h2><p class="muted">Гомдол шалгах, мессеж устгах, хэрэглэгчийг 24 цаг mute хийх. Бүх үйлдэл админы бүртгэлтэй хадгалагдана.</p><button id="reloadCommunity">Шинэчлэх</button><div id="communityReports" class="status">Гомдлуудыг ачаалж байна…</div><h3>Сүүлийн мессежүүд · Pin удирдлага</h3><div id="communityPins" class="status">Мессежүүдийг ачаалж байна…</div><h3>XP / Lore Coins шагнал олгох</h3><p class="muted">Зөвхөн баталгаажсан хувь нэмэрт олгоно. Reference ID нь давхар шагналаас хамгаална.</p><label>Хэрэглэгчийн UUID</label><input id="rewardUserId" placeholder="Auth user UUID"><div class="row"><div><label>Үйл явдлын төрөл</label><input id="rewardEvent" value="approved_contribution"></div><div><label>Reference ID (давтагдашгүй)</label><input id="rewardRef" placeholder="post-id эсвэл review-id"></div></div><div class="row"><div><label>XP (0–500)</label><input id="rewardXp" type="number" min="0" max="500" value="20"></div><div><label>Lore Coins (0–500)</label><input id="rewardCoins" type="number" min="0" max="500" value="5"></div></div><button id="grantReward">Шагнал олгох</button><div id="rewardMsg" class="status"></div></div>
 </section></main>
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.119.0';
@@ -44,6 +44,34 @@ async function loadPlans(){
   say('planMsg',error?error.message:'Багцын үнэ хадгалагдлаа.');if(!error)await loadPlans();
  });
 }
+
+const userFunctionUrl='https://nfacspfctvunwbxtvvyi.supabase.co/functions/v1/admin-user-management';
+async function callUserAdmin(payload){
+ const {data:{session}}=await supabase.auth.getSession();
+ if(!session?.access_token)throw new Error('Дахин нэвтэрнэ үү.');
+ const res=await fetch(userFunctionUrl,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':'sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1'},body:JSON.stringify(payload)});
+ const out=await res.json().catch(()=>({error:'Серверийн хариу уншигдсангүй.'}));
+ if(!res.ok)throw new Error(out.error||'Хүсэлт амжилтгүй.');
+ return out;
+}
+async function loadUsers(){
+ say('usersMsg','Хэрэглэгчдийн жагсаалт ачаалж байна…');$('usersList').innerHTML='';
+ try{
+  const {users}=await callUserAdmin({action:'list'});
+  say('usersMsg','Нийт '+users.length+' хэрэглэгч · эхний 200 бүртгэл');
+  $('usersList').innerHTML=users.map(u=>'<div class="list"><b>'+esc(u.email||'(имэйлгүй)')+'</b><p class="muted">Бүртгэсэн: '+new Date(u.created_at).toLocaleString('mn-MN')+' · Сүүлд нэвтэрсэн: '+(u.last_sign_in_at?new Date(u.last_sign_in_at).toLocaleString('mn-MN'):'Одоогоор нэвтрээгүй')+' · '+(u.email_confirmed_at?'Имэйл баталгаажсан':'Имэйл баталгаажаагүй')+'</p><small class="muted">UUID: '+esc(u.id)+'</small><br>'+(u.is_current?'<span class="muted">Таны одоогийн админ бүртгэл · хамгаалагдсан</span>':'<button type="button" data-delete-user="'+esc(u.id)+'" data-user-email="'+esc(u.email)+'" style="background:linear-gradient(110deg,#a33b62,#702c49)">Бүртгэл устгах</button>')+'</div>').join('')||'Бүртгэл олдсонгүй.';
+  $('usersList').querySelectorAll('[data-delete-user]').forEach(b=>b.onclick=async()=>{
+   const email=b.dataset.userEmail;
+   if(!confirm('Энэ хэрэглэгчийн Auth бүртгэлийг бүрмөсөн устгах гэж байна. Үйлдлийг буцаах боломжгүй. Үргэлжлүүлэх үү?'))return;
+   const typed=prompt('Баталгаажуулахын тулд хэрэглэгчийн имэйлийг яг хэвээр нь бичнэ үү:\n'+email);
+   if(typed===null)return;
+   try{say('usersMsg','Бүртгэлийг устгаж байна…');const result=await callUserAdmin({action:'delete',user_id:b.dataset.deleteUser,confirm_email:typed});say('usersMsg',result.message||'Устгалаа.');await loadUsers();}
+   catch(e){say('usersMsg','Алдаа: '+e.message);}
+  });
+ }catch(e){say('usersMsg','Алдаа: '+e.message);}
+}
+$('reloadUsers').onclick=loadUsers;
+
 async function loadCommunity(){
  const pinBox=$('communityPins');const {data:recent,error:recentError}=await supabase.from('chat_messages').select('id,display_name,body,channel_id,is_pinned,created_at').is('deleted_at',null).order('created_at',{ascending:false}).limit(30);
  if(recentError){pinBox.textContent=recentError.message;}else{pinBox.innerHTML=(recent||[]).map(m=>'<div class="list"><b>'+esc(m.display_name)+' · #'+esc(m.channel_id)+'</b><p>'+esc(m.body)+'</p><button data-pin-id="'+m.id+'" data-pin-state="'+m.is_pinned+'">'+(m.is_pinned?'Pin цуцлах':'Pin хийх')+'</button></div>').join('')||'Мессеж алга.';pinBox.querySelectorAll('[data-pin-id]').forEach(b=>b.onclick=async()=>{const {error}=await supabase.rpc('set_chat_message_pin',{p_message_id:b.dataset.pinId,p_pinned:b.dataset.pinState!=='true'});if(error)alert(error.message);await loadCommunity();});}
@@ -65,7 +93,7 @@ $('grantReward').onclick=async()=>{
  const {data,error}=await supabase.rpc('grant_lore_reward',{p_user_id:userId,p_event_key:eventKey,p_xp:xp,p_coins:coins,p_reference_id:referenceId});
  say('rewardMsg',error?error.message:(data?.message||'Дууслаа.'));
 };
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{['post','ads','team','premium','community'].forEach(t=>$(t+'Tab').classList.toggle('hidden',t!==b.dataset.tab));if(b.dataset.tab==='premium')loadPlans();if(b.dataset.tab==='community')loadCommunity()});
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{['post','ads','team','premium','community','users'].forEach(t=>$(t+'Tab').classList.toggle('hidden',t!==b.dataset.tab));if(b.dataset.tab==='premium')loadPlans();if(b.dataset.tab==='community')loadCommunity();if(b.dataset.tab==='users')loadUsers()});
 
 supabase.auth.onAuthStateChange((event)=>{if(event==='PASSWORD_RECOVERY'){$('authPanel').classList.add('hidden');$('dash').classList.add('hidden');$('recoveryPanel').classList.remove('hidden')}});enter();
 </script></body></html>
