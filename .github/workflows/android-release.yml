@@ -8,6 +8,14 @@ on:
       - '.github/workflows/android-release.yml'
       - 'assets/loreverse-app-icon.svg'
       - 'assets/loreverse-adaptive-foreground.svg'
+      - 'index.html'
+      - 'chat/**'
+      - 'archive/**'
+      - 'games/**'
+      - 'scripts/**'
+      - 'assets/**'
+      - 'package.json'
+      - 'capacitor.config.ts'
 
 permissions:
   contents: write
@@ -68,6 +76,26 @@ jobs:
           </adaptive-icon>
           EOF
           cp "$RES/mipmap-anydpi-v26/ic_launcher.xml" "$RES/mipmap-anydpi-v26/ic_launcher_round.xml"
+
+      - name: Set app build version
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import os, re
+          path = Path("android/app/build.gradle")
+          content = path.read_text()
+          version_code = int(os.environ["BUILD_NUMBER"])
+          content, count = re.subn(r'versionCode\\s+\\d+', f'versionCode {version_code}', content, count=1)
+          if count != 1:
+              raise SystemExit("Could not set Android versionCode.")
+          content, count = re.subn(r'versionName\\s+"[^"]+"', f'versionName "1.0.{version_code}"', content, count=1)
+          if count != 1:
+              raise SystemExit("Could not set Android versionName.")
+          path.write_text(content)
+          print(f"Android versionName=1.0.{version_code}, versionCode={version_code}")
+          PY
 
       - name: Set Google Play target API 36
         run: |
