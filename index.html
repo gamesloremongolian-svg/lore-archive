@@ -2079,7 +2079,8 @@ async function loreAiErrorText(error){
  }
  return error?.message||"LORE AI үйлчилгээтэй холбогдож чадсангүй. Дахин оролдоно уу.";
 }
-$("loreAiForm").addEventListener("submit",async e=>{
+document.addEventListener("submit",async e=>{
+ if(!e.target||e.target.id!=="loreAiForm")return;
  e.preventDefault();const question=loreAiQuestion.value.trim();if(!question)return;
  const send=$("loreAiSend");if(send.disabled)return;
  send.disabled=true;
