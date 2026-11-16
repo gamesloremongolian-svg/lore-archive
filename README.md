@@ -47,3 +47,10 @@ GitHub Pages-ийн эх сурвалж болон домэйн тохиргоо
 ## Хамтын ажиллагаа
 
 Судлаач, зохиогч, редактор, орчуулагч, дизайнер, хөгжүүлэгчид ажлын санал болон засварын хүсэлтээ issue / pull request хэлбэрээр илгээж болно. Нийтлэхийн өмнө редакцын хяналт хийнэ.
+
+
+## Editorial CMS foundation
+
+A separate `/editorial/` workspace is provided for staff members with `owner`, `admin`, or `editor` roles. It supports creating franchise records, works, and language-specific work translations in Mongolian, English, Japanese, and Korean. New records default to draft; publication is controlled by the editorial status and Supabase RLS policies. The workspace is an initial foundation, not a complete production CMS: entity editing, timeline editing, review queues, revision history, media upload, and audit logs remain future work.
+
+The unified archive schema is applied to the linked Supabase project and its migration is tracked at `supabase/migrations/20261116104042_create_unified_lore_archive_schema.sql`.
