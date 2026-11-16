@@ -583,7 +583,7 @@ document.getElementById("adRequest").addEventListener("submit",e=>{e.preventDefa
 /* LOREVERSE Unified Community Chat + Rank + Bonus */
 const rankLevels=[{name:"Rookie",min:0,next:100},{name:"Explorer",min:100,next:500},{name:"Scholar",min:500,next:1500},{name:"Lorekeeper",min:1500,next:4000},{name:"Master Archivist",min:4000,next:10000},{name:"Mythic Archivist",min:10000,next:null}];
 const safeText=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let communityUser=null,activeChatChannel="global",chatSubscription=null,reactionSubscription=null,presenceSubscription=null,replyTarget=null,chatRows=[];
+let communityUser=null,activeChatChannel="global-chat",chatSubscription=null,reactionSubscription=null,presenceSubscription=null,replyTarget=null,chatRows=[];
 async function ensureCommunityUser(){let {data:{user}}=await supabase.auth.getUser();if(!user){const {data,error}=await supabase.auth.signInAnonymously();if(error)throw new Error("Чат бичихэд Anonymous Sign-ins идэвхтэй байх шаардлагатай. ("+error.message+")");user=data.user;}communityUser=user;return user;}
 function rankFor(xp){return [...rankLevels].reverse().find(r=>xp>=r.min)||rankLevels[0];}
 async function loadChatChannels(){
@@ -717,14 +717,14 @@ supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=aw
  const chatReady=(async()=>{
   try{
    await loadChatChannels();
-   await selectChatChannel("global","# Global Chat");
+   await selectChatChannel("global-chat","# Global Chat");
    $("chatStatus").textContent="Чат унших боломжтой. Мессеж бичихийн тулд зочны эрх холбогдоно.";
    return true;
   }catch(e){
    $("chatStatus").textContent="Чат ачаалж чадсангүй: "+(e?.message||"Тодорхойгүй алдаа");
    const feed=$("chatFeed");
    if(feed)feed.innerHTML='<div class="portal-note">Чат сервертэй холбогдож чадсангүй.</div><button type="button" id="retryChatInit" class="btn">Дахин оролдох</button>';
-   $("retryChatInit")?.addEventListener("click",()=>{loadChatChannels().then(()=>selectChatChannel("global","# Global Chat")).catch(err=>$("chatStatus").textContent=err.message);});
+   $("retryChatInit")?.addEventListener("click",()=>{loadChatChannels().then(()=>selectChatChannel("global-chat","# Global Chat")).catch(err=>$("chatStatus").textContent=err.message);});
    return false;
   }
  })();
