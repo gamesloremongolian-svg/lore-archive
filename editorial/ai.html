@@ -80,12 +80,28 @@ let user=null,role=null,currentDraft=null,savedId=null;
 const say=(id,msg)=>$(id).textContent=msg;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 async function enter(){
- const {data:{user:u}}=await supabase.auth.getUser();if(!u)return;
+ const {data:{user:u},error:authError}=await supabase.auth.getUser();
+ if(authError)throw authError;
+ if(!u){say("authMsg","Нэвтрэлт баталгаажаагүй байна. Дахин нэвтэрнэ үү.");return;}
  const {data:staff,error}=await supabase.from("staff_members").select("role,active").eq("user_id",u.id).maybeSingle();
- if(error||!staff?.active||!["owner","admin","editor"].includes(staff.role)){say("authMsg","Энэ бүртгэлд AI редакцын эрх олгогдоогүй байна.");return;}
+ if(error){say("authMsg","Эрхийн мэдээлэл уншиж чадсангүй: "+error.message);return;}
+ if(!staff?.active||!["owner","admin","editor"].includes(staff.role)){say("authMsg","Энэ бүртгэлд AI редакцын эрх олгогдоогүй байна.");return;}
  user=u;role=staff.role;$("workspace").classList.remove("hidden");$("queue").classList.remove("hidden");$("logout").classList.remove("hidden");say("authMsg",u.email+" · "+role+" эрхээр нэвтэрлээ.");await loadDrafts();
 }
-$("login").onclick=async()=>{const {error}=await supabase.auth.signInWithPassword({email:$("email").value,password:$("password").value});if(error){say("authMsg",error.message);return;}await enter();};
+async function login(){
+ const email=$("email").value.trim(),password=$("password").value;
+ if(!email||!password){say("authMsg","Имэйл болон нууц үгээ бүрэн оруулна уу.");return;}
+ const btn=$("login");btn.disabled=true;btn.textContent="Нэвтэрч байна…";say("authMsg","Supabase сервертэй холбогдож байна…");
+ try{
+  const {data,error}=await supabase.auth.signInWithPassword({email,password});
+  if(error){say("authMsg","Нэвтрэхэд алдаа: "+error.message);return;}
+  if(!data?.user){say("authMsg","Нэвтрэлт баталгаажаагүй байна. Дахин оролдоно уу.");return;}
+  await enter();
+ }catch(e){say("authMsg","Холболтын алдаа: "+(e?.message||"Сервертэй холбогдож чадсангүй."));}
+ finally{btn.disabled=false;btn.textContent="Нэвтрэх";}
+}
+$("login").addEventListener("click",login);
+$("password").addEventListener("keydown",e=>{if(e.key==="Enter")login();});
 $("logout").onclick=async()=>{await supabase.auth.signOut();location.reload();};
 supabase.auth.onAuthStateChange((_event,session)=>{if(session?.user&&!user)setTimeout(enter,0);});
 function generate(){
