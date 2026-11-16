@@ -667,13 +667,14 @@ supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=aw
   });
   if(!filtered.length){results.innerHTML='<div class="empty">Энэ хэл болон ангилалд нийтлэгдсэн мэдээлэл одоогоор алга.</div>';return;}
   results.innerHTML=filtered.map(item=>{
-   const works=item.works.map(w=>{
-    const tr=w.translation;
-    const title=tr?.title||w.canonical_title;
-    const synopsis=tr?.synopsis||"";
-    return '<div class="list" style="padding:12px 0;border-top:1px solid var(--line,#554466)"><strong>'+escapeHTML(title)+'</strong><span class="code">'+escapeHTML(w.work_type.toUpperCase().replaceAll("_"," "))+'</span>'+(synopsis?'<p>'+escapeHTML(synopsis)+'</p>':'')+(tr?'<small>'+escapeHTML(tr.canon_status.toUpperCase().replaceAll("_"," "))+' · SPOILER: '+escapeHTML(tr.spoiler_level)+'</small>':'<small>Энэ хэлний орчуулга хараахан нийтлэгдээгүй.</small>')+'</div>';
+   const worksHtml=item.works.map(w=>{
+    const tr=w.translation,title=tr?.title||w.canonical_title,synopsis=tr?.synopsis||"";
+    const entityHtml=(w.entities||[]).map(en=>'<div class="list"><b>'+escapeHTML(en.translation?.display_name||en.canonical_name)+'</b> · '+escapeHTML(en.entity_type)+(en.translation?.description?'<p>'+escapeHTML(en.translation.description)+'</p>':'')+(en.relations?.length?'<small>'+en.relations.map(r=>escapeHTML(r.relation_type)+': '+escapeHTML(r.other_name)).join(' · ')+'</small>':'')+'</div>').join("");
+    const timelineHtml=(w.events||[]).map(ev=>'<div class="list"><b>'+escapeHTML(ev.translation?.title||ev.event_key)+'</b> · #'+escapeHTML(ev.sort_order)+(ev.in_universe_date?' · '+escapeHTML(ev.in_universe_date):'')+(ev.translation?.summary?'<p>'+escapeHTML(ev.translation.summary)+'</p>':'')+'<small> SPOILER: '+escapeHTML(ev.spoiler_level)+'</small></div>').join("");
+    return '<div class="list" style="padding:12px 0;border-top:1px solid var(--line,#554466)"><strong>'+escapeHTML(title)+'</strong><span class="code">'+escapeHTML(w.work_type.toUpperCase().replaceAll("_"," "))+'</span>'+(synopsis?'<p>'+escapeHTML(synopsis)+'</p>':'')+(tr?'<small>'+escapeHTML(tr.canon_status.toUpperCase().replaceAll("_"," "))+' · SPOILER: '+escapeHTML(tr.spoiler_level)+'</small>':'<small>Энэ хэлний орчуулга хараахан нийтлэгдээгүй.</small>')+(entityHtml?'<details><summary>Дүр ба холбоо ('+w.entities.length+')</summary>'+entityHtml+'</details>':'')+(timelineHtml?'<details><summary>Timeline ('+w.events.length+')</summary>'+timelineHtml+'</details>':'')+'</div>';
    }).join("");
-   return '<article class="article-card" style="padding:18px;margin:14px 0;border:1px solid var(--line,#554466);border-radius:14px">'+(item.cover_image_url?'<img src="'+escapeHTML(item.cover_image_url)+'" alt="" loading="lazy" style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-bottom:12px">':'')+'<div class="eyebrow">'+escapeHTML(labels[item.category]||item.category)+'</div><h3>'+escapeHTML(item.name)+'</h3>'+(item.description?'<p>'+escapeHTML(item.description)+'</p>':'')+works+'</article>';
+   const franchiseEntities=(item.entities||[]).map(en=>'<div class="list"><b>'+escapeHTML(en.translation?.display_name||en.canonical_name)+'</b> · '+escapeHTML(en.entity_type)+(en.translation?.description?'<p>'+escapeHTML(en.translation.description)+'</p>':'')+'</div>').join("");
+   return '<article class="article-card" style="padding:18px;margin:14px 0;border:1px solid var(--line,#554466);border-radius:14px">'+(item.cover_image_url?'<img src="'+escapeHTML(item.cover_image_url)+'" alt="" loading="lazy" style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-bottom:12px">':'')+'<div class="eyebrow">'+escapeHTML(labels[item.category]||item.category)+'</div><h3>'+escapeHTML(item.name)+'</h3>'+(item.description?'<p>'+escapeHTML(item.description)+'</p>':'')+franchiseEntities+worksHtml+'</article>';
   }).join("");
  }
  async function load(){
@@ -692,9 +693,31 @@ supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=aw
    translations=data||[];
   }
   const byWork=new Map(translations.map(x=>[x.work_id,x]));
-  records=(franchises||[]).map(f=>({...f,works:(works||[]).filter(w=>w.franchise_id===f.id).map(w=>({...w,translation:byWork.get(w.id)||null}))}));
-  const count=records.reduce((n,x)=>n+x.works.length,0);
-  status.textContent=records.length+" франчайз · "+count+" нийтлэгдсэн бүтээл";
+  const {data:entities,error:entityError}=await supabase.from("archive_entities").select("id,franchise_id,work_id,entity_type,canonical_name").in("franchise_id",ids).eq("status","published").limit(1000);
+  if(entityError){status.textContent="Дүрийн мэдээлэл уншихад алдаа гарлаа.";console.error(entityError.message);return;}
+  const entityIds=(entities||[]).map(x=>x.id);
+  let entityTranslations=[],relations=[];
+  if(entityIds.length){
+   const {data:et,error:ete}=await supabase.from("archive_entity_translations").select("entity_id,display_name,description").in("entity_id",entityIds).eq("editorial_status","published").eq("language_code",languageInput.value);
+   if(ete){status.textContent="Дүрийн орчуулга уншихад алдаа гарлаа.";return;}entityTranslations=et||[];
+   const {data:rel,error:relError}=await supabase.from("archive_entity_relations").select("from_entity_id,to_entity_id,relation_type,description").in("from_entity_id",entityIds).eq("status","published").limit(2000);
+   if(relError){status.textContent="Дүрүүдийн холбоос уншихад алдаа гарлаа.";return;}relations=rel||[];
+  }
+  const entityTr=new Map(entityTranslations.map(x=>[x.entity_id,x]));
+  const entityNames=new Map((entities||[]).map(x=>[x.id,entityTr.get(x.id)?.display_name||x.canonical_name]));
+  const entityRows=(entities||[]).map(x=>({...x,translation:entityTr.get(x.id)||null,relations:relations.filter(r=>r.from_entity_id===x.id).map(r=>({...r,other_name:entityNames.get(r.to_entity_id)||"Entity"}))}));
+  const {data:events,error:eventError}=workIds.length?await supabase.from("archive_timeline_events").select("id,work_id,event_key,sort_order,in_universe_date,spoiler_level").in("work_id",workIds).eq("status","published").order("sort_order").limit(2000):{data:[],error:null};
+  if(eventError){status.textContent="Timeline уншихад алдаа гарлаа.";return;}
+  const eventIds=(events||[]).map(x=>x.id);
+  let eventTranslations=[];
+  if(eventIds.length){
+   const {data:et,error:ete}=await supabase.from("archive_timeline_translations").select("event_id,title,summary").in("event_id",eventIds).eq("editorial_status","published").eq("language_code",languageInput.value);
+   if(ete){status.textContent="Timeline орчуулга уншихад алдаа гарлаа.";return;}eventTranslations=et||[];
+  }
+  const eventTr=new Map(eventTranslations.map(x=>[x.event_id,x]));
+  records=(franchises||[]).map(f=>({...f,entities:entityRows.filter(x=>x.franchise_id===f.id&&!x.work_id),works:(works||[]).filter(w=>w.franchise_id===f.id).map(w=>({...w,translation:byWork.get(w.id)||null,entities:entityRows.filter(x=>x.work_id===w.id),events:(events||[]).filter(ev=>ev.work_id===w.id).map(ev=>({...ev,translation:eventTr.get(ev.id)||null}))}))}));
+  const count=records.reduce((n,x)=>n+x.works.length,0); const entityCount=entityRows.length; const eventCount=(events||[]).length;
+  status.textContent=records.length+" франчайз · "+count+" бүтээл · "+entityCount+" дүр/объект · "+eventCount+" timeline үйл явдал";
   render();
  }
  filters.addEventListener("click",e=>{
