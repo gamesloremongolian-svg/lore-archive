@@ -160,15 +160,29 @@ async function loadMessages(){
  $("messageList").innerHTML=rows.map(m=>{const mine=m.sender_id===currentUser.id;return '<article class="message '+(mine?'mine':'')+'"><span class="avatar small">'+safe(initials(mine?myDisplayName:activePartner.display_name))+'</span><div class="bubble-wrap"><div class="message-name">'+safe(mine?"Та":activePartner.display_name)+'</div><div class="bubble">'+safe(m.body)+'</div><div class="time">'+new Date(m.created_at).toLocaleString("mn-MN",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})+'</div></div></article>';}).join("");
  $("messageList").scrollTop=$("messageList").scrollHeight;
 }
-$("messageForm").addEventListener("submit",async e=>{
- e.preventDefault();if(!activeConversation)return;
+let sendingMessage=false;
+async function sendDirectMessage(){
+ if(sendingMessage)return;
+ if(!activeConversation){$("onlineStatus").textContent="Эхлээд гишүүн сонгоно уу.";return;}
  const body=$("messageInput").value.trim();if(!body)return;
- $("sendButton").disabled=true;
- try{const {error}=await supabase.from("direct_messages").insert({conversation_id:activeConversation.id,sender_id:currentUser.id,body});if(error)throw error;$("messageInput").value="";await loadMessages();await loadConversations();}
- catch(err){$("onlineStatus").textContent=err.message||"Илгээж чадсангүй.";}
- finally{$("sendButton").disabled=false;$("messageInput").focus();}
+ sendingMessage=true;$("sendButton").disabled=true;
+ try{
+  const {error}=await supabase.from("direct_messages").insert({conversation_id:activeConversation.id,sender_id:currentUser.id,body});
+  if(error)throw error;
+  $("messageInput").value="";
+  await loadMessages();await loadConversations();
+ }catch(err){$("onlineStatus").textContent=err.message||"Мессеж илгээж чадсангүй.";}
+ finally{sendingMessage=false;$("sendButton").disabled=!activeConversation;$("messageInput").focus();}
+}
+$("messageForm").addEventListener("submit",async e=>{
+ e.preventDefault();await sendDirectMessage();
 });
-$("messageInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("messageForm").requestSubmit();}});
+$("messageInput").addEventListener("keydown",e=>{
+ // Enter sends; Shift+Enter inserts a new line. Ignore IME composition (e.g. Mongolian input methods).
+ if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing&&e.keyCode!==229){
+  e.preventDefault();e.stopPropagation();sendDirectMessage();
+ }
+});
 $("refreshButton").onclick=async()=>{await loadMembers($("memberSearch").value);await loadConversations();if(activeConversation)await loadMessages();};
 $("mobileBack").onclick=()=>$("appShell").classList.add("hide-sidebar");
 $("logoutButton").onclick=async()=>{if(refreshPresenceTimer)clearInterval(refreshPresenceTimer);if(messageChannel)await supabase.removeChannel(messageChannel);await supabase.auth.signOut({scope:"local"});currentUser=null;activeConversation=null;$("messageInput").disabled=false;$("sendButton").disabled=true;$("messageInput").value="";$("messageInput").placeholder="Мессежээ бичнэ үү… (илгээхийн тулд эхлээд гишүүн сонгоно)";$("appShell").classList.add("hidden");$("authWrap").classList.remove("hidden");setAuthMode("login");};
