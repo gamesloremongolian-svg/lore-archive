@@ -199,6 +199,28 @@ section[id]{scroll-margin-top:92px}
 #loreAiForm button{border:0;border-radius:12px;background:#a56ae5;color:#160d20;padding:0 15px;font-weight:800}
 #loreAiMeta{padding:0 14px 9px;color:#b9a9ca;font-size:11px}
 @media(max-width:480px){#loreAiLauncher{right:12px;bottom:14px}#loreAiPanel{right:8px;bottom:70px;width:calc(100vw - 16px);height:calc(100dvh - 92px)}}
+
+/* Mobile viewport safety and responsive overflow fixes */
+html,body{width:100%;max-width:100%;overflow-x:clip}
+img,svg,video,canvas{max-width:100%;height:auto}
+.wrap{min-width:0}
+section,.section,.community-grid,.community-side,.community-main{min-width:0;max-width:100%}
+#community .section-head p,#community .community-side p,#community .community-main p{max-width:100%;overflow-wrap:anywhere}
+#community .community-grid>*{min-width:0}
+#community .chat-tools input,#community .chat-compose input,#community .chat-compose button{min-width:0;max-width:100%}
+#community .chat-feed{width:100%;max-width:100%;overflow-x:hidden;overflow-y:auto}
+#community .chat-message{max-width:100%;overflow-wrap:anywhere;word-break:break-word}
+#community .community-side,#community .community-main{padding:clamp(14px,3.5vw,20px)}
+@media(max-width:560px){
+ .wrap{width:calc(100% - 28px)}
+ .section{padding-inline:0}
+ .section-head h2{font-size:clamp(26px,7vw,36px);overflow-wrap:anywhere}
+ .chat-compose{grid-template-columns:minmax(0,1fr) auto}
+ .chat-compose button{padding-inline:12px}
+ .rank-stat{min-width:0;padding:11px}
+ .rank-stat b{font-size:clamp(18px,5vw,23px)}
+}
+
 </style></style>
 </head>
 <body>
@@ -568,7 +590,7 @@ function renderChatMessages(){
   const replies=m.reply_to?chatRows.find(x=>x.id===m.reply_to):null;
   const reactions=(m.reactions||[]).map(r=>'<button type="button" data-react="'+m.id+'" data-emoji="'+r.emoji+'">'+r.emoji+' '+r.count+'</button>').join("");
   const rank=rankFor(Number(m.member?.total_xp||0)).name;
-  const avatar=m.member?.avatar_url&&/^https:\/\//i.test(m.member.avatar_url)?'<img src="'+safeText(m.member.avatar_url)+'" alt="" style="width:25px;height:25px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px">':'';
+  const avatar=m.member?.avatar_url&&/^https:\/\//i.test(m.member.avatar_url)?'<img src="'+safeText(m.member.avatar_url)+'" alt="" loading="lazy" decoding="async" style="width:25px;height:25px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px">':'';
   return '<article class="chat-message '+(m.is_pinned?'is-pinned':'')+'"><div class="msg-meta"><small>'+avatar+'<b>'+safeText(m.member?.display_name||m.display_name)+'</b> <span class="pill">'+safeText(rank)+'</span> · '+new Date(m.created_at).toLocaleString("mn-MN")+(m.is_pinned?' · PINNED':'')+'</small><button type="button" data-report="'+m.id+'" aria-label="Report">Report</button></div>'+
    (replies?'<div class="reply-preview">↳ '+safeText(replies.display_name)+': '+safeText(replies.body.slice(0,100))+'</div>':'')+
    '<div>'+safeText(m.body)+'</div><div class="chat-reactions">'+reactions+'</div><div class="chat-actions"><button type="button" data-reply="'+m.id+'">↩ Хариулах</button>'+['👍','❤️','😂','🔥','✨','👀'].map(e=>'<button type="button" data-add-reaction="'+m.id+'" data-emoji="'+e+'">'+e+'</button>').join("")+'</div></article>';
