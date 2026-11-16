@@ -445,7 +445,7 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
  </div>
  <div class="portal-grid" style="margin-top:16px">
   <div class="portal-panel" id="coinStorePanel" hidden><div class="eyebrow">LORE COINS STORE</div><h3>Бонусын дэлгүүр</h3><p>Цуглуулсан Coins-оор Premium хөнгөлөлт болон профайлын гоёл авна.</p><div id="coinStore" class="store-grid">Дэлгүүр ачаалж байна…</div><p class="portal-note" id="storeStatus"></p></div>
-  <div class="portal-panel"><div class="eyebrow">LEADERBOARD</div><h3>Шилдэг Lorekeepers</h3><div id="loreLeaderboard">Жагсаалт ачаалж байна…</div></div>
+  <div class="portal-panel" id="leaderboardPanel" hidden><div class="eyebrow">LEADERBOARD</div><h3>Шилдэг Lorekeepers</h3><div id="loreLeaderboard">Жагсаалт ачаалж байна…</div></div>
  </div>
 </section>
 
@@ -861,11 +861,16 @@ async function loadCoinStore(){
  el.querySelectorAll("[data-redeem]").forEach(b=>b.onclick=async()=>{try{await ensureCommunityUser();const {data,error}=await supabase.rpc("redeem_lore_coins",{p_item_id:b.dataset.redeem});if(error)throw error;$("storeStatus").textContent=data.message||("Амжилттай. Үлдэгдэл: "+data.remaining_coins);await refreshGamification();}catch(e){$("storeStatus").textContent=e.message;}});
 }
 async function loadLoreLeaderboard(){
- const {data,error}=await supabase.rpc("lore_leaderboard",{p_limit:10});const el=$("loreLeaderboard");if(error){el.textContent=error.message;return;}
+ const user=(await supabase.auth.getUser()).data.user;
+ const panel=$("leaderboardPanel"),el=$("loreLeaderboard");
+ const canView=!!user&&!user.is_anonymous;
+ panel.hidden=!canView;
+ if(!canView){el.textContent="";return;}
+ const {data,error}=await supabase.rpc("lore_leaderboard",{p_limit:10});if(error){el.textContent=error.message;return;}
  el.innerHTML=(data||[]).map((x,i)=>'<div class="leader-row"><span>#'+(i+1)+' '+safeText(x.display_name)+'<br><small>'+safeText(x.rank_name)+'</small></span><b>'+Number(x.total_xp).toLocaleString("mn-MN")+' XP</b></div>').join("")||"Одоогоор жагсаалт хоосон.";
 }
 $("dailyReward").onclick=async()=>{try{const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Өдрийн бонус авахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.");const {data,error}=await supabase.rpc("claim_daily_lore_reward");if(error)throw error;$("dailyRewardStatus").textContent=data.message||"Бонус шалгагдлаа.";await refreshGamification();}catch(e){$("dailyRewardStatus").textContent=e.message;}};
-supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=await supabase.auth.getUser();communityUser=user;await refreshGamification();await loadCoinStore();},0)});
+supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=await supabase.auth.getUser();communityUser=user;await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();},0)});
 (async()=>{
  try{
   await loadCommunityFeed();
