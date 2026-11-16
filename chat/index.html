@@ -83,7 +83,8 @@ const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publi
 const $=id=>document.getElementById(id);
 const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let currentUser=null,myDisplayName="Member",myAvatarUrl=null,authMode="login",activeConversation=null,activePartner=null,messageChannel=null,refreshPresenceTimer=null,memberCache=[];
-function initials(name){return String(name||"L").trim().split(/\s+/).slice(0,2).map(x=>x[0]||"").join("").toUpperCase()||"L";}\nfunction renderAvatar(el,name,url){el.innerHTML=url?`<img src="${safe(url)}" alt="${safe(name)}">`:safe(initials(name));}
+function initials(name){return String(name||"L").trim().split(/\s+/).slice(0,2).map(x=>x[0]||"").join("").toUpperCase()||"L";}
+function renderAvatar(el,name,url){el.innerHTML=url?`<img src="${safe(url)}" alt="${safe(name)}">`:safe(initials(name));}
 function note(s){$("authNote").textContent=s;}
 function setAuthMode(mode){authMode=mode;const signup=mode==="signup";$("authTitle").textContent=signup?"Шинэ аккаунт үүсгэх":"Хувийн чат руу нэвтрэх";$("authDescription").textContent=signup?"LOREVERSE-д бүртгүүлээд бусад гишүүнтэй шууд чатлаарай.":"Бусад гишүүдтэй хувийн мессежээр харилцахын тулд бүртгэлтэй аккаунтаараа нэвтэрнэ үү.";$("nameField").classList.toggle("hidden",!signup);$("displayName").required=signup;$("authSubmit").textContent=signup?"Бүртгүүлэх":"Нэвтрэх";$("authToggle").textContent=signup?"Нэвтрэх":"Шинэ аккаунт үүсгэх";$("password").autocomplete=signup?"new-password":"current-password";note("");}
 $("authToggle").onclick=()=>setAuthMode(authMode==="login"?"signup":"login");
@@ -272,7 +273,8 @@ $("profileForm").addEventListener("submit",async e=>{
  }catch(err){$("profileSaveNote").textContent=err.message||"Хадгалахад алдаа гарлаа.";}
  finally{save.disabled=false;}
 });
-\nasync function boot(){
+
+async function boot(){
  const {data:{user}}=await supabase.auth.getUser();
  if(user&&!user.is_anonymous){currentUser=user;try{await enterChat();}catch(err){$("authWrap").classList.remove("hidden");note(err.message||"Профайл ачаалж чадсангүй.");}}
  else{
