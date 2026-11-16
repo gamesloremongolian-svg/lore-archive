@@ -652,6 +652,213 @@ a:not(.btn):hover{color:#a8e9ef}
  .section-head h2{font-size:clamp(23px,6vw,30px)}
 }
 
+
+/* LOREVERSE — full-site anime streaming redesign */
+:root{
+ --bg:#080808;--panel:#111;--panel2:#191919;--line:#34302b;
+ --text:#f7f4ef;--muted:#aaa39a;--violet:#ff9d00;--cyan:#ffc04d;
+ --pink:#ff8b00;--gold:#ffb21a;--radius:15px;
+}
+html{scroll-behavior:smooth;scroll-padding-top:88px}
+body{
+ background:#080808;color:#f7f4ef;
+ background-image:radial-gradient(ellipse at 50% -15%,#5b2b061f,transparent 45%);
+ font-family:Arial,Helvetica,sans-serif;
+}
+.wrap{width:min(1240px,calc(100% - 48px))}
+.topbar{
+ height:68px;position:sticky;top:0;z-index:60;
+ background:#090909f2;border-bottom:1px solid #ff9d0038;
+ backdrop-filter:blur(16px);padding-inline:10px;
+}
+.brand{font-size:18px;letter-spacing:.08em;color:#fff}
+.mark{background:linear-gradient(135deg,#ffb52e,#f06a00);box-shadow:0 0 22px #ff8c002c}
+.nav{gap:clamp(10px,1.7vw,24px);font-size:11px;font-weight:800;color:#d2cbc1}
+.nav a{transition:color .18s ease}
+.nav a:hover,.nav a:focus-visible{color:#ffae24}
+.actions{gap:7px}
+.select,.ghost{background:#151515;border:1px solid #40372b;border-radius:7px;color:#f8f3eb}
+.hero{
+ position:relative;isolation:isolate;overflow:hidden;
+ min-height:510px;padding:74px 46px 58px;margin:26px 0 38px;
+ display:grid;grid-template-columns:1.05fr .95fr;gap:24px;
+ border:1px solid #4a3218;border-radius:3px;
+ background:linear-gradient(90deg,#090909 0%,#0c0908ee 42%,#0b0908a8 100%),
+ radial-gradient(ellipse at 78% 40%,#a94d0c55,transparent 48%);
+}
+.hero:before{
+ content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+ background:linear-gradient(90deg,#050505 0%,#050505e8 38%,#05050525 100%),
+ repeating-linear-gradient(135deg,transparent 0 28px,#ff9d0008 29px 30px);
+}
+.hero:after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:linear-gradient(90deg,#ffb21a,#ff6a00,transparent 85%)}
+.hero>div:first-child{align-self:center;position:relative;z-index:2}
+.hero .eyebrow{color:#ffb21a;letter-spacing:.2em}
+.hero-slogan{font-size:clamp(27px,3.5vw,43px);color:#ffb21a;background:none;text-shadow:0 2px 22px #ff880044}
+.hero-brand-logo{max-width:420px;max-height:105px;object-fit:contain;object-position:left center;margin:15px 0 18px;filter:drop-shadow(0 5px 16px #ff890033)}
+.hero p{color:#ded6cc;max-width:520px;font-size:14px}
+.hero-buttons{margin-top:23px}
+.btn{
+ border:1px solid #51402b;border-radius:5px;background:#171411;color:#fff;
+ padding:11px 17px;font-size:11px;font-weight:900;letter-spacing:.04em;
+ box-shadow:none;transition:background .18s,border-color .18s,transform .18s;
+}
+.btn:hover{transform:translateY(-2px);border-color:#ffad24;background:#25190b}
+.btn.primary{background:linear-gradient(100deg,#ffb21a,#f07800);color:#170d02;border:0;box-shadow:0 5px 22px #ff85002a}
+.btn.primary:hover{background:linear-gradient(100deg,#ffc34e,#ff8a00)}
+.visual{
+ height:390px;border:0;border-radius:0;box-shadow:none;
+ background:radial-gradient(ellipse at 50% 45%,#d35b1333,transparent 60%),linear-gradient(145deg,#21120b,#080808 68%);
+}
+.lore-emblem{border:0;box-shadow:none}
+.lore-logo{filter:drop-shadow(0 0 25px #ff9d0033)}
+.lore-emblem .visual-label{color:#ffbd48}
+.ring{border-color:#ffad3a88;box-shadow:0 0 70px #ff890022,inset 0 0 45px #ffb21a12}
+.ring:before,.ring:after{border-color:#ff9d0066}
+.core{color:#ffe0a2;text-shadow:0 0 28px #ff9d00}
+.float{background:#100c08dd;border-color:#ffad3a55;color:#ffe4bd;border-radius:4px}
+.stats{gap:10px;margin:0 0 48px}
+.stat{background:#111;border:1px solid #39302a;border-radius:4px;padding:14px 18px}
+.stat strong{color:#ffb21a;font-size:23px}
+.stat span{color:#aaa197}
+.section{margin:0 0 54px}
+.section-head{margin-bottom:18px;align-items:center}
+.section-head>div:first-child{border-left:3px solid #ff9d00;padding-left:14px}
+.section-head h2{font-size:clamp(22px,2.6vw,29px);font-weight:900;letter-spacing:.035em;text-transform:uppercase;margin:5px 0}
+.section-head p{font-size:12px;color:#aaa197}
+.section-head .eyebrow{color:#ffb21a;font-size:9px}
+.worlds{gap:12px}
+.world{
+ min-height:250px;border:1px solid #3c3024;border-radius:4px;
+ box-shadow:none;background:#111;
+}
+.world:before{filter:saturate(1.1) contrast(1.06)}
+.world:after{background:linear-gradient(180deg,#05050500 8%,#05050555 40%,#050505f5 100%)}
+.world:hover{border-color:#ff9d00;transform:translateY(-3px);box-shadow:0 10px 30px #ff8a001c}
+.world .code{background:#e98200;color:#170d02;border:0;border-radius:3px;font-size:9px}
+.world h3{font-size:17px;text-transform:uppercase;letter-spacing:.04em}
+.world p{color:#e0d6c9;font-size:11px}
+.world a{color:#ffb21a;font-weight:900}
+.archive,.portal-panel,.feature,.community-side,.community-main,.rank-card,.feed-panel,.feed-side{
+ background:#111;border:1px solid #3b3027;border-radius:5px;box-shadow:none;
+}
+.archive{padding:22px}
+.search,.form-field,.feed-composer textarea,.feed-controls select,.feed-controls input{
+ background:#090909;border:1px solid #40372e;border-radius:4px;color:#fff;
+}
+.search:focus,.form-field:focus{border-color:#ff9d00;outline:none}
+.filters{gap:7px}
+.chip{border:1px solid #40372e;border-radius:4px;background:#151515;color:#c6bdb2}
+.chip.active,.chip:hover{background:#ff9d00;color:#150d03;border-color:#ff9d00}
+.articles{gap:12px}
+.article{
+ background:linear-gradient(145deg,#171513,#101010);border:1px solid #38302a;
+ border-radius:4px;min-height:175px;transition:.18s;
+}
+.article:hover{border-color:#ff9d00;transform:translateY(-3px)}
+.tag{color:#ffb21a}
+.article h3{font-size:14px}
+.article p{color:#b7aea4;font-size:11px}
+.article button{color:#ffb21a}
+.catalog-card{border-radius:4px}
+.catalog-card img{height:185px}
+.catalog-meta{color:#ffc35c}
+.portal-grid{gap:12px}
+.portal-panel{padding:20px}
+.portal-panel h3{font-size:18px}
+.portal-panel p{color:#b8afa5}
+.portal-actions{gap:8px}
+.live-box,.rank-stat,.store-item{background:#151515;border:1px solid #40372e;border-radius:4px}
+.live-box strong,.rank-stat b{color:#ffb21a}
+.progress-track{background:#30271e}
+.progress-fill{background:linear-gradient(90deg,#ffb21a,#ff6a00)}
+.media-card{border-radius:4px;border-color:#493729}
+.media-card small{color:#ffc15b}
+.carousel-track{scrollbar-color:#ff9d00 #17120d}
+.knowledge-hub{
+ background:linear-gradient(130deg,#17120d,#101010 72%);
+ border:1px solid #68451f;border-radius:5px;box-shadow:none;
+}
+.knowledge-hub-card{background:#111;border:1px solid #40372e;border-radius:4px}
+.knowledge-hub-card:hover{border-color:#ff9d00;background:#1b140b}
+.knowledge-hub-card em{color:#ffb21a}
+.community-grid{gap:12px}
+.channel-btn,.feed-tab,.feed-post-actions button,.chat-message .chat-actions button{
+ background:#171513;border:1px solid #40372e;border-radius:4px;color:#e7dfd5;
+}
+.channel-btn.active,.channel-btn:hover,.feed-tab.active{background:#ff9d00;color:#150d03;border-color:#ff9d00}
+.chat-feed{background:#090909;border-color:#40372e}
+.chat-message,.feed-post{background:#151515;border-color:#3d332b;border-radius:4px}
+.feed-post-actions button:hover,.chat-message .chat-actions button:hover{border-color:#ff9d00}
+.feed-post-actions button.liked{color:#ffb21a;border-color:#ff9d00}
+.feed-avatar{border:1px solid #ff9d00}
+.feed-empty{border-color:#68451f}
+.footer{border-top:1px solid #3a3027;color:#9f968c}
+.footer-nav a:hover{color:#ffb21a}
+.modal{background:#000e;backdrop-filter:blur(7px)}
+.dialog{background:#12100e;border:1px solid #68451f;border-radius:5px}
+.close{border-radius:4px;border-color:#51402b}
+.eyebrow{color:#ffb21a}
+#loreAiLauncher{background:linear-gradient(120deg,#ffb21a,#f07800);color:#160d02;border-radius:5px}
+#loreAiPanel{background:#111;border-color:#68451f;border-radius:5px}
+#loreAiHead{background:linear-gradient(120deg,#3b210b,#7b3907)}
+#loreAiForm button{background:#ff9d00;color:#160d02;border-radius:4px}
+#loreAiQuestion{background:#090909;border-color:#40372e}
+#accountTools .portal-panel{background:#111;border-color:#68451f}
+#notificationCount{background:#ff9d00;color:#160d02}
+#loreverseAdMascot{filter:drop-shadow(0 8px 20px #0008)}
+#community .chat-compose input{background:#090909;border:1px solid #40372e;color:white}
+#community .chat-compose button{background:#ff9d00;color:#160d02;border:0;border-radius:4px}
+#community .chat-pinned{background:#261a0a;border-color:#a66b20;color:#ffdfaa}
+#community .reply-preview{background:#21170c;border-left-color:#ff9d00}
+#community .chat-message.is-pinned{border-color:#a66b20}
+#community .chat-message .chat-reactions button{background:#17120d;border-color:#51402b}
+#community .chat-message .chat-reactions button:hover{border-color:#ff9d00}
+#support,#events,#payment,#admin{scroll-margin-top:90px}
+input[type=checkbox]{accent-color:#ff9d00}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #ffb21a;outline-offset:2px}
+@media(max-width:850px){
+ .hero{padding:48px 26px;min-height:0;grid-template-columns:1fr}
+ .visual{height:270px;min-height:0}
+}
+@media(max-width:760px){
+ .topbar{background:#090909f7}
+ .nav a{background:#14110e;border-color:#3b3027}
+ .hero{margin-top:14px;padding:34px 20px 28px;gap:10px}
+ .hero-brand-logo{max-width:310px}
+ .visual{height:235px}
+ .section{margin-bottom:42px}
+ .archive{padding:14px}
+ .section-head h2{font-size:22px}
+}
+@media(max-width:560px){
+ .wrap{width:calc(100% - 24px)}
+ .hero{padding:30px 15px 22px}
+ .hero h1{font-size:38px}
+ .hero p{font-size:12px}
+ .hero-buttons .btn{flex:1}
+ .visual{height:210px}
+ .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .stat{padding:10px}
+ .stat strong{font-size:18px}
+ .stat span{font-size:9px}
+ .worlds{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .world{min-height:185px}
+ .world-content{padding:12px}
+ .world h3{font-size:13px}
+ .world p{font-size:9px}
+ .articles{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .article{padding:12px;min-height:165px}
+ .article h3{font-size:12px}
+ .article p{font-size:10px}
+ .portal-grid,.feature-row{grid-template-columns:1fr}
+ .knowledge-hub{padding:18px}
+ .knowledge-hub-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:380px){
+ .worlds,.articles,.knowledge-hub-grid{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
