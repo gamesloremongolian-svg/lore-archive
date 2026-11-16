@@ -37,7 +37,7 @@ def main():
     duplicates = [key for key, count in Counter(parser.ids).items() if count > 1]
     if duplicates:
         errors.append("Duplicate HTML id attributes: " + ", ".join(duplicates))
-    required = {"catalogTabs", "catalogSearch", "catalogGo", "catalogStatus", "catalogResults", "catalogMore", "publishedPosts", "loreAiLauncher"}
+    required = {"catalogTabs", "catalogSearch", "catalogGo", "catalogStatus", "catalogResults", "catalogMore", "publishedPosts", "loreAiLauncher", "publicArchive", "publicArchiveResults", "publicArchiveLang", "publicArchiveFilters"}
     missing = sorted(required - set(parser.ids))
     if missing:
         errors.append("Missing required page elements: " + ", ".join(missing))
