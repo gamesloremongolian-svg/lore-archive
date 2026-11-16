@@ -557,17 +557,18 @@ async function loadPremiumArticles(){const {data,error}=await supabase.from("con
 async function refreshMember(){const {data:{user}}=await supabase.auth.getUser();$("memberLogout").hidden=!user;if(!user){$("memberHeading").textContent="Premium эрхээ нээх";memberMsg("Нэвтрээгүй байна. Premium нийтлэлд нэвтрэхийн тулд бүртгүүлнэ үү.");$("premiumArticles").innerHTML='<p class="portal-note">Premium архивыг харахын тулд нэвтэрнэ үү.</p>';return;}$("memberHeading").textContent=user.email||"Гишүүн";const {data,error}=await supabase.from("memberships").select("plan_code,status,starts_at,ends_at").eq("user_id",user.id).eq("status","active").gt("ends_at",new Date().toISOString()).order("ends_at",{ascending:false}).limit(1).maybeSingle();memberMsg(error?"Гишүүнчлэлийн төлөв шалгахад алдаа гарлаа.":data?"Premium идэвхтэй · "+data.plan_code+" · "+new Date(data.ends_at).toLocaleDateString("mn-MN")+" хүртэл":"Үнэгүй хэрэглэгч · Premium багц сонгон эрхээ нээнэ үү.");await loadPremiumArticles();}
 $("memberLogin").onclick=async()=>{const {error}=await supabase.auth.signInWithPassword({email:$("memberEmail").value.trim(),password:$("memberPassword").value});memberMsg(error?error.message:"Нэвтэрлээ.");if(!error)await refreshMember();};
 $("memberSignup").onclick=async()=>{const {data,error}=await supabase.auth.signUp({email:$("memberEmail").value.trim(),password:$("memberPassword").value});memberMsg(error?error.message:(data.session?"Бүртгэл амжилттай.":"Баталгаажуулах имэйл ирсэн эсэхийг шалгана уу."));if(data.session)await refreshMember();};
-$("memberLogout").onclick=async()=>{
- const button=$("memberLogout"),note=$("memberAuthNote");button.disabled=true;
+async function loreverseSignOut(button,note){
+ if(button)button.disabled=true;
  try{
-  const {error}=await supabase.auth.signOut({scope:"local"});
+  const {error}=await supabase.auth.signOut();
   if(error)throw error;
-  $("memberPassword").value="";
+  ["memberPassword","accountPassword"].forEach(id=>{const el=$(id);if(el)el.value="";});
   if(note)note.textContent="Бүртгэлээс амжилттай гарлаа.";
-  await refreshMember();
+  await Promise.all([refreshMember(),loadAccountProfile(),loadAccountPanel(),loadPublishedLore(),loadCommunityEvents(),loadMySupportTickets()]);
  }catch(e){if(note)note.textContent="Гарах үед алдаа: "+(e.message||"Дахин оролдоно уу.");}
- finally{button.disabled=false;}
-};
+ finally{if(button)button.disabled=false;}
+}
+$("memberLogout").onclick=()=>loreverseSignOut($("memberLogout"),$("memberAuthNote"));
 supabase.auth.onAuthStateChange(()=>{setTimeout(refreshMember,0);});
 loadMembershipPlans();refreshMember();
 
@@ -909,17 +910,7 @@ $("profileModal").addEventListener("click",e=>{if(e.target.id==="profileModal")$
 
 $("accountLogin").onclick=async()=>{try{const email=$("accountEmail").value.trim(),password=$("accountPassword").value;if(!email||!password)throw new Error("Имэйл болон нууц үг оруулна уу.");const {error}=await supabase.auth.signInWithPassword({email,password});if(error)throw error;$("profileStatus").textContent="Нэвтэрлээ.";await loadAccountProfile();await loadAccountPanel();await loadPublishedLore();await loadCommunityEvents();}catch(e){$("profileStatus").textContent=e.message;}};
 $("accountSignup").onclick=async()=>{try{const email=$("accountEmail").value.trim(),password=$("accountPassword").value;if(!email||password.length<8)throw new Error("Зөв имэйл, 8-аас дээш тэмдэгттэй нууц үг оруулна уу.");const {data,error}=await supabase.auth.signUp({email,password,options:{data:{display_name:$("profileName").value.trim()||"Lore Explorer"}}});if(error)throw error;$("profileStatus").textContent=data.session?"Бүртгэл үүслээ. Нэвтэрсэн байна.":"Бүртгэлийн баталгаажуулах имэйлийг шалгана уу.";await loadAccountProfile();}catch(e){$("profileStatus").textContent=e.message;}};
-$("accountLogout").onclick=async()=>{
- const button=$("accountLogout");button.disabled=true;
- try{
-  const {error}=await supabase.auth.signOut({scope:"local"});
-  if(error)throw error;
-  $("accountPassword").value="";
-  $("profileStatus").textContent="Системээс амжилттай гарлаа.";
-  await Promise.all([loadAccountProfile(),loadAccountPanel(),loadPublishedLore(),loadCommunityEvents(),loadMySupportTickets()]);
- }catch(e){$("profileStatus").textContent="Гарах үед алдаа: "+(e.message||"Дахин оролдоно уу.");}
- finally{button.disabled=false;}
-};
+$("accountLogout").onclick=()=>loreverseSignOut($("accountLogout"),$("profileStatus"));
 $("profileSave").onclick=async()=>{
  try{
   const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Профайл хадгалахын тулд нэвтэрнэ үү.");
