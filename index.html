@@ -447,9 +447,11 @@ body{
 .ad-mascot-board strong{font-size:clamp(13px,1.4vw,19px);line-height:1.55;text-shadow:0 0 12px #fff,0 0 22px #d7a2ff}
 .ad-mascot-spark{color:#8ff6ff;font-size:28px;animation:mascotTwinkle 1.5s infinite}
 .ad-mascot-caption{font-size:8px;letter-spacing:.12em;color:#a9eaf3;font-weight:900}
+.ad-mascot.is-speaking .mascot-mouth{animation:mascotTalk .18s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
 .ad-mascot-line{position:relative;z-index:1;margin:4px 0 12px;padding:11px 15px;border:1px solid #8b79c9;border-radius:14px;background:#10182dcc;color:#f2eaff;font-weight:750;font-size:14px}
 .ad-mascot-speak{position:relative;z-index:1;min-width:180px}
 .ad-mascot-hint{position:relative;z-index:1;margin-top:9px;color:#b8c6e7;font-size:10px}
+@keyframes mascotTalk{from{transform:scaleY(.55)}to{transform:scaleY(2.2)}}
 @keyframes mascotBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 @keyframes mascotFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-8px) rotate(1deg)}}
 @keyframes mascotBlink{0%,44%,48%,100%{transform:scaleY(1)}46%{transform:scaleY(.08)}}
@@ -758,7 +760,7 @@ body{
     <ellipse class="mascot-eye" cx="113" cy="158" rx="12" ry="18" fill="#42c4df" stroke="#27345d" stroke-width="4"/>
     <ellipse class="mascot-eye" cx="187" cy="158" rx="12" ry="18" fill="#42c4df" stroke="#27345d" stroke-width="4"/>
     <circle cx="116" cy="154" r="4" fill="white"/><circle cx="190" cy="154" r="4" fill="white"/>
-    <path d="M143 190 Q151 197 159 190" fill="none" stroke="#b95f8a" stroke-width="4" stroke-linecap="round"/>
+    <path class="mascot-mouth" d="M143 190 Q151 197 159 190" fill="none" stroke="#b95f8a" stroke-width="4" stroke-linecap="round"/>
     <path d="M92 214 Q150 241 208 214" fill="none" stroke="#f6c5dc" stroke-width="5"/>
     <path d="M83 121 Q58 159 73 227 Q35 198 52 120 Q57 51 126 24 Q202 -2 238 66 Q264 121 233 216 Q224 179 220 126 Q189 100 159 77 Q132 114 83 121Z" fill="url(#mascotHair)" stroke="#d9caff" stroke-width="5"/>
     <path d="M71 92 L97 64 111 95 85 111Z" fill="#f4d78a" stroke="#8f6ca7" stroke-width="4"/>
@@ -808,9 +810,9 @@ if(adMascotSpeak){
   window.speechSynthesis.cancel();
   const utterance=new SpeechSynthesisUtterance(phrase);
   utterance.lang="mn-MN";utterance.rate=.88;utterance.pitch=1.12;
-  utterance.onstart=()=>{line.textContent="✦ "+phrase;adMascotSpeak.textContent="◼ Дуу тоглож байна…";};
-  utterance.onend=()=>{adMascotSpeak.textContent="▶ Дахин сонсох";};
-  utterance.onerror=()=>{adMascotSpeak.textContent="▶ Дуугаар сонсох";line.textContent=phrase+" (Дууны хөдөлгүүр энэ хэлийг дэмжихгүй байж магадгүй.)";};
+  utterance.onstart=()=>{$("loreverseAdMascot").classList.add("is-speaking");line.textContent="✦ "+phrase;adMascotSpeak.textContent="◼ Дуу тоглож байна…";};
+  utterance.onend=()=>{$("loreverseAdMascot").classList.remove("is-speaking");adMascotSpeak.textContent="▶ Дахин сонсох";};
+  utterance.onerror=()=>{$("loreverseAdMascot").classList.remove("is-speaking");adMascotSpeak.textContent="▶ Дуугаар сонсох";line.textContent=phrase+" (Дууны хөдөлгүүр энэ хэлийг дэмжихгүй байж магадгүй.)";};
   window.speechSynthesis.speak(utterance);
  });
 }
