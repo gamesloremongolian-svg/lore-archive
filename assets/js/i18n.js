@@ -121,6 +121,21 @@ Object.assign(dict,{
 "Нийтлэл оруулахын тулд профайлаасаа бүртгүүлж эсвэл нэвтэрнэ үү.":["Create an account or log in from your profile to publish.","投稿するにはプロフィールから登録またはログインしてください。","게시하려면 프로필에서 가입하거나 로그인하세요."]
 });
 
+
+Object.assign(dict,{
+"Бүх ертөнцийн мэдлэг":["Knowledge of All Universes","すべての世界の知識","모든 세계의 지식"],
+"Нэгдсэн мэдлэгийн сан руу ↗":["Explore the unified knowledge archive ↗","統合ナレッジアーカイブへ ↗","통합 지식 아카이브로 이동 ↗"],
+"Тоглоомын ертөнц":["Game Worlds","ゲームの世界","게임 세계"],
+"Тоглоом, анимэ, манга, роман болон зохиомол ертөнц бүрийн түүх, дүр, газар нутаг, онол, судалгааг нэг нэгдсэн архиваас нээ.":["Explore the histories, characters, places, theories and research of games, anime, manga, novels and fictional universes in one unified archive.","ゲーム、アニメ、マンガ、小説など、あらゆる架空世界の歴史、キャラクター、場所、考察、研究をひとつのアーカイブで探索できます。","게임, 애니메이션, 만화, 소설 등 다양한 가상 세계의 역사, 캐릭터, 장소, 이론 및 연구를 하나의 통합 아카이브에서 살펴보세요."],
+"Цуврал, дүрүүд, үйл явдал, ертөнцийн түүх":["Series, characters, stories and world histories","シリーズ、キャラクター、物語、世界の歴史","시리즈, 캐릭터, 스토리 및 세계관"],
+"Манга, бүлэг, дүр, зохиолын судалгаа":["Manga, chapters, characters and story analysis","マンガ、各話、キャラクター、物語考察","만화, 에피소드, 캐릭터 및 스토리 분석"],
+"Роман, зохиолын ертөнц ба дүрүүд":["Novels, fictional worlds and characters","小説、作品世界、キャラクター","소설, 작품 세계 및 캐릭터"],
+"Вэб роман, цуврал өгүүлэмж, lore":["Web novels, serialized stories and lore","Web小説、連載ストーリー、Lore","웹소설, 연재 이야기 및 Lore"],
+"Нэгдсэн хайлт, эх сурвалжтай Lore судалгаа":["Unified search and sourced lore research","統合検索と出典付きLore研究","통합 검색 및 출처가 명시된 Lore 연구"],
+"Нэг платформ. Олон ертөнц. Хязгааргүй мэдлэг.":["One platform. Many universes. Unlimited knowledge.","ひとつのプラットフォームに、無数の世界と尽きない知識。","하나의 플랫폼, 수많은 세계, 끝없는 지식."],
+"Бүх мэдээллийг хайх":["Search all knowledge","すべての情報を検索","모든 정보 검색"]
+});
+
 const langNames={mn:"Монгол",en:"English",ja:"日本語",ko:"한국어"};
 let active="mn";
 const pairs=Object.entries(dict).sort((a,b)=>b[0].length-a[0].length);
