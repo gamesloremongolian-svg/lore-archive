@@ -398,7 +398,7 @@ section[id]{scroll-margin-top:92px}
 </section>
 
 <section class="section portal-grid" id="payment">
- <div class="portal-panel"><div class="eyebrow">PAYMENT CENTER</div><h2>Төлбөр хийх</h2><p>LOREVERSE Premium-ийн төлбөрийг QPay автомат төлбөр эсвэл Хаан Банкны шилжүүлгээр төлөх боломжтой.</p><div class="portal-grid"><div class="feature"><h3>QPay автомат төлбөр</h3><p>Динамик нэхэмжлэл үүсгэж, QPay талаас төлбөр баталгаажсаны дараа Premium эрх идэвхжинэ.</p><span class="portal-note">Автомат холболт одоогоор хийгдэж байна.</span></div><div class="feature"><h3>Хаан Банк · Шилжүүлэг</h3><p><b>Данс эзэмшигч:</b> Батравжих Батаа</p><p><b>Дансны дугаар:</b> <strong style="font-size:20px;letter-spacing:.08em">5622218472</strong></p><p><b>Банк:</b> Хаан Банк</p><p>Гүйлгээний утгад LOREVERSE хэрэглэгчийн имэйл болон сонгосон багцаа бичнэ үү.</p><button class="btn" type="button" id="copyBankAccount">Дансны дугаар хуулах</button><span class="portal-note" id="bankCopyStatus"></span></div></div><p class="portal-note">Шилжүүлэг хийсний дараа “Админтай холбогдох” хэсэгт Төлбөр ангиллаар хүсэлт нээж, гүйлгээний баримт эсвэл гүйлгээний дугаараа хавсаргана уу. Админ шалгаж баталгаажуулсны дараа эрх олгоно. Зөвхөн шилжүүлэг хийснээр Premium автоматаар идэвхжихгүй.</p></div>
+ <div class="portal-panel"><div class="eyebrow">PAYMENT CENTER</div><h2>Premium төлбөр</h2><p>Бүртгэлтэй хэрэглэгч Premium багцаа сонгоод QPay QR нэхэмжлэл үүсгэнэ. Төлбөр баталгаажсаны дараа эрх идэвхжинэ.</p><div class="portal-grid"><div class="feature"><h3>QPay автомат төлбөр</h3><p>Сарын болон жилийн багцынхаа төлбөрийг QPay апп-аар уншуулна.</p><div class="portal-actions" style="flex-wrap:wrap"><button class="btn primary" type="button" data-qpay-plan="monthly">Сарын багц · 5,000₮</button><button class="btn" type="button" data-qpay-plan="yearly">Жилийн багц · 60,000₮</button></div><p class="portal-note" id="qpayStatus" aria-live="polite">Төлбөр үүсгэхийн тулд эхлээд имэйлээр нэвтэрнэ үү.</p><div id="qpayInvoice" hidden class="feature" style="margin-top:14px"><h3 id="qpayInvoiceTitle">QPay нэхэмжлэл</h3><div id="qpayQrWrap" style="text-align:center"></div><p id="qpayInvoiceText" class="portal-note"></p><div id="qpayLinks" class="portal-actions" style="flex-wrap:wrap"></div><button class="btn primary" id="qpayCheckPayment" type="button" disabled>Төлбөр шалгах</button><p id="qpayCheckStatus" class="portal-note" aria-live="polite"></p></div></div><div class="feature"><h3>Хаан Банк · Шилжүүлэг</h3><p><b>Данс эзэмшигч:</b> Батравжих Батаа</p><p><b>Дансны дугаар:</b> <strong style="font-size:20px;letter-spacing:.08em">5622218472</strong></p><p><b>Банк:</b> Хаан Банк</p><p>Гүйлгээний утгад LOREVERSE хэрэглэгчийн имэйл болон сонгосон багцаа бичнэ үү.</p><button class="btn" type="button" id="copyBankAccount">Дансны дугаар хуулах</button><span class="portal-note" id="bankCopyStatus"></span><p class="portal-note">Шилжүүлгийн баримтыг Support хэсгийн Төлбөр ангиллаар илгээнэ. Админ баталгаажуулсны дараа эрх олгоно.</p></div></div><p class="portal-note">QPay төлбөрийн төлөвийг зөвхөн QPay серверээс шалгаж баталгаажуулна. QR код үүссэн нь төлбөр амжилттай болсон гэсэн үг биш.</p></div>
  </section>
 
 <section class="section" id="admin">
@@ -428,6 +428,63 @@ $("memberSignup").onclick=async()=>{const {data,error}=await supabase.auth.signU
 $("memberLogout").onclick=async()=>{await supabase.auth.signOut();await refreshMember();};
 supabase.auth.onAuthStateChange(()=>{setTimeout(refreshMember,0);});
 loadMembershipPlans();refreshMember();
+
+let activeQpayPaymentId=null;
+function qpayStatus(message){const el=$("qpayStatus");if(el)el.textContent=message;}
+function qpayCheckStatus(message){const el=$("qpayCheckStatus");if(el)el.textContent=message;}
+function qpaySafeUrl(value){try{const u=new URL(value);return u.protocol==="https:"?u.href:"";}catch{return "";}}
+document.querySelectorAll("[data-qpay-plan]").forEach(button=>{
+ button.addEventListener("click",async()=>{
+  const planCode=button.dataset.qpayPlan;
+  const allButtons=[...document.querySelectorAll("[data-qpay-plan]")];
+  allButtons.forEach(b=>b.disabled=true);
+  $("qpayInvoice").hidden=true;activeQpayPaymentId=null;
+  qpayStatus("Нэвтрэлт болон QPay нэхэмжлэл үүсгэж байна…");qpayCheckStatus("");
+  try{
+   const {data:{user},error:userError}=await supabase.auth.getUser();
+   if(userError||!user||user.is_anonymous)throw new Error("Premium төлбөр хийхийн тулд имэйлээр бүртгүүлж нэвтэрнэ үү.");
+   const {data,error}=await supabase.functions.invoke("qpay-payment",{body:{action:"create_invoice",plan_code:planCode}});
+   if(error)throw error;
+   if(!data||!data.ok||!data.invoice_id)throw new Error(data?.error||"QPay нэхэмжлэл үүссэнгүй.");
+   activeQpayPaymentId=data.payment_id;
+   $("qpayInvoiceTitle").textContent=data.plan_name+" · "+Number(data.amount).toLocaleString("mn-MN")+"₮";
+   const qrWrap=$("qpayQrWrap");qrWrap.replaceChildren();
+   if(data.qr_image){
+    const img=document.createElement("img");img.alt="QPay төлбөрийн QR код";img.style.cssText="display:block;width:min(280px,100%);height:auto;margin:12px auto;background:#fff;padding:10px;border-radius:12px";
+    const raw=String(data.qr_image);
+    img.src=raw.startsWith("data:image/")?raw:"data:image/png;base64,"+raw;
+    qrWrap.appendChild(img);
+   }else if(data.qr_text){
+    const p=document.createElement("p");p.textContent=data.qr_text;qrWrap.appendChild(p);
+   }else{
+    const p=document.createElement("p");p.textContent="QR зураг QPay-ээс ирсэнгүй. Доорх QPay холбоосыг ашиглана уу.";qrWrap.appendChild(p);
+   }
+   $("qpayInvoiceText").textContent="Нэхэмжлэлийн дугаар: "+String(data.invoice_id);
+   const links=$("qpayLinks");links.replaceChildren();
+   const allLinks=Array.isArray(data.urls)?data.urls:[];
+   if(data.qpay_short_url)allLinks.unshift({name:"QPay",link:data.qpay_short_url});
+   allLinks.forEach(item=>{
+    const href=qpaySafeUrl(item.link||item.url||item.qr_link||"");if(!href)return;
+    const a=document.createElement("a");a.className="btn";a.href=href;a.target="_blank";a.rel="noopener noreferrer";a.textContent=String(item.name||item.description||"QPay апп нээх");links.appendChild(a);
+   });
+   $("qpayInvoice").hidden=false;$("qpayCheckPayment").disabled=false;
+   qpayStatus("Нэхэмжлэл үүслээ. QPay апп-аар QR уншуулж төлсний дараа “Төлбөр шалгах” товчийг дарна уу.");
+  }catch(err){qpayStatus(err?.message||"QPay нэхэмжлэл үүсгэхэд алдаа гарлаа.");}
+  finally{allButtons.forEach(b=>b.disabled=false);}
+ });
+});
+$("qpayCheckPayment").addEventListener("click",async()=>{
+ if(!activeQpayPaymentId)return;
+ const b=$("qpayCheckPayment");b.disabled=true;qpayCheckStatus("QPay-ээс төлбөрийн төлөв шалгаж байна…");
+ try{
+  const {data,error}=await supabase.functions.invoke("qpay-payment",{body:{action:"check_payment",payment_id:activeQpayPaymentId}});
+  if(error)throw error;
+  if(data?.paid){qpayCheckStatus("Төлбөр баталгаажлаа. Premium эрх идэвхжлээ.");qpayStatus("Төлбөр амжилттай.");activeQpayPaymentId=null;await refreshMember();}
+  else qpayCheckStatus("Төлбөр одоогоор баталгаажаагүй байна. Төлсний дараа дахин шалгана уу.");
+ }catch(err){qpayCheckStatus(err?.message||"Төлбөр шалгахад алдаа гарлаа.");}
+ finally{b.disabled=!activeQpayPaymentId;}
+});
+
 
 const entries=[
 {game:"Genshin Impact",tag:"WORLD LORE",title:"Тейватын ертөнц ба долоон үндэстэн",desc:"Тейватын газарзүй, Архонууд болон үндэстэн бүрийн онцлог.",body:"Энэ сэдвээр Тейватын долоон үндэстэн, элементүүд, Архонтын тогтолцоо болон түүхэн холбоог албан ёсны тоглоомын мэдээлэлд тулгуурлан ангилж судална."},
