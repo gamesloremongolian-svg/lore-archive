@@ -444,7 +444,7 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
   <div class="portal-actions"><button class="btn primary" id="dailyReward" type="button">Өдрийн бонус авах · +5 XP / +2 Coins</button><span id="dailyRewardStatus" class="portal-note"></span></div>
  </div>
  <div class="portal-grid" style="margin-top:16px">
-  <div class="portal-panel"><div class="eyebrow">LORE COINS STORE</div><h3>Бонусын дэлгүүр</h3><p>Цуглуулсан Coins-оор Premium хөнгөлөлт болон профайлын гоёл авна.</p><div id="coinStore" class="store-grid">Дэлгүүр ачаалж байна…</div><p class="portal-note" id="storeStatus"></p></div>
+  <div class="portal-panel" id="coinStorePanel" hidden><div class="eyebrow">LORE COINS STORE</div><h3>Бонусын дэлгүүр</h3><p>Цуглуулсан Coins-оор Premium хөнгөлөлт болон профайлын гоёл авна.</p><div id="coinStore" class="store-grid">Дэлгүүр ачаалж байна…</div><p class="portal-note" id="storeStatus"></p></div>
   <div class="portal-panel"><div class="eyebrow">LEADERBOARD</div><h3>Шилдэг Lorekeepers</h3><div id="loreLeaderboard">Жагсаалт ачаалж байна…</div></div>
  </div>
 </section>
@@ -850,8 +850,13 @@ async function refreshGamification(){
  const progress=next===null?100:Math.max(0,Math.min(100,(xp-rank.min)/(next-rank.min)*100));$("rankProgress").style.width=progress+"%";$("rankProgressText").textContent=next===null?"Дээд Rank хүрсэн байна.":"Дараагийн Rank ("+rankLevels[rankLevels.indexOf(rank)+1].name+") хүртэл "+Math.max(0,next-xp)+" XP";
 }
 async function loadCoinStore(){
- const user=(await supabase.auth.getUser()).data.user;communityUser=user;const {data,error}=await supabase.from("lore_coin_items").select("id,name,description,coin_cost,item_type,discount_percent").eq("enabled",true).order("coin_cost");
- const el=$("coinStore");if(error){el.textContent=error.message;return;}
+ const user=(await supabase.auth.getUser()).data.user;communityUser=user;
+ const panel=$("coinStorePanel");const el=$("coinStore");
+ const canView=!!user&&!user.is_anonymous;
+ panel.hidden=!canView;
+ if(!canView){el.textContent="";$("storeStatus").textContent="";return;}
+ const {data,error}=await supabase.from("lore_coin_items").select("id,name,description,coin_cost,item_type,discount_percent").eq("enabled",true).order("coin_cost");
+ if(error){el.textContent=error.message;return;}
  el.innerHTML=(data||[]).map(x=>'<div class="store-item"><b>'+safeText(x.name)+'</b><p class="portal-note">'+safeText(x.description||x.item_type)+'</p><strong style="color:#ffd58d">'+x.coin_cost+' Coins</strong><br><button class="btn" style="margin-top:8px" data-redeem="'+safeText(x.id)+'" '+(user?.is_anonymous?'disabled title="Бүртгэлтэй хэрэглэгч шаардлагатай"':'')+'>Авах</button></div>').join("")||"Одоогоор бараа алга.";
  el.querySelectorAll("[data-redeem]").forEach(b=>b.onclick=async()=>{try{await ensureCommunityUser();const {data,error}=await supabase.rpc("redeem_lore_coins",{p_item_id:b.dataset.redeem});if(error)throw error;$("storeStatus").textContent=data.message||("Амжилттай. Үлдэгдэл: "+data.remaining_coins);await refreshGamification();}catch(e){$("storeStatus").textContent=e.message;}});
 }
