@@ -364,23 +364,11 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
 
 
 
-<section class="section archive" id="archive"><div class="section-head"><div><div class="eyebrow">LORE DATABASE</div><h2>Lore архив</h2><p>Нийтлэл, дүр, ертөнцийн мэдээллийг хайж үзээрэй.</p></div></div><div class="toolbar"><input id="search" class="search" type="search" placeholder="Нийтлэл, дүр, сэдэв хайх..."><select id="sort" class="select"><option value="new">Шинэ нь эхэнд</option><option value="az">Нэрээр A–Z</option></select></div><div class="filters" id="filters"><button class="chip active" data-game="all">Бүгд</button><button class="chip" data-game="Genshin Impact">Genshin</button><button class="chip" data-game="Wuthering Waves">Wuthering Waves</button><button class="chip" data-game="ANANTA">ANANTA</button><button class="chip" data-game="Honkai: Star Rail">Honkai: Star Rail</button><button class="chip" data-game="Zenless Zone Zero">Zenless Zone Zero</button><button class="chip" data-game="Arknights">Arknights</button><button class="chip" data-game="Blue Archive">Blue Archive</button></div><div class="articles" id="articles"></div><div class="empty" id="empty">Тохирох нийтлэл олдсонгүй.</div><p class="note">Тайлбар: Эхний нийтлэлүүд нь архивын танилцуулга контент. Албан ёсны эх сурвалжаар нягталсан судалгааг редакцын шалгалтын дараа нийтэлнэ.</p></section>
 
 
-<section class="section archive" id="publishedLore">
- <div class="section-head"><div><div class="eyebrow">EDITORIAL DATABASE</div><h2>Нэгдсэн мэдээлэл ба Lore сан</h2><p>Тоглоом, анимэ, дүр, ертөнцийн судалгаа, мэдээ, гарын авлагыг нэг дороос хайж уншина. Нийтлэл бүр эх сурвалжтай байна.</p></div></div>
- <div class="toolbar" style="flex-wrap:wrap"><input id="publishedSearch" class="search" type="search" placeholder="Гарчиг, дүр, тоглоом, агуулгаар хайх..."><select class="form-field" id="publishedType"><option value="all">Бүх төрөл</option><option value="lore">Lore судалгаа</option><option value="game">Тоглоом</option><option value="anime">Анимэ</option><option value="manga">Манга</option><option value="news">Мэдээ</option><option value="guide">Гарын авлага</option></select><select class="form-field" id="publishedGame"><option value="all">Бүх ертөнц</option><option>Genshin Impact</option><option>Wuthering Waves</option><option>ANANTA</option><option>Honkai: Star Rail</option><option>Zenless Zone Zero</option><option>Arknights</option><option>Blue Archive</option><option>Бусад</option></select><label class="chip"><input id="bookmarksOnly" type="checkbox" style="accent-color:#c07bff"> Зөвхөн хадгалсан</label></div><div class="portal-note" id="publishedCount"></div>
- <div id="publishedPosts" class="articles"><p class="portal-note">Нийтлэл ачаалж байна…</p></div>
- <div id="publishedStatus" class="portal-note"></div>
-</section>
-<div class="modal" id="feedbackModal" role="dialog" aria-modal="true"><div class="dialog">
- <div class="dialogtop"><div><div class="eyebrow">EDITORIAL FEEDBACK</div><h2>Нийтлэлд санал өгөх</h2></div><button class="close" id="feedbackClose" type="button">✕</button></div>
- <form id="feedbackForm"><input id="feedbackPostId" type="hidden">
- <label for="feedbackType">Саналын төрөл</label><select class="form-field" id="feedbackType"><option value="correction">Алдаа засвар</option><option value="source">Эх сурвалж санал болгох</option><option value="question">Асуулт</option><option value="other">Бусад</option></select>
- <label for="feedbackMessage">Тайлбар</label><textarea class="form-field" id="feedbackMessage" required minlength="5" maxlength="3000" rows="5" placeholder="Ямар хэсгийг шалгах шаардлагатай вэ?"></textarea>
- <label for="feedbackSource">Эх сурвалжийн холбоос (заавал биш)</label><input class="form-field" id="feedbackSource" type="url" placeholder="https://...">
- <button class="btn primary" type="submit">Санал илгээх</button><div id="feedbackStatus" class="portal-note"></div></form>
- </div></div>
+
+
+
 
 
 <section class="section" id="events">
@@ -800,6 +788,7 @@ supabase.auth.onAuthStateChange(()=>{setTimeout(()=>{loadAccountPanel();loadAcco
 let publishedPosts=[],myBookmarks=new Set();
 async function loadPublishedLore(){
  const el=$("publishedPosts");
+ if(!el)return;
  const {data,error}=await supabase.from("content_posts").select("id,title,summary,body,content_type,language_code,published_at,slug,game_title,character_name,source_urls,cover_image_url").eq("status","published").order("published_at",{ascending:false}).limit(100);
  if(error){el.textContent="Нийтлэл ачаалж чадсангүй: "+error.message;return;}
  publishedPosts=data||[];
@@ -808,6 +797,7 @@ async function loadPublishedLore(){
  renderPublishedLore();
 }
 function renderPublishedLore(){
+ if(!$("publishedPosts"))return;
  const q=$("publishedSearch").value.trim().toLocaleLowerCase(),only=$("bookmarksOnly").checked;const type=$("publishedType").value,game=$("publishedGame").value;
  const rows=publishedPosts.filter(p=>(!only||myBookmarks.has(p.id))&&(type==="all"||p.content_type===type)&&(game==="all"||p.game_title===game)&&[p.title,p.summary,p.content_type,p.language_code,p.game_title,p.character_name].join(" ").toLocaleLowerCase().includes(q));
  $("publishedCount").textContent=rows.length+" нийтлэл · Нийт "+publishedPosts.length;
@@ -816,17 +806,7 @@ function renderPublishedLore(){
  $("publishedPosts").querySelectorAll("[data-bookmark]").forEach(b=>b.onclick=async()=>{try{const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Хадгалахдаа эхлээд нэвтэрнэ үү.");const id=b.dataset.bookmark;if(myBookmarks.has(id)){const {error}=await supabase.from("article_bookmarks").delete().eq("post_id",id).eq("user_id",user.id);if(error)throw error;myBookmarks.delete(id);}else{const {error}=await supabase.from("article_bookmarks").insert({post_id:id,user_id:user.id});if(error)throw error;myBookmarks.add(id);}renderPublishedLore();}catch(e){$("publishedStatus").textContent=e.message;}});
  $("publishedPosts").querySelectorAll("[data-feedback]").forEach(b=>b.onclick=()=>{$("feedbackPostId").value=b.dataset.feedback;$("feedbackStatus").textContent="";$("feedbackModal").classList.add("open");});
 }
-$("publishedSearch").addEventListener("input",renderPublishedLore);$("bookmarksOnly").addEventListener("change",renderPublishedLore);$("publishedType").addEventListener("change",renderPublishedLore);$("publishedGame").addEventListener("change",renderPublishedLore);
-$("feedbackClose").onclick=()=>$("feedbackModal").classList.remove("open");
-$("feedbackModal").addEventListener("click",e=>{if(e.target.id==="feedbackModal")$("feedbackModal").classList.remove("open");});
-$("feedbackForm").addEventListener("submit",async e=>{
- e.preventDefault();
- try{const {data:{user}}=await supabase.auth.getUser();const source=$("feedbackSource").value.trim()||null;if(source&&!/^https:\/\//i.test(source))throw new Error("Эх сурвалжийн холбоос HTTPS байх ёстой.");
- const payload={post_id:$("feedbackPostId").value,user_id:user?.id||null,feedback_type:$("feedbackType").value,message:$("feedbackMessage").value.trim(),source_url:source};
- const {error}=await supabase.from("article_feedback").insert(payload);if(error)throw error;
- $("feedbackStatus").textContent="Санал редакцад илгээгдлээ. Баярлалаа.";$("feedbackForm").reset();
- }catch(err){$("feedbackStatus").textContent=err.message||"Илгээхэд алдаа гарлаа.";}
-});
+
 
 
 /* Public community event calendar */
