@@ -181,10 +181,26 @@ section[id]{scroll-margin-top:92px}
  .hero{padding-top:42px}
 }
 @media(min-width:761px){.nav{display:flex!important}}
+
+#accountTools{position:relative;z-index:8}#accountTools[hidden]{display:none}#accountTools .portal-panel{margin-bottom:12px}.actions{align-items:center}.actions .ghost{padding:8px 10px;font-size:11px;white-space:nowrap}#notificationCount{display:inline-grid;place-items:center;min-width:18px;height:18px;border-radius:99px;background:#e76fbc;color:#fff;font-size:10px;font-weight:900;margin-left:3px}
 </style>
 </head>
 <body>
-<header class="wrap topbar"><a class="brand" href="#"><span class="mark">✦</span> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх">☰</button><nav class="nav" id="mainNav"><a href="#anime">Анимэ</a><a href="#games">Тоглоомууд</a><a href="#community">Нэгдсэн чат</a><a href="#archive">Lore сан</a><a href="#ranks">Rank & Bonus</a></nav><div class="actions"><select class="select" id="lang" aria-label="Language"><option value="mn">MN</option><option value="en">EN</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div></header>
+<header class="wrap topbar"><a class="brand" href="#"><span class="mark">✦</span> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх">☰</button><nav class="nav" id="mainNav"><a href="#anime">Анимэ</a><a href="#games">Тоглоомууд</a><a href="#community">Нэгдсэн чат</a><a href="#archive">Lore сан</a><a href="#ranks">Rank & Bonus</a></nav><div class="actions"><button class="ghost" id="profileOpen" type="button">Миний профайл</button><button class="ghost" id="notificationsOpen" type="button" aria-label="Мэдэгдэл">🔔 <span id="notificationCount">0</span></button><select class="select" id="lang" aria-label="Language"><option value="mn">MN</option><option value="en">EN</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div></header>
+<div class="wrap" id="accountTools" hidden>
+ <section class="portal-panel" style="margin-top:14px">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><div><div class="eyebrow">NOTIFICATION CENTER</div><h3 style="margin:4px 0">Мэдэгдэл</h3></div><button class="btn" id="notificationsClose" type="button">Хаах</button></div>
+  <div id="notificationList"><p class="portal-note">Нэвтэрсний дараа мэдэгдлүүд харагдана.</p></div>
+ </section>
+</div>
+<div class="modal" id="profileModal" role="dialog" aria-modal="true"><div class="dialog">
+ <div class="dialogtop"><div><div class="eyebrow">LOREVERSE ACCOUNT</div><h2>Миний профайл</h2></div><button class="close" id="profileClose" type="button">✕</button></div>
+ <p id="profileIdentity">Нэвтэрч орно уу.</p>
+ <label for="profileName">Харагдах нэр</label><input class="form-field" id="profileName" maxlength="40" placeholder="Lore Explorer">
+ <label for="profileAvatar">Avatar зурагны HTTPS холбоос</label><input class="form-field" id="profileAvatar" type="url" placeholder="https://...">
+ <button class="btn primary" id="profileSave" type="button">Профайл хадгалах</button><div class="portal-note" id="profileStatus"></div>
+ </div></div>
+</header>
 <main class="wrap">
 <section class="hero"><div><div class="eyebrow">ANIME · GAMES · STORIES</div><h1>EVERY UNIVERSE<br>HAS A <span class="gradient">STORY.</span></h1><p>Анимэ болон тоглоомын ертөнцийн түүх, дүрүүд, нууц, онол, судалгааг нэг дороос нээ. Дуртай ертөнцийнхөө гүн рүү аял.</p><div class="hero-buttons"><a class="btn primary" href="#games">Ертөнцүүдийг нээх ↗</a><a class="btn" href="#archive">Lore архив үзэх</a></div></div><div class="visual lore-emblem">
 <svg class="lore-logo" viewBox="0 0 600 600" role="img" aria-label="LOREVERSE алтан луужин доторх нээлттэй ном">
@@ -496,5 +512,46 @@ supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=aw
 
 <script>
 (()=>{const b=document.getElementById('navToggle'),n=document.getElementById('mainNav');if(!b||!n)return;b.addEventListener('click',()=>{const open=n.classList.toggle('open');b.setAttribute('aria-expanded',String(open));b.textContent=open?'✕':'☰';});n.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{n.classList.remove('open');b.setAttribute('aria-expanded','false');b.textContent='☰';}));})();
+
+/* LOREVERSE account profile + notification center */
+async function loadAccountPanel(){
+ const {data:{user}}=await supabase.auth.getUser();
+ const list=$("notificationList");
+ if(!user){list.textContent="Мэдэгдэл харахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү."; $("notificationCount").textContent="0";return;}
+ const {data,error}=await supabase.from("user_notifications").select("id,title,body,notification_type,target_url,read_at,created_at").eq("user_id",user.id).order("created_at",{ascending:false}).limit(30);
+ if(error){list.textContent="Мэдэгдэл ачаалж чадсангүй: "+error.message;return;}
+ const unread=(data||[]).filter(n=>!n.read_at).length;$("notificationCount").textContent=String(unread);
+ list.innerHTML=(data||[]).map(n=>'<article class="chat-message" style="margin:9px 0;opacity:'+(n.read_at?'.72':'1')+'"><div class="tag">'+safeText(n.notification_type)+' · '+new Date(n.created_at).toLocaleString("mn-MN")+'</div><b>'+safeText(n.title)+'</b><p>'+safeText(n.body)+'</p><div class="row"><button class="btn" type="button" data-notice-read="'+n.id+'" '+(n.read_at?'disabled':'')+'>Уншсан болгох</button>'+(n.target_url&&/^\/(?!\/)|^https:\/\//.test(n.target_url)?'<a class="btn" href="'+safeText(n.target_url)+'">Нээх</a>':'')+'</div></article>').join("")||'<p class="portal-note">Одоогоор мэдэгдэл алга.</p>';
+ list.querySelectorAll("[data-notice-read]").forEach(b=>b.onclick=async()=>{const {error}=await supabase.from("user_notifications").update({read_at:new Date().toISOString()}).eq("id",b.dataset.noticeRead).eq("user_id",user.id);if(error){$("profileStatus").textContent=error.message;return;}await loadAccountPanel();});
+}
+async function loadAccountProfile(){
+ const {data:{user}}=await supabase.auth.getUser();
+ if(!user){$("profileIdentity").textContent="Профайл харахын тулд нэвтэрнэ үү.";return;}
+ const {data,error}=await supabase.from("profiles").select("display_name,avatar_url").eq("id",user.id).maybeSingle();
+ $("profileIdentity").textContent=user.email||"Нэвтэрсэн хэрэглэгч";
+ if(error){$("profileStatus").textContent=error.message;return;}
+ $("profileName").value=data?.display_name||user.user_metadata?.display_name||"";
+ $("profileAvatar").value=data?.avatar_url||"";
+}
+$("notificationsOpen").onclick=async()=>{$("accountTools").hidden=!$("accountTools").hidden;if(!$("accountTools").hidden){await loadAccountPanel();$("accountTools").scrollIntoView({behavior:"smooth",block:"nearest"});}};
+$("notificationsClose").onclick=()=>$("accountTools").hidden=true;
+$("profileOpen").onclick=async()=>{$("profileModal").classList.add("open");await loadAccountProfile();};
+$("profileClose").onclick=()=>$("profileModal").classList.remove("open");
+$("profileModal").addEventListener("click",e=>{if(e.target.id==="profileModal")$("profileModal").classList.remove("open");});
+$("profileSave").onclick=async()=>{
+ try{
+  const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Профайл хадгалахын тулд нэвтэрнэ үү.");
+  const display_name=$("profileName").value.trim(),avatar_url=$("profileAvatar").value.trim()||null;
+  if(!display_name)throw new Error("Харагдах нэрээ оруулна уу.");
+  if(avatar_url&&!/^https:\/\//i.test(avatar_url))throw new Error("Avatar холбоос HTTPS байх ёстой.");
+  const {error}=await supabase.from("profiles").upsert({id:user.id,display_name,avatar_url,updated_at:new Date().toISOString()},{onConflict:"id"});
+  if(error)throw error;
+  await supabase.from("chat_public_profiles").upsert({id:user.id,display_name,avatar_url,total_xp:0,updated_at:new Date().toISOString()},{onConflict:"id"}).then(()=>{});
+  $("profileStatus").textContent="Профайл хадгалагдлаа.";
+  $("rankDisplayName").textContent=display_name;
+ }catch(e){$("profileStatus").textContent=e.message||"Алдаа гарлаа.";}
+};
+supabase.auth.onAuthStateChange(()=>{setTimeout(()=>{loadAccountPanel();loadAccountProfile();},0);});
+
 </script>
 </body></html>
