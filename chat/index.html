@@ -45,7 +45,7 @@
  <main class="main">
   <div class="chat-head"><div style="display:flex;align-items:center;gap:10px"><button class="btn mobile-back" id="mobileBack" type="button">←</button><div><h2 id="chatTitle">Хувийн чат</h2><p id="chatSubtitle">Харилцах гишүүнээ сонгоно уу</p></div></div><span class="status" id="onlineStatus">● PRIVATE</span></div>
   <div class="messages" id="messageList"><div class="empty"><div class="symbol">✦</div><h2>Шууд харилцаа</h2><p>Зүүн талаас гишүүн сонгоод шинэ яриа эхлүүлээрэй. Таны хувийн зурвас бусдад харагдахгүй.</p></div></div>
-  <form class="compose hidden" id="messageForm"><textarea class="field" id="messageInput" rows="1" maxlength="2000" placeholder="Мессеж бичих… (Enter — илгээх, Shift+Enter — мөр шилжүүлэх)"></textarea><button class="btn primary" id="sendButton" type="submit">Илгээх</button></form>
+  <form class="compose" id="messageForm"><textarea class="field" id="messageInput" rows="1" maxlength="2000" disabled placeholder="Эхлээд зүүн талаас гишүүн сонгоно уу…"></textarea><button class="btn primary" id="sendButton" type="submit" disabled>Илгээх</button></form>
  </main>
 </div>
 
@@ -104,7 +104,7 @@ async function loadMembers(query=""){
 }
 function renderMembers(){
  const el=$("memberResults");
- if(!memberCache.length){el.innerHTML='<p class="hint">Одоогоор өөр бүртгэлтэй гишүүн олдсонгүй.</p>';return;}
+ if(!memberCache.length){el.innerHTML='<p class="hint">Одоогоор өөр бүртгэлтэй гишүүн алга. Өөр аккаунтаар бүртгүүлсэн хүн нэмэгдсэний дараа эндээс сонгож чатлана.</p>';return;}
  el.innerHTML=memberCache.map(m=>'<button class="member" type="button" data-user="'+safe(m.id)+'"><span class="avatar small">'+safe(initials(m.display_name))+'</span><span style="min-width:0"><span class="member-name">'+safe(m.display_name)+'</span><span class="member-meta">Rank XP · '+Number(m.total_xp||0).toLocaleString("mn-MN")+'</span></span></button>').join("");
  el.querySelectorAll("[data-user]").forEach(b=>b.onclick=()=>startConversation(b.dataset.user));
 }
@@ -138,7 +138,7 @@ async function loadConversations(){
 }
 async function openConversation(conversation,partner){
  activeConversation=conversation;activePartner=partner;
- $("chatTitle").textContent=partner.display_name||"Хувийн чат";$("chatSubtitle").textContent="Зөвхөн та хоёрын хоорондох яриа";$("onlineStatus").textContent="● PRIVATE";$("messageForm").classList.remove("hidden");
+ $("chatTitle").textContent=partner.display_name||"Хувийн чат";$("chatSubtitle").textContent="Зөвхөн та хоёрын хоорондох яриа";$("onlineStatus").textContent="● PRIVATE";$("messageInput").disabled=false;$("sendButton").disabled=false;$("messageInput").placeholder="Мессеж бичих… (Enter — илгээх, Shift+Enter — мөр шилжүүлэх)";
  $("appShell").classList.remove("hide-sidebar");
  await loadMessages();
  if(messageChannel)await supabase.removeChannel(messageChannel);
@@ -171,7 +171,7 @@ $("messageForm").addEventListener("submit",async e=>{
 $("messageInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("messageForm").requestSubmit();}});
 $("refreshButton").onclick=async()=>{await loadMembers($("memberSearch").value);await loadConversations();if(activeConversation)await loadMessages();};
 $("mobileBack").onclick=()=>$("appShell").classList.add("hide-sidebar");
-$("logoutButton").onclick=async()=>{if(refreshPresenceTimer)clearInterval(refreshPresenceTimer);if(messageChannel)await supabase.removeChannel(messageChannel);await supabase.auth.signOut({scope:"local"});currentUser=null;activeConversation=null;$("appShell").classList.add("hidden");$("authWrap").classList.remove("hidden");setAuthMode("login");};
+$("logoutButton").onclick=async()=>{if(refreshPresenceTimer)clearInterval(refreshPresenceTimer);if(messageChannel)await supabase.removeChannel(messageChannel);await supabase.auth.signOut({scope:"local"});currentUser=null;activeConversation=null;$("messageInput").disabled=true;$("sendButton").disabled=true;$("messageInput").placeholder="Эхлээд зүүн талаас гишүүн сонгоно уу…";$("appShell").classList.add("hidden");$("authWrap").classList.remove("hidden");setAuthMode("login");};
 async function boot(){
  const {data:{user}}=await supabase.auth.getUser();
  if(user&&!user.is_anonymous){currentUser=user;try{await enterChat();}catch(err){$("authWrap").classList.remove("hidden");note(err.message||"Профайл ачаалж чадсангүй.");}}
