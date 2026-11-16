@@ -337,6 +337,41 @@ body{
 @media(max-width:700px){
  body{background-attachment:scroll;background-position:center top;background-size:auto 100vh}
 }
+
+/* Subtle cosmic ornament details */
+.hero .visual::after{
+ content:"";position:absolute;inset:0;pointer-events:none;z-index:2;opacity:.7;
+ background:
+ radial-gradient(circle at 14% 22%,#fff 0 1px,transparent 2px),
+ radial-gradient(circle at 82% 18%,#bca5ff 0 1.5px,transparent 2.5px),
+ radial-gradient(circle at 76% 78%,#8debf4 0 1px,transparent 2px),
+ radial-gradient(circle at 23% 76%,#f5b8e8 0 1px,transparent 2px),
+ radial-gradient(circle at 50% 12%,#fff 0 1px,transparent 2px),
+ radial-gradient(circle at 91% 51%,#fff 0 1px,transparent 2px);
+}
+.hero .visual::before{
+ content:"✦";position:absolute;top:14%;right:17%;z-index:3;color:#e7d8ff;
+ font-size:15px;text-shadow:0 0 14px #b88cff;animation:loreTwinkle 3.8s ease-in-out infinite;
+}
+.section-head h2{position:relative;display:inline-block}
+.section-head h2::after{
+ content:"";display:block;width:54px;height:2px;margin-top:10px;border-radius:9px;
+ background:linear-gradient(90deg,var(--violet),var(--cyan),transparent);
+ box-shadow:0 0 12px #9b70ff55;
+}
+.world,.event-type{isolation:isolate}
+.world::after{
+ content:"✧";position:absolute;right:15px;top:12px;color:#e7d8ff99;font-size:17px;
+ text-shadow:0 0 12px #a77bff;pointer-events:none;transition:transform .25s,color .25s;
+}
+.world:hover::after{transform:rotate(24deg) scale(1.2);color:#fff}
+.event-type::after{
+ content:"✦";position:absolute;right:17px;top:14px;color:#f0d9ffb0;font-size:18px;
+ text-shadow:0 0 15px #bd8cff;pointer-events:none;
+}
+@keyframes loreTwinkle{0%,100%{opacity:.45;transform:scale(.8) rotate(0)}50%{opacity:1;transform:scale(1.18) rotate(18deg)}}
+@media(prefers-reduced-motion:reduce){.hero .visual::before{animation:none}}
+
 </style>
 </head>
 <body>
