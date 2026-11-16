@@ -549,6 +549,109 @@ body{
  *,*:before,*:after{scroll-behavior:auto!important}
 }
 
+
+/* LOREVERSE page-wide component harmony v2 */
+:root{
+ --surface-1:#12182b;
+ --surface-2:#19213a;
+ --surface-3:#202846;
+ --stroke-soft:rgba(145,157,203,.27);
+ --stroke-strong:rgba(169,139,255,.52);
+ --glow-violet:rgba(169,139,255,.18);
+ --glow-cyan:rgba(121,220,232,.12);
+}
+section[id]{scroll-margin-top:96px}
+.section{color:var(--text)}
+.section-head{align-items:flex-end}
+.section-head h2{color:#f4f0ff;letter-spacing:-.025em}
+.section-head p{color:#b8bdd3;line-height:1.7}
+.eyebrow{color:#8fe3ed;letter-spacing:.2em}
+.portal-grid{gap:18px}
+.portal-panel{
+ background:linear-gradient(145deg,rgba(31,38,67,.97),rgba(17,24,44,.98));
+ border:1px solid var(--stroke-soft);
+ box-shadow:0 14px 38px rgba(0,0,0,.16),inset 0 1px rgba(255,255,255,.025);
+}
+.portal-panel h3{color:#f4f0ff}
+.portal-panel p,.portal-note{color:#b8bdd3}
+#premium .portal-panel{position:relative;overflow:hidden}
+#premium .portal-panel:before{
+ content:"";position:absolute;inset:0 0 auto;height:2px;
+ background:linear-gradient(90deg,transparent,var(--violet),var(--cyan),transparent);opacity:.75
+}
+#premium label,#payment label{display:block;margin:12px 0 6px;color:#d9d8ed;font-size:12px;font-weight:750}
+.form-field,.search,.chat-compose input,.chat-tools input,.chat-tools select{
+ color:var(--text);background:#0d1428;border:1px solid var(--stroke-soft);
+}
+.form-field::placeholder,.search::placeholder,.chat-compose input::placeholder{color:#858da9}
+.form-field:focus,.search:focus,.chat-compose input:focus,.chat-tools input:focus{
+ outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(169,139,255,.12)
+}
+.form-field option,.select option{background:#151d34;color:#f2efff}
+#premium .portal-actions .btn,#payment .portal-actions .btn{min-height:42px}
+#archive,#catalog{
+ background:linear-gradient(145deg,rgba(20,28,49,.96),rgba(13,20,37,.97));
+ border:1px solid var(--stroke-soft);
+ box-shadow:0 18px 48px rgba(0,0,0,.14);
+}
+#archive .toolbar,#catalog .toolbar{align-items:center}
+#archive .chip,#catalog .chip{
+ color:#c2c6dc;border-color:var(--stroke-soft);background:rgba(24,33,57,.72)
+}
+#archive .chip.active,#archive .chip:hover,#catalog .chip.active,#catalog .chip:hover{
+ color:#f4efff;background:rgba(169,139,255,.16);border-color:var(--stroke-strong)
+}
+#archive .articles,#catalog .articles{gap:16px}
+#archive .article,#catalog .catalog-card{
+ overflow:hidden;border:1px solid var(--stroke-soft);border-radius:18px;
+ background:linear-gradient(155deg,#202946,#121a30);
+ box-shadow:0 10px 26px rgba(0,0,0,.14);
+ transition:border-color .2s,transform .2s,box-shadow .2s
+}
+#archive .article:hover,#catalog .catalog-card:hover{
+ border-color:var(--stroke-strong);transform:translateY(-3px);
+ box-shadow:0 15px 32px rgba(0,0,0,.22),0 0 18px var(--glow-violet)
+}
+#catalog .catalog-card img{background:#111a30}
+#catalog .catalog-card h3,#archive .article h3{color:#f3efff}
+#catalog .catalog-meta,#archive .article small{color:#8edce8}
+#catalog .catalog-desc,#archive .article p{color:#b8bdd3}
+#catalog .catalog-card .catalog-info>a,#archive .article a{color:#91e2eb}
+.stat,.feature,.feed-panel,.feed-side,.live-box,.rank-card,
+.community-side,.community-main,.knowledge-hub-card{
+ border-color:var(--stroke-soft);
+}
+.knowledge-hub{
+ border-color:var(--stroke-strong);
+ background:
+  radial-gradient(ellipse at 92% 0%,rgba(169,139,255,.16),transparent 40%),
+  linear-gradient(140deg,#20213e,#121b31 70%,#14283b);
+}
+.knowledge-hub-head p{color:#c2c5d9}
+.knowledge-hub-card{
+ background:linear-gradient(145deg,#202946,#141d33);
+ border-color:var(--stroke-soft);
+}
+.knowledge-hub-card:hover{border-color:var(--stroke-strong);box-shadow:0 10px 26px rgba(0,0,0,.18)}
+.dialog{
+ border-color:var(--stroke-strong);
+ background:linear-gradient(145deg,#202541,#121a30);
+}
+.dialog p{color:#bdc1d6}
+.close{border-color:var(--stroke-soft);background:#18213a;color:var(--text)}
+.footer{border-top-color:var(--stroke-soft)}
+.footer-nav a{color:#b8bdd3}
+.footer-nav a:hover{color:var(--cyan)}
+/* Keep accent colors restrained and consistent across status chips and links */
+a:not(.btn):hover{color:#a8e9ef}
+.badge,.code{border-color:var(--stroke-soft)}
+@media(max-width:760px){
+ .portal-grid{grid-template-columns:1fr}
+ #premium .portal-panel{padding:19px}
+ #archive,#catalog{padding:17px}
+ .section-head h2{font-size:clamp(23px,6vw,30px)}
+}
+
 </style>
 </head>
 <body>
