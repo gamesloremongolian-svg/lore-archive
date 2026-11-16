@@ -109,8 +109,8 @@ jobs:
       - name: Publish direct-download Android APK
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: android-apk-beta
-          name: LOREVERSE Android APK (Beta)
+          tag_name: android-build-${{ github.run_number }}
+          name: LOREVERSE Android Build #${{ github.run_number }}
           body: |
             LOREVERSE Android APK beta build.
             This is a directly installable debug-signed testing build, not the Google Play production release.
