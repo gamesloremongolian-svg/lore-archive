@@ -309,7 +309,7 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
    <div id="chatPinned" class="chat-pinned" hidden></div>
    <div id="chatFeed" class="chat-feed" aria-live="polite"><p class="portal-note">Мессеж ачаалж байна…</p></div>
    <div id="replyPreview" class="reply-preview" hidden></div>
-   <form id="chatForm" class="chat-compose"><input id="chatInput" class="form-field" maxlength="1200" placeholder="Мессеж бичих..." autocomplete="off"><button class="btn primary" type="submit">Илгээх</button></form>
+   <div id="chatForm" class="chat-compose"><input id="chatInput" class="form-field" maxlength="1200" placeholder="Мессеж бичих..." autocomplete="off"><button class="btn primary" id="chatSendButton" type="button">Илгээх</button></div>
    <div class="chat-foot"><span class="portal-note">4 секундийн cooldown · 1200 тэмдэгтийн хязгаар</span><span class="portal-note">Нэр болон Rank таны профайлаас харагдана</span></div>
   </div>
  </div>
@@ -640,9 +640,23 @@ async function selectChatChannel(id,label){
 }
 $("chatSearch").addEventListener("input",renderChatMessages);
 $("clearChatSearch").onclick=()=>{$("chatSearch").value="";renderChatMessages();};
-$("chatForm").addEventListener("submit",async e=>{
- e.preventDefault();const body=$("chatInput").value.trim();if(!body)return;
- try{const u=await ensureCommunityUser();const {error}=await supabase.from("chat_messages").insert({channel_id:activeChatChannel,user_id:u.id,body,reply_to:replyTarget?.id||null});if(error)throw error;$("chatInput").value="";replyTarget=null;$("replyPreview").hidden=true;$("chatStatus").textContent="Мессеж илгээгдлээ.";}catch(err){$("chatStatus").textContent=err.message||"Мессеж илгээж чадсангүй.";}
+async function sendCommunityChatMessage(event){
+ event?.preventDefault?.();event?.stopPropagation?.();event?.stopImmediatePropagation?.();
+ const input=$("chatInput"),button=$("chatSendButton"),body=input.value.trim();
+ if(!body)return;
+ if(button.disabled)return;
+ button.disabled=true;
+ try{
+  const u=await ensureCommunityUser();
+  const {error}=await supabase.from("chat_messages").insert({channel_id:activeChatChannel,user_id:u.id,body,reply_to:replyTarget?.id||null});
+  if(error)throw error;
+  input.value="";replyTarget=null;$("replyPreview").hidden=true;$("chatStatus").textContent="Мессеж илгээгдлээ.";
+ }catch(err){$("chatStatus").textContent=err.message||"Мессеж илгээж чадсангүй.";}
+ finally{button.disabled=false;input.focus();}
+}
+$("chatSendButton").addEventListener("click",sendCommunityChatMessage);
+$("chatInput").addEventListener("keydown",event=>{
+ if(event.key==="Enter"&&!event.shiftKey){event.preventDefault();event.stopPropagation();sendCommunityChatMessage(event);}
 });
 async function refreshGamification(){
  const user=(await supabase.auth.getUser()).data.user;communityUser=user;if(!user){$("rankDisplayName").textContent="Зочин хэрэглэгч";return;}
