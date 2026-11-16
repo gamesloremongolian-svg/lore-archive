@@ -372,7 +372,9 @@ function renderChatMessages(){
  feed.innerHTML=filtered.map(m=>{
   const replies=m.reply_to?chatRows.find(x=>x.id===m.reply_to):null;
   const reactions=(m.reactions||[]).map(r=>'<button type="button" data-react="'+m.id+'" data-emoji="'+r.emoji+'">'+r.emoji+' '+r.count+'</button>').join("");
-  return '<article class="chat-message '+(m.is_pinned?'is-pinned':'')+'"><div class="msg-meta"><small><b>'+safeText(m.display_name)+'</b> · '+new Date(m.created_at).toLocaleString("mn-MN")+(m.is_pinned?' · PINNED':'')+'</small><button type="button" data-report="'+m.id+'" aria-label="Report">Report</button></div>'+
+  const rank=rankFor(Number(m.member?.total_xp||0)).name;
+  const avatar=m.member?.avatar_url&&/^https:\/\//i.test(m.member.avatar_url)?'<img src="'+safeText(m.member.avatar_url)+'" alt="" style="width:25px;height:25px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px">':'';
+  return '<article class="chat-message '+(m.is_pinned?'is-pinned':'')+'"><div class="msg-meta"><small>'+avatar+'<b>'+safeText(m.member?.display_name||m.display_name)+'</b> <span class="pill">'+safeText(rank)+'</span> · '+new Date(m.created_at).toLocaleString("mn-MN")+(m.is_pinned?' · PINNED':'')+'</small><button type="button" data-report="'+m.id+'" aria-label="Report">Report</button></div>'+
    (replies?'<div class="reply-preview">↳ '+safeText(replies.display_name)+': '+safeText(replies.body.slice(0,100))+'</div>':'')+
    '<div>'+safeText(m.body)+'</div><div class="chat-reactions">'+reactions+'</div><div class="chat-actions"><button type="button" data-reply="'+m.id+'">↩ Хариулах</button>'+['👍','❤️','😂','🔥','✨','👀'].map(e=>'<button type="button" data-add-reaction="'+m.id+'" data-emoji="'+e+'">'+e+'</button>').join("")+'</div></article>';
  }).join("")||'<p class="portal-note">Хайлтад тохирох мессеж олдсонгүй.</p>';
@@ -386,6 +388,8 @@ async function loadChatMessages(){
  const {data,error}=await supabase.from("chat_messages").select("id,user_id,display_name,body,created_at,reply_to,is_pinned").eq("channel_id",activeChatChannel).is("deleted_at",null).order("created_at",{ascending:false}).limit(80);
  if(error){$("chatFeed").textContent=error.message;return;}
  chatRows=(data||[]).reverse();
+ const memberIds=[...new Set(chatRows.map(m=>m.user_id))];
+ if(memberIds.length){const {data:cards}=await supabase.from("chat_public_profiles").select("id,display_name,avatar_url,total_xp").in("id",memberIds);const map=Object.fromEntries((cards||[]).map(x=>[x.id,x]));chatRows.forEach(m=>{m.member=map[m.user_id]||null;});}
  const ids=chatRows.map(m=>m.id);
  if(ids.length){const {data:rx}=await supabase.from("chat_reactions").select("message_id,emoji").in("message_id",ids);const counts={};(rx||[]).forEach(r=>{const k=r.message_id+"|"+r.emoji;counts[k]=(counts[k]||0)+1;});chatRows.forEach(m=>m.reactions=Object.entries(counts).filter(([k])=>k.startsWith(m.id+"|")).map(([k,count])=>({emoji:k.split("|")[1],count})));}else chatRows=[];
  const pinned=chatRows.filter(m=>m.is_pinned).slice(-3);$("chatPinned").hidden=!pinned.length;$("chatPinned").innerHTML=pinned.map(m=>'📌 <b>'+safeText(m.display_name)+':</b> '+safeText(m.body)).join("<br>");
