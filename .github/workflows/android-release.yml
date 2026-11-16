@@ -47,8 +47,8 @@ jobs:
               raise SystemExit("Expected android/variables.gradle was not generated.")
           content = path.read_text()
           for key in ("compileSdkVersion", "targetSdkVersion"):
-              pattern = rf"({key}\\s*=\\s*)\\d+"
-              content, count = re.subn(pattern, rf"\\g<1>36", content, count=1)
+              pattern = rf"({key}\s*=\s*)\d+"
+              content, count = re.subn(pattern, rf"\g<1>36", content, count=1)
               if count != 1:
                   raise SystemExit(f"Could not safely set {key} to API 36.")
           path.write_text(content)
