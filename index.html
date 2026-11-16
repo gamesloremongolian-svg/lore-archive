@@ -1433,7 +1433,11 @@ async function loadEditorialUpdates(){
  host.innerHTML=rows.slice(0,5).map(p=>'<article class="update-item"><div class="update-meta">'+updateEsc(String(p.content_type||"LORE").toUpperCase())+' · '+updateDate(p.published_at||p.updated_at)+'</div><strong>'+updateEsc(p.title)+'</strong>'+(p.summary?'<p class="update-desc">'+updateEsc(p.summary)+'</p>':'')+'<a class="update-link" href="#archive" data-open-lore-archive>Дэлгэрэнгүй ↗</a></article>').join("");
  host.querySelectorAll("[data-open-lore-archive]").forEach(link=>link.addEventListener("click",()=>{const archive=$("archive");if(archive)archive.hidden=false;}));
 }
-async function refreshLoreverseUpdates(){await Promise.all([loadAppReleases(),loadEditorialUpdates()]);}
+async function refreshLoreverseUpdates(){await Promise.all([checkAppUpdate().catch(()=>{}),loadEditorialUpdates()]);}
+$("checkAppUpdate")?.addEventListener("click",()=>checkAppUpdate().catch(error=>{$("appUpdateStatus").textContent="Шалгалт амжилтгүй: "+error.message;}));
+$("downloadAppUpdate")?.addEventListener("click",()=>openAppApk(latestAppAsset?.browser_download_url).catch(error=>{$("appUpdateStatus").textContent="APK нээж чадсангүй: "+error.message;}));
+$("appUpdateQuickOpen")?.addEventListener("click",()=>{const panel=$("app-update");if(panel)setTimeout(()=>panel.scrollIntoView({behavior:"smooth",block:"start"}),80);});
+$("appVersionNavLink")?.addEventListener("click",()=>{const panel=$("app-update");if(panel)setTimeout(()=>panel.scrollIntoView({behavior:"smooth",block:"start"}),80);});
 $("updatesRefresh")?.addEventListener("click",()=>refreshLoreverseUpdates());
 refreshLoreverseUpdates();
 
