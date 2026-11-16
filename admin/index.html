@@ -23,6 +23,24 @@
 <div id="supportTab" class="hidden"><h2>Support Desk · Хэрэглэгчийн хүсэлтүүд</h2><p class="muted">Хүсэлтүүдийг ангиллаар шалгаж, хариу бичих, төлөв өөрчлөх боломжтой.</p><div class="row"><select id="supportStatusFilter"><option value="all">Бүх төлөв</option><option value="open">Нээлттэй</option><option value="in_progress">Шалгаж байна</option><option value="waiting_user">Хэрэглэгчийн хариу хүлээж байна</option><option value="resolved">Шийдвэрлэсэн</option><option value="closed">Хаасан</option></select><button id="reloadSupportTickets" type="button">Шинэчлэх</button></div><div id="adminTicketsList" class="status">Хүсэлтүүдийг ачаална уу.</div><div id="adminTicketThread" class="list" hidden></div></div><div id="notificationsTab" class="hidden"><h2>Хэрэглэгчид мэдэгдэл илгээх</h2><p class="muted">Нэг хэрэглэгчийн Auth UUID шаардлагатай. Бүх хэрэглэгч рүү бөөнөөр илгээх функцийг спамын эрсдэлээс шалтгаалан нэмж өгөөгүй.</p><label>Хэрэглэгчийн UUID</label><input id="noticeUserId" placeholder="Auth user UUID"><label>Гарчиг</label><input id="noticeTitle" maxlength="160"><label>Мэдэгдлийн төрөл</label><select id="noticeType"><option value="system">Систем</option><option value="content">Шинэ контент</option><option value="reward">Шагнал</option><option value="membership">Premium</option><option value="community">Community</option><option value="event">Event</option></select><label>Тайлбар</label><textarea id="noticeBody" maxlength="2000"></textarea><label>Холбоос (заавал биш)</label><input id="noticeUrl" placeholder="/#publishedLore"><button id="sendNotice" type="button">Мэдэгдэл илгээх</button><div id="noticeMsg" class="status"></div></div>
 <div id="communityTab" class="hidden"><h2>Community moderation</h2><p class="muted">Гомдол шалгах, мессеж устгах, хэрэглэгчийг 24 цаг mute хийх. Бүх үйлдэл админы бүртгэлтэй хадгалагдана.</p><button id="reloadCommunity">Шинэчлэх</button><div id="communityReports" class="status">Гомдлуудыг ачаалж байна…</div><h3>Сүүлийн мессежүүд · Pin удирдлага</h3><div id="communityPins" class="status">Мессежүүдийг ачаалж байна…</div><h3>XP / Lore Coins шагнал олгох</h3><p class="muted">Зөвхөн баталгаажсан хувь нэмэрт олгоно. Reference ID нь давхар шагналаас хамгаална.</p><label>Хэрэглэгчийн UUID</label><input id="rewardUserId" placeholder="Auth user UUID"><div class="row"><div><label>Үйл явдлын төрөл</label><input id="rewardEvent" value="approved_contribution"></div><div><label>Reference ID (давтагдашгүй)</label><input id="rewardRef" placeholder="post-id эсвэл review-id"></div></div><div class="row"><div><label>XP (0–500)</label><input id="rewardXp" type="number" min="0" max="500" value="20"></div><div><label>Lore Coins (0–500)</label><input id="rewardCoins" type="number" min="0" max="500" value="5"></div></div><button id="grantReward">Шагнал олгох</button><div id="rewardMsg" class="status"></div></div>
 </section></main>
+<script>
+(function(){
+  var status=document.getElementById('authMsg');
+  if(status) status.textContent='JavaScript шалгалт ажиллалаа. Supabase модулийг эхлүүлж байна…';
+  window.addEventListener('error',function(e){
+    if(status) status.textContent='JavaScript алдаа: '+(e.message||'Тодорхойгүй алдаа')+' · '+(e.filename||'')+':'+(e.lineno||'');
+  });
+  window.addEventListener('unhandledrejection',function(e){
+    var reason=e.reason;
+    if(status) status.textContent='Асинхрон алдаа: '+(reason&&reason.message?reason.message:String(reason));
+  });
+  window.setTimeout(function(){
+    if(status && status.textContent==='JavaScript шалгалт ажиллалаа. Supabase модулийг эхлүүлж байна…'){
+      status.textContent='Module script эхлээгүй байна. Хөтчийн JavaScript ачаалалт эсвэл синтаксийн алдааг шалгах шаардлагатай.';
+    }
+  },8000);
+})();
+</script>
 <script type="module">
 const authMsg=document.getElementById('authMsg');
 try {
