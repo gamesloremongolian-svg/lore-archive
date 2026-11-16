@@ -373,17 +373,13 @@ section[id]{scroll-margin-top:92px}
   <div id="ticketThread" class="portal-panel" hidden style="margin-top:14px"></div>
  </div>
  <div class="portal-panel" style="margin-top:16px" id="staffApplication">
-  <div class="eyebrow">JOIN THE LOREVERSE TEAM</div><h3>Ажилд орох анкет</h3>
-  <p>LOREVERSE-ийн багт нэгдэх хүсэлтээ илгээнэ үү. Админ таны өргөдлийг шалгаж, шийдвэр гаргана.</p>
-  <form id="staffApplicationForm">
-   <label for="appName">Овог, нэр</label><input class="form-field" id="appName" maxlength="120" required placeholder="Таны нэр">
-   <label for="appEmail">Имэйл хаяг</label><input class="form-field" id="appEmail" type="email" maxlength="254" required placeholder="name@example.com">
-   <label for="appRole">Сонирхож буй ажлын байр</label><select class="form-field" id="appRole" required><option value="">Сонгоно уу</option><option value="Lore судлаач">Lore судлаач</option><option value="Нийтлэл бичигч">Нийтлэл бичигч</option><option value="Редактор">Редактор</option><option value="Орчуулагч">Орчуулагч</option><option value="Community модератор">Community модератор</option><option value="Зар, хамтын ажиллагааны менежер">Зар, хамтын ажиллагааны менежер</option></select>
-   <label for="appExperience">Туршлага, ур чадвар</label><textarea class="form-field" id="appExperience" maxlength="3000" rows="4" placeholder="Өмнө хийж байсан ажил, мэддэг хэл, тоглоом/анимэ сонирхол..."></textarea>
-   <label for="appPortfolio">Portfolio / бүтээлийн холбоос (заавал биш)</label><input class="form-field" id="appPortfolio" type="url" maxlength="500" placeholder="https://...">
-   <label for="appMessage">Яагаад LOREVERSE-ийн багт нэгдэхийг хүсэж байна вэ?</label><textarea class="form-field" id="appMessage" maxlength="3000" rows="4" required placeholder="Өөрийгөө товч танилцуулна уу..."></textarea>
-   <div class="portal-actions"><button class="btn primary" id="submitStaffApplication" type="submit">Анкет илгээх</button><span class="portal-note" id="staffApplicationStatus" role="status"></span></div>
-  </form>
+  <div class="eyebrow">JOIN THE LOREVERSE TEAM</div>
+  <h3>Багт нэгдэх хүсэлт</h3>
+  <p>Ажилд орох хүсэлт, бүтээлийн жишээ болон туршлагын мэдээллээ манай үндсэн Gmail хаяг руу илгээнэ үү.</p>
+  <div class="portal-actions">
+   <a class="btn primary" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=games.lore.mongolian%40gmail.com&amp;su=LOREVERSE%20-%20%D0%91%D0%B0%D0%B3%D1%82%20%D0%BD%D1%8D%D0%B3%D0%B4%D1%8D%D1%85%20%D1%85%D2%AF%D1%81%D1%8D%D0%BB%D1%82&amp;body=%D0%9E%D0%B2%D0%BE%D0%B3%2C%20%D0%BD%D1%8D%D1%80%3A%0A%D0%A5%D0%BE%D0%BB%D0%B1%D0%BE%D0%BE%20%D0%B1%D0%B0%D1%80%D0%B8%D1%85%20%D0%B8%D0%BC%D1%8D%D0%B9%D0%BB%3A%0A%D0%A1%D0%BE%D0%BD%D0%B8%D1%80%D1%85%D0%BE%D0%B6%20%D0%B1%D1%83%D0%B9%20%D0%B0%D0%B6%D0%BB%D1%8B%D0%BD%20%D0%B1%D0%B0%D0%B9%D1%80%3A%0A%D0%A2%D1%83%D1%80%D1%88%D0%BB%D0%B0%D0%B3%D0%B0%2C%20%D1%83%D1%80%20%D1%87%D0%B0%D0%B4%D0%B2%D0%B0%D1%80%3A%0APortfolio%20%2F%20%D0%B1%D2%AF%D1%82%D1%8D%D1%8D%D0%BB%D0%B8%D0%B9%D0%BD%20%D1%85%D0%BE%D0%BB%D0%B1%D0%BE%D0%BE%D1%81%3A%0A%D0%AF%D0%B0%D0%B3%D0%B0%D0%B0%D0%B4%20LOREVERSE-%D0%B8%D0%B9%D0%BD%20%D0%B1%D0%B0%D0%B3%D1%82%20%D0%BD%D1%8D%D0%B3%D0%B4%D1%8D%D1%85%D0%B8%D0%B9%D0%B3%20%D1%85%D2%AF%D1%81%D1%8D%D0%B6%20%D0%B1%D0%B0%D0%B9%D0%BD%D0%B0%20%D0%B2%D1%8D%3A" target="_blank" rel="noopener noreferrer">Gmail-ээр хүсэлт илгээх ↗</a>
+  </div>
+  <p class="portal-note">Товчийг дарахад Gmail-ийн шинэ захидал нээгдэнэ. Мэдээллээ бөглөж, өөрөө Send дарж илгээнэ.</p>
  </div>
 </section>
 
@@ -432,20 +428,6 @@ $("memberSignup").onclick=async()=>{const {data,error}=await supabase.auth.signU
 $("memberLogout").onclick=async()=>{await supabase.auth.signOut();await refreshMember();};
 supabase.auth.onAuthStateChange(()=>{setTimeout(refreshMember,0);});
 loadMembershipPlans();refreshMember();
-
-const staffApplicationForm=document.getElementById("staffApplicationForm");
-if(staffApplicationForm)staffApplicationForm.addEventListener("submit",async e=>{
- e.preventDefault();
- const btn=document.getElementById("submitStaffApplication"),status=document.getElementById("staffApplicationStatus");
- btn.disabled=true;status.textContent="Илгээж байна…";
- const {data:{user}}=await supabase.auth.getUser();
- const payload={full_name:document.getElementById("appName").value.trim(),email:document.getElementById("appEmail").value.trim(),desired_role:document.getElementById("appRole").value,experience:document.getElementById("appExperience").value.trim()||null,portfolio_url:document.getElementById("appPortfolio").value.trim()||null,message:document.getElementById("appMessage").value.trim(),applicant_user_id:user?.id||null};
- const {error}=await supabase.from("staff_applications").insert(payload);
- btn.disabled=false;
- if(error){status.textContent="Илгээхэд алдаа гарлаа: "+error.message;return;}
- status.textContent="Анкет амжилттай илгээгдлээ. Хянаж үзсэний дараа холбогдоно.";
- staffApplicationForm.reset();
-});
 
 const entries=[
 {game:"Genshin Impact",tag:"WORLD LORE",title:"Тейватын ертөнц ба долоон үндэстэн",desc:"Тейватын газарзүй, Архонууд болон үндэстэн бүрийн онцлог.",body:"Энэ сэдвээр Тейватын долоон үндэстэн, элементүүд, Архонтын тогтолцоо болон түүхэн холбоог албан ёсны тоглоомын мэдээлэлд тулгуурлан ангилж судална."},
