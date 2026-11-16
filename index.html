@@ -433,6 +433,31 @@ body{
 .hero .visual.lore-emblem .lore-logo{width:min(100%,350px);height:100%;max-height:330px}
 @media(max-width:850px){.hero{grid-template-columns:1fr}.hero .visual.lore-emblem{height:280px;margin-top:18px}}
 
+
+/* Animated LOREVERSE ad mascot in the empty right side of Payment Center */
+#payment{grid-template-columns:minmax(0,1.08fr) minmax(280px,.92fr);align-items:stretch}
+.ad-mascot{position:relative;overflow:hidden;min-height:100%;padding:20px;border:1px solid #8c72c8;border-radius:24px;background:radial-gradient(ellipse at 20% 15%,#19c7e044,transparent 45%),radial-gradient(ellipse at 90% 88%,#bd55d544,transparent 48%),linear-gradient(145deg,#101b39ee,#1c1741f5 60%,#102d4aee);box-shadow:inset 0 0 34px #8edff51a,0 18px 45px #0005;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ad-mascot:before{content:"";position:absolute;inset:9px;border:1px solid #a68be966;border-radius:17px;pointer-events:none}
+.ad-mascot-kicker{position:relative;z-index:1;align-self:stretch;text-align:left;color:#8feaf1;font-size:11px;font-weight:900;letter-spacing:.17em}
+.ad-mascot-stage{position:relative;z-index:1;width:100%;min-height:300px;display:flex;align-items:center;justify-content:center;gap:0}
+.ad-mascot-character{width:55%;max-width:245px;height:300px;overflow:visible;filter:drop-shadow(0 0 16px #b58cff88);animation:mascotBob 3.2s ease-in-out infinite}
+.mascot-float{transform-origin:50% 50%;animation:mascotFloat 3s ease-in-out infinite}
+.mascot-eye{transform-box:fill-box;transform-origin:center;animation:mascotBlink 4.2s infinite}
+.ad-mascot-board{position:relative;width:45%;min-height:170px;padding:20px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;border:2px solid #9b75ff;border-radius:18px;background:linear-gradient(145deg,#112b55dd,#24144bdd);box-shadow:0 0 20px #a86dff77,inset 0 0 18px #51d8ff33;color:white;animation:mascotGlow 2.4s ease-in-out infinite alternate}
+.ad-mascot-board strong{font-size:clamp(13px,1.4vw,19px);line-height:1.55;text-shadow:0 0 12px #fff,0 0 22px #d7a2ff}
+.ad-mascot-spark{color:#8ff6ff;font-size:28px;animation:mascotTwinkle 1.5s infinite}
+.ad-mascot-caption{font-size:8px;letter-spacing:.12em;color:#a9eaf3;font-weight:900}
+.ad-mascot-line{position:relative;z-index:1;margin:4px 0 12px;padding:11px 15px;border:1px solid #8b79c9;border-radius:14px;background:#10182dcc;color:#f2eaff;font-weight:750;font-size:14px}
+.ad-mascot-speak{position:relative;z-index:1;min-width:180px}
+.ad-mascot-hint{position:relative;z-index:1;margin-top:9px;color:#b8c6e7;font-size:10px}
+@keyframes mascotBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes mascotFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-8px) rotate(1deg)}}
+@keyframes mascotBlink{0%,44%,48%,100%{transform:scaleY(1)}46%{transform:scaleY(.08)}}
+@keyframes mascotGlow{from{box-shadow:0 0 12px #a86dff55,inset 0 0 12px #51d8ff22}to{box-shadow:0 0 28px #a86dffbb,inset 0 0 22px #51d8ff55}}
+@keyframes mascotTwinkle{0%,100%{opacity:.45;transform:scale(.85)}50%{opacity:1;transform:scale(1.2)}}
+@media(max-width:760px){#payment{grid-template-columns:1fr}.ad-mascot-stage{min-height:250px}.ad-mascot-character{height:250px}.ad-mascot-board{min-height:145px}}
+@media(prefers-reduced-motion:reduce){.ad-mascot-character,.mascot-float,.mascot-eye,.ad-mascot-board,.ad-mascot-spark{animation:none!important}}
+
 </style>
 </head>
 <body>
@@ -711,7 +736,44 @@ body{
  <div class="portal-panel"><div class="eyebrow">PAYMENT CENTER</div><h2>Premium төлбөр</h2><p>Бүртгэлтэй хэрэглэгч Premium багцаа сонгоод QPay QR нэхэмжлэл үүсгэнэ. Төлбөр баталгаажсаны дараа эрх идэвхжинэ.</p><div class="portal-grid"><div class="feature"><h3>QPay автомат төлбөр</h3><p>Сарын болон жилийн багцынхаа төлбөрийг QPay апп-аар уншуулна.</p><div class="portal-actions" style="flex-wrap:wrap"><button class="btn primary" type="button" data-qpay-plan="monthly">Сарын багц · 5,000₮</button><button class="btn" type="button" data-qpay-plan="yearly">Жилийн багц · 60,000₮</button></div><p class="portal-note" id="qpayStatus" aria-live="polite">Төлбөр үүсгэхийн тулд эхлээд имэйлээр нэвтэрнэ үү.</p><div id="qpayInvoice" hidden class="feature" style="margin-top:14px"><h3 id="qpayInvoiceTitle">QPay нэхэмжлэл</h3><div id="qpayQrWrap" style="text-align:center"></div><p id="qpayInvoiceText" class="portal-note"></p><div id="qpayLinks" class="portal-actions" style="flex-wrap:wrap"></div><button class="btn primary" id="qpayCheckPayment" type="button" disabled>Төлбөр шалгах</button><p id="qpayCheckStatus" class="portal-note" aria-live="polite"></p></div></div><div class="feature"><h3>Хаан Банк · Шилжүүлэг</h3><p><b>Данс эзэмшигч:</b> Батравжих Батаа</p><p><b>Дансны дугаар:</b> <strong style="font-size:20px;letter-spacing:.08em">5622218472</strong></p><p><b>Банк:</b> Хаан Банк</p><p>Гүйлгээний утгад LOREVERSE хэрэглэгчийн имэйл болон сонгосон багцаа бичнэ үү.</p><button class="btn" type="button" id="copyBankAccount">Дансны дугаар хуулах</button><span class="portal-note" id="bankCopyStatus"></span><p class="portal-note">Шилжүүлгийн баримтыг Support хэсгийн Төлбөр ангиллаар илгээнэ. Админ баталгаажуулсны дараа эрх олгоно.</p></div></div><p class="portal-note">QPay төлбөрийн төлөвийг зөвхөн QPay серверээс шалгаж баталгаажуулна. QR код үүссэн нь төлбөр амжилттай болсон гэсэн үг биш.</p></div>
  
 
- </section>
+ <aside class="ad-mascot" id="loreverseAdMascot" aria-label="LOREVERSE зарын хөтөч">
+ <div class="ad-mascot-kicker">LOREVERSE · AD GUIDE</div>
+ <div class="ad-mascot-stage">
+  <svg class="ad-mascot-character" viewBox="0 0 300 360" role="img" aria-label="Одны чимэглэлтэй мөнгөлөг үстэй анимэ хөтөч">
+   <defs>
+    <linearGradient id="mascotHair" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0ff"/><stop offset=".48" stop-color="#a99adf"/><stop offset="1" stop-color="#5369a9"/></linearGradient>
+    <linearGradient id="mascotCoat" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#344b80"/><stop offset="1" stop-color="#111b3d"/></linearGradient>
+   </defs>
+   <g class="mascot-float">
+    <path d="M48 352 Q42 286 78 250 L113 231 192 231 232 260 Q260 300 256 352Z" fill="url(#mascotCoat)" stroke="#b8a8ef" stroke-width="4"/>
+    <path d="M111 240 L148 291 184 240 173 352 124 352Z" fill="#e7e7ff" stroke="#8fdff5" stroke-width="3"/>
+    <path d="M130 267 L151 290 172 267 160 315 145 315Z" fill="#18244d"/>
+    <path d="M64 282 Q34 258 39 222 Q44 184 72 166 L99 181 88 247Z" fill="url(#mascotHair)" stroke="#d9caff" stroke-width="4"/>
+    <path d="M226 278 Q263 240 251 195 Q244 166 219 155 L200 179 213 248Z" fill="url(#mascotHair)" stroke="#d9caff" stroke-width="4"/>
+    <ellipse cx="150" cy="139" rx="79" ry="94" fill="#ffe3e8" stroke="#7d77b7" stroke-width="5"/>
+    <path d="M71 146 Q48 52 132 34 Q218 13 231 105 Q232 145 211 181 L207 105 Q180 83 160 66 Q132 101 83 116 L91 183 Q70 171 71 146Z" fill="url(#mascotHair)" stroke="#d6c8ff" stroke-width="5"/>
+    <path d="M85 108 Q116 86 131 49 Q148 87 181 93 Q202 96 218 120" fill="none" stroke="#f4eaff" stroke-width="8" stroke-linecap="round"/>
+    <path d="M95 151 Q113 136 130 151" fill="none" stroke="#35406d" stroke-width="6" stroke-linecap="round"/>
+    <path d="M169 151 Q188 136 204 151" fill="none" stroke="#35406d" stroke-width="6" stroke-linecap="round"/>
+    <ellipse class="mascot-eye" cx="113" cy="158" rx="12" ry="18" fill="#42c4df" stroke="#27345d" stroke-width="4"/>
+    <ellipse class="mascot-eye" cx="187" cy="158" rx="12" ry="18" fill="#42c4df" stroke="#27345d" stroke-width="4"/>
+    <circle cx="116" cy="154" r="4" fill="white"/><circle cx="190" cy="154" r="4" fill="white"/>
+    <path d="M143 190 Q151 197 159 190" fill="none" stroke="#b95f8a" stroke-width="4" stroke-linecap="round"/>
+    <path d="M92 214 Q150 241 208 214" fill="none" stroke="#f6c5dc" stroke-width="5"/>
+    <path d="M83 121 Q58 159 73 227 Q35 198 52 120 Q57 51 126 24 Q202 -2 238 66 Q264 121 233 216 Q224 179 220 126 Q189 100 159 77 Q132 114 83 121Z" fill="url(#mascotHair)" stroke="#d9caff" stroke-width="5"/>
+    <path d="M71 92 L97 64 111 95 85 111Z" fill="#f4d78a" stroke="#8f6ca7" stroke-width="4"/>
+    <path d="M87 71 L94 89 110 91 96 101 99 117 85 106 70 113 77 97 66 85 83 86Z" fill="#fff0a9"/>
+    <path d="M126 236 L151 258 176 236" fill="none" stroke="#f3d68c" stroke-width="5"/>
+    <path d="M39 335 Q20 293 52 265" fill="none" stroke="#73e7f3" stroke-width="7" stroke-linecap="round"/>
+    <path d="M252 335 Q280 294 250 266" fill="none" stroke="#73e7f3" stroke-width="7" stroke-linecap="round"/>
+   </g>
+  </svg>
+  <div class="ad-mascot-board"><span class="ad-mascot-spark">✦</span><strong>ЭНД ТАНЫ ЗАР<br>СУРТАЛЧИЛГАА<br>ЯВНА</strong><span class="ad-mascot-caption">LOREVERSE · ADVERTISE HERE</span></div>
+ </div>
+ <p class="ad-mascot-line" id="adMascotLine">Сайн байна уу! Энд таны зар сурталчилгаа явна.</p>
+ <button class="btn primary ad-mascot-speak" id="adMascotSpeak" type="button">▶ Дуугаар сонсох</button>
+ <small class="ad-mascot-hint">Дууг эхлүүлэхийн тулд товчийг дарна уу.</small>
+</aside></section>
 </div>
 
 
@@ -736,6 +798,22 @@ try{
  window.setInterval(updateActivity,60000);
 }catch(e){console.warn("Analytics unavailable:",e.message);}
 
+
+const adMascotSpeak=$("adMascotSpeak");
+if(adMascotSpeak){
+ adMascotSpeak.addEventListener("click",()=>{
+  const phrase="Энд таны зар сурталчилгаа явна.";
+  const line=$("adMascotLine");
+  if(!("speechSynthesis" in window)||!("SpeechSynthesisUtterance" in window)){line.textContent=phrase+" (Таны браузер дуугаар унших боломжгүй байна.)";return;}
+  window.speechSynthesis.cancel();
+  const utterance=new SpeechSynthesisUtterance(phrase);
+  utterance.lang="mn-MN";utterance.rate=.88;utterance.pitch=1.12;
+  utterance.onstart=()=>{line.textContent="✦ "+phrase;adMascotSpeak.textContent="◼ Дуу тоглож байна…";};
+  utterance.onend=()=>{adMascotSpeak.textContent="▶ Дахин сонсох";};
+  utterance.onerror=()=>{adMascotSpeak.textContent="▶ Дуугаар сонсох";line.textContent=phrase+" (Дууны хөдөлгүүр энэ хэлийг дэмжихгүй байж магадгүй.)";};
+  window.speechSynthesis.speak(utterance);
+ });
+}
 const memberMsg=t=>{$("memberStatus").textContent=t;};
 async function loadMembershipPlans(){const {data,error}=await supabase.from("membership_plans").select("plan_code,name,description,duration_days,price_amount,currency,enabled").eq("enabled",true).order("duration_days");$("membershipPlans").innerHTML=error?("<p>"+error.message+"</p>"):(data||[]).map(p=>'<div class="list" style="padding:12px 0;border-bottom:1px solid #624477"><b>'+p.name+'</b><p>'+p.description+'</p><strong>'+(p.price_amount===null?"Үнэ тохируулагдаж байна":Number(p.price_amount).toLocaleString("mn-MN")+" "+p.currency)+'</strong></div>').join("")||"<p>Одоогоор идэвхтэй багц алга.</p>";}
 async function loadPremiumArticles(){const {data,error}=await supabase.from("content_posts").select("id,title,summary,body,content_type,language_code,published_at").eq("status","published").eq("is_premium",true).order("published_at",{ascending:false}).limit(30);const el=$("premiumArticles");if(error){el.textContent="Premium архивыг ачаалж чадсангүй: "+error.message;return;}el.innerHTML=(data||[]).map(p=>'<article class="article"><div class="tag">'+p.content_type.toUpperCase()+' · PREMIUM</div><h3>'+String(p.title).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))+'</h3><p>'+String(p.summary||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))+'</p><button type="button" data-premium-open="'+p.id+'">Бүрэн унших →</button></article>').join("")||'<p class="portal-note">Одоогоор таны эрхэд харагдах Premium нийтлэл алга.</p>';el.querySelectorAll("[data-premium-open]").forEach(b=>b.onclick=()=>{const p=data.find(x=>x.id===b.dataset.premiumOpen);if(!p)return;const body=p.body&&typeof p.body==="object"?(p.body.text||JSON.stringify(p.body,null,2)):String(p.body||"");$("modalGame").textContent=p.content_type.toUpperCase()+" · PREMIUM";$("modalTitle").textContent=p.title;$("modalBody").textContent=body;const src=Array.isArray(p.source_urls)?p.source_urls:[];let srcBox=$("modalSources");if(!srcBox){srcBox=document.createElement("div");srcBox.id="modalSources";$("modalBody").after(srcBox);}srcBox.innerHTML=src.length?"<h3>Эх сурвалж</h3>"+src.map((u,i)=>/^https:\/\//i.test(u)?"<p><a href=\""+safeText(u)+"\" target=\"_blank\" rel=\"noopener noreferrer\">Эх сурвалж "+(i+1)+" ↗</a></p>":"").join(""):"";$("modal").classList.add("open");});}
