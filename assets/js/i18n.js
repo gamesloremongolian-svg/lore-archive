@@ -104,6 +104,23 @@ Object.assign(dict,{
 "Тайлбар: Эхний нийтлэлүүд нь архивын танилцуулга контент.":["Note: The initial articles are introductory archive content.","注：初期の記事はアーカイブの紹介コンテンツです。","안내: 초기 게시글은 아카이브 소개 콘텐츠입니다."]
 });
 
+
+Object.assign(dict,{
+"Community Feed":["Community Feed","コミュニティフィード","커뮤니티 피드"],
+"Бүх тоглоомын нэгдсэн урсгал болон тоглоом тус бүрийн тусгай community.":["One global feed for all games, plus a dedicated community for each game.","全ゲーム共通のフィードと、ゲームごとの専用コミュニティ。","모든 게임을 위한 통합 피드와 게임별 전용 커뮤니티."],
+"Юу хуваалцмаар байна? Lore, мэдээ, асуулт эсвэл fanart...":["What would you like to share? Lore, news, a question, or fan art…","何を共有しますか？Lore、ニュース、質問、ファンアートなど…","무엇을 공유하고 싶으신가요? Lore, 뉴스, 질문 또는 팬아트…"],
+"Нийтлэхийн тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ.":["Log in with a registered account to publish.","投稿するには登録済みアカウントでログインしてください。","게시하려면 등록된 계정으로 로그인하세요."],
+"Тоглоом сонгох":["Choose a game","ゲームを選択","게임 선택"],
+"Нэг профайл, нэг Rank — бүх тоглоомын community-д.":["One profile, one rank — across every game community.","ひとつのプロフィール、ひとつのランクで、すべてのゲームコミュニティに参加。","하나의 프로필, 하나의 랭크로 모든 게임 커뮤니티에 참여하세요."],
+"Нийтлэлүүд ачаалж байна…":["Loading posts…","投稿を読み込み中…","게시글 불러오는 중…"],
+"Одоогоор нийтлэл алга. Эхний нийтлэлийг чи оруулаарай.":["No posts yet. Be the first to publish.","まだ投稿はありません。最初の投稿をしてみましょう。","아직 게시글이 없습니다. 첫 게시글을 작성해 보세요."],
+"Following feed үзэхийн тулд нэвтэрнэ үү.":["Log in to view your Following feed.","フォロー中のフィードを見るにはログインしてください。","팔로잉 피드를 보려면 로그인하세요."],
+"Одоогоор дагадаг хэрэглэгч алга.":["You are not following anyone yet.","まだ誰もフォローしていません。","아직 팔로우하는 사용자가 없습니다."],
+"Нийтлэл амжилттай нийтлэгдлээ.":["Your post has been published.","投稿を公開しました。","게시글이 게시되었습니다。"],
+"Сэтгэгдэл бичих…":["Write a comment…","コメントを書く…","댓글 작성…"],
+"Нийтлэл оруулахын тулд профайлаасаа бүртгүүлж эсвэл нэвтэрнэ үү.":["Create an account or log in from your profile to publish.","投稿するにはプロフィールから登録またはログインしてください。","게시하려면 프로필에서 가입하거나 로그인하세요."]
+});
+
 const langNames={mn:"Монгол",en:"English",ja:"日本語",ko:"한국어"};
 let active="mn";
 const pairs=Object.entries(dict).sort((a,b)=>b[0].length-a[0].length);
