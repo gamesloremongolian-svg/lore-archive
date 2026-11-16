@@ -898,6 +898,61 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 @media(max-width:850px){.hero-streaming{grid-template-columns:1fr;gap:0;padding:25px}.hero-art{min-height:330px;border-left:0;border-top:1px solid #ff9d0044}.hero-copy{padding:15px 0 25px}}
 @media(max-width:560px){.hero-streaming{padding:17px;margin-top:12px}.hero-art{min-height:260px}.anime-poster{flex-basis:145px;min-height:245px}.anime-poster-info{padding:9px}.anime-poster-info strong{font-size:11px}.rail-heading h3{font-size:12px}}
 
+/* LOREVERSE final visual balance v3 — unify the last streaming overrides */
+:root{--bg:#090d1c;--panel:#12182b;--panel2:#19213a;--line:#343b5b;--text:#f2efff;--muted:#b2b5cc;--violet:#a98bff;--cyan:#79dce8;--pink:#e6a2d4;--gold:#d9c1ff;--radius:18px}
+html{background:#090d1c;color-scheme:dark}
+body{background:radial-gradient(ellipse at 12% 0%,rgba(116,76,170,.22),transparent 39%),radial-gradient(ellipse at 88% 32%,rgba(43,121,153,.15),transparent 36%),radial-gradient(ellipse at 52% 100%,rgba(126,76,156,.1),transparent 42%),#090d1c;color:#f2efff}
+.topbar{background:rgba(10,14,29,.94);border-bottom:1px solid rgba(169,139,255,.25)}
+.brand{color:#f6f2ff}.mark{background:linear-gradient(135deg,#a98bff,#79dce8);box-shadow:0 0 18px rgba(169,139,255,.24)}
+.nav,.nav a{color:#c5c7dc}.nav a:hover,.nav a:focus-visible{color:#8fe7ef}
+.select,.ghost,.form-field{background:#151b31;border:1px solid rgba(145,157,203,.32);color:#f2efff}
+.btn{background:linear-gradient(145deg,#202744,#151b31);border:1px solid rgba(145,157,203,.34);border-radius:10px;color:#f5f1ff}
+.btn:hover{border-color:#a98bff;background:#242344}.btn.primary{background:linear-gradient(110deg,#9575e5,#648fb9);color:white;box-shadow:0 7px 22px rgba(116,103,190,.2)}
+.btn.primary:hover{background:linear-gradient(110deg,#a98bff,#79b9ca)}
+.hero-streaming{background:linear-gradient(125deg,rgba(17,23,44,.98),rgba(16,25,47,.95) 55%,rgba(28,24,54,.95));border:1px solid rgba(169,139,255,.42);border-radius:22px;box-shadow:0 18px 48px rgba(0,0,0,.2)}
+.hero-streaming:before{background:linear-gradient(90deg,rgba(9,13,28,.82),rgba(9,13,28,.22) 68%,rgba(9,13,28,.08)),repeating-linear-gradient(135deg,transparent 0 34px,rgba(169,139,255,.025) 35px 36px)}
+.hero-streaming:after{background:linear-gradient(90deg,#a98bff,#79dce8,#e6a2d4)}
+.hero-slogan{background:linear-gradient(100deg,#d7c3ff,#8fe7ef 65%,#e6a2d4);color:transparent;background-clip:text;text-shadow:0 5px 26px rgba(169,139,255,.12)}
+.hero-streaming .eyebrow,.section-head .eyebrow,.eyebrow{color:#8fe7ef}
+.hero-brand-logo{filter:drop-shadow(0 0 16px rgba(169,139,255,.2))}
+.hero-art{background:radial-gradient(ellipse at 68% 35%,rgba(121,220,232,.25),transparent 38%),radial-gradient(ellipse at 30% 75%,rgba(169,139,255,.25),transparent 42%),linear-gradient(145deg,#1b2443,#121a31 58%,#20203e);border-left:1px solid rgba(169,139,255,.35)}
+.hero-art:before{content:"✦";position:absolute;z-index:0;left:50%;top:42%;transform:translate(-50%,-50%);font-size:clamp(110px,18vw,220px);color:rgba(205,190,255,.13);text-shadow:0 0 55px rgba(121,220,232,.28);pointer-events:none}
+.hero-art:after{content:"";position:absolute;z-index:0;width:54%;aspect-ratio:1;left:50%;top:43%;transform:translate(-50%,-50%);border:1px solid rgba(169,139,255,.22);border-radius:50%;box-shadow:0 0 0 18px rgba(121,220,232,.035),0 0 0 42px rgba(169,139,255,.025);pointer-events:none}
+.hero-art img{z-index:1}.hero-art-shade{z-index:2;background:linear-gradient(90deg,rgba(9,13,28,.5),transparent 70%),linear-gradient(0deg,rgba(9,13,28,.94),transparent 56%)}.hero-art-caption{z-index:3}.hero-art-caption small{color:#8fe7ef}
+.hero-dots span{background:#454b6a}.hero-dots span:first-child{background:#a98bff;box-shadow:0 0 10px rgba(169,139,255,.7)}
+.section-head>div:first-child{border-left-color:#a98bff}.section-head h2{color:#f2efff}.section-head p{color:#b2b5cc}
+.stat,.archive,.portal-panel,.feature,.community-side,.community-main,.rank-card,.feed-panel,.feed-side,.live-box{background:linear-gradient(145deg,rgba(27,35,61,.96),rgba(15,22,41,.98));border:1px solid rgba(145,157,203,.28);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.15)}
+.stat strong{color:#bca6ff}.world{background:linear-gradient(145deg,#202946,#121a30);border-color:rgba(145,157,203,.3);border-radius:16px}.world:hover{border-color:#a98bff;box-shadow:0 10px 28px rgba(169,139,255,.13)}
+.world:after{background:linear-gradient(180deg,rgba(8,13,28,.04),rgba(8,13,28,.88))}.world .code{background:rgba(169,139,255,.2);color:#e1d5ff;border:1px solid rgba(169,139,255,.3)}.world a,.portal-note a{color:#8fe7ef}
+.archive{background:linear-gradient(145deg,rgba(20,28,49,.96),rgba(13,20,37,.97))}
+.search,.form-field,.feed-composer textarea,.feed-controls select,.feed-controls input{background:#0e1529;border:1px solid rgba(145,157,203,.3);border-radius:9px;color:#f2efff}
+.search:focus,.form-field:focus{border-color:#a98bff;box-shadow:0 0 0 3px rgba(169,139,255,.12)}
+.chip{border:1px solid rgba(145,157,203,.3);background:#151d34;color:#c5c7dc;border-radius:999px}.chip.active,.chip:hover{background:rgba(169,139,255,.2);color:#f5f0ff;border-color:#a98bff}
+.article,.catalog-card{background:linear-gradient(145deg,#202946,#121a30);border:1px solid rgba(145,157,203,.3);border-radius:14px}.article:hover,.catalog-card:hover{border-color:#a98bff;box-shadow:0 10px 28px rgba(169,139,255,.14)}
+.tag,.catalog-meta{color:#8fe7ef}.portal-panel h3,.catalog-card h3,.article h3{color:#f2efff}.portal-panel p,.article p,.catalog-desc{color:#b2b5cc}
+.media-card{border:1px solid rgba(145,157,203,.3);border-radius:14px;background:linear-gradient(145deg,#252344,#14243a)}.media-card:nth-child(3n+2){background:linear-gradient(145deg,#1b3650,#17213b)}.media-card:nth-child(3n){background:linear-gradient(145deg,#3b244b,#1b203b)}.media-card small{color:#8fe7ef}
+.knowledge-hub{background:linear-gradient(145deg,#20213e,#121b31 70%,#14283b);border:1px solid rgba(169,139,255,.45);border-radius:20px}.knowledge-hub-card{background:linear-gradient(145deg,#202946,#141d33);border:1px solid rgba(145,157,203,.28);border-radius:14px}.knowledge-hub-card:hover{border-color:#a98bff;background:#242342}
+.event-type{border-color:rgba(169,139,255,.42);border-radius:17px;background:linear-gradient(90deg,rgba(13,17,34,.88),rgba(13,17,34,.5)),linear-gradient(145deg,#30305d,#17435b);box-shadow:0 12px 30px rgba(0,0,0,.18)}
+.event-type:nth-child(2),.event-type:nth-child(3){border-color:rgba(145,157,203,.38)}.event-type:hover{border-color:#a98bff}.event-symbol{background:rgba(169,139,255,.13);border-color:rgba(169,139,255,.35);color:#d7c5ff}.event-type .tag{color:#8fe7ef}.event-type h3{color:#f4f0ff}.event-type p{color:#c0c4d9}
+.event-rewards{background:#19213a;border-color:rgba(169,139,255,.35);border-radius:14px}
+.anime-rail-block{margin:24px 0 30px}.rail-heading{border-bottom-color:rgba(145,157,203,.3)}.rail-heading h3{color:#f2efff}.rail-heading span,.anime-poster-info small{color:#8fe7ef}
+.anime-poster{border-color:rgba(145,157,203,.3);border-radius:12px;background:linear-gradient(145deg,#202946,#121a30)}.anime-poster:hover{border-color:#a98bff}.anime-poster:after{background:linear-gradient(180deg,transparent 30%,rgba(8,13,28,.4) 58%,rgba(8,13,28,.96) 100%)}
+.anime-poster.no-image{background:radial-gradient(ellipse at 50% 35%,rgba(169,139,255,.25),transparent 55%),linear-gradient(145deg,#202946,#121a30)}.anime-poster.no-image:before{content:"✦";position:absolute;inset:30px 0 auto;text-align:center;font-size:70px;color:rgba(205,190,255,.35);text-shadow:0 0 30px rgba(121,220,232,.25)}
+.anime-loading{border-color:rgba(169,139,255,.3);background:rgba(23,30,54,.7);color:#c5c7dc;border-radius:12px}.anime-source-note{color:#9ea8c5}
+.hero-art.no-image{background:radial-gradient(ellipse at 60% 40%,rgba(121,220,232,.22),transparent 40%),radial-gradient(ellipse at 35% 65%,rgba(169,139,255,.3),transparent 45%),linear-gradient(145deg,#202946,#121a30)}
+.ad-mascot{background:radial-gradient(ellipse at 18% 12%,rgba(121,220,232,.12),transparent 43%),radial-gradient(ellipse at 88% 88%,rgba(169,139,255,.16),transparent 45%),linear-gradient(145deg,#192542,#1b1b3a 58%,#142b40);border-color:rgba(169,139,255,.5)}
+.ad-mascot-board{background:linear-gradient(145deg,#1a3752,#2c1e4b);border-color:rgba(169,139,255,.7);box-shadow:0 0 17px rgba(169,139,255,.22)}.ad-mascot-line{background:rgba(14,22,42,.9);border-color:rgba(169,139,255,.4)}
+.dialog{background:linear-gradient(145deg,#202541,#121a30);border-color:rgba(169,139,255,.45)}
+.footer{border-top-color:rgba(145,157,203,.27);color:#9ea8c5}.footer-nav a{color:#b2b5cc}.footer-nav a:hover{color:#8fe7ef}
+#loreAiLauncher{background:linear-gradient(120deg,#a98bff,#79dce8);color:#101426;border-radius:12px}#loreAiPanel{background:#12182b;border-color:rgba(169,139,255,.45)}#loreAiHead{background:linear-gradient(120deg,#35305f,#1b3e56)}#loreAiForm button{background:#a98bff;color:#101426;border-radius:9px}#loreAiQuestion{background:#0e1529;border-color:rgba(145,157,203,.3)}
+#accountTools .portal-panel{background:#12182b;border-color:rgba(169,139,255,.4)}#notificationCount{background:#a98bff;color:#101426}
+#community .chat-compose input{background:#0e1529;border:1px solid rgba(145,157,203,.3);color:#f2efff}#community .chat-compose button{background:#a98bff;color:#101426;border:0;border-radius:9px}
+#community .chat-pinned{background:#28213f;border-color:#8d75ce;color:#e4d9ff}#community .reply-preview{background:#201d38;border-left-color:#a98bff}#community .chat-message.is-pinned{border-color:#8d75ce}#community .chat-message .chat-reactions button{background:#171d33;border-color:rgba(145,157,203,.3)}#community .chat-message .chat-reactions button:hover{border-color:#a98bff}
+input[type=checkbox]{accent-color:#a98bff}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #79dce8;outline-offset:2px}
+@media(max-width:850px){.hero-streaming{grid-template-columns:1fr;gap:0;padding:25px;border-radius:17px}.hero-art{min-height:330px;border-left:0;border-top:1px solid rgba(169,139,255,.35)}}
+@media(max-width:760px){.topbar{background:rgba(10,14,29,.97)}.nav a{background:#151b31;border-color:rgba(145,157,203,.3)}.event-types{grid-template-columns:1fr}.event-type{min-height:180px}}
+@media(max-width:560px){.hero-streaming{padding:17px}.hero-art{min-height:260px}.anime-poster{flex-basis:145px;min-height:245px}}
+
 </style>
 </head>
 <body>
@@ -1875,7 +1930,8 @@ document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBank
 </script>
 
 
-<script src="assets/js/i18n.js" defer>
+<script src="assets/js/i18n.js" defer></script>
+<script>
 /* Live anime artwork from AniList */
 (async function loadAnimeStreamingArtwork(){
  const endpoint="https://graphql.anilist.co";
@@ -1894,7 +1950,7 @@ document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBank
   render("animePopularRail",series);render("animeMovieRail",movies);render("animeTrendingRail",trending);
   const featured=trending.filter(x=>x.bannerImage||poster(x)).slice(0,6);
   if(featured.length){
-   let n=0;const show=()=>{const m=featured[n];const img=document.getElementById("heroAnimeImage");const url=m.bannerImage||poster(m);img.classList.remove("loaded");img.onload=()=>img.classList.add("loaded");img.onerror=()=>{img.classList.remove("loaded");};img.src=url;document.getElementById("heroAnimeTitle").textContent=getTitle(m);document.getElementById("heroAnimeMeta").textContent="FEATURED ANIME · "+(m.seasonYear||"TRENDING");document.getElementById("heroAnimeDescription").textContent=desc(m);document.getElementById("heroAnimeVisual").href=m.siteUrl||"#anime";document.querySelectorAll("#heroAnimeDots span").forEach((d,i)=>d.style.background=i===n?"#ff9d00":"#67513a");n=(n+1)%featured.length;};
+   let n=0;const show=()=>{const m=featured[n];const img=document.getElementById("heroAnimeImage");const url=m.bannerImage||poster(m);img.classList.remove("loaded");img.onload=()=>img.classList.add("loaded");img.onerror=()=>{img.classList.remove("loaded");document.getElementById("heroAnimeVisual").classList.add("no-image");};img.onload=()=>document.getElementById("heroAnimeVisual").classList.remove("no-image");img.src=url;document.getElementById("heroAnimeTitle").textContent=getTitle(m);document.getElementById("heroAnimeMeta").textContent="FEATURED ANIME · "+(m.seasonYear||"TRENDING");document.getElementById("heroAnimeDescription").textContent=desc(m);document.getElementById("heroAnimeVisual").href=m.siteUrl||"#anime";document.querySelectorAll("#heroAnimeDots span").forEach((d,i)=>d.style.background=i===n?"#ff9d00":"#67513a");n=(n+1)%featured.length;};
    show();window.setInterval(show,6500);
   }
   const note=document.getElementById("animeSourceNote");if(note)note.textContent="Анимэ постер, нэр болон он: AniList. Постер дээр дарвал бүтээлийн дэлгэрэнгүй хуудас нээгдэнэ.";
