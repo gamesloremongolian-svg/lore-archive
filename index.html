@@ -120,7 +120,16 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
 .carousel-track .media-card:hover::before{background:linear-gradient(180deg,#08081700 0%,#08081718 25%,#080817f2 100%)}
 .carousel-track .media-card small,.carousel-track .media-card strong,.carousel-track .media-card span{position:relative;text-shadow:0 2px 9px #000}
 
-</style>
+
+.catalog-card{padding:0;overflow:hidden;min-height:310px}
+.catalog-card img{width:100%;height:170px;object-fit:cover;display:block;background:#17132a}
+.catalog-card .catalog-info{padding:14px}
+.catalog-card h3{margin:5px 0;font-size:15px}
+.catalog-meta{font-size:10px;color:#a9dff1}
+.catalog-desc{font-size:11px;color:#c0b4d2;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.catalog-detail{white-space:normal;line-height:1.7}
+.catalog-detail img{width:100%;max-height:260px;object-fit:contain;border-radius:12px}
+\n</style>
 </head>
 <body>
 <header class="wrap topbar"><a class="brand" href="#"><span class="mark">✦</span> LOREVERSE</a><nav class="nav"><a href="#worlds">Тоглоомууд</a><a href="#archive">Lore сан</a><a href="#about">Төслийн тухай</a></nav><div class="actions"><select class="select" id="lang" aria-label="Language"><option value="mn">MN</option><option value="en">EN</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div></header>
@@ -218,7 +227,16 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
  <p class="portal-note">Цаг бодит төхөөрөмжийн бүсийн тохиргоогоор ажиллана. Онлайн болон нийт зочлолын тоолуурыг үнэн зөв харуулахын тулд серверийн presence/analytics холболт шаардлагатай; одоогоор тоо зохиомлоор харуулахгүй.</p>
 </section>
 
-<section class="section archive" id="archive"><div class="section-head"><div><div class="eyebrow">LORE DATABASE</div><h2>Lore архив</h2><p>Нийтлэл, дүр, ертөнцийн мэдээллийг хайж үзээрэй.</p></div></div><div class="toolbar"><input id="search" class="search" type="search" placeholder="Нийтлэл, дүр, сэдэв хайх..."><select id="sort" class="select"><option value="new">Шинэ нь эхэнд</option><option value="az">Нэрээр A–Z</option></select></div><div class="filters" id="filters"><button class="chip active" data-game="all">Бүгд</button><button class="chip" data-game="Genshin Impact">Genshin</button><button class="chip" data-game="Wuthering Waves">Wuthering Waves</button><button class="chip" data-game="ANANTA">ANANTA</button><button class="chip" data-game="Honkai: Star Rail">Honkai: Star Rail</button><button class="chip" data-game="Zenless Zone Zero">Zenless Zone Zero</button><button class="chip" data-game="Arknights">Arknights</button><button class="chip" data-game="Blue Archive">Blue Archive</button></div><div class="articles" id="articles"></div><div class="empty" id="empty">Тохирох нийтлэл олдсонгүй.</div><p class="note">Тайлбар: Эхний нийтлэлүүд нь архивын танилцуулга контент. Албан ёсны эх сурвалжаар нягталсан судалгааг редакцын шалгалтын дараа нийтэлнэ.</p></section>
+
+<section class="section archive" id="catalog">
+ <div class="section-head"><div><div class="eyebrow">LOREVERSE KNOWLEDGE DATABASE</div><h2>Анимэ · Тоглоом · Манга каталог</h2><p>Нэрээр хайж, танилцуулга, төрөл, бүтээгч, дүр болон үндсэн мэдээллийг нээнэ.</p></div></div>
+ <div class="filters" id="catalogTabs"><button class="chip active" data-kind="ANIME">Анимэ</button><button class="chip" data-kind="MANGA">Манга</button><button class="chip" data-kind="GAME">Тоглоом</button></div>
+ <div class="toolbar"><input class="search" id="catalogSearch" placeholder="Нэрээр хайх..."><button class="btn primary" id="catalogGo">Хайх</button></div>
+ <div class="muted" id="catalogStatus">Анимэ болон манганы мэдээллийг AniList каталогоос хайна. Тоглоомын мэдээлэл LOREVERSE-ийн тоглоомын архивт байна.</div>
+ <div class="articles" id="catalogResults"></div>
+ <div class="portal-actions"><button class="btn" id="catalogMore" type="button">Дараагийн үр дүн</button></div>
+</section>
+\n<section class="section archive" id="archive"><div class="section-head"><div><div class="eyebrow">LORE DATABASE</div><h2>Lore архив</h2><p>Нийтлэл, дүр, ертөнцийн мэдээллийг хайж үзээрэй.</p></div></div><div class="toolbar"><input id="search" class="search" type="search" placeholder="Нийтлэл, дүр, сэдэв хайх..."><select id="sort" class="select"><option value="new">Шинэ нь эхэнд</option><option value="az">Нэрээр A–Z</option></select></div><div class="filters" id="filters"><button class="chip active" data-game="all">Бүгд</button><button class="chip" data-game="Genshin Impact">Genshin</button><button class="chip" data-game="Wuthering Waves">Wuthering Waves</button><button class="chip" data-game="ANANTA">ANANTA</button><button class="chip" data-game="Honkai: Star Rail">Honkai: Star Rail</button><button class="chip" data-game="Zenless Zone Zero">Zenless Zone Zero</button><button class="chip" data-game="Arknights">Arknights</button><button class="chip" data-game="Blue Archive">Blue Archive</button></div><div class="articles" id="articles"></div><div class="empty" id="empty">Тохирох нийтлэл олдсонгүй.</div><p class="note">Тайлбар: Эхний нийтлэлүүд нь архивын танилцуулга контент. Албан ёсны эх сурвалжаар нягталсан судалгааг редакцын шалгалтын дараа нийтэлнэ.</p></section>
 <section class="section feature-row" id="about"><div class="feature"><div class="eyebrow">OUR MISSION</div><h3>Нэг платформ. Олон ертөнц.</h3><p>Тоглоом, анимэ сонирхогчдод зориулсан lore, дүр, түүх, судалгааны нэгдсэн сан бүтээнэ.</p></div><div class="feature"><div class="eyebrow">EDITORIAL STANDARD</div><h3>Баримт ба таамгийг ялгана.</h3><p>Албан ёсны өгүүлэмж, тоглоом доторх эшлэл, баталгаажаагүй онолыг тусад нь тэмдэглэж, эх сурвалжийг ил тод дурдана.</p></div></section>
 </main><footer class="wrap footer"><span>© 2026 LOREVERSE</span><span>Фэнүүдийн бүтээсэн, албан бус мэдлэгийн платформ.</span></footer>
 <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="dialog"><div class="dialogtop"><div><div class="eyebrow" id="modalGame"></div><h2 id="modalTitle"></h2></div><button class="close" id="close" aria-label="Close">✕</button></div><p id="modalBody"></p><div class="note">Эх сурвалжийг нийтлэхийн өмнө редакцаар нягтална.</div></div></div>
