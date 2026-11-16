@@ -426,6 +426,28 @@ body{
 .ad-empty-promo small{display:block;margin-top:9px;font-size:11px;letter-spacing:.16em;color:#a9dce8;text-shadow:0 0 9px rgba(89,195,215,.65)}
 @keyframes adOrbit{to{transform:rotate(360deg)}}@keyframes adShine{55%,100%{transform:translateX(100%)}}@keyframes adPulse{50%{transform:scale(1.035);filter:brightness(1.35)}}
 @media(prefers-reduced-motion:reduce){.ad-empty-promo:before,.ad-empty-promo:after,.ad-empty-promo span{animation:none}}
+
+/* Hero right-side advertising placement */
+.hero{grid-template-columns:minmax(0,1fr) minmax(340px,.82fr);gap:28px;align-items:stretch}
+.hero-ad-slot{min-height:350px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;padding:18px;border:1px solid #8c65b6;border-radius:27px;background:radial-gradient(ellipse at 14% 18%,#3aa5c455,transparent 38%),radial-gradient(ellipse at 88% 85%,#c45fa044,transparent 40%),linear-gradient(145deg,#12182aee,#20132bee 58%,#10283aee);box-shadow:0 22px 65px #0008,inset 0 0 36px #9a70ff12}
+.hero-ad-slot:before{content:"";position:absolute;inset:9px;border:1px solid #9b70ff55;border-radius:20px;pointer-events:none}
+.hero-ad-top{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
+.hero-ad-top strong{font-size:11px;letter-spacing:.18em;color:#a9ecf3}
+.hero-ad-top span{font-size:9px;letter-spacing:.12em;color:#f3a8d9;border:1px solid #d783bc66;border-radius:99px;padding:4px 8px}
+.hero-ad-list{position:relative;z-index:1;display:grid;gap:11px;min-height:220px}
+.hero-ad-list .ad-card{display:grid;grid-template-columns:112px minmax(0,1fr);flex-direction:row;min-height:126px;border-color:#8a669f;background:#0b1020cc;box-shadow:0 10px 28px #0005}
+.hero-ad-list .ad-card img{width:112px;height:100%;min-height:126px;object-fit:cover}
+.hero-ad-list .ad-card-body{padding:12px}
+.hero-ad-list .ad-card-body h3{font-size:14px;margin:5px 0}
+.hero-ad-list .ad-card-body p{font-size:11px;line-height:1.45;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hero-ad-list .ad-card-body a{font-size:11px}
+.hero-ad-list .ad-empty-promo{min-height:220px;border-color:#8b75ba;background:radial-gradient(ellipse at 15% 20%,#32a8ca33,transparent 40%),radial-gradient(ellipse at 90% 90%,#df79ba30,transparent 44%),linear-gradient(135deg,#121b2d,#21152f 55%,#122a3a)}
+.hero-ad-list .ad-empty-promo span{font-size:clamp(19px,2.6vw,27px)}
+.hero-ad-cta{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:13px;padding-top:12px;border-top:1px solid #ffffff20;color:#c8bedb;font-size:11px}
+.hero-ad-cta a{color:#8deaff;font-weight:850;white-space:nowrap}
+@media(max-width:850px){.hero{grid-template-columns:1fr}.hero-ad-slot{min-height:270px}.hero-ad-list{min-height:0}.hero-ad-list .ad-empty-promo{min-height:190px}}
+@media(max-width:560px){.hero-ad-slot{padding:14px;min-height:240px;border-radius:21px}.hero-ad-list .ad-card{grid-template-columns:88px minmax(0,1fr);min-height:112px}.hero-ad-list .ad-card img{width:88px;min-height:112px}.hero-ad-list .ad-card-body{padding:9px}.hero-ad-list .ad-empty-promo{min-height:170px}}
+
 </style>
 </head>
 <body>
@@ -447,7 +469,12 @@ body{
 <main class="wrap">
 
 
-<section class="hero"><div><div class="eyebrow">ANIME · GAMES · STORIES</div><div class="hero-slogan">БҮХ ЕРТӨНЦИЙН МЭДЛЭГ НЭГ ДОР.</div><img class="hero-brand-logo" src="./assets/loreverse-logo.svg" alt="LOREVERSE шинэ лого"><p>Анимэ болон тоглоомын ертөнцийн түүх, дүрүүд, нууц, онол, судалгааг нэг дороос нээ. Дуртай ертөнцийнхөө гүн рүү аял.</p><div class="hero-buttons"><a class="btn primary" href="#games">Ертөнцүүдийг нээх ↗</a><a class="btn" href="#archive">Бүх Lore үзэх</a></div></div><div class="visual lore-emblem">
+<section class="hero"><div><div class="eyebrow">ANIME · GAMES · STORIES</div><div class="hero-slogan">БҮХ ЕРТӨНЦИЙН МЭДЛЭГ НЭГ ДОР.</div><img class="hero-brand-logo" src="./assets/loreverse-logo.svg" alt="LOREVERSE шинэ лого"><p>Анимэ болон тоглоомын ертөнцийн түүх, дүрүүд, нууц, онол, судалгааг нэг дороос нээ. Дуртай ертөнцийнхөө гүн рүү аял.</p><div class="hero-buttons"><a class="btn primary" href="#games">Ертөнцүүдийг нээх ↗</a><a class="btn" href="#archive">Бүх Lore үзэх</a></div></div><aside class="hero-ad-slot" aria-label="LOREVERSE зар сурталчилгаа">
+ <div class="hero-ad-top"><strong>LOREVERSE · PARTNERS</strong><span>SPONSORED</span></div>
+ <div class="hero-ad-list" id="heroAdList"><div class="ad-empty-promo"><span>ТАНЫ ЗАР ЭНД БАЙРШИНА<small>LOREVERSE · ADVERTISE HERE</small></span></div></div>
+ <div class="hero-ad-cta"><span>Бүтээгдэхүүн, төслөө танилцуул</span><a href="#advertise">Зар байршуулах ↗</a></div>
+</aside>
+<div class="visual lore-emblem">
 <svg class="lore-logo" viewBox="0 0 600 600" role="img" aria-label="LOREVERSE алтан луужин доторх нээлттэй ном">
  <defs>
   <radialGradient id="goldGlow"><stop offset="0" stop-color="#ffe9a3"/><stop offset=".48" stop-color="#d9a94c"/><stop offset="1" stop-color="#6b3d18"/></radialGradient>
@@ -1118,10 +1145,13 @@ adForm.addEventListener("submit",async ev=>{
  finally{button.disabled=false;}
 });
 async function loadPublicAds(){
- const host=$("adPublicList");if(!host)return;
+ const host=$("adPublicList");const heroHost=$("heroAdList");if(!host&&!heroHost)return;
  const {data,error}=await supabase.from("advertisement_requests").select("id,title,description,image_url,target_url,placement").eq("status","approved").or("start_date.is.null,start_date.lte."+new Date().toISOString().slice(0,10)).or("end_date.is.null,end_date.gte."+new Date().toISOString().slice(0,10)).order("placement").order("created_at",{ascending:false}).limit(9);
- if(error){host.innerHTML='<p class="portal-note">Заруудыг ачаалж чадсангүй.</p>';return;}
- host.innerHTML=(data||[]).map(ad=>'<article class="ad-card"><img src="'+safeText(ad.image_url)+'" alt="'+safeText(ad.title)+'" loading="lazy" referrerpolicy="no-referrer"><div class="ad-card-body"><span class="ad-label">'+(ad.placement==="featured"?"ОНЦЛОХ ЗАР":"SPONSORED")+'</span><h3>'+safeText(ad.title)+'</h3><p>'+safeText(ad.description)+'</p><a href="'+safeText(ad.target_url)+'" target="_blank" rel="noopener noreferrer nofollow sponsored">Дэлгэрэнгүй ↗</a></div></article>').join("")||'<div class="ad-empty-promo"><span>ТАНЫ ЗАР ЭНД БАЙРШИНА<small>LOREVERSE · ADVERTISE HERE</small></span></div>';
+ if(error){if(host)host.innerHTML='<p class="portal-note">Заруудыг ачаалж чадсангүй.</p>';if(heroHost)heroHost.innerHTML='<div class="ad-empty-promo"><span>ЗАР АЧААЛЖ ЧАДСАНГҮЙ<small>ДАРАА ДАХИН ОРОЛДОНО УУ</small></span></div>';return;}
+ const cards=(data||[]).slice(0,2).map(ad=>'<article class="ad-card"><img src="'+safeText(ad.image_url)+'" alt="'+safeText(ad.title)+'" loading="lazy" referrerpolicy="no-referrer"><div class="ad-card-body"><span class="ad-label">'+(ad.placement==="featured"?"ОНЦЛОХ ЗАР":"SPONSORED")+'</span><h3>'+safeText(ad.title)+'</h3><p>'+safeText(ad.description)+'</p><a href="'+safeText(ad.target_url)+'" target="_blank" rel="noopener noreferrer nofollow sponsored">Дэлгэрэнгүй ↗</a></div></article>') .join("");
+ const empty='<div class="ad-empty-promo"><span>ТАНЫ ЗАР ЭНД БАЙРШИНА<small>LOREVERSE · ADVERTISE HERE</small></span></div>';
+ if(host)host.innerHTML=(data||[]).map(ad=>'<article class="ad-card"><img src="'+safeText(ad.image_url)+'" alt="'+safeText(ad.title)+'" loading="lazy" referrerpolicy="no-referrer"><div class="ad-card-body"><span class="ad-label">'+(ad.placement==="featured"?"ОНЦЛОХ ЗАР":"SPONSORED")+'</span><h3>'+safeText(ad.title)+'</h3><p>'+safeText(ad.description)+'</p><a href="'+safeText(ad.target_url)+'" target="_blank" rel="noopener noreferrer nofollow sponsored">Дэлгэрэнгүй ↗</a></div></article>').join("")||empty;
+ if(heroHost)heroHost.innerHTML=cards||empty;
 }
 async function loadAdAdmin(){
  const panel=$("adAdminPanel");if(!panel)return;
