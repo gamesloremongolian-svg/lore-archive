@@ -50,6 +50,8 @@ const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publi
  if(!root)return;
  const searchInput=document.getElementById("publicArchiveSearch");
  const languageInput=document.getElementById("publicArchiveLang");
+  const savedLanguage=localStorage.getItem("loreverse-language");
+  if(["mn","en","ja","ko"].includes(savedLanguage))languageInput.value=savedLanguage;
  const filters=document.getElementById("publicArchiveFilters");
  const results=document.getElementById("publicArchiveResults");
  const status=document.getElementById("publicArchiveStatus");
