@@ -529,8 +529,79 @@ document.querySelectorAll("[data-filter]").forEach(a=>a.addEventListener("click"
 search.addEventListener("input",render);document.getElementById("sort").addEventListener("change",render);
 list.addEventListener("click",e=>{let b=e.target.closest("[data-id]");if(!b)return;let x=entries[Number(b.dataset.id)];document.getElementById("modalGame").textContent=x.game+" / "+x.tag;document.getElementById("modalTitle").textContent=x.title;document.getElementById("modalBody").textContent=x.body;document.getElementById("modal").classList.add("open")});
 function closeModal(){document.getElementById("modal").classList.remove("open")}document.getElementById("close").addEventListener("click",closeModal);document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
-const translations={en:{nav:["Games","Lore archive","About"],hero:"Discover the stories, characters, mysteries and theories behind the worlds you love.",explore:"Explore worlds ↗",archive:"Explore lore archive",worlds:"Game universes",search:"Search articles, characters, topics...",about:"One platform. Many universes.",facts:"Facts and theories are clearly separated."},ja:{nav:["ゲーム","Lore アーカイブ","概要"],hero:"好きなゲーム世界の物語、キャラクター、謎、考察を一か所で探究。",explore:"世界を探検 ↗",archive:"Lore アーカイブ",worlds:"ゲームの世界",search:"記事・キャラクター・テーマを検索...",about:"ひとつのプラットフォーム、広がる世界。",facts:"事実と考察を明確に区別します。"},ko:{nav:["게임","로어 아카이브","소개"],hero:"좋아하는 게임 세계의 이야기, 캐릭터, 미스터리와 이론을 한곳에서 살펴보세요.",explore:"세계 탐험 ↗",archive:"로어 아카이브 보기",worlds:"게임 세계관",search:"문서, 캐릭터, 주제 검색...",about:"하나의 플랫폼, 수많은 세계.",facts:"사실과 추측을 명확히 구분합니다."}};
-document.getElementById("lang").addEventListener("change",e=>{let t=translations[e.target.value];if(!t){location.reload();return}document.querySelectorAll(".nav a").forEach((a,i)=>a.textContent=t.nav[i]);document.querySelector(".hero>div>p").textContent=t.hero;document.querySelector(".hero-buttons .primary").textContent=t.explore;document.querySelector(".hero-buttons .btn:not(.primary)").textContent=t.archive;document.querySelector("#worlds h2").textContent=t.worlds;search.placeholder=t.search;document.querySelector("#about .feature h3").textContent=t.about;document.querySelector("#about .feature:last-child h3").textContent=t.facts});
+const uiTranslations={
+en:{
+"Категори":"Categories","Ангилал":"Categories","Анимэ":"Anime","Тоглоом":"Games","Манга":"Manga","Мэдээллийн сан":"Knowledge base","Миний профайл":"My profile","Мэдэгдэл":"Notifications","Цэс нээх":"Open menu","Цэс хаах":"Close menu",
+"Бүртгэл / Нэвтрэх":"Account / Sign in","Имэйл":"Email","Нууц үг":"Password","Нэвтрэх":"Sign in","Бүртгүүлэх":"Create account","Гарах":"Sign out","Харагдах нэр":"Display name","Профайл хадгалах":"Save profile","Хаах":"Close",
+"Миний профайл":"My profile","Тоглоомын ертөнц":"Game universes","Lore архив":"Lore archive","Нийтлэл, дүр, сэдэв хайх...":"Search articles, characters, topics...","Нэрээр хайх...":"Search by title...","Хайх":"Search","Шинэ нь эхэнд":"Newest first","Нэрээр A–Z":"Name A–Z","Тохирох нийтлэл олдсонгүй.":"No matching articles found.",
+"Бүх төрөл":"All types","Lore судалгаа":"Lore research","Гарын авлага":"Guide","Нийтлэл":"Articles","Дүр":"Characters","Ертөнц":"Universe","Дэлгэрэнгүй":"Details","Унших":"Read","Хадгалах":"Save","Хадгалсан":"Saved","Санал өгөх":"Send feedback",
+"Нийтлэл ачаалж байна…":"Loading articles…","Нийтлэл ачаалж чадсангүй:":"Could not load articles:","Товч тайлбар оруулаагүй.":"No summary provided.","Тохирох нийтлэл алга.":"No matching articles.",
+"Ертөнц, бүтээлийн нэрээр хайх...":"Search universes and titles...","Энэ хэл болон ангилалд нийтлэгдсэн мэдээлэл одоогоор алга.":"No published content is available in this language and category yet.",
+"Бүх ертөнц":"All universes","Нийтлэл, дүр, тоглоом, агуулгаар хайх...":"Search titles, characters, games and content...","Бүртгүүлсэн":"Registered","Оролцох":"Join","Арга хэмжээнд бүртгүүллээ.":"You have joined the event.","Одоогоор нийтлэгдсэн арга хэмжээ алга.":"No published events yet.",
+"Админтай холбогдох":"Contact support","Админд хүсэлт илгээх":"Send support request","Хүсэлт харах / хариулах":"View / reply to request","Хариу илгээх":"Send reply","Хариу бичих":"Write a reply","Таны анхны хүсэлт":"Your original request","Хавсралт нээх":"Open attachment",
+"Төлбөр":"Payment","Аккаунт / нэвтрэх":"Account / sign-in","Техникийн алдаа":"Technical issue","Бусад":"Other","Premium эрх":"Premium membership","Хүсэлт илгээх":"Submit request",
+"Бонус":"Rewards","Шинэчлэх":"Refresh","Цэвэрлэх":"Clear","Онлайн: —":"Online: —","Энэ сувгийн мессеж хайх…":"Search messages in this channel…",
+"Нийтлэлд санал өгөх":"Article feedback","Эх сурвалжийн холбоос":"Source URL","Санал редакцад илгээгдлээ. Баярлалаа.":"Your feedback has been sent to the editors. Thank you.",
+"Төслийн тухай":"About the project","Дэлгэрэнгүй унших →":"Read more →","Дэлгэрэнгүй ↗":"More details ↗","Ерөнхий":"General","Он тодорхойгүй":"Year unknown",
+"Нууц үг мартсан уу?":"Forgot password?","Админ нэвтрэх":"Admin sign-in","Редактор нэвтрэх":"Editor sign-in","Редактор, админ эрхтэй багийн гишүүд нийтлэл үүсгэх, засварлах, хянах, нийтлэх ажлаа удирдана.":"Editors and administrators can create, edit, review and publish content."
+},
+ja:{
+"Категори":"カテゴリー","Ангилал":"カテゴリー","Анимэ":"アニメ","Тоглоом":"ゲーム","Манга":"漫画","Мэдээллийн сан":"ナレッジベース","Миний профайл":"マイプロフィール","Мэдэгдэл":"通知","Цэс нээх":"メニューを開く","Цэс хаах":"メニューを閉じる",
+"Бүртгэл / Нэвтрэх":"アカウント / ログイン","Имэйл":"メールアドレス","Нууц үг":"パスワード","Нэвтрэх":"ログイン","Бүртгүүлэх":"アカウント登録","Гарах":"ログアウト","Харагдах нэр":"表示名","Профайл хадгалах":"プロフィールを保存","Хаах":"閉じる",
+"Тоглоомын ертөнц":"ゲームの世界","Lore архив":"Lore アーカイブ","Нийтлэл, дүр, сэдэв хайх...":"記事・キャラクター・テーマを検索...","Нэрээр хайх...":"タイトルで検索...","Хайх":"検索","Шинэ нь эхэнд":"新着順","Нэрээр A–Z":"名前順 A–Z","Тохирох нийтлэл олдсонгүй.":"該当する記事が見つかりません。",
+"Бүх төрөл":"すべての種類","Lore судалгаа":"Lore 考察","Гарын авлага":"ガイド","Нийтлэл":"記事","Дүр":"キャラクター","Ертөнц":"世界","Дэлгэрэнгүй":"詳細","Унших":"読む","Хадгалах":"保存","Хадгалсан":"保存済み","Санал өгөх":"フィードバック",
+"Нийтлэл ачаалж байна…":"記事を読み込み中…","Товч тайлбар оруулаагүй.":"概要はありません。","Тохирох нийтлэл алга.":"該当する記事はありません。",
+"Ертөнц, бүтээлийн нэрээр хайх...":"世界・作品名で検索...","Энэ хэл болон ангилалд нийтлэгдсэн мэдээлэл одоогоор алга.":"この言語・カテゴリーで公開された情報はまだありません。",
+"Бүх ертөнц":"すべての世界","Нийтлэл, дүр, тоглоом, агуулгаар хайх...":"タイトル・キャラクター・ゲーム・内容を検索...","Бүртгүүлсэн":"登録済み","Оролцох":"参加","Арга хэмжээнд бүртгүүллээ.":"イベントに参加登録しました。","Одоогоор нийтлэгдсэн арга хэмжээ алга.":"公開中のイベントはありません。",
+"Админтай холбогдох":"サポートに連絡","Админд хүсэлт илгээх":"サポート依頼を送信","Хүсэлт харах / хариулах":"依頼を表示 / 返信","Хариу илгээх":"返信を送信","Хариу бичих":"返信を書く","Таны анхны хүсэлт":"最初の依頼内容","Хавсралт нээх":"添付ファイルを開く",
+"Төлбөр":"お支払い","Аккаунт / нэвтрэх":"アカウント / ログイン","Техникийн алдаа":"技術的な問題","Бусад":"その他","Premium эрх":"プレミアム会員","Хүсэлт илгээх":"依頼を送信",
+"Шинэчлэх":"更新","Цэвэрлэх":"クリア","Энэ сувгийн мессеж хайх…":"このチャンネルのメッセージを検索…","Нийтлэлд санал өгөх":"記事へのフィードバック","Санал редакцад илгээгдлээ. Баярлалаа.":"編集部にフィードバックを送信しました。ありがとうございます。",
+"Төслийн тухай":"プロジェクトについて","Дэлгэрэнгүй унших →":"続きを読む →","Дэлгэрэнгүй ↗":"詳細 ↗","Ерөнхий":"一般","Он тодорхойгүй":"年不明","Нууц үг мартсан уу?":"パスワードをお忘れですか？","Админ нэвтрэх":"管理者ログイン","Редактор нэвтрэх":"編集者ログイン"
+},
+ko:{
+"Категори":"카테고리","Ангилал":"카테고리","Анимэ":"애니메이션","Тоглоом":"게임","Манга":"만화","Мэдээллийн сан":"지식 아카이브","Миний профайл":"내 프로필","Мэдэгдэл":"알림","Цэс нээх":"메뉴 열기","Цэс хаах":"메뉴 닫기",
+"Бүртгэл / Нэвтрэх":"계정 / 로그인","Имэйл":"이메일","Нууц үг":"비밀번호","Нэвтрэх":"로그인","Бүртгүүлэх":"회원가입","Гарах":"로그아웃","Харагдах нэр":"표시 이름","Профайл хадгалах":"프로필 저장","Хаах":"닫기",
+"Тоглоомын ертөнц":"게임 세계관","Lore архив":"Lore 아카이브","Нийтлэл, дүр, сэдэв хайх...":"문서, 캐릭터, 주제 검색...","Нэрээр хайх...":"이름으로 검색...","Хайх":"검색","Шинэ нь эхэнд":"최신순","Нэрээр A–Z":"이름순 A–Z","Тохирох нийтлэл олдсонгүй.":"일치하는 문서가 없습니다.",
+"Бүх төрөл":"전체 유형","Lore судалгаа":"Lore 연구","Гарын авлага":"가이드","Нийтлэл":"문서","Дүр":"캐릭터","Ертөнц":"세계관","Дэлгэрэнгүй":"자세히","Унших":"읽기","Хадгалах":"저장","Хадгалсан":"저장됨","Санал өгөх":"피드백",
+"Нийтлэл ачаалж байна…":"문서를 불러오는 중…","Товч тайлбар оруулаагүй.":"요약이 없습니다.","Тохирох нийтлэл алга.":"일치하는 문서가 없습니다.",
+"Ертөнц, бүтээлийн нэрээр хайх...":"세계관 및 작품명 검색...","Энэ хэл болон ангилалд нийтлэгдсэн мэдээлэл одоогоор алга.":"이 언어와 카테고리에는 아직 공개된 정보가 없습니다.",
+"Бүх ертөнц":"모든 세계관","Нийтлэл, дүр, тоглоом, агуулгаар хайх...":"제목, 캐릭터, 게임 및 내용 검색...","Бүртгүүлсэн":"등록됨","Оролцох":"참여","Арга хэмжээнд бүртгүүллээ.":"이벤트 참여가 완료되었습니다.","Одоогоор нийтлэгдсэн арга хэмжээ алга.":"현재 공개된 이벤트가 없습니다.",
+"Админтай холбогдох":"고객 지원 문의","Админд хүсэлт илгээх":"지원 요청 보내기","Хүсэлт харах / хариулах":"요청 보기 / 답변","Хариу илгээх":"답변 보내기","Хариу бичих":"답변 작성","Таны анхны хүсэлт":"처음 보낸 요청","Хавсралт нээх":"첨부 파일 열기",
+"Төлбөр":"결제","Аккаунт / нэвтрэх":"계정 / 로그인","Техникийн алдаа":"기술 문제","Бусад":"기타","Premium эрх":"프리미엄 멤버십","Хүсэлт илгээх":"요청 제출",
+"Шинэчлэх":"새로고침","Цэвэрлэх":"지우기","Энэ сувгийн мессеж хайх…":"이 채널의 메시지 검색…","Нийтлэлд санал өгөх":"문서 피드백","Санал редакцад илгээгдлээ. Баярлалаа.":"편집팀에 피드백을 보냈습니다. 감사합니다.",
+"Төслийн тухай":"프로젝트 소개","Дэлгэрэнгүй унших →":"더 읽기 →","Дэлгэрэнгүй ↗":"자세히 ↗","Ерөнхий":"일반","Он тодорхойгүй":"연도 미상","Нууц үг мартсан уу?":"비밀번호를 잊으셨나요?","Админ нэвтрэх":"관리자 로그인","Редактор нэвтрэх":"편집자 로그인"
+}};
+const languageSelect=document.getElementById("lang");
+const defaultUiText=new WeakMap();
+function applySiteLanguage(code){
+ const lang=["mn","en","ja","ko"].includes(code)?code:"mn";
+ document.documentElement.lang=lang;
+ document.querySelectorAll("#lang option").forEach(o=>o.selected=o.value===lang);
+ const dict=uiTranslations[lang]||{};
+ const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+ const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+ for(const node of nodes){
+  if(!defaultUiText.has(node))defaultUiText.set(node,node.nodeValue);
+  const original=defaultUiText.get(node).trim();
+  if(!original)continue;
+  if(lang==="mn")node.nodeValue=defaultUiText.get(node);
+  else if(dict[original])node.nodeValue=defaultUiText.get(node).replace(original,dict[original]);
+ }
+ document.querySelectorAll("input[placeholder],textarea[placeholder]").forEach(el=>{
+  if(!el.dataset.originalPlaceholder)el.dataset.originalPlaceholder=el.placeholder;
+  el.placeholder=lang==="mn"?el.dataset.originalPlaceholder:(dict[el.dataset.originalPlaceholder]||el.dataset.originalPlaceholder);
+ });
+ document.querySelectorAll("button[aria-label],select[aria-label],input[aria-label]").forEach(el=>{
+  if(!el.dataset.originalAria)el.dataset.originalAria=el.getAttribute("aria-label");
+  el.setAttribute("aria-label",lang==="mn"?el.dataset.originalAria:(dict[el.dataset.originalAria]||el.dataset.originalAria));
+ });
+ try{localStorage.setItem("loreverse_language",lang)}catch(_){}
+}
+languageSelect.addEventListener("change",e=>applySiteLanguage(e.target.value));
+try{applySiteLanguage(localStorage.getItem("loreverse_language")||"mn")}catch(_){applySiteLanguage("mn")}
+const languageObserver=new MutationObserver(()=>applySiteLanguage(languageSelect.value));
+languageObserver.observe(document.body,{childList:true,subtree:true});
+
 render();
 
 document.querySelectorAll(".carousel-track").forEach((track,index)=>{
