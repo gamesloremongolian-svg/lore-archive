@@ -266,6 +266,17 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
 @media(max-width:420px){.knowledge-hub-grid{grid-template-columns:1fr}.knowledge-hub-card{min-height:96px}}
 
 .hero-slogan{font-size:clamp(25px,3.4vw,43px);font-weight:950;line-height:1.12;letter-spacing:-.04em;margin:16px 0 18px;background:linear-gradient(100deg,#ff9ed8 0%,#c39aff 48%,#80eaff 100%);color:transparent;background-clip:text;text-shadow:0 5px 35px #b45aff20}.hero h1{font-size:clamp(20px,2.4vw,30px);line-height:1.15;letter-spacing:-.035em;margin:0 0 14px;color:#d8cbe8}.hero h1 .gradient{background:none;color:#d8cbe8}@media(max-width:560px){.hero-slogan{font-size:29px;margin:12px 0 16px}.hero h1{font-size:20px}}
+
+/* Community events feature cards */
+.event-types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 30px}
+.event-type{position:relative;overflow:hidden;padding:22px;border:1px solid #624477;border-radius:19px;background:radial-gradient(circle at 100% 0%,#a66bff22,transparent 45%),linear-gradient(145deg,#211633,#12182a)}
+.event-type:nth-child(2){background:radial-gradient(circle at 100% 0%,#69dfff22,transparent 45%),linear-gradient(145deg,#172b43,#12182a)}
+.event-type:nth-child(3){background:radial-gradient(circle at 100% 0%,#ff8bcf22,transparent 45%),linear-gradient(145deg,#3a1d39,#12182a)}
+.event-symbol{display:grid;place-items:center;width:42px;height:42px;margin-bottom:17px;border:1px solid #ffffff2b;border-radius:13px;background:#ffffff0c;color:#ffb4e3;font-size:23px}
+.event-type h3{margin:8px 0 5px;font-size:19px}.event-type p{margin:0;color:var(--muted);font-size:12px}
+.event-list-head{margin:26px 0 15px}.event-list-head h3{font-size:20px;margin:5px 0}.event-list-head p{margin:0;color:var(--muted);font-size:12px}
+.event-rewards{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px;padding:14px 17px;border:1px solid #624477;border-radius:14px;background:#17132a}.event-rewards strong{color:#ffcae8}.event-rewards span{color:var(--muted);font-size:12px}
+@media(max-width:650px){.event-types{grid-template-columns:1fr}.event-type{padding:18px}.event-symbol{margin-bottom:12px}}
 </style>
 </head>
 <body>
@@ -490,9 +501,16 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
 
 
 <section class="section" id="events">
- <div class="section-head"><div><div class="eyebrow">COMMUNITY EVENTS</div><h2>Community Event</h2><p>Lore Quiz, тэмцээн, хэлэлцүүлэгт бүртгүүлээрэй.</p></div></div>
+ <div class="section-head"><div><div class="eyebrow">COMMUNITY EVENTS</div><h2>LOREVERSE Community</h2><p>Олон ертөнцийн мэдлэгээ сорьж, бусад Lorekeeper-тэй нэгдээрэй.</p></div></div>
+ <div class="event-types">
+  <article class="event-type"><div class="event-symbol">✦</div><div class="tag">KNOWLEDGE CHALLENGE</div><h3>Lore Quiz</h3><p>Анимэ, тоглоом, манганы ертөнц, дүр болон үйл явдлын талаарх мэдлэгээ сорь.</p></article>
+  <article class="event-type"><div class="event-symbol">⚔</div><div class="tag">COMMUNITY COMPETITION</div><h3>Lore Tournament</h3><p>Бусад оролцогчтой өрсөлдөж, оноо болон шагналын төлөө тэмц.</p></article>
+  <article class="event-type"><div class="event-symbol">◈</div><div class="tag">COMMUNITY DISCUSSION</div><h3>Lore Discussion</h3><p>Дуртай ертөнц, дүр, онол болон түүхийн талаар бусадтай санал бодлоо солилц.</p></article>
+ </div>
+ <div class="event-list-head"><div><div class="eyebrow">JOIN THE NEXT EVENT</div><h3>Нээлттэй арга хэмжээнүүд</h3><p>Доорх арга хэмжээг сонгон бүртгүүлээрэй. Оролцохын тулд нэвтэрсэн байх шаардлагатай.</p></div></div>
  <div id="publicEvents" class="articles"><p class="portal-note">Арга хэмжээнүүд ачаалж байна…</p></div>
- <div id="publicEventsStatus" class="portal-note"></div>
+ <div id="publicEventsStatus" class="portal-note" role="status" aria-live="polite"></div>
+ <div class="event-rewards"><strong>Оролцооны урамшуулал</strong><span>XP · Lore Coins · Community чансаа</span></div>
 </section>
 
 <section class="section" id="support">
