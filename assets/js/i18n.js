@@ -34,6 +34,59 @@ Object.assign(dict,{
 "Kivotos-ийн сургуулиуд, клубүүд, сурагчид болон хотын нууцыг судал.":["Explore Kivotos' schools, clubs, students and urban mysteries.","キヴォトスの学園、部活、生徒、都市の謎を調べます。","키보토스의 학교, 동아리, 학생 및 도시의 비밀을 살펴봅니다."]
 });
 
+
+Object.assign(dict,{
+"Арга хэмжээнүүд ачаалж байна…":["Loading events…","イベントを読み込み中…","이벤트를 불러오는 중…"],
+"Нийтлэл ачаалж байна…":["Loading articles…","記事を読み込み中…","게시글을 불러오는 중…"],
+"Нийтлэгдсэн архивын мэдээлэл ачаалж байна...":["Loading published archive…","公開済みアーカイブを読み込み中…","게시된 아카이브 정보를 불러오는 중…"],
+"Тайлбар: Эхний нийтлэлүүд нь архивын танилцуулга контент. Албан ёсны эх сурвалжаар нягталсан судалгааг редакцын шалгалтын дараа нийтэлнэ.":["Note: Initial entries are introductory archive content. Research verified against official sources will be published after editorial review.","注：初期の記事はアーカイブの紹介コンテンツです。公式情報を確認した研究記事は編集審査後に公開します。","안내: 초기 게시글은 아카이브 소개용 콘텐츠입니다. 공식 출처를 확인한 연구 글은 편집 검토 후 게시됩니다."],
+"Тайлбар: Ангиллуудыг платформын эхний хувилбарт нэгдсэн бүтэц болгон харуулж байна. Light Novel болон Web Novel-ийн тусгай каталог, өгөгдлийн холболтыг дараагийн хөгжүүлэлтээр нэмнэ.":["Note: Categories are presented in a unified structure in this initial platform release. Dedicated Light Novel and Web Novel catalogs and data integrations will be added in a future update.","注：初期リリースではカテゴリーを統合形式で表示しています。ライトノベルとWeb小説の専用カタログおよびデータ連携は今後追加予定です。","안내: 초기 플랫폼 버전에서는 카테고리를 통합 구조로 제공합니다. 라이트 노벨 및 웹소설 전용 카탈로그와 데이터 연동은 추후 추가됩니다."],
+"Үндсэн мэдээлэл, архивын дараа гишүүнчлэл болон платформын нэмэлт үйлчилгээг эндээс сонгоорой.":["Explore membership and additional platform services here, alongside the archive and core information.","アーカイブや基本情報に加え、会員プランやプラットフォームの追加サービスはこちらからご確認ください。","아카이브와 기본 정보 외에 멤버십 및 플랫폼 추가 서비스를 여기에서 확인하세요."],
+"Заргүй унших, тусгай нийтлэл болон гишүүдэд зориулсан боломжууд. Сарын багц 5,000₮ · Жилийн багц 60,000₮.":["Ad-free reading, exclusive articles and member benefits. Monthly plan: ₮5,000 · Annual plan: ₮60,000.","広告なしでの閲覧、限定記事、会員向け特典をご利用いただけます。月額：5,000₮ · 年額：60,000₮。","광고 없는 열람, 독점 게시글 및 회원 전용 혜택을 이용하세요. 월간 요금제: 5,000₮ · 연간 요금제: 60,000₮."],
+"Платформд зар байршуулах":["Advertise on the platform","プラットフォームに広告を掲載","플랫폼에 광고 게재"],
+"Брэнд, тоглоом, үйлчилгээний сурталчилгаагаа LOREVERSE-ийн уншигчдад хүргэх хүсэлт илгээнэ.":["Submit a request to promote your brand, game or service to LOREVERSE readers.","ブランド、ゲーム、サービスをLOREVERSEの読者に紹介する広告掲載をお申し込みいただけます。","브랜드, 게임 및 서비스를 LOREVERSE 독자에게 홍보하는 요청을 제출하세요."],
+"Хамтын ажиллагаа":["Partnership","パートナーシップ","제휴 문의"],
+"Админтай холбогдох":["Contact support","サポートに問い合わせ","관리자에게 문의"],
+"Аккаунт, төлбөр, Premium болон техникийн асуудлаа хүсэлтээр илгээнэ. Хариуг энэ хэсгээс хянах боломжтой.":["Submit requests about your account, payments, Premium membership or technical issues. Track replies here.","アカウント、支払い、Premium、技術的な問題についてお問い合わせください。回答はこのセクションで確認できます。","계정, 결제, 프리미엄 및 기술 문제를 문의하세요. 답변은 이 섹션에서 확인할 수 있습니다."],
+"Асуудлын төрөл":["Issue type","お問い合わせ種別","문의 유형"],
+"Аккаунт / нэвтрэх":["Account / login","アカウント / ログイン","계정 / 로그인"],
+"Төлбөр":["Payment","お支払い","결제"],
+"Premium эрх":["Premium membership","Premium会員","프리미엄 멤버십"],
+"Техникийн алдаа":["Technical issue","技術的な問題","기술 문제"],
+"Community / чат":["Community / chat","コミュニティ / チャット","커뮤니티 / 채팅"],
+"Гарчиг":["Subject","件名","제목"],
+"Дэлгэрэнгүй тайлбар":["Detailed description","詳細","상세 설명"],
+"Зураг / баримтын холбоос (заавал биш)":["Image / document link (optional)","画像 / 資料リンク（任意）","이미지 / 문서 링크 (선택 사항)"],
+"Асуудлаа товч бичнэ үү":["Briefly describe the issue","問題の概要を入力してください","문제를 간단히 설명해 주세요"],
+"Юу болсон, хэзээнээс эхэлсэн, ямар төхөөрөмж ашиглаж байгаагаа бичнэ үү.":["Describe what happened, when it started and which device you are using.","何が起きたか、いつから発生しているか、使用している端末を記入してください。","문제가 발생한 상황과 시작 시점, 사용 중인 기기를 적어 주세요."],
+"Админд хүсэлт илгээх":["Send support request","サポートリクエストを送信","관리자에게 문의 보내기"],
+"Миний хүсэлтүүд":["My requests","自分のお問い合わせ","내 문의"],
+"Нэвтэрсний дараа хүсэлтүүд харагдана.":["Your requests will appear after you log in.","ログインするとお問い合わせ内容が表示されます。","로그인하면 문의 내역이 표시됩니다."],
+"Хүсэлт илгээж, хариугаа харахын тулд имэйлээр бүртгүүлж нэвтэрнэ үү.":["Register with your email and log in to submit requests and view replies.","お問い合わせの送信と返信の確認には、メールアドレスで登録してログインしてください。","문의 제출 및 답변 확인을 위해 이메일로 가입하고 로그인하세요."],
+"Нэвтэрч орно уу.":["Please log in.","ログインしてください。","로그인해 주세요."],
+"Туслах цэс":["Help","ヘルプ","도움말"],
+"Нэг платформ. Олон ертөнц.":["One platform. Many universes.","ひとつのプラットフォームに、無数の世界。","하나의 플랫폼, 수많은 세계."],
+"Тоглоом, анимэ сонирхогчдод зориулсан lore, дүр, түүх, судалгааны нэгдсэн сан бүтээнэ.":["A unified archive of lore, characters, stories and research for game and anime fans.","ゲーム・アニメファンのために、Lore、キャラクター、物語、研究を集約したアーカイブを構築します。","게임 및 애니메이션 팬을 위한 Lore, 캐릭터, 스토리 및 연구 통합 아카이브를 만듭니다."],
+"Баримт ба таамгийг ялгана.":["Separate facts from theories.","事実と考察を明確に区別します。","사실과 추측을 구분합니다."],
+"Албан ёсны өгүүлэмж, тоглоом доторх эшлэл, баталгаажаагүй онолыг тусад нь тэмдэглэж, эх сурвалжийг ил тод дурдана.":["Official narrative, in-game quotations and unverified theories are labeled separately, with sources clearly identified.","公式設定、ゲーム内の引用、未確認の考察を区別し、出典を明記します。","공식 서사, 게임 내 인용 및 검증되지 않은 추측을 구분하고 출처를 명확히 표시합니다."],
+"Фэнүүдийн бүтээсэн, албан бус мэдлэгийн платформ.":["An unofficial, fan-created knowledge platform.","ファンが運営する非公式の知識プラットフォームです。","팬이 만든 비공식 지식 플랫폼입니다."],
+"Эх сурвалжийг нийтлэхийн өмнө редакцаар нягтална.":["Sources are reviewed by editors before publication.","出典は公開前に編集チームが確認します。","출처는 게시 전에 편집팀의 검토를 거칩니다."],
+"Дахин ачаалах":["Reload","再読み込み","새로고침"],
+"Дахин оролдох":["Try again","再試行","다시 시도"],
+"Чат сервертэй холбогдож чадсангүй.":["Could not connect to the chat server.","チャットサーバーに接続できませんでした。","채팅 서버에 연결할 수 없습니다."],
+"Энэ хэл болон ангилалд нийтлэгдсэн мэдээлэл одоогоор алга.":["There is no published content in this language and category yet.","この言語とカテゴリーで公開されている情報はまだありません。","이 언어 및 카테고리에 게시된 정보가 아직 없습니다."],
+"Энэ хэлний орчуулга хараахан нийтлэгдээгүй.":["A translation in this language has not been published yet.","この言語の翻訳はまだ公開されていません。","이 언어의 번역은 아직 게시되지 않았습니다."],
+"Одоогоор нийтлэгдсэн арга хэмжээ алга.":["No events have been published yet.","現在公開中のイベントはありません。","아직 게시된 이벤트가 없습니다."],
+"Арга хэмжээнд бүртгүүллээ.":["You have registered for the event.","イベントへの参加登録が完了しました。","이벤트 참가 신청이 완료되었습니다."],
+"Оролцохын тулд нэвтэрнэ үү.":["Please log in to join.","参加するにはログインしてください。","참여하려면 로그인하세요."],
+"Одоогоор мэдэгдэл алга.":["There are no notifications yet.","通知はまだありません。","아직 알림이 없습니다."],
+"Хариу бичиж байна:":["Replying to:","返信先：","답장 대상:"],
+"Болих":["Cancel","キャンセル","취소"],
+"Бүртгэл үүсгэх эсвэл багийн бүртгэлээр нэвтэрнэ. Админ эрхийг эзэмшигч баталгаажуулсны дараа нээнэ.":["Create an account or sign in with your team account. Administrator access is granted after owner approval.","アカウントを作成するか、チームアカウントでログインしてください。管理者権限はオーナーの承認後に付与されます。","계정을 만들거나 팀 계정으로 로그인하세요. 관리자 권한은 소유자의 승인 후 부여됩니다."],
+"Редактор нэвтрэх":["Editor login","編集者ログイン","편집자 로그인"],
+"Франчайз, бүтээл, орчуулга. Нийтлэх эрхийг Supabase RLS шалгана.":["Manage franchises, works and translations. Publishing permissions are enforced by Supabase RLS.","フランチャイズ、作品、翻訳を管理します。公開権限はSupabase RLSで制御されます。","프랜차이즈, 작품 및 번역을 관리합니다. 게시 권한은 Supabase RLS가 적용합니다."]
+});
+
 const langNames={mn:"Монгол",en:"English",ja:"日本語",ko:"한국어"};
 let active="mn";
 const pairs=Object.entries(dict).sort((a,b)=>b[0].length-a[0].length);
