@@ -2085,7 +2085,7 @@ document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBank
  if(!input||!button||!more||!out||!status)return;
  let page=1,queryText="",busy=false,hasNext=false;
  const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
- const clean=v=>String(v||"").replace(/<br\\s*\\/?\\s*>/gi," ").replace(/<[^>]*>/g," ").replace(/\\s+/g," ").trim();
+ const clean=v=>String(v||"").replace(/<br\s*\/?\s*>/gi," ").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
  function card(m){
   const title=m.title?.userPreferred||m.title?.english||m.title?.romaji||"Нэргүй манга";
   const desc=clean(m.description)||"Товч танилцуулга одоогоор байхгүй.";
