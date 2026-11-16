@@ -150,6 +150,9 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
 .store-item{border:1px solid #624477;border-radius:13px;padding:12px;background:#17132a}
 .leader-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #49345f;font-size:12px}
 @media(max-width:700px){.community-grid{grid-template-columns:1fr}.chat-feed{height:340px}.rank-stats{grid-template-columns:1fr 1fr}.store-grid{grid-template-columns:1fr}}
+
+/* Unified community chat */
+.chat-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}.chat-tools input{flex:1;min-width:140px}.chat-pinned{padding:10px 13px;border:1px solid #b38b54;border-radius:12px;background:#382b1d55;margin:8px 0;color:#ffe0aa}.chat-message{position:relative}.chat-message .chat-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.chat-message .chat-actions button{font-size:11px;padding:4px 8px;border:1px solid #514267;border-radius:9px;background:#211832;color:#eee;cursor:pointer}.chat-message .chat-actions button:hover{border-color:#b77cff}.chat-message .chat-reactions{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}.chat-message .chat-reactions button{font-size:12px;padding:3px 7px;border:1px solid #514267;border-radius:20px;background:#171326;color:#fff;cursor:pointer}.reply-preview{padding:8px 12px;margin:8px 0;border-left:3px solid #a879ff;background:#201833;border-radius:7px;font-size:12px}.chat-foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:7px}.chat-message.is-pinned{border-color:#b38b54}.chat-message .msg-meta{display:flex;justify-content:space-between;gap:8px;align-items:center}.chat-message .msg-meta small{color:#b8a9ca}
 </style>
 </head>
 <body>
@@ -257,9 +260,12 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
  <div class="community-grid">
   <aside class="community-side"><div class="eyebrow">CHANNELS</div><h3 style="margin:6px 0">Сувгууд</h3><div id="chatChannels" class="channel-list"><p class="portal-note">Сувгууд ачаалж байна…</p></div><p class="portal-note">Дүрэм: доромжлол, спам, давтан мессеж хориглоно.</p></aside>
   <div class="community-main"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><div><b id="chatChannelTitle"># global-chat</b><div class="portal-note" id="chatStatus">Чат холбогдож байна…</div></div><span class="tag">REALTIME</span></div>
+   <div class="chat-tools"><input id="chatSearch" class="form-field" placeholder="Энэ сувгийн мессеж хайх…"><button class="btn" id="clearChatSearch" type="button">Цэвэрлэх</button><span class="tag" id="chatOnline">Онлайн: —</span></div>
+   <div id="chatPinned" class="chat-pinned" hidden></div>
    <div id="chatFeed" class="chat-feed" aria-live="polite"><p class="portal-note">Мессеж ачаалж байна…</p></div>
+   <div id="replyPreview" class="reply-preview" hidden></div>
    <form id="chatForm" class="chat-compose"><input id="chatInput" class="form-field" maxlength="1200" placeholder="Мессеж бичих..." autocomplete="off"><button class="btn primary" type="submit">Илгээх</button></form>
-   <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><input id="chatDisplayName" class="form-field" style="max-width:260px" maxlength="32" placeholder="Чат дахь нэр"><span class="portal-note">4 секундийн cooldown · 1200 тэмдэгтийн хязгаар</span></div>
+   <div class="chat-foot"><span class="portal-note">4 секундийн cooldown · 1200 тэмдэгтийн хязгаар</span><span class="portal-note">Нэр болон Rank таны профайлаас харагдана</span></div>
   </div>
  </div>
 </section>
@@ -347,49 +353,75 @@ function updateLocalClock(){const d=new Date();document.getElementById("localClo
 updateLocalClock();setInterval(updateLocalClock,1000);
 document.getElementById("adRequest").addEventListener("submit",e=>{e.preventDefault();document.getElementById("adFeedback").textContent="Маягтын загвар бэлэн. Хүсэлтийг хүлээн авах сервер холбогдоогүй тул одоогоор илгээгдээгүй.";});
 
-/* LOREVERSE Community + Rank + Bonus */
+/* LOREVERSE Unified Community Chat + Rank + Bonus */
 const rankLevels=[{name:"Rookie",min:0,next:100},{name:"Explorer",min:100,next:500},{name:"Scholar",min:500,next:1500},{name:"Lorekeeper",min:1500,next:4000},{name:"Master Archivist",min:4000,next:10000},{name:"Mythic Archivist",min:10000,next:null}];
 const safeText=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let communityUser=null,activeChatChannel="global",chatSubscription=null;
-async function ensureCommunityUser(){
- let {data:{user}}=await supabase.auth.getUser();
- if(!user){const {data,error}=await supabase.auth.signInAnonymously();if(error)throw new Error("Чат бичихийн тулд Supabase Anonymous Sign-ins тохиргоог идэвхжүүлэх шаардлагатай. ("+error.message+")");user=data.user;}
- communityUser=user;return user;
-}
+let communityUser=null,activeChatChannel="global",chatSubscription=null,reactionSubscription=null,presenceSubscription=null,replyTarget=null,chatRows=[];
+async function ensureCommunityUser(){let {data:{user}}=await supabase.auth.getUser();if(!user){const {data,error}=await supabase.auth.signInAnonymously();if(error)throw new Error("Чат бичихэд Anonymous Sign-ins идэвхтэй байх шаардлагатай. ("+error.message+")");user=data.user;}communityUser=user;return user;}
+function rankFor(xp){return [...rankLevels].reverse().find(r=>xp>=r.min)||rankLevels[0];}
 async function loadChatChannels(){
  const {data,error}=await supabase.from("chat_channels").select("id,name,description,channel_type").eq("enabled",true).order("sort_order");
  const el=$("chatChannels");if(error){el.textContent=error.message;return;}
  el.innerHTML=(data||[]).map(x=>'<button type="button" class="channel-btn '+(x.id===activeChatChannel?'active':'')+'" data-chat-channel="'+safeText(x.id)+'"># '+safeText(x.name)+'</button>').join("");
  el.querySelectorAll("[data-chat-channel]").forEach(b=>b.onclick=()=>selectChatChannel(b.dataset.chatChannel,b.textContent));
 }
-async function loadChatMessages(){
- const {data,error}=await supabase.from("chat_messages").select("id,user_id,display_name,body,created_at").eq("channel_id",activeChatChannel).is("deleted_at",null).order("created_at",{ascending:false}).limit(60);
- const feed=$("chatFeed");if(error){feed.textContent=error.message;return;}
- feed.innerHTML=(data||[]).reverse().map(m=>'<div class="chat-message"><small>'+safeText(m.display_name)+' · '+new Date(m.created_at).toLocaleString("mn-MN")+' <button type="button" data-report="'+m.id+'" style="float:right;padding:2px 7px;font-size:10px;background:#38213e">Report</button></small><div>'+safeText(m.body)+'</div></div>').join("")||'<p class="portal-note">Энэ сувагт одоогоор мессеж алга. Эхний мессежийг та бичээрэй.</p>';
+function renderChatMessages(){
+ const term=$("chatSearch").value.trim().toLocaleLowerCase();
+ const filtered=chatRows.filter(m=>!term||(m.body||"").toLocaleLowerCase().includes(term)||(m.display_name||"").toLocaleLowerCase().includes(term));
+ const feed=$("chatFeed");
+ feed.innerHTML=filtered.map(m=>{
+  const replies=m.reply_to?chatRows.find(x=>x.id===m.reply_to):null;
+  const reactions=(m.reactions||[]).map(r=>'<button type="button" data-react="'+m.id+'" data-emoji="'+r.emoji+'">'+r.emoji+' '+r.count+'</button>').join("");
+  return '<article class="chat-message '+(m.is_pinned?'is-pinned':'')+'"><div class="msg-meta"><small><b>'+safeText(m.display_name)+'</b> · '+new Date(m.created_at).toLocaleString("mn-MN")+(m.is_pinned?' · PINNED':'')+'</small><button type="button" data-report="'+m.id+'" aria-label="Report">Report</button></div>'+
+   (replies?'<div class="reply-preview">↳ '+safeText(replies.display_name)+': '+safeText(replies.body.slice(0,100))+'</div>':'')+
+   '<div>'+safeText(m.body)+'</div><div class="chat-reactions">'+reactions+'</div><div class="chat-actions"><button type="button" data-reply="'+m.id+'">↩ Хариулах</button>'+['👍','❤️','😂','🔥','✨','👀'].map(e=>'<button type="button" data-add-reaction="'+m.id+'" data-emoji="'+e+'">'+e+'</button>').join("")+'</div></article>';
+ }).join("")||'<p class="portal-note">Хайлтад тохирох мессеж олдсонгүй.</p>';
+ feed.querySelectorAll("[data-report]").forEach(b=>b.onclick=async()=>{try{const u=await ensureCommunityUser();const reason=prompt("Мэдээлэх шалтгаан:");if(!reason)return;const {error}=await supabase.from("chat_reports").insert({message_id:b.dataset.report,reporter_id:u.id,reason});$("chatStatus").textContent=error?error.message:"Мэдээлэл илгээгдлээ.";}catch(e){$("chatStatus").textContent=e.message;}});
+ feed.querySelectorAll("[data-reply]").forEach(b=>b.onclick=()=>{const m=chatRows.find(x=>x.id===b.dataset.reply);if(!m)return;replyTarget=m;$("replyPreview").hidden=false;$("replyPreview").innerHTML='Хариу бичиж байна: <b>'+safeText(m.display_name)+'</b> — '+safeText(m.body.slice(0,90))+' <button id="cancelReply" type="button">Болих</button>';$("cancelReply").onclick=()=>{replyTarget=null;$("replyPreview").hidden=true;};$("chatInput").focus();});
+ feed.querySelectorAll("[data-add-reaction]").forEach(b=>b.onclick=async()=>{try{const u=await ensureCommunityUser();const {error}=await supabase.from("chat_reactions").insert({message_id:b.dataset.addReaction,user_id:u.id,emoji:b.dataset.emoji});if(error&&error.code!=="23505")throw error;await loadChatMessages();}catch(e){$("chatStatus").textContent=e.message;}});
+ feed.querySelectorAll("[data-react]").forEach(b=>b.onclick=async()=>{try{const u=await ensureCommunityUser();const {error}=await supabase.from("chat_reactions").delete().eq("message_id",b.dataset.react).eq("user_id",u.id).eq("emoji",b.dataset.emoji);if(error)throw error;await loadChatMessages();}catch(e){$("chatStatus").textContent=e.message;}});
  feed.scrollTop=feed.scrollHeight;
- feed.querySelectorAll("[data-report]").forEach(b=>b.onclick=async()=>{try{const u=await ensureCommunityUser();const reason=prompt("Мэдээлэх шалтгаан:");if(!reason)return;const {error}=await supabase.from("chat_reports").insert({message_id:b.dataset.report,reporter_id:u.id,reason});$("chatStatus").textContent=error?error.message:"Мэдээлэл илгээгдлээ. Баярлалаа."; }catch(e){$("chatStatus").textContent=e.message;}});
+}
+async function loadChatMessages(){
+ const {data,error}=await supabase.from("chat_messages").select("id,user_id,display_name,body,created_at,reply_to,is_pinned").eq("channel_id",activeChatChannel).is("deleted_at",null).order("created_at",{ascending:false}).limit(80);
+ if(error){$("chatFeed").textContent=error.message;return;}
+ chatRows=(data||[]).reverse();
+ const ids=chatRows.map(m=>m.id);
+ if(ids.length){const {data:rx}=await supabase.from("chat_reactions").select("message_id,emoji").in("message_id",ids);const counts={};(rx||[]).forEach(r=>{const k=r.message_id+"|"+r.emoji;counts[k]=(counts[k]||0)+1;});chatRows.forEach(m=>m.reactions=Object.entries(counts).filter(([k])=>k.startsWith(m.id+"|")).map(([k,count])=>({emoji:k.split("|")[1],count})));}else chatRows=[];
+ const pinned=chatRows.filter(m=>m.is_pinned).slice(-3);$("chatPinned").hidden=!pinned.length;$("chatPinned").innerHTML=pinned.map(m=>'📌 <b>'+safeText(m.display_name)+':</b> '+safeText(m.body)).join("<br>");
+ renderChatMessages();
+}
+async function updatePresence(){
+ const u=communityUser;if(!u)return;
+ const {error}=await supabase.from("chat_presence").upsert({user_id:u.id,display_name:u.is_anonymous?"Guest":(u.user_metadata?.display_name||u.email?.split("@")[0]||"Member"),channel_id:activeChatChannel,last_seen:new Date().toISOString()},{onConflict:"user_id"});
+ if(error)$("chatStatus").textContent="Presence: "+error.message;
+}
+async function loadOnlineCount(){
+ const {count,error}=await supabase.from("chat_presence").select("user_id",{count:"exact",head:true}).gt("last_seen",new Date(Date.now()-120000).toISOString());
+ $("chatOnline").textContent=error?"Онлайн: —":"Онлайн: "+(count||0);
 }
 async function selectChatChannel(id,label){
  activeChatChannel=id;$("chatChannelTitle").textContent=label||("# "+id);
- if(chatSubscription){await supabase.removeChannel(chatSubscription);chatSubscription=null;}
- await loadChatChannels();await loadChatMessages();
- chatSubscription=supabase.channel("loreverse-chat-"+id).on("postgres_changes",{event:"INSERT",schema:"public",table:"chat_messages",filter:"channel_id=eq."+id},payload=>{const m=payload.new;if(m.deleted_at)return;const feed=$("chatFeed");if(feed.querySelector(".portal-note"))feed.innerHTML="";feed.insertAdjacentHTML("beforeend",'<div class="chat-message"><small>'+safeText(m.display_name)+' · '+new Date(m.created_at).toLocaleTimeString("mn-MN")+'</small><div>'+safeText(m.body)+'</div></div>');feed.scrollTop=feed.scrollHeight;}).subscribe();
+ for(const ch of [chatSubscription,reactionSubscription])if(ch)await supabase.removeChannel(ch);
+ chatSubscription=reactionSubscription=null;
+ await loadChatChannels();await loadChatMessages();await updatePresence();
+ chatSubscription=supabase.channel("loreverse-chat-"+id).on("postgres_changes",{event:"*",schema:"public",table:"chat_messages",filter:"channel_id=eq."+id},()=>loadChatMessages()).subscribe();
+ reactionSubscription=supabase.channel("loreverse-reactions-"+id).on("postgres_changes",{event:"*",schema:"public",table:"chat_reactions"},()=>loadChatMessages()).subscribe();
 }
+$("chatSearch").addEventListener("input",renderChatMessages);
+$("clearChatSearch").onclick=()=>{$("chatSearch").value="";renderChatMessages();};
 $("chatForm").addEventListener("submit",async e=>{
  e.preventDefault();const body=$("chatInput").value.trim();if(!body)return;
- try{const u=await ensureCommunityUser();const displayName=$("chatDisplayName").value.trim()||u.email?.split("@")[0]||"Lore Explorer";const {error}=await supabase.from("chat_messages").insert({channel_id:activeChatChannel,user_id:u.id,display_name:displayName,body});if(error)throw error;$("chatInput").value="";$("chatStatus").textContent="Мессеж илгээгдлээ.";}catch(err){$("chatStatus").textContent=err.message||"Мессеж илгээж чадсангүй.";}
+ try{const u=await ensureCommunityUser();const {error}=await supabase.from("chat_messages").insert({channel_id:activeChatChannel,user_id:u.id,body,reply_to:replyTarget?.id||null});if(error)throw error;$("chatInput").value="";replyTarget=null;$("replyPreview").hidden=true;$("chatStatus").textContent="Мессеж илгээгдлээ.";}catch(err){$("chatStatus").textContent=err.message||"Мессеж илгээж чадсангүй.";}
 });
-function rankFor(xp){return [...rankLevels].reverse().find(r=>xp>=r.min)||rankLevels[0];}
 async function refreshGamification(){
- const user=(await supabase.auth.getUser()).data.user;communityUser=user;
- if(!user){$("rankDisplayName").textContent="Зочин хэрэглэгч";return;}
+ const user=(await supabase.auth.getUser()).data.user;communityUser=user;if(!user){$("rankDisplayName").textContent="Зочин хэрэглэгч";return;}
  const {data,error}=await supabase.from("profiles").select("display_name,total_xp,lore_coins,season_xp,season_id").eq("id",user.id).maybeSingle();
  if(error){$("rankProgressText").textContent=error.message;return;}
- let profile=data;
- if(!profile){const {data:created,error:createError}=await supabase.from("profiles").insert({id:user.id,display_name:"Lore Explorer"}).select().single();if(createError){$("rankProgressText").textContent=createError.message;return;}profile=created;}
+ let profile=data;if(!profile){const {data:created,error:createError}=await supabase.from("profiles").insert({id:user.id,display_name:"Lore Explorer"}).select().single();if(createError){$("rankProgressText").textContent=createError.message;return;}profile=created;}
  const xp=Number(profile.total_xp||0),season=Number(profile.season_xp||0),coins=Number(profile.lore_coins||0),rank=rankFor(xp),next=rank.next;
  $("lifetimeRank").textContent=rank.name;$("rankDisplayName").textContent=profile.display_name||"Lore Explorer";$("totalXp").textContent=xp.toLocaleString("mn-MN");$("seasonXp").textContent=season.toLocaleString("mn-MN");$("coinBalance").textContent=coins.toLocaleString("mn-MN");$("nextRankXp").textContent=next===null?"MAX":next.toLocaleString("mn-MN");
- const prev=rank.min,progress=next===null?100:Math.max(0,Math.min(100,(xp-prev)/(next-prev)*100));$("rankProgress").style.width=progress+"%";$("rankProgressText").textContent=next===null?"Дээд Rank хүрсэн байна.":"Дараагийн Rank ("+rankLevels[rankLevels.indexOf(rank)+1].name+") хүртэл "+Math.max(0,next-xp)+" XP";
+ const progress=next===null?100:Math.max(0,Math.min(100,(xp-rank.min)/(next-rank.min)*100));$("rankProgress").style.width=progress+"%";$("rankProgressText").textContent=next===null?"Дээд Rank хүрсэн байна.":"Дараагийн Rank ("+rankLevels[rankLevels.indexOf(rank)+1].name+") хүртэл "+Math.max(0,next-xp)+" XP";
 }
 async function loadCoinStore(){
  const user=(await supabase.auth.getUser()).data.user;communityUser=user;const {data,error}=await supabase.from("lore_coin_items").select("id,name,description,coin_cost,item_type,discount_percent").eq("enabled",true).order("coin_cost");
@@ -401,8 +433,8 @@ async function loadLoreLeaderboard(){
  const {data,error}=await supabase.rpc("lore_leaderboard",{p_limit:10});const el=$("loreLeaderboard");if(error){el.textContent=error.message;return;}
  el.innerHTML=(data||[]).map((x,i)=>'<div class="leader-row"><span>#'+(i+1)+' '+safeText(x.display_name)+'<br><small>'+safeText(x.rank_name)+'</small></span><b>'+Number(x.total_xp).toLocaleString("mn-MN")+' XP</b></div>').join("")||"Одоогоор жагсаалт хоосон.";
 }
-$("dailyReward").onclick=async()=>{try{const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Өдрийн бонус авахын тулд Premium хэсэгт бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.");const {data,error}=await supabase.rpc("claim_daily_lore_reward");if(error)throw error;$("dailyRewardStatus").textContent=data.message||"Бонус шалгагдлаа.";await refreshGamification();}catch(e){$("dailyRewardStatus").textContent=e.message;}};
+$("dailyReward").onclick=async()=>{try{const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Өдрийн бонус авахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.");const {data,error}=await supabase.rpc("claim_daily_lore_reward");if(error)throw error;$("dailyRewardStatus").textContent=data.message||"Бонус шалгагдлаа.";await refreshGamification();}catch(e){$("dailyRewardStatus").textContent=e.message;}};
 supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=await supabase.auth.getUser();communityUser=user;await refreshGamification();await loadCoinStore();},0)});
-(async()=>{try{await ensureCommunityUser();$("chatStatus").textContent="Чатад холбогдлоо.";await loadChatChannels();await selectChatChannel("global","# Global Chat");await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();}catch(e){$("chatStatus").textContent=e.message;$("dailyRewardStatus").textContent="Бонус авахын тулд хэрэглэгчийн session шаардлагатай.";}})();
+(async()=>{try{await ensureCommunityUser();$("chatStatus").textContent="Нэгдсэн чатад холбогдлоо.";await loadChatChannels();await selectChatChannel("global","# Global Chat");await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();await updatePresence();await loadOnlineCount();setInterval(async()=>{await updatePresence();await loadOnlineCount();},45000);}catch(e){$("chatStatus").textContent=e.message;$("dailyRewardStatus").textContent="Бонус авахын тулд бүртгэлтэй хэрэглэгч шаардлагатай.";}})();
 </script>
 </body></html>
