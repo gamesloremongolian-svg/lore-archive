@@ -200,7 +200,6 @@ section[id]{scroll-margin-top:92px}
  <label for="profileAvatar">Avatar зурагны HTTPS холбоос</label><input class="form-field" id="profileAvatar" type="url" placeholder="https://...">
  <button class="btn primary" id="profileSave" type="button">Профайл хадгалах</button><div class="portal-note" id="profileStatus"></div>
  </div></div>
-</header>
 <main class="wrap">
 <section class="hero"><div><div class="eyebrow">ANIME · GAMES · STORIES</div><h1>EVERY UNIVERSE<br>HAS A <span class="gradient">STORY.</span></h1><p>Анимэ болон тоглоомын ертөнцийн түүх, дүрүүд, нууц, онол, судалгааг нэг дороос нээ. Дуртай ертөнцийнхөө гүн рүү аял.</p><div class="hero-buttons"><a class="btn primary" href="#games">Ертөнцүүдийг нээх ↗</a><a class="btn" href="#archive">Lore архив үзэх</a></div></div><div class="visual lore-emblem">
 <svg class="lore-logo" viewBox="0 0 600 600" role="img" aria-label="LOREVERSE алтан луужин доторх нээлттэй ном">
@@ -546,7 +545,6 @@ $("profileSave").onclick=async()=>{
   if(avatar_url&&!/^https:\/\//i.test(avatar_url))throw new Error("Avatar холбоос HTTPS байх ёстой.");
   const {error}=await supabase.from("profiles").upsert({id:user.id,display_name,avatar_url,updated_at:new Date().toISOString()},{onConflict:"id"});
   if(error)throw error;
-  await supabase.from("chat_public_profiles").upsert({id:user.id,display_name,avatar_url,total_xp:0,updated_at:new Date().toISOString()},{onConflict:"id"}).then(()=>{});
   $("profileStatus").textContent="Профайл хадгалагдлаа.";
   $("rankDisplayName").textContent=display_name;
  }catch(e){$("profileStatus").textContent=e.message||"Алдаа гарлаа.";}
