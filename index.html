@@ -196,6 +196,7 @@ section[id]{scroll-margin-top:92px}
 <div class="modal" id="profileModal" role="dialog" aria-modal="true"><div class="dialog">
  <div class="dialogtop"><div><div class="eyebrow">LOREVERSE ACCOUNT</div><h2>Миний профайл</h2></div><button class="close" id="profileClose" type="button">✕</button></div>
  <p id="profileIdentity">Нэвтэрч орно уу.</p>
+ <div class="portal-panel" style="padding:14px;margin:12px 0"><h3 style="margin:0 0 8px">Бүртгэл / Нэвтрэх</h3><label for="accountEmail">Имэйл</label><input class="form-field" id="accountEmail" type="email" autocomplete="email" placeholder="name@example.com"><label for="accountPassword">Нууц үг</label><input class="form-field" id="accountPassword" type="password" autocomplete="current-password" minlength="8" placeholder="Дор хаяж 8 тэмдэгт"><div class="row"><button class="btn primary" id="accountLogin" type="button">Нэвтрэх</button><button class="btn" id="accountSignup" type="button">Бүртгүүлэх</button><button class="btn" id="accountLogout" type="button">Гарах</button></div></div>
  <label for="profileName">Харагдах нэр</label><input class="form-field" id="profileName" maxlength="40" placeholder="Lore Explorer">
  <label for="profileAvatar">Avatar зурагны HTTPS холбоос</label><input class="form-field" id="profileAvatar" type="url" placeholder="https://...">
  <button class="btn primary" id="profileSave" type="button">Профайл хадгалах</button><div class="portal-note" id="profileStatus"></div>
@@ -567,6 +568,10 @@ $("notificationsClose").onclick=()=>$("accountTools").hidden=true;
 $("profileOpen").onclick=async()=>{$("profileModal").classList.add("open");await loadAccountProfile();};
 $("profileClose").onclick=()=>$("profileModal").classList.remove("open");
 $("profileModal").addEventListener("click",e=>{if(e.target.id==="profileModal")$("profileModal").classList.remove("open");});
+
+$("accountLogin").onclick=async()=>{try{const email=$("accountEmail").value.trim(),password=$("accountPassword").value;if(!email||!password)throw new Error("Имэйл болон нууц үг оруулна уу.");const {error}=await supabase.auth.signInWithPassword({email,password});if(error)throw error;$("profileStatus").textContent="Нэвтэрлээ.";await loadAccountProfile();await loadAccountPanel();await loadPublishedLore();await loadCommunityEvents();}catch(e){$("profileStatus").textContent=e.message;}};
+$("accountSignup").onclick=async()=>{try{const email=$("accountEmail").value.trim(),password=$("accountPassword").value;if(!email||password.length<8)throw new Error("Зөв имэйл, 8-аас дээш тэмдэгттэй нууц үг оруулна уу.");const {data,error}=await supabase.auth.signUp({email,password,options:{data:{display_name:$("profileName").value.trim()||"Lore Explorer"}}});if(error)throw error;$("profileStatus").textContent=data.session?"Бүртгэл үүслээ. Нэвтэрсэн байна.":"Бүртгэлийн баталгаажуулах имэйлийг шалгана уу.";await loadAccountProfile();}catch(e){$("profileStatus").textContent=e.message;}};
+$("accountLogout").onclick=async()=>{const {error}=await supabase.auth.signOut();$("profileStatus").textContent=error?error.message:"Системээс гарлаа.";await loadAccountProfile();await loadAccountPanel();};
 $("profileSave").onclick=async()=>{
  try{
   const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Профайл хадгалахын тулд нэвтэрнэ үү.");
