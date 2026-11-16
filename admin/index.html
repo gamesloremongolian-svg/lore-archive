@@ -24,10 +24,18 @@
 <div id="communityTab" class="hidden"><h2>Community moderation</h2><p class="muted">Гомдол шалгах, мессеж устгах, хэрэглэгчийг 24 цаг mute хийх. Бүх үйлдэл админы бүртгэлтэй хадгалагдана.</p><button id="reloadCommunity">Шинэчлэх</button><div id="communityReports" class="status">Гомдлуудыг ачаалж байна…</div><h3>Сүүлийн мессежүүд · Pin удирдлага</h3><div id="communityPins" class="status">Мессежүүдийг ачаалж байна…</div><h3>XP / Lore Coins шагнал олгох</h3><p class="muted">Зөвхөн баталгаажсан хувь нэмэрт олгоно. Reference ID нь давхар шагналаас хамгаална.</p><label>Хэрэглэгчийн UUID</label><input id="rewardUserId" placeholder="Auth user UUID"><div class="row"><div><label>Үйл явдлын төрөл</label><input id="rewardEvent" value="approved_contribution"></div><div><label>Reference ID (давтагдашгүй)</label><input id="rewardRef" placeholder="post-id эсвэл review-id"></div></div><div class="row"><div><label>XP (0–500)</label><input id="rewardXp" type="number" min="0" max="500" value="20"></div><div><label>Lore Coins (0–500)</label><input id="rewardCoins" type="number" min="0" max="500" value="5"></div></div><button id="grantReward">Шагнал олгох</button><div id="rewardMsg" class="status"></div></div>
 </section></main>
 <script type="module">
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.119.0';
 const authMsg=document.getElementById('authMsg');
 try {
   authMsg.textContent='Supabase сан ачаалж байна…';
+  let supabaseModule;
+  try {
+    supabaseModule=await import('https://esm.sh/@supabase/supabase-js@2.119.0');
+  } catch(primaryImportError) {
+    console.warn('Primary Supabase CDN failed; trying fallback:',primaryImportError);
+    supabaseModule=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/+esm');
+  }
+  const {createClient}=supabaseModule;
+  if(typeof createClient!=='function') throw new Error('Supabase сангаас createClient функц олдсонгүй.');
   const supabase=createClient('https://nfacspfctvunwbxtvvyi.supabase.co','sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1');
   authMsg.textContent='Supabase клиент бэлэн. Нэвтрэх эсвэл бүртгүүлэх боломжтой.';
 const $=id=>document.getElementById(id), say=(id,msg)=>$(id).textContent=msg;
