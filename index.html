@@ -418,6 +418,14 @@ body{
 @media(max-width:700px){.ad-grid{grid-template-columns:1fr 1fr}.ad-zone{padding:16px}.ad-zone-head{align-items:start;flex-direction:column}}
 @media(max-width:460px){.ad-grid,.ad-form-grid{grid-template-columns:1fr}.ad-form-grid .wide{grid-column:auto}.ad-card img{height:125px}.ad-admin-row{align-items:flex-start;flex-direction:column}}
 
+
+.ad-empty-promo{grid-column:1/-1;min-height:150px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:24px;border:1px solid rgba(164,112,255,.55);border-radius:18px;background:radial-gradient(ellipse at 50% 120%,rgba(114,58,190,.34),transparent 65%),linear-gradient(120deg,#100b20,#17102b 55%,#0c1628);text-align:center}
+.ad-empty-promo:before{content:"";position:absolute;inset:-60%;background:conic-gradient(from 0deg,transparent 0 78%,rgba(110,220,255,.2),transparent 84%);animation:adOrbit 9s linear infinite}
+.ad-empty-promo:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.08) 48%,transparent 60%);transform:translateX(-100%);animation:adShine 3.4s ease-in-out infinite}
+.ad-empty-promo span{position:relative;z-index:1;font-size:clamp(20px,3.5vw,32px);font-weight:950;letter-spacing:.07em;color:#f4eaff;text-shadow:0 0 8px #a66cff,0 0 22px rgba(139,92,246,.9);animation:adPulse 2.2s ease-in-out infinite}
+.ad-empty-promo small{display:block;margin-top:9px;font-size:11px;letter-spacing:.16em;color:#9eeaff;text-shadow:0 0 10px #42cfff}
+@keyframes adOrbit{to{transform:rotate(360deg)}}@keyframes adShine{55%,100%{transform:translateX(100%)}}@keyframes adPulse{50%{transform:scale(1.035);filter:brightness(1.35)}}
+@media(prefers-reduced-motion:reduce){.ad-empty-promo:before,.ad-empty-promo:after,.ad-empty-promo span{animation:none}}
 </style>
 </head>
 <body>
@@ -488,6 +496,7 @@ body{
 <section class="section ad-zone" id="advertise">
  <div class="ad-zone-head"><div><div class="eyebrow">LOREVERSE PARTNERS · SPONSORED</div><h2>Зар сурталчилгаа</h2><p>LOREVERSE-ийн уншигчдад бүтээгдэхүүн, үйлчилгээ, төслөө танилцуулаарай.</p></div></div>
  
+ <div class="ad-grid" id="adPublicList"><div class="ad-empty-promo"><span>ТАНЫ ЗАР ЭНД БАЙРШИНА<small>LOREVERSE · ADVERTISE HERE</small></span></div></div>
  <div class="ad-admin" id="adAdminPanel" hidden><div class="eyebrow">MODERATION · STAFF ONLY</div><h3>Зарын хүсэлт хянах</h3><div id="adAdminList">Хүсэлтүүдийг ачаалж байна…</div></div>
 </section>
 
@@ -1126,7 +1135,7 @@ async function loadPublicAds(){
  const host=$("adPublicList");if(!host)return;
  const {data,error}=await supabase.from("advertisement_requests").select("id,title,description,image_url,target_url,placement").eq("status","approved").or("start_date.is.null,start_date.lte."+new Date().toISOString().slice(0,10)).or("end_date.is.null,end_date.gte."+new Date().toISOString().slice(0,10)).order("placement").order("created_at",{ascending:false}).limit(9);
  if(error){host.innerHTML='<p class="portal-note">Заруудыг ачаалж чадсангүй.</p>';return;}
- host.innerHTML=(data||[]).map(ad=>'<article class="ad-card"><img src="'+safeText(ad.image_url)+'" alt="'+safeText(ad.title)+'" loading="lazy" referrerpolicy="no-referrer"><div class="ad-card-body"><span class="ad-label">'+(ad.placement==="featured"?"ОНЦЛОХ ЗАР":"SPONSORED")+'</span><h3>'+safeText(ad.title)+'</h3><p>'+safeText(ad.description)+'</p><a href="'+safeText(ad.target_url)+'" target="_blank" rel="noopener noreferrer nofollow sponsored">Дэлгэрэнгүй ↗</a></div></article>').join("")||'';
+ host.innerHTML=(data||[]).map(ad=>'<article class="ad-card"><img src="'+safeText(ad.image_url)+'" alt="'+safeText(ad.title)+'" loading="lazy" referrerpolicy="no-referrer"><div class="ad-card-body"><span class="ad-label">'+(ad.placement==="featured"?"ОНЦЛОХ ЗАР":"SPONSORED")+'</span><h3>'+safeText(ad.title)+'</h3><p>'+safeText(ad.description)+'</p><a href="'+safeText(ad.target_url)+'" target="_blank" rel="noopener noreferrer nofollow sponsored">Дэлгэрэнгүй ↗</a></div></article>').join("")||'<div class="ad-empty-promo"><span>ТАНЫ ЗАР ЭНД БАЙРШИНА<small>LOREVERSE · ADVERTISE HERE</small></span></div>';
 }
 async function loadAdAdmin(){
  const panel=$("adAdminPanel");if(!panel)return;
