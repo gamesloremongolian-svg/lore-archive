@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" role="img" aria-labelledby="t d">
+<title id="t">LOREVERSE</title><desc id="d">Cosmic compass emblem and LOREVERSE wordmark</desc>
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".48" stop-color="#e5d5ff"/><stop offset="1" stop-color="#9b70ff"/></linearGradient><radialGradient id="bg"><stop stop-color="#24133f"/><stop offset="1" stop-color="#080914"/></radialGradient><filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<rect width="1200" height="360" rx="30" fill="url(#bg)"/>
+<g transform="translate(178 180)" fill="none" stroke="url(#g)" filter="url(#glow)">
+<circle r="130" stroke-width="2" opacity=".38"/><circle r="108" stroke-width="2" opacity=".5"/>
+<path d="M0-150 23-28 145 0 23 28 0 150-23 28-145 0-23-28Z" stroke-width="8" stroke-linejoin="round"/>
+<path d="M-102-102Q0-190 102-102M-102 102Q0 190 102 102" stroke-width="4" opacity=".8"/>
+<path d="M0-78 10-10 78 0 10 10 0 78-10 10-78 0-10-10Z" fill="url(#g)" stroke="none"/>
+</g>
+<text x="360" y="218" fill="url(#g)" font-family="Georgia,serif" font-size="126" letter-spacing="4">LOREVERSE</text>
+<path d="M365 264H1090" stroke="url(#g)" stroke-width="3" opacity=".75"/><path d="M725 248l14 16-14 16-14-16Z" fill="#e8d7ff"/>
+</svg>
