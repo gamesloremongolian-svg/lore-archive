@@ -689,7 +689,7 @@ supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=aw
   if(workIds.length){
    const {data,error:translationError}=await supabase.from("archive_work_translations").select("work_id,language_code,title,synopsis,canon_status,spoiler_level").in("work_id",workIds).eq("editorial_status","published").eq("language_code",languageInput.value).limit(1000);
    if(translationError){status.textContent="Орчуулгын мэдээлэл уншихад алдаа гарлаа.";console.error("Archive translations:",translationError.message);return;}
-   translations=translations||data||[];
+   translations=data||[];
   }
   const byWork=new Map(translations.map(x=>[x.work_id,x]));
   records=(franchises||[]).map(f=>({...f,works:(works||[]).filter(w=>w.franchise_id===f.id).map(w=>({...w,translation:byWork.get(w.id)||null}))}));
