@@ -89,6 +89,16 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
 .portal-note{font-size:10px!important;color:#a99ab8!important;margin-top:12px}
 @media(max-width:650px){.portal-grid{grid-template-columns:1fr}.media-card{flex-basis:195px}.live-strip{gap:7px}.live-box{padding:11px}.live-box strong{font-size:17px}.live-box span{font-size:9px}}
 
+
+/* Auto-moving infinite card rails */
+.carousel-viewport{width:100%;overflow:hidden;position:relative;mask-image:linear-gradient(90deg,transparent,#000 2%,#000 98%,transparent)}
+.carousel-track{display:flex;width:max-content;gap:14px;overflow:visible;scroll-snap-type:none;padding:4px 2px 18px;animation:cardRail var(--rail-duration,38s) linear infinite;will-change:transform}
+.carousel-track:hover,.carousel-track:focus-within{animation-play-state:paused}
+.carousel-track .media-card{flex:0 0 230px;scroll-snap-align:none}
+@keyframes cardRail{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(max-width:650px){.carousel-track .media-card{flex-basis:195px}}
+@media(prefers-reduced-motion:reduce){.carousel-track{animation:none;transform:none}.carousel-viewport{overflow-x:auto;mask-image:none}}
+
 </style>
 </head>
 <body>
@@ -178,6 +188,18 @@ function closeModal(){document.getElementById("modal").classList.remove("open")}
 const translations={en:{nav:["Games","Lore archive","About"],hero:"Discover the stories, characters, mysteries and theories behind the worlds you love.",explore:"Explore worlds ↗",archive:"Explore lore archive",worlds:"Game universes",search:"Search articles, characters, topics...",about:"One platform. Many universes.",facts:"Facts and theories are clearly separated."},ja:{nav:["ゲーム","Lore アーカイブ","概要"],hero:"好きなゲーム世界の物語、キャラクター、謎、考察を一か所で探究。",explore:"世界を探検 ↗",archive:"Lore アーカイブ",worlds:"ゲームの世界",search:"記事・キャラクター・テーマを検索...",about:"ひとつのプラットフォーム、広がる世界。",facts:"事実と考察を明確に区別します。"},ko:{nav:["게임","로어 아카이브","소개"],hero:"좋아하는 게임 세계의 이야기, 캐릭터, 미스터리와 이론을 한곳에서 살펴보세요.",explore:"세계 탐험 ↗",archive:"로어 아카이브 보기",worlds:"게임 세계관",search:"문서, 캐릭터, 주제 검색...",about:"하나의 플랫폼, 수많은 세계.",facts:"사실과 추측을 명확히 구분합니다."}};
 document.getElementById("lang").addEventListener("change",e=>{let t=translations[e.target.value];if(!t){location.reload();return}document.querySelectorAll(".nav a").forEach((a,i)=>a.textContent=t.nav[i]);document.querySelector(".hero>div>p").textContent=t.hero;document.querySelector(".hero-buttons .primary").textContent=t.explore;document.querySelector(".hero-buttons .btn:not(.primary)").textContent=t.archive;document.querySelector("#worlds h2").textContent=t.worlds;search.placeholder=t.search;document.querySelector("#about .feature h3").textContent=t.about;document.querySelector("#about .feature:last-child h3").textContent=t.facts});
 render();
+
+document.querySelectorAll(".carousel-track").forEach((track,index)=>{
+ const originals=Array.from(track.children);
+ if(!originals.length)return;
+ const viewport=document.createElement("div");
+ viewport.className="carousel-viewport";
+ track.parentNode.insertBefore(viewport,track);
+ viewport.appendChild(track);
+ originals.forEach(card=>{const clone=card.cloneNode(true);clone.setAttribute("aria-hidden","true");clone.tabIndex=-1;clone.querySelectorAll("a,button").forEach(el=>el.tabIndex=-1);track.appendChild(clone)});
+ track.style.setProperty("--rail-duration",Math.max(28,originals.length*7)+"s");
+});
+
 function updateLocalClock(){const d=new Date();document.getElementById("localClock").textContent=new Intl.DateTimeFormat("mn-MN",{timeZone:"Asia/Ulaanbaatar",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(d)}
 updateLocalClock();setInterval(updateLocalClock,1000);
 document.getElementById("adRequest").addEventListener("submit",e=>{e.preventDefault();document.getElementById("adFeedback").textContent="Маягтын загвар бэлэн. Хүсэлтийг хүлээн авах сервер холбогдоогүй тул одоогоор илгээгдээгүй.";});
