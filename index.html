@@ -129,7 +129,28 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
 .catalog-desc{font-size:11px;color:#c0b4d2;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .catalog-detail{white-space:normal;line-height:1.7}
 .catalog-detail img{width:100%;max-height:260px;object-fit:contain;border-radius:12px}
-\n</style>
+\n
+/* Community + gamification */
+.community-grid{display:grid;grid-template-columns:280px 1fr;gap:16px}
+.community-side,.community-main,.rank-card{background:linear-gradient(145deg,#211633,#12182a);border:1px solid #624477;border-radius:20px;padding:18px}
+.channel-list{display:grid;gap:7px;margin-top:14px}
+.channel-btn{width:100%;text-align:left;border:1px solid transparent;border-radius:11px;background:#100b1e;color:#e8dcf5;padding:11px;cursor:pointer}
+.channel-btn.active,.channel-btn:hover{border-color:#b77cff;background:#8f55d522;color:#fff}
+.chat-feed{height:390px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:10px;background:#0c0917;border:1px solid #49345f;border-radius:14px}
+.chat-message{padding:10px 12px;border:1px solid #49345f;border-radius:12px;background:#19132a;overflow-wrap:anywhere}
+.chat-message small{display:block;color:#a99ab8;font-size:10px;margin-bottom:4px}
+.chat-compose{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}
+.chat-compose input{min-width:0}
+.rank-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.rank-stat{padding:14px;border:1px solid #624477;border-radius:14px;background:#100b1e}
+.rank-stat b{display:block;font-size:23px;color:#ff9bd8}
+.progress-track{height:9px;border-radius:99px;background:#342443;overflow:hidden;margin:9px 0}
+.progress-fill{height:100%;background:linear-gradient(90deg,#e76fbc,#9862f4,#4cb9df);width:0}
+.store-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.store-item{border:1px solid #624477;border-radius:13px;padding:12px;background:#17132a}
+.leader-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #49345f;font-size:12px}
+@media(max-width:700px){.community-grid{grid-template-columns:1fr}.chat-feed{height:340px}.rank-stats{grid-template-columns:1fr 1fr}.store-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 <header class="wrap topbar"><a class="brand" href="#"><span class="mark">✦</span> LOREVERSE</a><nav class="nav"><a href="#worlds">Тоглоомууд</a><a href="#archive">Lore сан</a><a href="rank/">Rank & Bonus</a><a href="#about">Төслийн тухай</a></nav><div class="actions"><select class="select" id="lang" aria-label="Language"><option value="mn">MN</option><option value="en">EN</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div></header>
@@ -230,7 +251,32 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
 <section class="section" id="admin">
  <div class="portal-panel"><div class="eyebrow">EDITORIAL WORKSPACE</div><h2>Админ нийтлэх хэсэг</h2><p>Редактор, админ эрхтэй багийн гишүүд нийтлэл үүсгэх, засварлах, хянах, нийтлэх ажлаа удирдана.</p><div class="portal-actions"><a class="btn primary" href="admin/">Админ хэсэгт нэвтрэх ↗</a></div></div>
 </section>
-<section class="section" id="activity">
+
+<section class="section" id="community">
+ <div class="section-head"><div><div class="eyebrow">LOREVERSE COMMUNITY</div><h2>Нийтийн чат</h2><p>Бүртгэлгүй зочид ч уншиж, anonymous session-оор мессеж бичиж болно. XP нь зөвхөн баталгаажсан хувь нэмэрт олгоно.</p></div></div>
+ <div class="community-grid">
+  <aside class="community-side"><div class="eyebrow">CHANNELS</div><h3 style="margin:6px 0">Сувгууд</h3><div id="chatChannels" class="channel-list"><p class="portal-note">Сувгууд ачаалж байна…</p></div><p class="portal-note">Дүрэм: доромжлол, спам, давтан мессеж хориглоно.</p></aside>
+  <div class="community-main"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><div><b id="chatChannelTitle"># global-chat</b><div class="portal-note" id="chatStatus">Чат холбогдож байна…</div></div><span class="tag">REALTIME</span></div>
+   <div id="chatFeed" class="chat-feed" aria-live="polite"><p class="portal-note">Мессеж ачаалж байна…</p></div>
+   <form id="chatForm" class="chat-compose"><input id="chatInput" class="form-field" maxlength="1200" placeholder="Мессеж бичих..." autocomplete="off"><button class="btn primary" type="submit">Илгээх</button></form>
+   <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><input id="chatDisplayName" class="form-field" style="max-width:260px" maxlength="32" placeholder="Чат дахь нэр"><span class="portal-note">4 секундийн cooldown · 1200 тэмдэгтийн хязгаар</span></div>
+  </div>
+ </div>
+</section>
+<section class="section" id="ranks">
+ <div class="section-head"><div><div class="eyebrow">XP · LORE COINS · SEASONS</div><h2>Rank ба Bonus</h2><p>Lifetime Rank тогтмол хадгалагдана. Seasonal Rank улирал бүр шинэчлэгдэнэ.</p></div></div>
+ <div class="rank-card">
+  <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><div class="eyebrow">YOUR LIFETIME RANK</div><h3 id="lifetimeRank" style="margin:5px 0">Rookie</h3><span class="portal-note" id="rankDisplayName">Зочин хэрэглэгч</span></div><div><div class="eyebrow">LORE COINS</div><h3 id="coinBalance" style="margin:5px 0;color:#ffd58d">0</h3></div></div>
+  <div class="rank-stats" style="margin-top:16px"><div class="rank-stat"><b id="totalXp">0</b><span class="portal-note">Lifetime XP</span></div><div class="rank-stat"><b id="seasonXp">0</b><span class="portal-note">Season XP</span></div><div class="rank-stat"><b id="nextRankXp">100</b><span class="portal-note">Дараагийн Rank босго</span></div></div>
+  <div class="progress-track"><div id="rankProgress" class="progress-fill"></div></div><div class="portal-note" id="rankProgressText">Дараагийн Rank хүртэл 100 XP</div>
+  <div class="portal-actions"><button class="btn primary" id="dailyReward" type="button">Өдрийн бонус авах · +5 XP / +2 Coins</button><span id="dailyRewardStatus" class="portal-note"></span></div>
+ </div>
+ <div class="portal-grid" style="margin-top:16px">
+  <div class="portal-panel"><div class="eyebrow">LORE COINS STORE</div><h3>Бонусын дэлгүүр</h3><p>Цуглуулсан Coins-оор Premium хөнгөлөлт болон профайлын гоёл авна.</p><div id="coinStore" class="store-grid">Дэлгүүр ачаалж байна…</div><p class="portal-note" id="storeStatus"></p></div>
+  <div class="portal-panel"><div class="eyebrow">LEADERBOARD</div><h3>Шилдэг Lorekeepers</h3><div id="loreLeaderboard">Жагсаалт ачаалж байна…</div></div>
+ </div>
+</section>
+\n<section class="section" id="activity">
  <div class="section-head"><div><div class="eyebrow">SITE ACTIVITY</div><h2>Сайтын идэвх</h2><p>Орон нутгийн цаг болон хэрэглэгчийн идэвхийн хэмжүүр.</p></div></div>
  <div class="live-strip">
   <div class="live-box"><strong id="localClock">--:--:--</strong><span>Одоогийн цаг · Улаанбаатар</span></div>
@@ -300,5 +346,62 @@ document.querySelectorAll(".carousel-track").forEach((track,index)=>{
 function updateLocalClock(){const d=new Date();document.getElementById("localClock").textContent=new Intl.DateTimeFormat("mn-MN",{timeZone:"Asia/Ulaanbaatar",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(d)}
 updateLocalClock();setInterval(updateLocalClock,1000);
 document.getElementById("adRequest").addEventListener("submit",e=>{e.preventDefault();document.getElementById("adFeedback").textContent="Маягтын загвар бэлэн. Хүсэлтийг хүлээн авах сервер холбогдоогүй тул одоогоор илгээгдээгүй.";});
+
+/* LOREVERSE Community + Rank + Bonus */
+const rankLevels=[{name:"Rookie",min:0,next:100},{name:"Explorer",min:100,next:500},{name:"Scholar",min:500,next:1500},{name:"Lorekeeper",min:1500,next:4000},{name:"Master Archivist",min:4000,next:10000},{name:"Mythic Archivist",min:10000,next:null}];
+const safeText=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let communityUser=null,activeChatChannel="global",chatSubscription=null;
+async function ensureCommunityUser(){
+ let {data:{user}}=await supabase.auth.getUser();
+ if(!user){const {data,error}=await supabase.auth.signInAnonymously();if(error)throw new Error("Чат бичихийн тулд Supabase Anonymous Sign-ins тохиргоог идэвхжүүлэх шаардлагатай. ("+error.message+")");user=data.user;}
+ communityUser=user;return user;
+}
+async function loadChatChannels(){
+ const {data,error}=await supabase.from("chat_channels").select("id,name,description,channel_type").eq("enabled",true).order("sort_order");
+ const el=$("chatChannels");if(error){el.textContent=error.message;return;}
+ el.innerHTML=(data||[]).map(x=>'<button type="button" class="channel-btn '+(x.id===activeChatChannel?'active':'')+'" data-chat-channel="'+safeText(x.id)+'"># '+safeText(x.name)+'</button>').join("");
+ el.querySelectorAll("[data-chat-channel]").forEach(b=>b.onclick=()=>selectChatChannel(b.dataset.chatChannel,b.textContent));
+}
+async function loadChatMessages(){
+ const {data,error}=await supabase.from("chat_messages").select("id,user_id,display_name,body,created_at").eq("channel_id",activeChatChannel).is("deleted_at",null).order("created_at",{ascending:false}).limit(60);
+ const feed=$("chatFeed");if(error){feed.textContent=error.message;return;}
+ feed.innerHTML=(data||[]).reverse().map(m=>'<div class="chat-message"><small>'+safeText(m.display_name)+' · '+new Date(m.created_at).toLocaleString("mn-MN")+' <button type="button" data-report="'+m.id+'" style="float:right;padding:2px 7px;font-size:10px;background:#38213e">Report</button></small><div>'+safeText(m.body)+'</div></div>').join("")||'<p class="portal-note">Энэ сувагт одоогоор мессеж алга. Эхний мессежийг та бичээрэй.</p>';
+ feed.scrollTop=feed.scrollHeight;
+ feed.querySelectorAll("[data-report]").forEach(b=>b.onclick=async()=>{try{const u=await ensureCommunityUser();const reason=prompt("Мэдээлэх шалтгаан:");if(!reason)return;const {error}=await supabase.from("chat_reports").insert({message_id:b.dataset.report,reporter_id:u.id,reason});$("chatStatus").textContent=error?error.message:"Мэдээлэл илгээгдлээ. Баярлалаа."; }catch(e){$("chatStatus").textContent=e.message;}});
+}
+async function selectChatChannel(id,label){
+ activeChatChannel=id;$("chatChannelTitle").textContent=label||("# "+id);
+ if(chatSubscription){await supabase.removeChannel(chatSubscription);chatSubscription=null;}
+ await loadChatChannels();await loadChatMessages();
+ chatSubscription=supabase.channel("loreverse-chat-"+id).on("postgres_changes",{event:"INSERT",schema:"public",table:"chat_messages",filter:"channel_id=eq."+id},payload=>{const m=payload.new;if(m.deleted_at)return;const feed=$("chatFeed");if(feed.querySelector(".portal-note"))feed.innerHTML="";feed.insertAdjacentHTML("beforeend",'<div class="chat-message"><small>'+safeText(m.display_name)+' · '+new Date(m.created_at).toLocaleTimeString("mn-MN")+'</small><div>'+safeText(m.body)+'</div></div>');feed.scrollTop=feed.scrollHeight;}).subscribe();
+}
+$("chatForm").addEventListener("submit",async e=>{
+ e.preventDefault();const body=$("chatInput").value.trim();if(!body)return;
+ try{const u=await ensureCommunityUser();const displayName=$("chatDisplayName").value.trim()||u.email?.split("@")[0]||"Lore Explorer";const {error}=await supabase.from("chat_messages").insert({channel_id:activeChatChannel,user_id:u.id,display_name:displayName,body});if(error)throw error;$("chatInput").value="";$("chatStatus").textContent="Мессеж илгээгдлээ.";}catch(err){$("chatStatus").textContent=err.message||"Мессеж илгээж чадсангүй.";}
+});
+function rankFor(xp){return [...rankLevels].reverse().find(r=>xp>=r.min)||rankLevels[0];}
+async function refreshGamification(){
+ const user=communityUser||((await supabase.auth.getUser()).data.user);
+ if(!user){$("rankDisplayName").textContent="Зочин хэрэглэгч";return;}
+ const {data,error}=await supabase.from("profiles").select("display_name,total_xp,lore_coins,season_xp,season_id").eq("id",user.id).maybeSingle();
+ if(error){$("rankProgressText").textContent=error.message;return;}
+ let profile=data;
+ if(!profile){const {data:created,error:createError}=await supabase.from("profiles").insert({id:user.id,display_name:"Lore Explorer"}).select().single();if(createError){$("rankProgressText").textContent=createError.message;return;}profile=created;}
+ const xp=Number(profile.total_xp||0),season=Number(profile.season_xp||0),coins=Number(profile.lore_coins||0),rank=rankFor(xp),next=rank.next;
+ $("lifetimeRank").textContent=rank.name;$("rankDisplayName").textContent=profile.display_name||"Lore Explorer";$("totalXp").textContent=xp.toLocaleString("mn-MN");$("seasonXp").textContent=season.toLocaleString("mn-MN");$("coinBalance").textContent=coins.toLocaleString("mn-MN");$("nextRankXp").textContent=next===null?"MAX":next.toLocaleString("mn-MN");
+ const prev=rank.min,progress=next===null?100:Math.max(0,Math.min(100,(xp-prev)/(next-prev)*100));$("rankProgress").style.width=progress+"%";$("rankProgressText").textContent=next===null?"Дээд Rank хүрсэн байна.":"Дараагийн Rank ("+rankLevels[rankLevels.indexOf(rank)+1].name+") хүртэл "+Math.max(0,next-xp)+" XP";
+}
+async function loadCoinStore(){
+ const {data,error}=await supabase.from("lore_coin_items").select("id,name,description,coin_cost,item_type,discount_percent").eq("enabled",true).order("coin_cost");
+ const el=$("coinStore");if(error){el.textContent=error.message;return;}
+ el.innerHTML=(data||[]).map(x=>'<div class="store-item"><b>'+safeText(x.name)+'</b><p class="portal-note">'+safeText(x.description||x.item_type)+'</p><strong style="color:#ffd58d">'+x.coin_cost+' Coins</strong><br><button class="btn" style="margin-top:8px" data-redeem="'+safeText(x.id)+'">Авах</button></div>').join("")||"Одоогоор бараа алга.";
+ el.querySelectorAll("[data-redeem]").forEach(b=>b.onclick=async()=>{try{await ensureCommunityUser();const {data,error}=await supabase.rpc("redeem_lore_coins",{p_item_id:b.dataset.redeem});if(error)throw error;$("storeStatus").textContent=data.message||("Амжилттай. Үлдэгдэл: "+data.remaining_coins);await refreshGamification();}catch(e){$("storeStatus").textContent=e.message;}});
+}
+async function loadLoreLeaderboard(){
+ const {data,error}=await supabase.rpc("lore_leaderboard",{p_limit:10});const el=$("loreLeaderboard");if(error){el.textContent=error.message;return;}
+ el.innerHTML=(data||[]).map((x,i)=>'<div class="leader-row"><span>#'+(i+1)+' '+safeText(x.display_name)+'<br><small>'+safeText(x.rank_name)+'</small></span><b>'+Number(x.total_xp).toLocaleString("mn-MN")+' XP</b></div>').join("")||"Одоогоор жагсаалт хоосон.";
+}
+$("dailyReward").onclick=async()=>{try{await ensureCommunityUser();const {data,error}=await supabase.rpc("claim_daily_lore_reward");if(error)throw error;$("dailyRewardStatus").textContent=data.message||"Бонус шалгагдлаа.";await refreshGamification();}catch(e){$("dailyRewardStatus").textContent=e.message;}};
+(async()=>{try{await ensureCommunityUser();$("chatStatus").textContent="Чатад холбогдлоо.";await loadChatChannels();await selectChatChannel("global","# Global Chat");await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();}catch(e){$("chatStatus").textContent=e.message;$("dailyRewardStatus").textContent="Бонус авахын тулд хэрэглэгчийн session шаардлагатай.";}})();
 </script>
 </body></html>
