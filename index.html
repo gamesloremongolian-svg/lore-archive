@@ -96,13 +96,13 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
 
 
 /* Auto-moving infinite card rails */
-.carousel-viewport{width:100%;overflow:hidden;position:relative;mask-image:linear-gradient(90deg,transparent,#000 2%,#000 98%,transparent)}
-.carousel-track{display:flex;width:max-content;gap:14px;overflow:visible;scroll-snap-type:none;padding:4px 2px 18px;animation:cardRail var(--rail-duration,38s) linear infinite;will-change:transform}
-.carousel-track:hover,.carousel-track:focus-within{animation-play-state:paused}
-.carousel-track .media-card{flex:0 0 230px;scroll-snap-align:none}
-@keyframes cardRail{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+/* Reliable touch + mouse scrolling for horizontal rails */
+.carousel-viewport{width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;position:relative;mask-image:none!important;scrollbar-width:thin;scrollbar-color:#8d78c5 #17172a;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scroll-behavior:smooth;touch-action:pan-x}
+.carousel-track{display:flex;width:max-content;min-width:100%;gap:14px;overflow:visible;scroll-snap-type:x mandatory;padding:4px 2px 18px;animation:none!important;transform:none!important;will-change:auto}
+.carousel-track:hover,.carousel-track:focus-within{animation:none}
+.carousel-track .media-card{flex:0 0 230px;scroll-snap-align:start}
 @media(max-width:650px){.carousel-track .media-card{flex-basis:195px}}
-@media(prefers-reduced-motion:reduce){.carousel-track{animation:none;transform:none}.carousel-viewport{overflow-x:auto;mask-image:none}}
+@media(prefers-reduced-motion:reduce){.carousel-track,.carousel-viewport{scroll-behavior:auto!important}}
 
 
 /* LOREVERSE signature gold emblem */
@@ -1479,15 +1479,24 @@ const translations={en:{nav:["Games","Lore archive","About"],hero:"Discover the 
 document.getElementById("lang").addEventListener("change",e=>{let t=translations[e.target.value];if(!t){location.reload();return}document.querySelectorAll(".nav a").forEach((a,i)=>a.textContent=t.nav[i]);document.querySelector(".hero>div>p").textContent=t.hero;document.querySelector(".hero-buttons .primary").textContent=t.explore;document.querySelector(".hero-buttons .btn:not(.primary)").textContent=t.archive;document.querySelector("#worlds h2").textContent=t.worlds;search.placeholder=t.search;document.querySelector("#about .feature h3").textContent=t.about;document.querySelector("#about .feature:last-child h3").textContent=t.facts});
 render();
 
-document.querySelectorAll(".carousel-track").forEach((track,index)=>{
- const originals=Array.from(track.children);
- if(!originals.length)return;
- const viewport=document.createElement("div");
- viewport.className="carousel-viewport";
- track.parentNode.insertBefore(viewport,track);
- viewport.appendChild(track);
- originals.forEach(card=>{const clone=card.cloneNode(true);clone.setAttribute("aria-hidden","true");clone.tabIndex=-1;clone.querySelectorAll("a,button").forEach(el=>el.tabIndex=-1);track.appendChild(clone)});
- track.style.setProperty("--rail-duration",Math.max(28,originals.length*7)+"s");
+/* Initialize horizontal rails without cloning links or trapping touch scroll */
+document.querySelectorAll(".carousel-track").forEach(track=>{
+ let viewport=track.parentElement;
+ if(!viewport || !viewport.classList.contains("carousel-viewport")){
+  viewport=document.createElement("div");
+  viewport.className="carousel-viewport";
+  track.parentNode.insertBefore(viewport,track);
+  viewport.appendChild(track);
+ }
+ viewport.setAttribute("tabindex","0");
+ viewport.setAttribute("role","region");
+ viewport.setAttribute("aria-label",track.closest("#games")?"Тоглоомын ертөнцийн жагсаалт":"Хэвтээ гүйлгэх жагсаалт");
+ viewport.addEventListener("wheel",event=>{
+  if(Math.abs(event.deltaY)>Math.abs(event.deltaX) && viewport.scrollWidth>viewport.clientWidth){
+   viewport.scrollLeft+=event.deltaY;
+   event.preventDefault();
+  }
+ },{passive:false});
 });
 
 function updateLocalClock(){const d=new Date();document.getElementById("localClock").textContent=new Intl.DateTimeFormat("mn-MN",{timeZone:"Asia/Ulaanbaatar",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(d)}
