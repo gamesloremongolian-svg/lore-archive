@@ -643,7 +643,33 @@ async function loadLoreLeaderboard(){
 }
 $("dailyReward").onclick=async()=>{try{const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Өдрийн бонус авахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.");const {data,error}=await supabase.rpc("claim_daily_lore_reward");if(error)throw error;$("dailyRewardStatus").textContent=data.message||"Бонус шалгагдлаа.";await refreshGamification();}catch(e){$("dailyRewardStatus").textContent=e.message;}};
 supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=await supabase.auth.getUser();communityUser=user;await refreshGamification();await loadCoinStore();},0)});
-(async()=>{try{await ensureCommunityUser();$("chatStatus").textContent="Нэгдсэн чатад холбогдлоо.";await loadChatChannels();await selectChatChannel("global","# Global Chat");await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();await loadPublishedLore();await loadCommunityEvents();await loadAccountPanel();await loadMySupportTickets();await updatePresence();await loadOnlineCount();setInterval(async()=>{await updatePresence();await loadOnlineCount();},45000);}catch(e){$("chatStatus").textContent=e.message;$("dailyRewardStatus").textContent="Бонус авахын тулд бүртгэлтэй хэрэглэгч шаардлагатай.";}})();
+(async()=>{
+ const chatReady=(async()=>{
+  try{
+   await loadChatChannels();
+   await selectChatChannel("global","# Global Chat");
+   $("chatStatus").textContent="Чат унших боломжтой. Мессеж бичихийн тулд зочны эрх холбогдоно.";
+   return true;
+  }catch(e){
+   $("chatStatus").textContent="Чат ачаалж чадсангүй: "+(e?.message||"Тодорхойгүй алдаа");
+   const feed=$("chatFeed");
+   if(feed)feed.innerHTML='<div class="portal-note">Чат сервертэй холбогдож чадсангүй.</div><button type="button" id="retryChatInit" class="btn">Дахин оролдох</button>';
+   $("retryChatInit")?.addEventListener("click",()=>{loadChatChannels().then(()=>selectChatChannel("global","# Global Chat")).catch(err=>$("chatStatus").textContent=err.message);});
+   return false;
+  }
+ })();
+ // Public reading must not wait for anonymous authentication.
+ chatReady.then(async ready=>{
+  if(!ready)return;
+  try{await Promise.race([ensureCommunityUser(),new Promise((_,reject)=>setTimeout(()=>reject(new Error("Зочны нэвтрэлт удаж байна. Та чатыг уншиж болох ч мессеж бичихийн тулд дахин оролдоно уу.")),10000))]);}
+  catch(e){$("chatStatus").textContent="Чат унших боломжтой. Бичих эрх холбогдоогүй: "+e.message;}
+ });
+ try{
+  await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();await loadPublishedLore();await loadCommunityEvents();await loadAccountPanel();await loadMySupportTickets();
+  await updatePresence();await loadOnlineCount();
+  setInterval(async()=>{await updatePresence();await loadOnlineCount();},45000);
+ }catch(e){console.warn("LOREVERSE optional startup:",e);$("dailyRewardStatus").textContent="Зарим нэмэлт боломж түр ачаалж чадсангүй.";}
+})();
 
 /* Public unified archive reader */
 (()=>{
