@@ -211,6 +211,19 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
   <a class="media-card" href="#archive" style="background-image:url('https://i.pinimg.com/originals/73/e9/94/73e9941b6851b5b0664efde81010afda.png')"><small>MANGA · LORE</small><strong>Vagabond</strong><span>Самурайн замнал</span></a>
  </div>
 </section>
+<section class="section" id="premium">
+ <div class="section-head"><div><div class="eyebrow">LOREVERSE PREMIUM</div><h2>Гишүүнчлэл ба тусгай архив</h2><p>Нээлттэй нийтлэлүүд үнэгүй. Premium судалгаа, дэлгэрэнгүй lore-г гишүүнчлэлээр нээнэ.</p></div></div>
+ <div class="portal-grid">
+  <div class="portal-panel"><div class="eyebrow">MEMBER ACCESS</div><h3 id="memberHeading">Premium эрхээ нээх</h3><p id="memberStatus">Имэйлээр бүртгүүлж эсвэл нэвтэрч, гишүүнчлэлийн төлөвөө шалгана уу.</p>
+   <label for="memberEmail">Имэйл</label><input class="form-field" id="memberEmail" type="email" autocomplete="email" placeholder="name@example.com">
+   <label for="memberPassword">Нууц үг</label><input class="form-field" id="memberPassword" type="password" autocomplete="current-password" placeholder="Хамгийн багадаа 8 тэмдэгт">
+   <div class="portal-actions"><button class="btn primary" id="memberLogin" type="button">Нэвтрэх</button><button class="btn" id="memberSignup" type="button">Бүртгүүлэх</button><button class="btn" id="memberLogout" type="button" hidden>Гарах</button></div>
+   <p class="portal-note" id="memberAuthNote">Бүртгүүлсний дараа имэйл баталгаажуулалт шаардагдаж болно.</p>
+  </div>
+  <div class="portal-panel"><div class="eyebrow">MEMBERSHIP PLANS</div><h3>Premium багцууд</h3><div id="membershipPlans"><p>Багцын мэдээлэл ачаалж байна…</p></div><p class="portal-note">Багцын үнэ админ тохиргоогоор тогтоно. QPay V2 автомат төлбөр холбогдсоны дараа эндээс нэхэмжлэл үүсгэнэ.</p></div>
+ </div>
+ <div class="portal-panel" style="margin-top:16px"><div class="eyebrow">MEMBERS ONLY ARCHIVE</div><h3>Premium lore сан</h3><p>Таны эрхэд нийцсэн Premium нийтлэлүүд энд харагдана.</p><div id="premiumArticles" class="articles"><p class="portal-note">Нэвтэрсний дараа эрхтэй нийтлэлүүдийг шалгана.</p></div></div>
+</section>
 <section class="section portal-grid" id="payment">
  <div class="portal-panel"><div class="eyebrow">PAYMENT CENTER</div><h2>Төлбөр хийх</h2><p>Premium гишүүнчлэл болон нэмэлт үйлчилгээний төлбөрийг QPay V2 динамик нэхэмжлэлээр хүлээн авах хэсэг.</p><div class="portal-actions"><button class="btn primary" type="button" disabled>QPay төлбөр удахгүй</button></div><p class="portal-note">Таны хэвлэмэл QR код ажиллаж байгаа. Харин автомат төлбөр баталгаажуулалт, Premium эрх идэвхжүүлэлт одоогоор холбогдоогүй тул энэ товчийг түр идэвхгүй байлгав.</p></div>
  </section>
@@ -240,7 +253,19 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
 <section class="section feature-row" id="about"><div class="feature"><div class="eyebrow">OUR MISSION</div><h3>Нэг платформ. Олон ертөнц.</h3><p>Тоглоом, анимэ сонирхогчдод зориулсан lore, дүр, түүх, судалгааны нэгдсэн сан бүтээнэ.</p></div><div class="feature"><div class="eyebrow">EDITORIAL STANDARD</div><h3>Баримт ба таамгийг ялгана.</h3><p>Албан ёсны өгүүлэмж, тоглоом доторх эшлэл, баталгаажаагүй онолыг тусад нь тэмдэглэж, эх сурвалжийг ил тод дурдана.</p></div></section>
 </main><footer class="wrap footer"><span>© 2026 LOREVERSE</span><span>Фэнүүдийн бүтээсэн, албан бус мэдлэгийн платформ.</span></footer>
 <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="dialog"><div class="dialogtop"><div><div class="eyebrow" id="modalGame"></div><h2 id="modalTitle"></h2></div><button class="close" id="close" aria-label="Close">✕</button></div><p id="modalBody"></p><div class="note">Эх сурвалжийг нийтлэхийн өмнө редакцаар нягтална.</div></div></div>
-<script>
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
+const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
+const $=id=>document.getElementById(id);
+const memberMsg=t=>{$("memberStatus").textContent=t;};
+async function loadMembershipPlans(){const {data,error}=await supabase.from("membership_plans").select("plan_code,name,description,duration_days,price_amount,currency,enabled").eq("enabled",true).order("duration_days");$("membershipPlans").innerHTML=error?("<p>"+error.message+"</p>"):(data||[]).map(p=>'<div class="list" style="padding:12px 0;border-bottom:1px solid #624477"><b>'+p.name+'</b><p>'+p.description+'</p><strong>'+(p.price_amount===null?"Үнэ тохируулагдаж байна":Number(p.price_amount).toLocaleString("mn-MN")+" "+p.currency)+'</strong></div>').join("")||"<p>Одоогоор идэвхтэй багц алга.</p>";}
+async function loadPremiumArticles(){const {data,error}=await supabase.from("content_posts").select("id,title,summary,content_type,language_code,published_at").eq("status","published").eq("is_premium",true).order("published_at",{ascending:false}).limit(30);const el=$("premiumArticles");if(error){el.textContent="Premium архивыг ачаалж чадсангүй: "+error.message;return;}el.innerHTML=(data||[]).map(p=>'<article class="article"><div class="tag">'+p.content_type.toUpperCase()+' · PREMIUM</div><h3>'+String(p.title).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))+'</h3><p>'+String(p.summary||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))+'</p><span class="portal-note">Premium гишүүний архив</span></article>').join("")||'<p class="portal-note">Одоогоор таны эрхэд харагдах Premium нийтлэл алга.</p>';}
+async function refreshMember(){const {data:{user}}=await supabase.auth.getUser();$("memberLogout").hidden=!user;if(!user){$("memberHeading").textContent="Premium эрхээ нээх";memberMsg("Нэвтрээгүй байна. Premium нийтлэлд нэвтрэхийн тулд бүртгүүлнэ үү.");$("premiumArticles").innerHTML='<p class="portal-note">Premium архивыг харахын тулд нэвтэрнэ үү.</p>';return;}$("memberHeading").textContent=user.email||"Гишүүн";const {data,error}=await supabase.from("memberships").select("plan_code,status,starts_at,ends_at").eq("user_id",user.id).eq("status","active").gt("ends_at",new Date().toISOString()).order("ends_at",{ascending:false}).limit(1).maybeSingle();memberMsg(error?"Гишүүнчлэлийн төлөв шалгахад алдаа гарлаа.":data?"Premium идэвхтэй · "+data.plan_code+" · "+new Date(data.ends_at).toLocaleDateString("mn-MN")+" хүртэл":"Үнэгүй хэрэглэгч · Premium багц сонгон эрхээ нээнэ үү.");await loadPremiumArticles();}
+$("memberLogin").onclick=async()=>{const {error}=await supabase.auth.signInWithPassword({email:$("memberEmail").value.trim(),password:$("memberPassword").value});memberMsg(error?error.message:"Нэвтэрлээ.");if(!error)await refreshMember();};
+$("memberSignup").onclick=async()=>{const {data,error}=await supabase.auth.signUp({email:$("memberEmail").value.trim(),password:$("memberPassword").value});memberMsg(error?error.message:(data.session?"Бүртгэл амжилттай.":"Баталгаажуулах имэйл ирсэн эсэхийг шалгана уу."));if(data.session)await refreshMember();};
+$("memberLogout").onclick=async()=>{await supabase.auth.signOut();await refreshMember();};
+supabase.auth.onAuthStateChange(()=>{setTimeout(refreshMember,0);});
+loadMembershipPlans();refreshMember();
 const entries=[
 {game:"Genshin Impact",tag:"WORLD LORE",title:"Тейватын ертөнц ба долоон үндэстэн",desc:"Тейватын газарзүй, Архонууд болон үндэстэн бүрийн онцлог.",body:"Энэ сэдвээр Тейватын долоон үндэстэн, элементүүд, Архонтын тогтолцоо болон түүхэн холбоог албан ёсны тоглоомын мэдээлэлд тулгуурлан ангилж судална."},
 {game:"Wuthering Waves",tag:"WORLD LORE",title:"Solaris-3 ба Lament-ийн дараах ертөнц",desc:"Lament-ийн дараах нийгэм, Resonator-уудын тухай.",body:"Solaris-3-ийн бүс нутаг, Resonator болон Tacet Discord-той холбоотой өгүүлэмжийг цаг хугацаа, эх сурвалжаар ангилан судлах сэдэв."},
