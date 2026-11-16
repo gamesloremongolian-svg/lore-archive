@@ -250,10 +250,26 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
  .rank-stat b{font-size:clamp(18px,5vw,23px)}
 }
 
+
+/* All-universes knowledge hub — top-level entry */
+.knowledge-hub{margin:8px 0 64px;padding:clamp(22px,4vw,42px);border:1px solid #81569a;border-radius:26px;background:radial-gradient(ellipse at 90% 0%,#a65bdb30,transparent 38%),linear-gradient(135deg,#211532f2,#11182bf5);box-shadow:0 24px 70px #0005;scroll-margin-top:22px}
+.knowledge-hub-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:22px}
+.knowledge-hub-head h2{font-size:clamp(25px,3vw,36px);line-height:1.12;margin:8px 0}
+.knowledge-hub-head p{max-width:650px;color:#d0c3df;margin:0;font-size:13px}
+.knowledge-hub-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.knowledge-hub-card{min-height:120px;display:flex;flex-direction:column;justify-content:space-between;padding:17px;border:1px solid #624477;border-radius:16px;background:#100b1ebd;transition:.2s}
+.knowledge-hub-card:hover{transform:translateY(-3px);border-color:#ff9bd8;background:#251638}
+.knowledge-hub-card strong{font-size:16px}
+.knowledge-hub-card span{font-size:11px;color:#cbbbd9}
+.knowledge-hub-card em{font-style:normal;color:#8deaff;font-size:10px;font-weight:800}
+.knowledge-hub-footer{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:18px}
+@media(max-width:700px){.knowledge-hub-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.knowledge-hub-head{align-items:start;flex-direction:column}}
+@media(max-width:420px){.knowledge-hub-grid{grid-template-columns:1fr}.knowledge-hub-card{min-height:96px}}
+
 </style></style>
 </head>
 <body>
-<header class="wrap topbar"><a class="brand" href="#"><span class="mark">✦</span> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх">☰</button><nav class="nav" id="mainNav"><a href="#all-categories">Ангилал</a><a href="#anime">Анимэ</a><a href="#games">Тоглоом</a><a href="#all-categories">Манга</a><a href="archive/">Novel</a><a href="archive/">Lore Archive</a><a href="#community">Community</a></nav><div class="actions"><button class="ghost" id="profileOpen" type="button">Миний профайл</button><button class="ghost" id="notificationsOpen" type="button" aria-label="Мэдэгдэл">🔔 <span id="notificationCount">0</span></button><select class="select" id="lang" aria-label="Language"><option value="mn">MN</option><option value="en">EN</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div></header>
+<header class="wrap topbar"><a class="brand" href="#"><span class="mark">✦</span> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх">☰</button><nav class="nav" id="mainNav"><a href="#all-universes">Бүх ертөнцийн мэдлэг</a><a href="#all-categories">Ангилал</a><a href="#anime">Анимэ</a><a href="#games">Тоглоом</a><a href="#all-categories">Манга</a><a href="archive/">Novel</a><a href="archive/">Lore Archive</a><a href="#community">Community</a></nav><div class="actions"><button class="ghost" id="profileOpen" type="button">Миний профайл</button><button class="ghost" id="notificationsOpen" type="button" aria-label="Мэдэгдэл">🔔 <span id="notificationCount">0</span></button><select class="select" id="lang" aria-label="Language"><option value="mn">MN</option><option value="en">EN</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div></header>
 <div class="wrap" id="accountTools" hidden>
  <section class="portal-panel" style="margin-top:14px">
   <div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><div><div class="eyebrow">NOTIFICATION CENTER</div><h3 style="margin:4px 0">Мэдэгдэл</h3></div><button class="btn" id="notificationsClose" type="button">Хаах</button></div>
@@ -304,6 +320,20 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
 </svg>
 <div class="visual-label">LOREVERSE · EVERY UNIVERSE HAS A STORY</div>
 </div></section>
+
+<section class="knowledge-hub" id="all-universes">
+ <div class="knowledge-hub-head"><div><div class="eyebrow">THE KNOWLEDGE OF ALL UNIVERSES</div><h2>Бүх ертөнцийн мэдлэг</h2><p>Тоглоом, анимэ, манга, роман болон зохиомол ертөнц бүрийн түүх, дүр, газар нутаг, онол, судалгааг нэг нэгдсэн архиваас нээ.</p></div><a class="btn primary" href="#publishedLore">Нэгдсэн мэдлэгийн сан руу ↗</a></div>
+ <div class="knowledge-hub-grid">
+  <a class="knowledge-hub-card" href="#games"><strong>Тоглоомын ертөнц</strong><span>Genshin, Wuthering Waves, ANANTA болон бусад</span><em>GAME WORLDS ↗</em></a>
+  <a class="knowledge-hub-card" href="#anime"><strong>Анимэ</strong><span>Цуврал, дүрүүд, үйл явдал, ертөнцийн түүх</span><em>ANIME ARCHIVE ↗</em></a>
+  <a class="knowledge-hub-card" href="#all-categories"><strong>Манга</strong><span>Манга, бүлэг, дүр, зохиолын судалгаа</span><em>MANGA ARCHIVE ↗</em></a>
+  <a class="knowledge-hub-card" href="archive/"><strong>Light Novel</strong><span>Роман, зохиолын ертөнц ба дүрүүд</span><em>LIGHT NOVEL ↗</em></a>
+  <a class="knowledge-hub-card" href="archive/"><strong>Web Novel</strong><span>Вэб роман, цуврал өгүүлэмж, lore</span><em>WEB NOVEL ↗</em></a>
+  <a class="knowledge-hub-card" href="#publishedLore"><strong>Universe Archive</strong><span>Нэгдсэн хайлт, эх сурвалжтай Lore судалгаа</span><em>EXPLORE ARCHIVE ↗</em></a>
+ </div>
+ <div class="knowledge-hub-footer"><span class="portal-note">Нэг платформ. Олон ертөнц. Хязгааргүй мэдлэг.</span><a class="btn" href="#publishedLore">Бүх мэдээллийг хайх</a></div>
+</section>
+
 <section class="stats"><div class="stat"><strong>07</strong><span>Эхний тоглоомын ертөнц</span></div><div class="stat"><strong>01</strong><span>Нэгдсэн lore архив</span></div><div class="stat"><strong>04</strong><span>Интерфэйсийн хэл</span></div></section>
 <section class="section" id="anime">
  <div class="section-head"><div><div class="eyebrow">ANIME COLLECTION</div><h2>Анимэ ертөнц</h2><p>Онцлох анимэ болон тэдгээрийн түүхийн сан.</p></div></div>
