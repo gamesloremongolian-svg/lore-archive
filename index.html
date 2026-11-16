@@ -651,7 +651,7 @@ let activeSupportTicket=null;
 const ticketCategoryName={account:"Аккаунт",payment:"Төлбөр",premium:"Premium",technical:"Техникийн алдаа",community:"Community",other:"Бусад"};
 async function loadMySupportTickets(){
  const {data:{user}}=await supabase.auth.getUser(),el=$("myTicketsList");
- if(!user){el.innerHTML='<p class="portal-note">Хүсэлт илгээж, хариугаа харахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.</p>';return;}
+ if(!user||user.is_anonymous){el.innerHTML='<p class="portal-note">Хүсэлт илгээж, хариугаа харахын тулд имэйлээр бүртгүүлж нэвтэрнэ үү.</p>';return;}
  const {data,error}=await supabase.from("support_tickets").select("id,ticket_number,category,subject,status,created_at,updated_at,last_reply_at").eq("user_id",user.id).order("updated_at",{ascending:false}).limit(30);
  if(error){el.textContent=error.message;return;}
  el.innerHTML=(data||[]).map(t=>'<article class="chat-message"><div class="tag">#'+t.ticket_number+' · '+safeText(ticketCategoryName[t.category]||t.category)+' · '+safeText(t.status)+'</div><b>'+safeText(t.subject)+'</b><p class="portal-note">'+new Date(t.updated_at).toLocaleString("mn-MN")+'</p><button class="btn" type="button" data-open-ticket="'+t.id+'">Хүсэлт харах / хариулах</button></article>').join("")||'<p class="portal-note">Та одоогоор хүсэлт илгээгээгүй байна.</p>';
@@ -663,7 +663,7 @@ async function openSupportTicket(id){
  const panel=$("ticketThread");panel.hidden=false;
  if(error){panel.textContent=error.message;return;}
  activeSupportTicket=t.id;
- const {data:replies,rerr}=await supabase.from("support_ticket_replies").select("id,sender_id,message,attachment_url,is_staff,created_at").eq("ticket_id",t.id).order("created_at");
+ const {data:replies,error:rerr}=await supabase.from("support_ticket_replies").select("id,sender_id,message,attachment_url,is_staff,created_at").eq("ticket_id",t.id).order("created_at");
  if(rerr){panel.textContent=rerr.message;return;}
  panel.innerHTML='<div class="eyebrow">SUPPORT REQUEST #'+t.ticket_number+'</div><h3>'+safeText(t.subject)+'</h3><p class="portal-note">'+safeText(ticketCategoryName[t.category]||t.category)+' · '+safeText(t.status)+'</p><div class="chat-message"><b>Таны анхны хүсэлт</b><p>'+safeText(t.initial_message)+'</p>'+(t.attachment_url?'<a href="'+safeText(t.attachment_url)+'" target="_blank" rel="noopener">Хавсралт нээх</a>':'')+'</div>'+(replies||[]).map(r=>'<div class="chat-message"><b>'+(r.is_staff?'LOREVERSE Support':'Та')+'</b><p>'+safeText(r.message)+'</p>'+(r.attachment_url?'<a href="'+safeText(r.attachment_url)+'" target="_blank" rel="noopener">Хавсралт нээх</a>':'')+'<small class="portal-note">'+new Date(r.created_at).toLocaleString("mn-MN")+'</small></div>').join("")+(["resolved","closed"].includes(t.status)?'<p class="portal-note">Энэ хүсэлт хаагдсан байна. Шинэ асуудал гарвал шинэ хүсэлт үүсгэнэ үү.</p>':'<form id="ticketReplyForm"><label for="ticketReplyMessage">Хариу бичих</label><textarea class="form-field" id="ticketReplyMessage" minlength="1" maxlength="5000" required rows="3"></textarea><button class="btn primary" type="submit">Хариу илгээх</button><span id="ticketReplyStatus" class="portal-note"></span></form>');
  const form=$("ticketReplyForm");if(form)form.onsubmit=async e=>{e.preventDefault();try{const {data:{user}}=await supabase.auth.getUser();const message=$("ticketReplyMessage").value.trim();const {error}=await supabase.from("support_ticket_replies").insert({ticket_id:t.id,sender_id:user.id,message,is_staff:false});if(error)throw error;await openSupportTicket(t.id);await loadMySupportTickets();}catch(err){$("ticketReplyStatus").textContent=err.message;}};
@@ -671,7 +671,7 @@ async function openSupportTicket(id){
 }
 $("supportTicketForm").addEventListener("submit",async e=>{
  e.preventDefault();
- try{const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Хүсэлт илгээхийн тулд эхлээд бүртгүүлж нэвтэрнэ үү.");
+ try{const {data:{user}}=await supabase.auth.getUser();if(!user||user.is_anonymous)throw new Error("Хүсэлт илгээхийн тулд имэйлээр бүртгүүлж нэвтэрнэ үү.");
  const attachment=$("ticketAttachment").value.trim()||null;if(attachment&&!/^https:\/\//i.test(attachment))throw new Error("Хавсралтын холбоос HTTPS байх ёстой.");
  const {data,error}=await supabase.from("support_tickets").insert({user_id:user.id,category:$("ticketCategory").value,subject:$("ticketSubject").value.trim(),initial_message:$("ticketMessage").value.trim(),attachment_url:attachment}).select("id,ticket_number").single();
  if(error)throw error;$("ticketCreateStatus").textContent="Хүсэлт #"+data.ticket_number+" амжилттай илгээгдлээ.";
