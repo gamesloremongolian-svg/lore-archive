@@ -215,7 +215,7 @@ function walk(root){
 function apply(lang){
  active=["mn","en","ja","ko"].includes(lang)?lang:"mn";
  document.documentElement.lang=active;
- document.title=active==="mn"?"LOREVERSE — Every Universe Has a Story":active==="en"?"LOREVERSE — Every Universe Has a Story":active==="ja"?"LOREVERSE — すべての世界に物語がある":"LOREVERSE — 모든 세계에는 이야기가 있습니다";
+ // Preserve each page's own descriptive document title.
  walk(document.body);
  document.querySelectorAll("#lang option,#publicArchiveLang option,#siteLang option").forEach(o=>{o.textContent=langNames[o.value]||o.textContent;});
  document.querySelectorAll("#lang,#publicArchiveLang,#siteLang").forEach(sel=>{if(sel.value!==active)sel.value=active;});
