@@ -1955,27 +1955,43 @@ $("supportTicketForm").addEventListener("submit",async e=>{
 $("reloadMyTickets").onclick=loadMySupportTickets;
 
 
-/* LOREVERSE AI chat */
+/* LOREVERSE AI chat — resilient auth and actionable errors */
 const loreAiPanel=$("loreAiPanel"),loreAiMessages=$("loreAiMessages"),loreAiQuestion=$("loreAiQuestion");
 function loreAiMessage(text,who){const node=document.createElement("div");node.className="lore-ai-msg "+who;node.textContent=text;loreAiMessages.appendChild(node);loreAiMessages.scrollTop=loreAiMessages.scrollHeight;return node;}
 $("loreAiLauncher").onclick=()=>loreAiPanel.classList.add("open");
 $("loreAiClose").onclick=()=>loreAiPanel.classList.remove("open");
+async function loreAiErrorText(error){
+ const ctx=error?.context;
+ if(ctx&&typeof ctx.clone==="function"){
+  try{const payload=await ctx.clone().json();if(payload?.error)return payload.error;}catch(_){}
+  try{const body=await ctx.clone().text();if(body)return body.slice(0,500);}catch(_){}
+ }
+ return error?.message||"LORE AI үйлчилгээтэй холбогдож чадсангүй. Дахин оролдоно уу.";
+}
 $("loreAiForm").addEventListener("submit",async e=>{
  e.preventDefault();const question=loreAiQuestion.value.trim();if(!question)return;
- const {data:{user}}=await supabase.auth.getUser();
- if(!user||user.is_anonymous){loreAiMessage("LORE AI ашиглахын тулд эхлээд имэйлээр бүртгүүлж нэвтэрнэ үү.","bot");return;}
+ const send=$("loreAiSend");if(send.disabled)return;
+ send.disabled=true;
  loreAiMessage(question,"user");loreAiQuestion.value="";
- const pending=loreAiMessage("Хариулт боловсруулж байна…","bot");
- $("loreAiSend").disabled=true;
+ const pending=loreAiMessage("Нэвтрэлт болон AI холболтыг шалгаж байна…","bot");
  try{
+  const {data:sessionData,error:sessionError}=await supabase.auth.getUser();
+  if(sessionError)throw new Error("Нэвтрэлтийг шалгаж чадсангүй. Хуудсаа дахин ачаалаад нэвтэрнэ үү.");
+  const user=sessionData?.user;
+  if(!user||user.is_anonymous){
+   pending.textContent="LORE AI ашиглахын тулд имэйлээр бүртгүүлж, нэвтэрсэн байх шаардлагатай. Нэвтэрсний дараа дахин асуултаа илгээнэ үү.";
+   return;
+  }
+  pending.textContent="Хариулт боловсруулж байна…";
   const {data,error}=await supabase.functions.invoke("lore-ai",{body:{question}});
-  if(error)throw error;
+  if(error)throw new Error(await loreAiErrorText(error));
   if(data?.error)throw new Error(data.error);
-  pending.textContent=data.answer||"Хариулт ирсэнгүй.";
+  if(!data?.answer)throw new Error("AI хариу буцаасангүй. Түр хүлээгээд дахин оролдоно уу.");
+  pending.textContent=data.answer;
   $("loreAiMeta").textContent="Өнөөдөр үлдсэн асуулт: "+data.remaining+" · Өдөрт 10 асуулт";
  }catch(err){
-  pending.textContent=err.message||"AI туслахтай холбогдож чадсангүй. Дахин оролдоно уу.";
- }finally{$("loreAiSend").disabled=false;loreAiQuestion.focus();}
+  pending.textContent=err.message||"LORE AI туслахтай холбогдож чадсангүй. Дахин оролдоно уу.";
+ }finally{send.disabled=false;loreAiQuestion.focus();}
 });
 
 
