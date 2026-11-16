@@ -514,8 +514,17 @@ function renderChatMessages(){
  feed.scrollTop=feed.scrollHeight;
 }
 async function loadChatMessages(){
- const {data,error}=await supabase.from("chat_messages").select("id,user_id,display_name,body,created_at,reply_to,is_pinned").eq("channel_id",activeChatChannel).is("deleted_at",null).order("created_at",{ascending:false}).limit(80);
- if(error){$("chatFeed").textContent=error.message;return;}
+ const feed=$("chatFeed");
+ feed.textContent="Мессежүүдийг татаж байна…";
+ let result;
+ try{
+  result=await Promise.race([
+   supabase.from("chat_messages").select("id,user_id,display_name,body,created_at,reply_to,is_pinned").eq("channel_id",activeChatChannel).is("deleted_at",null).order("created_at",{ascending:false}).limit(80),
+   new Promise((_,reject)=>setTimeout(()=>reject(new Error("Чатын сервер 12 секундэд хариу өгсөнгүй. Дахин оролдоно уу.")),12000))
+  ]);
+ }catch(err){feed.innerHTML='<div class="portal-note">'+safeText(err.message)+'</div><button type="button" id="retryChatLoad" class="btn">Дахин ачаалах</button>'; $("retryChatLoad").onclick=loadChatMessages;return;}
+ const {data,error}=result;
+ if(error){feed.innerHTML='<div class="portal-note">'+safeText(error.message)+'</div><button type="button" id="retryChatLoad" class="btn">Дахин ачаалах</button>'; $("retryChatLoad").onclick=loadChatMessages;return;}
  chatRows=(data||[]).reverse();
  const memberIds=[...new Set(chatRows.map(m=>m.user_id))];
  if(memberIds.length){const {data:cards}=await supabase.from("chat_public_profiles").select("id,display_name,avatar_url,total_xp").in("id",memberIds);const map=Object.fromEntries((cards||[]).map(x=>[x.id,x]));chatRows.forEach(m=>{m.member=map[m.user_id]||null;});}
@@ -571,6 +580,13 @@ supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=aw
 (async()=>{try{await ensureCommunityUser();$("chatStatus").textContent="Нэгдсэн чатад холбогдлоо.";await loadChatChannels();await selectChatChannel("global","# Global Chat");await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();await loadPublishedLore();await loadCommunityEvents();await loadAccountPanel();await loadMySupportTickets();await updatePresence();await loadOnlineCount();setInterval(async()=>{await updatePresence();await loadOnlineCount();},45000);}catch(e){$("chatStatus").textContent=e.message;$("dailyRewardStatus").textContent="Бонус авахын тулд бүртгэлтэй хэрэглэгч шаардлагатай.";}})();
 </script>
 
+<button id="loreAiLauncher" type="button" aria-label="LORE AI туслах нээх">✦ LORE AI</button>
+<section id="loreAiPanel" role="dialog" aria-label="LOREVERSE AI туслах">
+ <header id="loreAiHead"><div><b>✦ LOREVERSE AI</b><div style="font-size:11px;opacity:.8">Монгол хэл дээрх Lore судлаач</div></div><button id="loreAiClose" type="button" aria-label="Хаах">×</button></header>
+ <div id="loreAiMessages" aria-live="polite"><div class="lore-ai-msg bot">Сайн байна уу! Би LOREVERSE-ийн AI туслах. Тоглоом, дүр, ертөнцийн lore-ийн талаар асуугаарай. Хариултаа нийтлэгдсэн LOREVERSE мэдээллийн сантай тулгана.</div></div>
+ <div id="loreAiMeta">Нэвтэрсэн хэрэглэгчид өдөрт 10 асуулт · API хэрэглээ төлбөртэй</div>
+ <form id="loreAiForm"><textarea id="loreAiQuestion" rows="2" maxlength="1800" placeholder="Lore-ийн талаар асуугаарай..." required></textarea><button id="loreAiSend" type="submit">Илгээх</button></form>
+</section>
 <script>
 (()=>{const b=document.getElementById('navToggle'),n=document.getElementById('mainNav');if(!b||!n)return;b.addEventListener('click',()=>{const open=n.classList.toggle('open');b.setAttribute('aria-expanded',String(open));b.textContent=open?'✕':'☰';});n.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{n.classList.remove('open');b.setAttribute('aria-expanded','false');b.textContent='☰';}));})();
 
@@ -723,11 +739,5 @@ $("loreAiForm").addEventListener("submit",async e=>{
 
 </script>
 
-<button id="loreAiLauncher" type="button" aria-label="LORE AI туслах нээх">✦ LORE AI</button>
-<section id="loreAiPanel" role="dialog" aria-label="LOREVERSE AI туслах">
- <header id="loreAiHead"><div><b>✦ LOREVERSE AI</b><div style="font-size:11px;opacity:.8">Монгол хэл дээрх Lore судлаач</div></div><button id="loreAiClose" type="button" aria-label="Хаах">×</button></header>
- <div id="loreAiMessages" aria-live="polite"><div class="lore-ai-msg bot">Сайн байна уу! Би LOREVERSE-ийн AI туслах. Тоглоом, дүр, ертөнцийн lore-ийн талаар асуугаарай. Хариултаа нийтлэгдсэн LOREVERSE мэдээллийн сантай тулгана.</div></div>
- <div id="loreAiMeta">Нэвтэрсэн хэрэглэгчид өдөрт 10 асуулт · API хэрэглээ төлбөртэй</div>
- <form id="loreAiForm"><textarea id="loreAiQuestion" rows="2" maxlength="1800" placeholder="Lore-ийн талаар асуугаарай..." required></textarea><button id="loreAiSend" type="submit">Илгээх</button></form>
-</section>
+
 </body></html>
