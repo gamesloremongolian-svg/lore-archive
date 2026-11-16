@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080914"><title>LOREVERSE · AI Editorial</title>
+<style>
+:root{color-scheme:dark;--bg:#080914;--panel:#13162b;--line:#2a2e4b;--muted:#a6a8c0;--text:#f5f3ff;--violet:#9d76ff;--cyan:#69e4ef}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#39225e,transparent 48%),var(--bg);color:var(--text);font:15px/1.6 system-ui,sans-serif}.wrap{width:min(1050px,calc(100% - 28px));margin:30px auto}.brand{font-weight:950;letter-spacing:.13em;color:var(--text);text-decoration:none}.brand span{color:#b18aff}.panel{margin-top:18px;background:#13162beF;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 18px 70px #0004}.eyebrow{font-size:10px;letter-spacing:.22em;color:var(--cyan);font-weight:800}.title{font-size:30px;line-height:1.2;margin:8px 0 12px}label{display:block;color:var(--muted);font-size:12px;margin:10px 0 5px}input,select,textarea{width:100%;background:#090c1b;border:1px solid var(--line);border-radius:10px;color:var(--text);padding:12px;margin:0;font:inherit}textarea{min-height:110px;resize:vertical}button,.btn{border:0;border-radius:10px;background:linear-gradient(110deg,#8d58f5,#566fe8);color:white;font-weight:800;padding:11px 16px;cursor:pointer;text-decoration:none;display:inline-block}button.secondary,.btn.secondary{background:#292d49;border:1px solid #42486b}button:disabled{opacity:.45;cursor:not-allowed}.muted{color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.full{grid-column:1/-1}.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.row>*{flex:0 0 auto}.status{padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin:12px 0;color:var(--muted);white-space:pre-wrap}.hidden{display:none!important}.draft{border:1px solid var(--line);border-radius:13px;padding:14px;margin:12px 0;background:#0c1020}.draft h3{margin:0 0 5px}.pill{display:inline-block;padding:3px 8px;border-radius:99px;background:#292d49;color:#d9d1ff;font-size:11px;margin-right:5px}.warning{color:#f4c778}.draft textarea{min-height:170px}.draft .body{min-height:300px}.right{margin-left:auto}@media(max-width:650px){.grid{grid-template-columns:1fr}.panel{padding:16px}.title{font-size:25px}}
+</style></head><body><main class="wrap">
+<p class="row"><a class="brand" href="../index.html">✦ LORE<span>VERSE</span></a><span class="right"></span><a class="btn secondary" href="../admin/">Админ самбар</a></p>
+<section class="panel" id="authPanel"><div class="eyebrow">SECURE EDITORIAL WORKSPACE</div><h1 class="title">AI редактор</h1><p class="muted">Зөвхөн идэвхтэй owner, admin, editor эрхтэй багийн гишүүд ашиглана.</p>
+<div class="grid"><div><label>Имэйл</label><input id="email" type="email" autocomplete="username"></div><div><label>Нууц үг</label><input id="password" type="password" autocomplete="current-password"></div></div>
+<div class="row" style="margin-top:12px"><button id="login">Нэвтрэх</button><button id="logout" class="secondary hidden">Гарах</button></div><div id="authMsg" class="status">Нэвтэрч редакцын эрхээ баталгаажуулна уу.</div></section>
+
+<section class="panel hidden" id="workspace"><div class="eyebrow">AI-ASSISTED DRAFTING</div><h1 class="title">Шинэ lore ноорог үүсгэх</h1><p class="muted">AI зөвхөн ноорог үүсгэнэ. Автоматаар нийтлэхгүй. Эх сурвалжийг редактор өөрөө шалгана.</p>
+<div class="grid">
+<div><label>Сэдэв *</label><input id="topic" maxlength="180" placeholder="Жишээ: Chaos хэрхэн үүссэн бэ?"></div>
+<div><label>Ертөнц / бүтээл</label><input id="universe" placeholder="ANANTA, Genshin Impact..."></div>
+<div><label>Нийтлэлийн төрөл</label><select id="type"><option value="lore">Lore судалгаа</option><option value="game">Тоглоом</option><option value="anime">Анимэ</option><option value="manga">Манга</option><option value="guide">Гарын авлага</option><option value="news">Мэдээ</option></select></div>
+<div><label>Редакторын чиглэл</label><input id="notes" placeholder="Хамрах хүрээ, өнцөг, урт..."></div>
+<div class="full"><label>Эх сурвалжийн HTTPS холбоосууд (мөр бүрт нэг)</label><textarea id="sources" placeholder="https://..."></textarea><p class="muted">Эх сурвалж өгөөгүй бол AI баталгаагүй хэсгийг тэмдэглэнэ. Хуурамч URL зохиохгүй.</p></div>
+</div><div class="row"><button id="generate">AI ноорог үүсгэх</button><span id="genState" class="muted"></span></div>
+<div id="editor" class="hidden"><div class="status warning" id="warnings"></div><div class="grid">
+<div class="full"><label>Гарчиг</label><input id="draftTitle"></div>
+<div><label>Slug</label><input id="draftSlug"></div><div><label>Canon төлөв</label><select id="canon"><option value="unknown">Тодорхойгүй</option><option value="canon">Canon</option><option value="non_canon">Non-canon</option><option value="theory">Онол / таамаг</option></select></div>
+<div class="full"><label>Товч агуулга</label><textarea id="draftSummary"></textarea></div>
+<div class="full"><label>Нийтлэлийн үндсэн агуулга (Markdown)</label><textarea id="draftBody" class="body"></textarea></div>
+</div><div class="row" style="margin-top:12px"><button id="saveDraft">Ноорог хадгалах</button><button id="discard" class="secondary">Цэвэрлэх</button><span id="saveMsg" class="muted"></span></div></div>
+</section>
+<section class="panel hidden" id="queue"><div class="row"><div><div class="eyebrow">EDITORIAL REVIEW QUEUE</div><h2 style="margin:4px 0">Ноорог ба хяналт</h2></div><button id="refresh" class="secondary right">Шинэчлэх</button></div><p class="muted">Editor нооргийг хяналтад илгээнэ. Owner/Admin шалгасны дараа нийтэлнэ.</p><div id="draftList" class="status">Ачаалж байна…</div></section>
+</main>
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
+const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
+const $=id=>document.getElementById(id);
+let user=null,role=null,currentDraft=null,savedId=null;
+const say=(id,msg)=>$(id).textContent=msg;
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+async function enter(){
+ const {data:{user:u}}=await supabase.auth.getUser();if(!u)return;
+ const {data:staff,error}=await supabase.from("staff_members").select("role,active").eq("user_id",u.id).maybeSingle();
+ if(error||!staff?.active||!["owner","admin","editor"].includes(staff.role)){say("authMsg","Энэ бүртгэлд AI редакцын эрх олгогдоогүй байна.");return;}
+ user=u;role=staff.role;$("workspace").classList.remove("hidden");$("queue").classList.remove("hidden");$("logout").classList.remove("hidden");say("authMsg",u.email+" · "+role+" эрхээр нэвтэрлээ.");await loadDrafts();
+}
+$("login").onclick=async()=>{const {error}=await supabase.auth.signInWithPassword({email:$("email").value,password:$("password").value});if(error){say("authMsg",error.message);return;}await enter();};
+$("logout").onclick=async()=>{await supabase.auth.signOut();location.reload();};
+supabase.auth.onAuthStateChange((_event,session)=>{if(session?.user&&!user)setTimeout(enter,0);});
+async function generate(){
+ const topic=$("topic").value.trim();if(topic.length<3){say("genState","Сэдвээ 3-аас дээш тэмдэгтээр оруулна уу.");return;}
+ const {data:{session}}=await supabase.auth.getSession();if(!session){say("genState","Дахин нэвтэрнэ үү.");return;}
+ $("generate").disabled=true;say("genState","AI ноорог боловсруулж байна…");
+ const sourceList=$("sources").value.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+ if(sourceList.some(x=>!x.startsWith("https://"))){say("genState","Эх сурвалж бүр HTTPS холбоос байх ёстой.");$("generate").disabled=false;return;}
+ try{
+  const res=await fetch("https://nfacspfctvunwbxtvvyi.supabase.co/functions/v1/editorial-ai-draft",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":"sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1"},body:JSON.stringify({topic,universe:$("universe").value,content_type:$("type").value,notes:$("notes").value,sources:sourceList})});
+  const out=await res.json();if(!res.ok)throw new Error(out.error||"AI хүсэлт амжилтгүй.");
+  currentDraft={...out.draft,source_urls:out.source_urls,topic,universe:$("universe").value,content_type:$("type").value};savedId=null;
+  $("draftTitle").value=currentDraft.title;$("draftSlug").value=currentDraft.slug;$("draftSummary").value=currentDraft.summary;$("draftBody").value=currentDraft.body;$("canon").value=currentDraft.canon_status;
+  $("warnings").textContent=(out.draft.editorial_warnings||[]).join("\n")||"AI-ийн анхааруулга алга. Гэхдээ бүх баримт, эх сурвалжийг редактор шалгах ёстой.";
+  $("editor").classList.remove("hidden");say("genState","Ноорог бэлэн. Одоо шалгаад хадгална уу.");
+ }catch(e){say("genState",e.message||"Алдаа гарлаа.");}
+ finally{$("generate").disabled=false;}
+}
+$("generate").onclick=generate;
+$("discard").onclick=()=>{$("editor").classList.add("hidden");currentDraft=null;savedId=null;};
+async function saveDraft(){
+ if(!currentDraft){say("saveMsg","Эхлээд AI ноорог үүсгэнэ үү.");return;}
+ const row={topic:currentDraft.topic,universe:currentDraft.universe,content_type:currentDraft.content_type,title:$("draftTitle").value.trim(),slug:$("draftSlug").value.trim(),summary:$("draftSummary").value.trim(),body:$("draftBody").value,source_urls:currentDraft.source_urls,canon_status:$("canon").value,status:"draft",created_by:user.id};
+ if(!row.title||!row.slug||row.body.length<100){say("saveMsg","Гарчиг, slug болон агуулгаа шалгана уу.");return;}
+ let result;
+ if(savedId)result=await supabase.from("ai_editorial_drafts").update({...row,updated_at:new Date().toISOString()}).eq("id",savedId).select("id").single();
+ else result=await supabase.from("ai_editorial_drafts").insert(row).select("id").single();
+ if(result.error){say("saveMsg","Хадгалж чадсангүй: "+result.error.message);return;}
+ savedId=result.data.id;currentDraft={...currentDraft,...row};say("saveMsg","Ноорог хадгалагдлаа · "+savedId);await loadDrafts();
+}
+$("saveDraft").onclick=saveDraft;
+async function loadDrafts(){
+ const {data,error}=await supabase.from("ai_editorial_drafts").select("id,title,topic,universe,content_type,canon_status,status,source_urls,created_at,created_by,published_post_id").order("created_at",{ascending:false}).limit(50);
+ if(error){say("draftList","Уншихад алдаа: "+error.message);return;}
+ if(!data?.length){$("draftList").textContent="Одоогоор ноорог алга.";return;}
+ $("draftList").innerHTML=data.map(d=>'<article class="draft"><h3>'+esc(d.title)+'</h3><span class="pill">'+esc(d.status)+'</span><span class="pill">'+esc(d.canon_status)+'</span><p class="muted">'+esc(d.topic)+' · '+esc(d.universe)+' · '+new Date(d.created_at).toLocaleString("mn-MN")+'</p><p class="muted">Эх сурвалж: '+(Array.isArray(d.source_urls)?d.source_urls.length:0)+'</p><div class="row"><button class="secondary" data-open="'+d.id+'">Нээх / засах</button>'+(d.status==="draft"?'<button data-review="'+d.id+'">Хяналтад илгээх</button>':"")+(["owner","admin"].includes(role)&&d.status==="review"&&!d.published_post_id?'<button data-publish="'+d.id+'">Шалгаж нийтлэх</button>':"")+'</div></article>').join("");
+ document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openDraft(b.dataset.open));
+ document.querySelectorAll("[data-review]").forEach(b=>b.onclick=()=>markReview(b.dataset.review));
+ document.querySelectorAll("[data-publish]").forEach(b=>b.onclick=()=>publishDraft(b.dataset.publish));
+}
+async function openDraft(id){
+ const {data,error}=await supabase.from("ai_editorial_drafts").select("*").eq("id",id).single();if(error){alert(error.message);return;}
+ savedId=data.id;currentDraft={topic:data.topic,universe:data.universe,content_type:data.content_type,source_urls:data.source_urls||[]};
+ $("topic").value=data.topic;$("universe").value=data.universe;$("type").value=data.content_type;$("draftTitle").value=data.title;$("draftSlug").value=data.slug;$("draftSummary").value=data.summary;$("draftBody").value=data.body;$("canon").value=data.canon_status;$("editor").classList.remove("hidden");$("workspace").scrollIntoView({behavior:"smooth"});
+}
+async function markReview(id){
+ const {error}=await supabase.from("ai_editorial_drafts").update({status:"review",updated_at:new Date().toISOString()}).eq("id",id);
+ if(error){alert("Хяналтад илгээж чадсангүй: "+error.message);return;}await loadDrafts();
+}
+async function publishDraft(id){
+ if(!["owner","admin"].includes(role)){alert("Нийтлэх эрх зөвхөн Owner/Admin-д байна.");return;}
+ const {data:d,error}=await supabase.from("ai_editorial_drafts").select("*").eq("id",id).single();if(error){alert(error.message);return;}
+ if(d.status!=="review"||d.published_post_id){alert("Зөвхөн хяналтад байгаа, өмнө нийтлэгдээгүй нооргийг нийтэлнэ.");return;}
+ if(!confirm("Энэ нийтлэлийг LOREVERSE-д нийтлэх үү? Эх сурвалж, canon тэмдэглэгээг шалгасан байх ёстой."))return;
+ const {data:post,error:postError}=await supabase.from("content_posts").insert({content_type:d.content_type,title:d.title,slug:d.slug,summary:d.summary,body:{text:d.body},language_code:"mn",status:"published",author_id:d.created_by,published_at:new Date().toISOString(),game_title:d.universe||null,source_urls:d.source_urls||[]}).select("id").single();
+ if(postError){alert("Нийтэлж чадсангүй: "+postError.message);return;}
+ const {error:updateError}=await supabase.from("ai_editorial_drafts").update({status:"approved",reviewed_by:user.id,published_post_id:post.id,updated_at:new Date().toISOString()}).eq("id",id);
+ if(updateError){alert("Нийтлэл үүслээ, гэхдээ нооргийн төлөв шинэчлэгдсэнгүй. Admin-аар шалгуулна уу. Post ID: "+post.id);return;}
+ alert("Нийтлэл амжилттай нийтлэгдлээ.");await loadDrafts();
+}
+$("refresh").onclick=loadDrafts;
+</script></body></html>
