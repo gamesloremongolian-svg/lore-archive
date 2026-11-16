@@ -599,6 +599,8 @@ function applySiteLanguage(code){
 }
 languageSelect.addEventListener("change",e=>applySiteLanguage(e.target.value));
 try{applySiteLanguage(localStorage.getItem("loreverse_language")||"mn")}catch(_){applySiteLanguage("mn")}
+const languageObserver=new MutationObserver(()=>applySiteLanguage(languageSelect.value));
+languageObserver.observe(document.body,{childList:true,subtree:true});
 
 render();
 
