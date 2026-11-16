@@ -1099,6 +1099,9 @@ adForm.addEventListener("submit",async ev=>{
  const status=$("adFormStatus"),button=$("adSubmit");status.textContent="";
  const {data:{user}}=await supabase.auth.getUser();
  if(!user||user.is_anonymous){status.textContent="Эхлээд Premium хэсэгт бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.";return;}
+ const required=["adAdvertiser","adEmail","adTitle","adDescription","adImage","adTarget"];
+ if(required.some(id=>!$(id).value.trim())){status.textContent="Бүх шаардлагатай талбарыг бөглөнө үү.";return;}
+ if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test($("adEmail").value.trim())){status.textContent="Имэйл хаягаа зөв оруулна уу.";return;}
  const imageUrl=$("adImage").value.trim(),targetUrl=$("adTarget").value.trim();
  const validHttps=v=>{try{return new URL(v).protocol==="https:";}catch{return false;}};
  if(!validHttps(imageUrl)||!validHttps(targetUrl)){status.textContent="Зургийн болон очих холбоос https:// байх ёстой.";return;}
