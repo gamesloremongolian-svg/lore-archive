@@ -27,6 +27,50 @@
 .world:hover{transform:translateY(-4px);border-color:#8e70e8}.code{display:inline-grid;place-items:center;width:39px;height:39px;border-radius:12px;background:#8d5cff26;color:#c5aaff;font-weight:900;font-size:12px}.world h3{font-size:15px;margin:13px 0 3px}.world p{font-size:11px;color:var(--muted);margin:0}.world a{display:inline-block;margin-top:12px;color:var(--cyan);font-size:11px;font-weight:800}.archive{padding:23px;border:1px solid var(--line);border-radius:24px;background:#101324d9}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:19px 0 14px}.search{flex:1;min-width:200px;padding:12px 14px;background:#090b17;border:1px solid var(--line);border-radius:12px;color:var(--text);outline:none}.search:focus{border-color:var(--violet)}.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.chip{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:8px 13px;font-size:11px;cursor:pointer}.chip.active,.chip:hover{color:#d8c6ff;border-color:#9b70ff;background:#9b70ff1b}.articles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.article{padding:18px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,#1a1c35,#111424);min-height:190px;display:flex;flex-direction:column}.tag{font-size:9px;letter-spacing:.15em;color:var(--cyan);font-weight:900}.article h3{font-size:16px;line-height:1.35;margin:10px 0 7px}.article p{font-size:12px;color:var(--muted);margin:0 0 16px}.article button{margin-top:auto;align-self:flex-start;border:0;background:none;padding:0;color:#c6aaff;font-weight:800;font-size:11px;cursor:pointer}.empty{display:none;padding:30px;text-align:center;color:var(--muted)}.feature-row{display:grid;grid-template-columns:1fr 1fr;gap:15px}.feature{padding:25px;border:1px solid var(--line);border-radius:20px;background:#121529}.feature h3{margin:8px 0}.feature p{margin:0;color:var(--muted);font-size:13px}.footer{border-top:1px solid #ffffff15;padding:28px 0 42px;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;color:var(--muted);font-size:11px}.modal{display:none;position:fixed;inset:0;background:#050611dd;z-index:10;padding:20px;place-items:center}.modal.open{display:grid}.dialog{width:min(620px,100%);max-height:85vh;overflow:auto;padding:25px;border:1px solid #514777;border-radius:20px;background:#15172c;box-shadow:0 25px 90px #000b}.dialogtop{display:flex;justify-content:space-between;gap:15px}.dialog h2{margin:8px 0}.dialog p{color:#c0c1d4}.close{border:1px solid var(--line);background:transparent;color:var(--text);border-radius:9px;width:36px;height:36px;cursor:pointer}.note{font-size:10px;color:#898ba8;margin-top:20px}
 @media(max-width:850px){.hero{grid-template-columns:1fr;padding-top:58px}.visual{height:280px}.worlds{grid-template-columns:repeat(2,1fr)}.nav{gap:14px}.articles{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.wrap{width:calc(100% - 28px)}.topbar{height:64px}.brand{font-size:14px}.nav{display:none}.hero{padding:55px 0 40px}.hero h1{font-size:46px}.hero p{font-size:14px}.visual{height:220px}.ring{width:165px;height:165px}.core{font-size:65px}.stats{gap:7px;margin-bottom:55px}.stat{padding:12px}.stat strong{font-size:20px}.stat span{font-size:10px}.worlds{gap:9px}.world{padding:14px;min-height:155px}.world h3{font-size:13px}.articles{grid-template-columns:1fr}.archive{padding:13px}.section-head{align-items:start;flex-direction:column}.section-head h2{font-size:25px}.feature-row{grid-template-columns:1fr}}
+
+/* Anime Premium refresh — November 2026 */
+:root{--bg:#090817;--panel:#17132a;--panel2:#21183a;--line:#49345f;--text:#fff8ff;--muted:#c0b4d2;--violet:#c07bff;--cyan:#75e7ff;--pink:#ff8bcf;--gold:#ffd58d;--radius:24px}
+body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),radial-gradient(ellipse at 88% 22%,#174b7066 0,transparent 34%),linear-gradient(180deg,#0b0818,#100b20 52%,#090817);color:var(--text)}
+.topbar{border-bottom-color:#f4caff20}
+.mark{background:linear-gradient(140deg,#ff8bcf,#a66bff 55%,#69e6ff);box-shadow:0 0 28px #b76cff55}
+.nav a:hover{color:#ff9bd8}
+.select,.ghost{background:#1a1230;border-color:#624477}
+.hero{padding-top:76px;padding-bottom:60px}
+.eyebrow{color:#83eaff}
+.hero h1{letter-spacing:-.045em;text-shadow:0 5px 35px #b45aff20}
+.gradient{background:linear-gradient(100deg,#ff9ed8 0%,#c39aff 48%,#80eaff 100%);color:transparent;background-clip:text}
+.hero p{color:#d0c3df}
+.btn{border-color:#624477;background:linear-gradient(145deg,#211633,#151027);box-shadow:0 8px 25px #0004}
+.btn.primary{background:linear-gradient(110deg,#e76fbc,#9862f4 58%,#4cb9df);box-shadow:0 12px 35px #b45aff44}
+.visual{background:radial-gradient(circle at 30% 24%,#ff9bd866,transparent 31%),radial-gradient(circle at 72% 72%,#5fdff266,transparent 34%),linear-gradient(145deg,#39204e,#211636 55%,#123349);border-color:#f2c8ff44;box-shadow:0 30px 90px #b34bdf22}
+.ring{border-color:#ffc0edaa;box-shadow:0 0 85px #db73ff35,inset 0 0 55px #67e4ef22}
+.ring:before{border-color:#8deeffaa}.ring:after{border-color:#ff9ed8aa}
+.core{color:#fff0ff;text-shadow:0 0 30px #e58bff,0 0 65px #7feaff}
+.float{background:#160e28cc;border-color:#ffffff42;color:#fff1ff}
+.stats .stat{background:linear-gradient(145deg,#211633cc,#12172acc);border-color:#644776}
+.stat strong{color:#ff9bd8}
+.section-head h2{letter-spacing:-.025em}
+.world{border-color:#694a79;box-shadow:0 12px 35px #0004}
+.world:before{filter:saturate(1.18) contrast(1.04)}
+.world:after{background:linear-gradient(180deg,#08091400 0%,#11091d22 34%,#090817ed 100%)}
+.world:hover{border-color:#ff9bd8;box-shadow:0 16px 42px #d45bff25}
+.world .code{background:linear-gradient(135deg,#e66fb8dd,#7654cddd);border-color:#ffffff55;color:white}
+.world h3{font-size:19px;margin:12px 0 3px;color:#fff}
+.world p{font-size:12px;color:#f0dff5}
+.world a{color:#8deaff}
+.archive{background:linear-gradient(145deg,#1a1230ed,#11182be8);border-color:#624477;box-shadow:0 25px 70px #0004}
+.search{background:#100b1e;border-color:#563c6d}
+.search:focus{border-color:#ff8bcf}
+.chip{border-color:#563c6d;color:#d2c2df}
+.chip.active,.chip:hover{color:#fff0fb;border-color:#ff8bcf;background:#ff8bcf20}
+.article{background:linear-gradient(145deg,#28193b,#14172a);border-color:#59406d}
+.article:hover{border-color:#d98bff;transform:translateY(-3px)}
+.tag{color:#85eaff}
+.article button{color:#ffabe0}
+.feature{background:linear-gradient(145deg,#211633,#12182a);border-color:#604571}
+.footer{border-top-color:#f4caff24}
+@media(max-width:560px){.hero{padding-top:48px}.visual{border-radius:23px}.world h3{font-size:14px}.world p{font-size:10px}}
+
 </style>
 </head>
 <body>
