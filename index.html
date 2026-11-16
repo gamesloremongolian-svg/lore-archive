@@ -339,6 +339,20 @@ section[id]{scroll-margin-top:92px}
  <div class="portal-actions"><button class="btn" id="catalogMore" type="button">Дараагийн үр дүн</button></div>
 </section>
 
+
+<section class="section archive" id="publicArchive">
+ <div class="section-head"><div><div class="eyebrow">UNIFIED DATABASE · SUPABASE</div><h2>Нэгдсэн Lore Archive</h2><p>Редакторын баталж нийтэлсэн франчайз, бүтээл, олон хэлний мэдээлэл.</p></div></div>
+ <div class="toolbar">
+  <input class="search" id="publicArchiveSearch" type="search" placeholder="Ертөнц, бүтээлийн нэрээр хайх...">
+  <select class="select" id="publicArchiveLang" aria-label="Хэл"><option value="mn">Монгол</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option></select>
+ </div>
+ <div class="filters" id="publicArchiveFilters">
+  <button class="chip active" data-archive-category="all">Бүгд</button><button class="chip" data-archive-category="game">Game</button><button class="chip" data-archive-category="anime">Anime</button><button class="chip" data-archive-category="manga">Manga</button><button class="chip" data-archive-category="light_novel">Light Novel</button><button class="chip" data-archive-category="web_novel">Web Novel</button><button class="chip" data-archive-category="mixed">Universe</button>
+ </div>
+ <div class="muted" id="publicArchiveStatus" role="status">Нийтлэгдсэн архивын мэдээлэл ачаалж байна...</div>
+ <div class="articles" id="publicArchiveResults"></div>
+</section>
+
 <section class="section archive" id="archive"><div class="section-head"><div><div class="eyebrow">LORE DATABASE</div><h2>Lore архив</h2><p>Нийтлэл, дүр, ертөнцийн мэдээллийг хайж үзээрэй.</p></div></div><div class="toolbar"><input id="search" class="search" type="search" placeholder="Нийтлэл, дүр, сэдэв хайх..."><select id="sort" class="select"><option value="new">Шинэ нь эхэнд</option><option value="az">Нэрээр A–Z</option></select></div><div class="filters" id="filters"><button class="chip active" data-game="all">Бүгд</button><button class="chip" data-game="Genshin Impact">Genshin</button><button class="chip" data-game="Wuthering Waves">Wuthering Waves</button><button class="chip" data-game="ANANTA">ANANTA</button><button class="chip" data-game="Honkai: Star Rail">Honkai: Star Rail</button><button class="chip" data-game="Zenless Zone Zero">Zenless Zone Zero</button><button class="chip" data-game="Arknights">Arknights</button><button class="chip" data-game="Blue Archive">Blue Archive</button></div><div class="articles" id="articles"></div><div class="empty" id="empty">Тохирох нийтлэл олдсонгүй.</div><p class="note">Тайлбар: Эхний нийтлэлүүд нь архивын танилцуулга контент. Албан ёсны эх сурвалжаар нягталсан судалгааг редакцын шалгалтын дараа нийтэлнэ.</p></section>
 
 
@@ -630,6 +644,71 @@ async function loadLoreLeaderboard(){
 $("dailyReward").onclick=async()=>{try{const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Өдрийн бонус авахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.");const {data,error}=await supabase.rpc("claim_daily_lore_reward");if(error)throw error;$("dailyRewardStatus").textContent=data.message||"Бонус шалгагдлаа.";await refreshGamification();}catch(e){$("dailyRewardStatus").textContent=e.message;}};
 supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=await supabase.auth.getUser();communityUser=user;await refreshGamification();await loadCoinStore();},0)});
 (async()=>{try{await ensureCommunityUser();$("chatStatus").textContent="Нэгдсэн чатад холбогдлоо.";await loadChatChannels();await selectChatChannel("global","# Global Chat");await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();await loadPublishedLore();await loadCommunityEvents();await loadAccountPanel();await loadMySupportTickets();await updatePresence();await loadOnlineCount();setInterval(async()=>{await updatePresence();await loadOnlineCount();},45000);}catch(e){$("chatStatus").textContent=e.message;$("dailyRewardStatus").textContent="Бонус авахын тулд бүртгэлтэй хэрэглэгч шаардлагатай.";}})();
+
+/* Public unified archive reader */
+(()=>{
+ const root=document.getElementById("publicArchive");
+ if(!root)return;
+ const searchInput=document.getElementById("publicArchiveSearch");
+ const languageInput=document.getElementById("publicArchiveLang");
+ const filters=document.getElementById("publicArchiveFilters");
+ const results=document.getElementById("publicArchiveResults");
+ const status=document.getElementById("publicArchiveStatus");
+ const escapeHTML=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+ let records=[],category="all",timer=null;
+ const labels={game:"GAME",anime:"ANIME",manga:"MANGA",light_novel:"LIGHT NOVEL",web_novel:"WEB NOVEL",mixed:"UNIVERSE"};
+ function render(){
+  const term=searchInput.value.trim().toLocaleLowerCase();
+  const lang=languageInput.value;
+  const filtered=records.filter(item=>{
+   if(category!=="all"&&item.category!==category)return false;
+   const hay=[item.name,item.description,...item.works.flatMap(w=>[w.canonical_title,w.translation?.title,w.translation?.synopsis])].join(" ").toLocaleLowerCase();
+   return !term||hay.includes(term);
+  });
+  if(!filtered.length){results.innerHTML='<div class="empty">Энэ хэл болон ангилалд нийтлэгдсэн мэдээлэл одоогоор алга.</div>';return;}
+  results.innerHTML=filtered.map(item=>{
+   const works=item.works.map(w=>{
+    const tr=w.translation;
+    const title=tr?.title||w.canonical_title;
+    const synopsis=tr?.synopsis||"";
+    return '<div class="list" style="padding:12px 0;border-top:1px solid var(--line,#554466)"><strong>'+escapeHTML(title)+'</strong><span class="code">'+escapeHTML(w.work_type.toUpperCase().replaceAll("_"," "))+'</span>'+(synopsis?'<p>'+escapeHTML(synopsis)+'</p>':'')+(tr?'<small>'+escapeHTML(tr.canon_status.toUpperCase().replaceAll("_"," "))+' · SPOILER: '+escapeHTML(tr.spoiler_level)+'</small>':'<small>Энэ хэлний орчуулга хараахан нийтлэгдээгүй.</small>')+'</div>';
+   }).join("");
+   return '<article class="article-card" style="padding:18px;margin:14px 0;border:1px solid var(--line,#554466);border-radius:14px">'+(item.cover_image_url?'<img src="'+escapeHTML(item.cover_image_url)+'" alt="" loading="lazy" style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-bottom:12px">':'')+'<div class="eyebrow">'+escapeHTML(labels[item.category]||item.category)+'</div><h3>'+escapeHTML(item.name)+'</h3>'+(item.description?'<p>'+escapeHTML(item.description)+'</p>':'')+works+'</article>';
+  }).join("");
+ }
+ async function load(){
+  status.textContent="Архивын мэдээлэл ачаалж байна...";
+  const {data:franchises,error}=await supabase.from("archive_franchises").select("id,name,category,description,cover_image_url").eq("status","published").order("name").limit(150);
+  if(error){status.textContent="Архив ачаалж чадсангүй. Дараа дахин оролдоно уу.";console.error("Public archive:",error.message);return;}
+  const ids=(franchises||[]).map(x=>x.id);
+  if(!ids.length){records=[];status.textContent="Одоогоор нийтлэгдсэн франчайз алга. Редакторын баг шинэ мэдээлэл нийтэлсний дараа энд харагдана.";render();return;}
+  const {data:works,error:workError}=await supabase.from("archive_works").select("id,franchise_id,canonical_title,work_type").in("franchise_id",ids).eq("status","published").order("canonical_title").limit(500);
+  if(workError){status.textContent="Бүтээлийн мэдээлэл уншихад алдаа гарлаа.";console.error("Archive works:",workError.message);return;}
+  const workIds=(works||[]).map(x=>x.id);
+  let translations=[];
+  if(workIds.length){
+   const {data,error:translationError}=await supabase.from("archive_work_translations").select("work_id,language_code,title,synopsis,canon_status,spoiler_level").in("work_id",workIds).eq("editorial_status","published").eq("language_code",languageInput.value).limit(1000);
+   if(translationError){status.textContent="Орчуулгын мэдээлэл уншихад алдаа гарлаа.";console.error("Archive translations:",translationError.message);return;}
+   translations=translations||data||[];
+  }
+  const byWork=new Map(translations.map(x=>[x.work_id,x]));
+  records=(franchises||[]).map(f=>({...f,works:(works||[]).filter(w=>w.franchise_id===f.id).map(w=>({...w,translation:byWork.get(w.id)||null}))}));
+  const count=records.reduce((n,x)=>n+x.works.length,0);
+  status.textContent=records.length+" франчайз · "+count+" нийтлэгдсэн бүтээл";
+  render();
+ }
+ filters.addEventListener("click",e=>{
+  const button=e.target.closest("[data-archive-category]");
+  if(!button)return;
+  category=button.dataset.archiveCategory;
+  filters.querySelectorAll("[data-archive-category]").forEach(x=>x.classList.toggle("active",x===button));
+  render();
+ });
+ searchInput.addEventListener("input",render);
+ languageInput.addEventListener("change",load);
+ load();
+})();
+
 </script>
 
 <button id="loreAiLauncher" type="button" aria-label="LORE AI туслах нээх">✦ LORE AI</button>
