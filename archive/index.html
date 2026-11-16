@@ -25,6 +25,8 @@ h1{font-size:clamp(34px,5vw,58px);line-height:1.08;letter-spacing:-.04em;margin:
 .empty{padding:28px;color:var(--muted);text-align:center}.footer{padding:24px 0 36px;border-top:1px solid #f4caff24;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 @media(max-width:760px){.articles{grid-template-columns:1fr}.hero{padding:42px 0 24px}.archive{border-radius:18px}.search{min-width:100%}.toolbar .select{flex:1}}
 @media(max-width:420px){.wrap{width:calc(100% - 24px)}header{height:66px}.brand{font-size:14px}.back{font-size:12px;padding:8px 10px}.chip{font-size:11px;padding:8px 11px}}
+
+.lore-posts{margin-top:28px}.lore-toolbar{align-items:center}.lore-toolbar .search{min-width:230px}.lore-post-count{color:var(--muted);font-size:12px;margin:0 0 16px}.lore-post-card{min-width:0;padding:19px;border:1px solid #59406d;border-radius:18px;background:linear-gradient(145deg,#28193b,#14172a);display:flex;flex-direction:column;gap:8px;overflow-wrap:anywhere}.lore-post-card img{width:100%;height:180px;object-fit:cover;border-radius:12px}.lore-post-card h3{font-size:18px;line-height:1.35;margin:2px 0}.lore-post-card p{font-size:13px;color:#d0c3df;margin:0}.lore-post-card .post-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:9px}.lore-post-card button{border:1px solid #624477;border-radius:10px;padding:8px 11px;background:#211633;color:#fff;cursor:pointer;font-size:12px}.lore-post-card button.primary{background:linear-gradient(110deg,#e76fbc,#9862f4 58%,#4cb9df);border:0}.bookmark-filter input{accent-color:#c07bff;margin-right:6px}.lore-post-body{white-space:pre-wrap;line-height:1.8;color:#eee}.lore-post-body img{max-width:100%}.lore-post-body p{margin:0 0 12px}.lore-post-sources a{color:#8deaff}.lore-post-card .post-meta{font-size:10px;color:#9ceaff;letter-spacing:.04em}@media(max-width:760px){.lore-toolbar .select{flex:1;min-width:140px}.lore-toolbar .search{min-width:100%}}
 </style></head>
 <body><header class="wrap"><a class="brand" href="../"><span>✦</span> LOREVERSE</a><a class="back" href="../">← Үндсэн нүүр</a></header>
 <main class="wrap"><section class="hero"><div class="eyebrow">UNIFIED DATABASE · SUPABASE</div><h1>Нэгдсэн Lore Archive</h1><p>Тоглоом, анимэ, манга, зохиолын ертөнц, бүтээл, дүр, тэдгээрийн холбоо болон timeline мэдээллийг нэг дороос хайж судлаарай.</p></section>
@@ -40,7 +42,31 @@ h1{font-size:clamp(34px,5vw,58px);line-height:1.08;letter-spacing:-.04em;margin:
  <div class="muted" id="publicArchiveStatus" role="status">Нийтлэгдсэн архивын мэдээлэл ачаалж байна...</div>
  <div class="articles" id="publicArchiveResults"></div>
 </section>
+<section class="archive lore-posts" id="lore-posts">
+ <div class="section-head"><div><div class="eyebrow">EDITORIAL LORE LIBRARY</div><h2>Нийтлэгдсэн Lore архив</h2><p>LOREVERSE редакцын баталж нийтэлсэн lore судалгаа, тоглоомын мэдээлэл, анимэ, манга, мэдээ болон гарын авлага.</p></div></div>
+ <div class="toolbar lore-toolbar">
+  <input id="lorePostSearch" class="search" type="search" placeholder="Гарчиг, дүр, тоглоом, агуулгаар хайх...">
+  <select id="lorePostType" class="select" aria-label="Нийтлэлийн төрөл"><option value="all">Бүх төрөл</option><option value="lore">Lore судалгаа</option><option value="game">Тоглоом</option><option value="anime">Анимэ</option><option value="manga">Манга</option><option value="news">Мэдээ</option><option value="guide">Гарын авлага</option></select>
+  <select id="lorePostGame" class="select" aria-label="Ертөнц"><option value="all">Бүх ертөнц</option><option>Genshin Impact</option><option>Wuthering Waves</option><option>ANANTA</option><option>Honkai: Star Rail</option><option>Zenless Zone Zero</option><option>Arknights</option><option>Blue Archive</option><option>Бусад</option></select>
+  <select id="lorePostLanguage" class="select" aria-label="Нийтлэлийн хэл"><option value="all">Бүх хэл</option><option value="mn">Монгол</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option></select>
+  <label class="chip bookmark-filter"><input id="loreBookmarksOnly" type="checkbox"> Зөвхөн хадгалсан</label>
+ </div>
+ <div class="lore-post-count" id="lorePostCount" role="status">Нийтлэл ачаалж байна…</div>
+ <div id="lorePublishedPosts" class="articles"><p class="status">Нийтлэл ачаалж байна…</p></div>
+ <div id="lorePublishedStatus" class="status" aria-live="polite"></div>
+</section>
+
 </main><footer class="wrap footer"><span>© 2026 LOREVERSE · Фэнүүдийн бүтээсэн, албан бус мэдлэгийн платформ.</span><a href="../">LOREVERSE үндсэн нүүр</a></footer>
+<div class="modal" id="lorePostModal" role="dialog" aria-modal="true"><div class="dialog"><div class="dialogtop"><div><div class="eyebrow" id="lorePostModalMeta"></div><h2 id="lorePostModalTitle"></h2></div><button class="close" id="lorePostModalClose" type="button" aria-label="Хаах">✕</button></div><div id="lorePostModalBody" class="lore-post-body"></div><div id="lorePostModalSources"></div></div></div>
+<div class="modal" id="loreFeedbackModal" role="dialog" aria-modal="true"><div class="dialog">
+ <div class="dialogtop"><div><div class="eyebrow">EDITORIAL FEEDBACK</div><h2>Нийтлэлд санал өгөх</h2></div><button class="close" id="loreFeedbackClose" type="button">✕</button></div>
+ <form id="loreFeedbackForm"><input id="loreFeedbackPostId" type="hidden">
+ <label for="loreFeedbackType">Саналын төрөл</label><select class="form-field" id="loreFeedbackType"><option value="correction">Алдаа засвар</option><option value="source">Эх сурвалж санал болгох</option><option value="question">Асуулт</option><option value="other">Бусад</option></select>
+ <label for="loreFeedbackMessage">Тайлбар</label><textarea class="form-field" id="loreFeedbackMessage" required minlength="5" maxlength="3000" rows="5" placeholder="Ямар хэсгийг шалгах шаардлагатай вэ?"></textarea>
+ <label for="loreFeedbackSource">Эх сурвалжийн холбоос (заавал биш)</label><input class="form-field" id="loreFeedbackSource" type="url" placeholder="https://...">
+ <button class="btn primary" type="submit">Санал илгээх</button><div id="loreFeedbackStatus" class="portal-note"></div></form>
+ </div></div>
+
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
 const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
@@ -132,4 +158,35 @@ const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publi
 })();
 
 
+
+/* Published Lore posts integrated into Unified Archive */
+(()=>{
+ const root=document.getElementById("lore-posts");if(!root)return;
+ const $id=id=>document.getElementById(id),escapeHTML=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ let posts=[],bookmarks=new Set();
+ const list=$id("lorePublishedPosts"),status=$id("lorePublishedStatus");
+ async function load(){
+  $id("lorePostCount").textContent="Нийтлэл ачаалж байна…";
+  const {data,error}=await supabase.from("content_posts").select("id,title,summary,body,content_type,language_code,published_at,slug,game_title,character_name,source_urls,cover_image_url").eq("status","published").order("published_at",{ascending:false}).limit(200);
+  if(error){status.textContent="Lore нийтлэл ачаалж чадсангүй: "+error.message;$id("lorePostCount").textContent="Ачааллын алдаа";return;}
+  posts=data||[];
+  const {data:{user}}=await supabase.auth.getUser();
+  if(user){const {data:marks,error:markError}=await supabase.from("article_bookmarks").select("post_id").eq("user_id",user.id);if(!markError)bookmarks=new Set((marks||[]).map(x=>x.post_id));}
+  render();
+ }
+ function render(){
+  const q=$id("lorePostSearch").value.trim().toLocaleLowerCase(),type=$id("lorePostType").value,game=$id("lorePostGame").value,lang=$id("lorePostLanguage").value,only=$id("loreBookmarksOnly").checked;
+  const rows=posts.filter(p=>(!only||bookmarks.has(p.id))&&(type==="all"||p.content_type===type)&&(game==="all"||p.game_title===game)&&(lang==="all"||p.language_code===lang)&&[p.title,p.summary,p.content_type,p.language_code,p.game_title,p.character_name].join(" ").toLocaleLowerCase().includes(q));
+  $id("lorePostCount").textContent=rows.length+" нийтлэл · Нийт "+posts.length;
+  list.innerHTML=rows.map(p=>'<article class="lore-post-card">'+(p.cover_image_url?'<img src="'+escapeHTML(p.cover_image_url)+'" alt="" loading="lazy">':'')+'<div class="post-meta">'+escapeHTML(p.game_title||"Ерөнхий")+" · "+escapeHTML(p.content_type)+" · "+escapeHTML(p.language_code)+'</div><h3>'+escapeHTML(p.title)+'</h3><p>'+escapeHTML(p.summary||"Товч тайлбар оруулаагүй.")+'</p><div class="post-actions"><button class="primary" type="button" data-lore-read="'+escapeHTML(p.id)+'">Унших</button><button type="button" data-lore-bookmark="'+escapeHTML(p.id)+'">'+(bookmarks.has(p.id)?"★ Хадгалсан":"☆ Хадгалах")+'</button><button type="button" data-lore-feedback="'+escapeHTML(p.id)+'">Санал өгөх</button></div></article>').join("")||'<div class="empty">Тохирох нийтлэл олдсонгүй.</div>';
+  list.querySelectorAll("[data-lore-read]").forEach(b=>b.addEventListener("click",()=>{const p=posts.find(x=>x.id===b.dataset.loreRead);if(!p)return;$id("lorePostModalMeta").textContent=[p.game_title||"Ерөнхий",p.content_type,p.language_code].join(" · ");$id("lorePostModalTitle").textContent=p.title;const body=p.body&&typeof p.body==="object"?(p.body.text||JSON.stringify(p.body,null,2)):String(p.body||"");$id("lorePostModalBody").textContent=body;const sources=Array.isArray(p.source_urls)?p.source_urls:[];$id("lorePostModalSources").innerHTML=sources.length?'<h3>Эх сурвалж</h3>'+sources.map((u,i)=>/^https:\/\//i.test(u)?'<p><a href="'+escapeHTML(u)+'" target="_blank" rel="noopener noreferrer">Эх сурвалж '+(i+1)+' ↗</a></p>':"").join(""):"";$id("lorePostModal").classList.add("open");}));
+  list.querySelectorAll("[data-lore-bookmark]").forEach(b=>b.addEventListener("click",async()=>{try{const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Нийтлэл хадгалахын тулд эхлээд нэвтэрнэ үү.");const id=b.dataset.loreBookmark;if(bookmarks.has(id)){const {error}=await supabase.from("article_bookmarks").delete().eq("post_id",id).eq("user_id",user.id);if(error)throw error;bookmarks.delete(id);}else{const {error}=await supabase.from("article_bookmarks").insert({post_id:id,user_id:user.id});if(error)throw error;bookmarks.add(id);}render();}catch(e){status.textContent=e.message||"Хадгалахад алдаа гарлаа.";}}));
+  list.querySelectorAll("[data-lore-feedback]").forEach(b=>b.addEventListener("click",()=>{$id("loreFeedbackPostId").value=b.dataset.loreFeedback;$id("loreFeedbackStatus").textContent="";$id("loreFeedbackModal").classList.add("open");}));
+ }
+ ["lorePostSearch","lorePostType","lorePostGame","lorePostLanguage","loreBookmarksOnly"].forEach(id=>$id(id).addEventListener(id==="lorePostSearch"?"input":"change",render));
+ $id("lorePostModalClose").onclick=()=>$id("lorePostModal").classList.remove("open");$id("lorePostModal").addEventListener("click",e=>{if(e.target.id==="lorePostModal")$id("lorePostModal").classList.remove("open");});
+ $id("loreFeedbackClose").onclick=()=>$id("loreFeedbackModal").classList.remove("open");$id("loreFeedbackModal").addEventListener("click",e=>{if(e.target.id==="loreFeedbackModal")$id("loreFeedbackModal").classList.remove("open");});
+ $id("loreFeedbackForm").addEventListener("submit",async e=>{e.preventDefault();try{const {data:{user}}=await supabase.auth.getUser(),source=$id("loreFeedbackSource").value.trim()||null;if(source&&!/^https:\/\//i.test(source))throw new Error("Эх сурвалжийн холбоос HTTPS байх ёстой.");const {error}=await supabase.from("article_feedback").insert({post_id:$id("loreFeedbackPostId").value,user_id:user?.id||null,feedback_type:$id("loreFeedbackType").value,message:$id("loreFeedbackMessage").value.trim(),source_url:source});if(error)throw error;$id("loreFeedbackStatus").textContent="Санал редакцад илгээгдлээ. Баярлалаа.";$id("loreFeedbackForm").reset();}catch(err){$id("loreFeedbackStatus").textContent=err.message||"Санал илгээхэд алдаа гарлаа.";}});
+ load();
+})();
 </script></body></html>
