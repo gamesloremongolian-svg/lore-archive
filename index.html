@@ -327,6 +327,13 @@ section[id]{scroll-margin-top:92px}
  <button class="btn primary" type="submit">Санал илгээх</button><div id="feedbackStatus" class="portal-note"></div></form>
  </div></div>
 
+
+<section class="section" id="events">
+ <div class="section-head"><div><div class="eyebrow">COMMUNITY EVENTS</div><h2>Community Event</h2><p>Lore Quiz, тэмцээн, хэлэлцүүлэгт бүртгүүлээрэй.</p></div></div>
+ <div id="publicEvents" class="articles"><p class="portal-note">Арга хэмжээнүүд ачаалж байна…</p></div>
+ <div id="publicEventsStatus" class="portal-note"></div>
+</section>
+
 <section class="section" id="support">
  <div class="section-head"><div><div class="eyebrow">HELP & SERVICES</div><h2>Туслах цэс ба үйлчилгээ</h2><p>Үндсэн мэдээлэл, архивын дараа гишүүнчлэл болон платформын нэмэлт үйлчилгээг эндээс сонгоорой.</p></div></div>
  <div class="portal-grid">
@@ -522,7 +529,7 @@ async function loadLoreLeaderboard(){
 }
 $("dailyReward").onclick=async()=>{try{const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Өдрийн бонус авахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.");const {data,error}=await supabase.rpc("claim_daily_lore_reward");if(error)throw error;$("dailyRewardStatus").textContent=data.message||"Бонус шалгагдлаа.";await refreshGamification();}catch(e){$("dailyRewardStatus").textContent=e.message;}};
 supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=await supabase.auth.getUser();communityUser=user;await refreshGamification();await loadCoinStore();},0)});
-(async()=>{try{await ensureCommunityUser();$("chatStatus").textContent="Нэгдсэн чатад холбогдлоо.";await loadChatChannels();await selectChatChannel("global","# Global Chat");await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();await updatePresence();await loadOnlineCount();setInterval(async()=>{await updatePresence();await loadOnlineCount();},45000);}catch(e){$("chatStatus").textContent=e.message;$("dailyRewardStatus").textContent="Бонус авахын тулд бүртгэлтэй хэрэглэгч шаардлагатай.";}})();
+(async()=>{try{await ensureCommunityUser();$("chatStatus").textContent="Нэгдсэн чатад холбогдлоо.";await loadChatChannels();await selectChatChannel("global","# Global Chat");await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();await loadPublishedLore();await loadCommunityEvents();await loadAccountPanel();await updatePresence();await loadOnlineCount();setInterval(async()=>{await updatePresence();await loadOnlineCount();},45000);}catch(e){$("chatStatus").textContent=e.message;$("dailyRewardStatus").textContent="Бонус авахын тулд бүртгэлтэй хэрэглэгч шаардлагатай.";}})();
 </script>
 
 <script>
@@ -565,7 +572,7 @@ $("profileSave").onclick=async()=>{
   $("rankDisplayName").textContent=display_name;
  }catch(e){$("profileStatus").textContent=e.message||"Алдаа гарлаа.";}
 };
-supabase.auth.onAuthStateChange(()=>{setTimeout(()=>{loadAccountPanel();loadAccountProfile();},0);});
+supabase.auth.onAuthStateChange(()=>{setTimeout(()=>{loadAccountPanel();loadAccountProfile();loadPublishedLore();loadCommunityEvents();},0);});
 
 
 /* Published lore, bookmarks and editorial feedback */
@@ -598,6 +605,18 @@ $("feedbackForm").addEventListener("submit",async e=>{
  $("feedbackStatus").textContent="Санал редакцад илгээгдлээ. Баярлалаа.";$("feedbackForm").reset();
  }catch(err){$("feedbackStatus").textContent=err.message||"Илгээхэд алдаа гарлаа.";}
 });
+
+
+/* Public community event calendar */
+async function loadCommunityEvents(){
+ const el=$("publicEvents");const {data,error}=await supabase.from("community_events").select("id,title,description,event_type,starts_at,ends_at,reward_xp,reward_coins").eq("status","published").gte("ends_at",new Date().toISOString()).order("starts_at").limit(30);
+ if(error){el.textContent="Event ачаалж чадсангүй: "+error.message;return;}
+ const {data:{user}}=await supabase.auth.getUser();
+ let joined=new Set();
+ if(user){const {data:rows}=await supabase.from("event_participants").select("event_id").eq("user_id",user.id);joined=new Set((rows||[]).map(x=>x.event_id));}
+ el.innerHTML=(data||[]).map(e=>'<article class="article"><div class="tag">'+safeText(e.event_type)+' · EVENT</div><h3>'+safeText(e.title)+'</h3><p>'+safeText(e.description)+'</p><p class="portal-note">'+new Date(e.starts_at).toLocaleString("mn-MN")+' – '+new Date(e.ends_at).toLocaleString("mn-MN")+'</p><p class="portal-note">Шагналын сан: '+e.reward_xp+' XP · '+e.reward_coins+' Coins</p><button type="button" data-join-event="'+e.id+'" '+(joined.has(e.id)?'disabled':'')+'>'+(joined.has(e.id)?'Бүртгүүлсэн':'Оролцох')+'</button></article>').join("")||'<p class="portal-note">Одоогоор нийтлэгдсэн арга хэмжээ алга.</p>';
+ el.querySelectorAll("[data-join-event]").forEach(b=>b.onclick=async()=>{try{const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Оролцохын тулд нэвтэрнэ үү.");const {error}=await supabase.from("event_participants").insert({event_id:b.dataset.joinEvent,user_id:user.id});if(error)throw error;$("publicEventsStatus").textContent="Арга хэмжээнд бүртгүүллээ." ;await loadCommunityEvents();}catch(e){$("publicEventsStatus").textContent=e.message;}});
+}
 
 </script>
 </body></html>
