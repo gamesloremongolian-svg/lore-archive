@@ -1838,6 +1838,14 @@ supabase.auth.onAuthStateChange(()=>{setTimeout(()=>{loadAdAdmin();},0);});
  <div id="loreAiMeta">Нэвтэрсэн хэрэглэгчид өдөрт 10 асуулт · API хэрэглээ төлбөртэй</div>
  <form id="loreAiForm"><textarea id="loreAiQuestion" rows="2" maxlength="1800" placeholder="Lore-ийн талаар асуугаарай..." required></textarea><button id="loreAiSend" type="submit">Илгээх</button></form>
 </section>
+<style id="loreAiEmergencyLauncherFix">
+#loreAiLauncher{position:fixed!important;right:18px!important;bottom:22px!important;z-index:2147483647!important;display:flex!important;align-items:center!important;justify-content:center!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;touch-action:manipulation!important;cursor:pointer!important}
+#loreAiPanel{z-index:2147483646!important;pointer-events:auto!important}
+#loreAiPanel.open{display:flex!important}
+</style>
+<script id="loreAiEmergencyLauncherFixScript">
+(()=>{const launch=document.getElementById("loreAiLauncher"),panel=document.getElementById("loreAiPanel"),close=document.getElementById("loreAiClose");if(!launch||!panel)return;launch.addEventListener("click",()=>{panel.classList.add("open");panel.setAttribute("aria-hidden","false");},{capture:true});if(close)close.addEventListener("click",()=>{panel.classList.remove("open");panel.setAttribute("aria-hidden","true");},{capture:true});})();
+</script>
 <script>
 (()=>{const b=document.getElementById('navToggle'),n=document.getElementById('mainNav');if(!b||!n)return;b.addEventListener('click',()=>{const open=n.classList.toggle('open');b.setAttribute('aria-expanded',String(open));b.textContent=open?'✕':'☰';});n.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{n.classList.remove('open');b.setAttribute('aria-expanded','false');b.textContent='☰';}));})();
 
