@@ -52,7 +52,7 @@ $("logout").onclick=async()=>{await supabase.auth.signOut();location.reload();};
 supabase.auth.onAuthStateChange((_event,session)=>{if(session?.user&&!user)setTimeout(enter,0);});
 function generate(){
  const topic=$("topic").value.trim();if(topic.length<3){say("genState","Сэдвээ 3-аас дээш тэмдэгтээр оруулна уу.");return;}
- const sourceList=$("sources").value.split(/\\n+/).map(x=>x.trim()).filter(Boolean);
+ const sourceList=$("sources").value.split(/\n+/).map(x=>x.trim()).filter(Boolean);
  if(sourceList.some(x=>!x.startsWith("https://"))){say("genState","Эх сурвалж бүр HTTPS холбоос байх ёстой.");return;}
  const prompt=[
  "Та LOREVERSE-ийн мэргэжлийн редакцын туслах. Монгол хэлээр гүнзгий, мэргэжлийн нийтлэлийн ноорог бэлтгэ.",
@@ -65,9 +65,9 @@ function generate(){
  "Ертөнц/бүтээл: "+($("universe").value.trim()||"Тодорхойлоогүй"),
  "Нийтлэлийн төрөл: "+$("type").selectedOptions[0].textContent,
  "Редакторын чиглэл: "+($("notes").value.trim()||"Нэмэлт чиглэлгүй"),
- "Эх сурвалжууд:\\n"+(sourceList.length?sourceList.join("\\n"):"Эх сурвалж өгөөгүй. Баримтыг баталгаагүй гэж тэмдэглэ."),
+ "Эх сурвалжууд:\n"+(sourceList.length?sourceList.join("\n"):"Эх сурвалж өгөөгүй. Баримтыг баталгаагүй гэж тэмдэглэ."),
  "Нийтлэлд танилцуулга, үндсэн хэсэг, canon ба онолын ялгаа, эх сурвалжийн хязгаарлалт, дүгнэлт оруул."
- ].join("\\n\\n");
+ ].join("\n\n");
  $("chatPrompt").value=prompt;$("chatResponse").value="";$("manualPanel").classList.remove("hidden");
  say("genState","Заавар бэлэн. Хуулаад ChatGPT-д илгээнэ үү.");$("manualPanel").scrollIntoView({behavior:"smooth",block:"nearest"});
 }
@@ -82,10 +82,10 @@ $("importResponse").onclick=()=>{
   const body=String(d.body||"").trim();
   if(!title||!slug||body.length<100)throw new Error("Гарчиг, slug эсвэл нийтлэлийн агуулга дутуу байна.");
   const canon=["canon","non_canon","theory","unknown"].includes(d.canon_status)?d.canon_status:"unknown";
-  const sourceList=$("sources").value.split(/\\n+/).map(x=>x.trim()).filter(Boolean);
+  const sourceList=$("sources").value.split(/\n+/).map(x=>x.trim()).filter(Boolean);
   currentDraft={title,slug,summary:String(d.summary||""),body,canon_status:canon,editorial_warnings:Array.isArray(d.editorial_warnings)?d.editorial_warnings:[],source_urls:sourceList,topic,universe:$("universe").value,content_type:$("type").value};savedId=null;
   $("draftTitle").value=title;$("draftSlug").value=slug;$("draftSummary").value=currentDraft.summary;$("draftBody").value=body;$("canon").value=canon;
-  $("warnings").textContent=currentDraft.editorial_warnings.join("\\n")||"ChatGPT-ийн тусгай анхааруулга алга. Баримт, эх сурвалжийг редактор өөрөө шалгана.";
+  $("warnings").textContent=currentDraft.editorial_warnings.join("\n")||"ChatGPT-ийн тусгай анхааруулга алга. Баримт, эх сурвалжийг редактор өөрөө шалгана.";
   $("editor").classList.remove("hidden");say("genState","Ноорог редакторт орлоо. Шалгаад хадгална уу.");$("editor").scrollIntoView({behavior:"smooth"});
  }catch(e){say("genState","JSON уншиж чадсангүй: "+e.message);}
 };
