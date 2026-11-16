@@ -71,6 +71,7 @@ function generate(){
  $("chatPrompt").value=prompt;$("chatResponse").value="";$("manualPanel").classList.remove("hidden");
  say("genState","Заавар бэлэн. Хуулаад ChatGPT-д илгээнэ үү.");$("manualPanel").scrollIntoView({behavior:"smooth",block:"nearest"});
 }
+$("generate").onclick=generate;
 $("copyPrompt").onclick=async()=>{try{await navigator.clipboard.writeText($("chatPrompt").value);say("genState","Заавар хууллаа. ChatGPT-д буулгана уу.");}catch{say("genState","Зааврыг гараар сонгож хуулна уу.");}};
 $("importResponse").onclick=()=>{
  try{
