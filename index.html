@@ -202,7 +202,7 @@ section[id]{scroll-margin-top:92px}
 </style></style>
 </head>
 <body>
-<header class="wrap topbar"><a class="brand" href="#"><span class="mark">✦</span> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх">☰</button><nav class="nav" id="mainNav"><a href="#anime">Анимэ</a><a href="#games">Тоглоомууд</a><a href="#community">Нэгдсэн чат</a><a href="#events">Event</a><a href="#publishedLore">Мэдээллийн сан</a><a href="#archive">Lore сан</a><a href="#ranks">Rank & Bonus</a></nav><div class="actions"><button class="ghost" id="profileOpen" type="button">Миний профайл</button><button class="ghost" id="notificationsOpen" type="button" aria-label="Мэдэгдэл">🔔 <span id="notificationCount">0</span></button><select class="select" id="lang" aria-label="Language"><option value="mn">MN</option><option value="en">EN</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div></header>
+<header class="wrap topbar"><a class="brand" href="#"><span class="mark">✦</span> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх">☰</button><nav class="nav" id="mainNav"><a href="#all-categories">Ангилал</a><a href="#anime">Анимэ</a><a href="#games">Тоглоом</a><a href="#all-categories">Манга</a><a href="#all-categories">Novel</a><a href="#publishedLore">Мэдээллийн сан</a><a href="#community">Community</a></nav><div class="actions"><button class="ghost" id="profileOpen" type="button">Миний профайл</button><button class="ghost" id="notificationsOpen" type="button" aria-label="Мэдэгдэл">🔔 <span id="notificationCount">0</span></button><select class="select" id="lang" aria-label="Language"><option value="mn">MN</option><option value="en">EN</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div></header>
 <div class="wrap" id="accountTools" hidden>
  <section class="portal-panel" style="margin-top:14px">
   <div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><div><div class="eyebrow">NOTIFICATION CENTER</div><h3 style="margin:4px 0">Мэдэгдэл</h3></div><button class="btn" id="notificationsClose" type="button">Хаах</button></div>
@@ -317,9 +317,22 @@ section[id]{scroll-margin-top:92px}
  <p class="portal-note">Цаг бодит төхөөрөмжийн бүсийн тохиргоогоор ажиллана. Онлайн болон нийт зочлолын тоолуурыг үнэн зөв харуулахын тулд серверийн presence/analytics холболт шаардлагатай; одоогоор тоо зохиомлоор харуулахгүй.</p>
 </section>
 
+<section class="section" id="all-categories">
+ <div class="section-head"><div><div class="eyebrow">ONE ARCHIVE · MANY WORLDS</div><h2>Бүх ертөнцийн мэдлэг нэг дор</h2><p>Тоглоом, анимэ, манга, роман болон тэдгээрийн холбоотой ертөнцийн мэдээллийг нэг архивт нэгтгэнэ.</p></div></div>
+ <div class="worlds">
+  <article class="world"><div class="world-content"><span class="code">GAME</span><h3>Game Lore</h3><p>Тоглоомын түүх, дүр, газар нутаг, хүчний систем, фракц.</p><a href="#games">Тоглоомын ертөнцүүд ↗</a></div></article>
+  <article class="world"><div class="world-content"><span class="code">ANIME</span><h3>Anime</h3><p>Анимэ цуврал, улирал, анги, дүр болон үйл явдал.</p><a href="#anime">Анимэ каталог ↗</a></div></article>
+  <article class="world"><div class="world-content"><span class="code">MANGA</span><h3>Manga</h3><p>Манга цуврал, бүлэг, дүр, зохиолын хувилбар.</p><a href="#catalog">Манга каталог ↗</a></div></article>
+  <article class="world"><div class="world-content"><span class="code">LN</span><h3>Light Novel</h3><p>Боть, бүлэг, зохиолын үйл явдал болон дүрүүд.</p><a href="#catalog">Light Novel мэдээлэл ↗</a></div></article>
+  <article class="world"><div class="world-content"><span class="code">WN</span><h3>Web Novel</h3><p>Цахим зохиол, бүлэг, хувилбар болон цуврал түүх.</p><a href="#catalog">Web Novel мэдээлэл ↗</a></div></article>
+  <article class="world"><div class="world-content"><span class="code">UNIVERSE</span><h3>Universe Archive</h3><p>Ертөнц, цаг хугацаа, дүрүүдийн холбоо, канон хувилбар.</p><a href="#publishedLore">Нэгдсэн Lore сан ↗</a></div></article>
+ </div>
+ <p class="note">Тайлбар: Ангиллуудыг платформын эхний хувилбарт нэгдсэн бүтэц болгон харуулж байна. Light Novel болон Web Novel-ийн тусгай каталог, өгөгдлийн холболтыг дараагийн хөгжүүлэлтээр нэмнэ.</p>
+</section>
+
 <section class="section archive" id="catalog">
  <div class="section-head"><div><div class="eyebrow">LOREVERSE KNOWLEDGE DATABASE</div><h2>Анимэ · Тоглоом · Манга каталог</h2><p>Нэрээр хайж, танилцуулга, төрөл, бүтээгч, дүр болон үндсэн мэдээллийг нээнэ.</p></div></div>
- <div class="filters" id="catalogTabs"><button class="chip active" data-kind="ANIME">Анимэ</button><button class="chip" data-kind="MANGA">Манга</button><button class="chip" data-kind="GAME">Тоглоом</button></div>
+ <div class="filters" id="catalogTabs"><button class="chip active" data-kind="ANIME">Анимэ</button><button class="chip" data-kind="MANGA">Манга</button><button class="chip" data-kind="LIGHT_NOVEL">Light Novel</button><button class="chip" data-kind="WEB_NOVEL">Web Novel</button><button class="chip" data-kind="GAME">Тоглоом</button></div>
  <div class="toolbar"><input class="search" id="catalogSearch" placeholder="Нэрээр хайх..."><button class="btn primary" id="catalogGo">Хайх</button></div>
  <div class="muted" id="catalogStatus">Анимэ болон манганы мэдээллийг AniList каталогоос хайна. Тоглоомын мэдээлэл LOREVERSE-ийн тоглоомын архивт байна.</div>
  <div class="articles" id="catalogResults"></div>
@@ -778,6 +791,27 @@ $("loreAiForm").addEventListener("submit",async e=>{
 
 
 document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBankAccount"){try{await navigator.clipboard.writeText("5622218472");$("bankCopyStatus").textContent="Дансны дугаар хууллаа.";}catch(_){$("bankCopyStatus").textContent="Дугаар: 5622218472";}}});
+
+
+/* Unified public catalog search: AniList for anime, manga and novels. */
+(()=>{
+ const tabs=document.getElementById("catalogTabs"),input=document.getElementById("catalogSearch"),go=document.getElementById("catalogGo"),more=document.getElementById("catalogMore"),out=document.getElementById("catalogResults"),status=document.getElementById("catalogStatus");
+ if(!tabs||!input||!go||!more||!out||!status)return;
+ let kind="ANIME",page=1,lastQuery="",busy=false,hasNext=false;
+ const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+ const labels={ANIME:"Анимэ",MANGA:"Манга",LIGHT_NOVEL:"Light Novel",WEB_NOVEL:"Web Novel",GAME:"Тоглоом"};
+ function setStatus(t){status.textContent=t;}
+ function card(m){const title=m.title?.userPreferred||m.title?.english||m.title?.romaji||"Нэргүй бүтээл";const desc=(m.description||"Тайлбар одоогоор байхгүй.").replace(/<br\s*\/?\s*>/gi," ").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();const format=m.format?m.format.replaceAll("_"," "):labels[kind];const cover=m.coverImage?.large||m.coverImage?.medium||"";const link=m.siteUrl||"https://anilist.co";return '<article class="article catalog-card">'+(cover?'<img loading="lazy" src="'+esc(cover)+'" alt="'+esc(title)+'">':'')+'<div class="catalog-info"><div class="tag">'+esc(labels[kind])+' · '+esc(format)+'</div><h3>'+esc(title)+'</h3><p class="catalog-desc">'+esc(desc)+'</p><div class="row" style="justify-content:space-between;align-items:center"><span class="catalog-meta">'+esc((m.startDate?.year||"Он тодорхойгүй"))+' · '+esc(m.status||"")+'</span><a href="'+esc(link)+'" target="_blank" rel="noopener noreferrer">Дэлгэрэнгүй ↗</a></div></div></article>';}
+ async function search(reset=true){if(busy)return;const q=input.value.trim();if(!q){setStatus("Хайх бүтээлийн нэрээ оруулна уу.");input.focus();return;}if(reset){page=1;lastQuery=q;out.innerHTML="";}else if(q!==lastQuery){page=1;lastQuery=q;out.innerHTML="";}
+ if(kind==="GAME"){busy=true;go.disabled=true;setStatus("Lore Archive-ийн нийтлэлийн сангаас тоглоом хайж байна…");try{const {data,error}=await supabase.from("content_posts").select("id,title,summary,content_type,game_title,slug,published_at").eq("status","published").ilike("game_title","%"+q+"%").order("published_at",{ascending:false}).limit(24);if(error)throw error;const rows=data||[];out.innerHTML=rows.map(p=>'<article class="article"><div class="tag">'+esc(p.game_title||"GAME LORE")+' · '+esc(p.content_type||"lore")+'</div><h3>'+esc(p.title)+'</h3><p>'+esc(p.summary||"Товч тайлбар оруулаагүй.")+'</p><a href="#publishedLore">Нэгдсэн Lore сангаас унших ↗</a></article>').join("")||'<p class="portal-note">Энэ нэрээр нийтлэгдсэн тоглоомын материал одоогоор олдсонгүй.</p>';setStatus(rows.length+" нийтлэл олдлоо. Зөвхөн нийтлэгдсэн дотоод мэдээллийг харуулж байна.");more.hidden=true;}catch(error){setStatus("Тоглоомын архивын хайлт амжилтгүй: "+error.message);}finally{busy=false;go.disabled=false;}return;}
+ busy=true;go.disabled=true;more.disabled=true;setStatus("AniList каталогоос хайж байна…");
+ const query='query ($search: String, $page: Int, $type: MediaType, $format: MediaFormat, $source: MediaSource) { Page(page:$page, perPage:12) { pageInfo { hasNextPage } media(search:$search, type:$type, format:$format, source:$source, sort:SEARCH_MATCH) { id siteUrl description format status startDate { year } title { romaji english userPreferred } coverImage { medium large } } } }';
+ let type=kind==="ANIME"?"ANIME":"MANGA",format=null,source=null;if(kind==="LIGHT_NOVEL"){format="NOVEL";source="LIGHT_NOVEL";}if(kind==="WEB_NOVEL"){format="NOVEL";source="NOVEL";}
+ try{const response=await fetch("https://graphql.anilist.co",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({query,variables:{search:q,page,type,format,source}})});if(!response.ok)throw new Error("AniList хүсэлт амжилтгүй ("+response.status+").");const payload=await response.json();if(payload.errors?.length)throw new Error(payload.errors[0].message||"Каталогийн алдаа.");const data=payload.data?.Page;if(!data)throw new Error("Каталогийн хариу хоосон байна.");hasNext=!!data.pageInfo?.hasNextPage;const rows=data.media||[];out.insertAdjacentHTML("beforeend",rows.map(card).join(""));setStatus(rows.length?("Нийт "+rows.length+" үр дүн харууллаа. Мэдээллийн эх сурвалж: AniList."):"Тохирох бүтээл олдсонгүй. Өөр нэрээр хайж үзнэ үү.");more.hidden=!hasNext;
+ }catch(error){setStatus("Каталог ачаалж чадсангүй: "+error.message+" Дараа дахин оролдоно уу.");more.hidden=true;}finally{busy=false;go.disabled=false;more.disabled=false;}}
+ tabs.addEventListener("click",e=>{const b=e.target.closest("[data-kind]");if(!b)return;kind=b.dataset.kind;tabs.querySelectorAll("[data-kind]").forEach(x=>x.classList.toggle("active",x===b));out.innerHTML="";page=1;more.hidden=true;setStatus(kind==="GAME"?"Тоглоомын мэдээллийг дотоод Lore архивт хадгална.":"Нэр оруулаад хайлт хийнэ. Мэдээллийг AniList-ээс авна.");});
+ go.addEventListener("click",()=>search(true));input.addEventListener("keydown",e=>{if(e.key==="Enter")search(true);});more.addEventListener("click",()=>{if(hasNext){page++;search(false);}});more.hidden=true;
+})();
 </script>
 
 
