@@ -2099,7 +2099,7 @@ document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBank
 (()=>{
  const rail=document.getElementById("mangaPopularRail"),viewport=document.getElementById("mangaRailViewport");
  if(!rail||!viewport)return;
- const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#39;"}[c]));
+ const esc=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
  const gql='query{Page(page:1,perPage:18){media(type:MANGA,isAdult:false,sort:TRENDING_DESC){siteUrl title{romaji english userPreferred} coverImage{large medium} format startDate{year}}}}';
  fetch("https://graphql.anilist.co",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({query:gql})})
  .then(r=>{if(!r.ok)throw new Error("AniList "+r.status);return r.json();})
