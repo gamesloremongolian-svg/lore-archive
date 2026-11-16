@@ -50,3 +50,11 @@ AI-аар үүсгэсэн ноорог, орчуулгыг редакторын
 - GitHub Actions нь Pull Request болон `main` салбарын push бүрд smoke check ажиллуулахаар тохируулагдсан.
 - GitHub Pages-ийн бодит deployment төлөвийг Repository → Settings → Pages болон Actions дээр шалгана.
 
+## AI Editorial Workspace
+
+- Админ самбараас `/editorial/ai.html` хаягаар AI редактор нээнэ.
+- Идэвхтэй `owner`, `admin`, `editor` эрхтэй хэрэглэгч л ноорог үүсгэж, хадгална.
+- AI ноорог нь `ai_editorial_drafts` хүснэгтэд хадгалагдаж, редактор хяналтад илгээнэ.
+- Зөвхөн `owner` болон `admin` эрхтэй хэрэглэгч хяналтад байгаа нооргийг `content_posts` руу нийтэлнэ.
+- AI функц: Supabase Edge Function `editorial-ai-draft`; OpenAI түлхүүрийг зөвхөн серверийн secret-д хадгална.
+- AI үүсгэсэн агуулга эх сурвалжийг автоматаар баталгаажуулахгүй. Редактор URL, canon төлөв, баримтыг нийтлэхээс өмнө шалгана.
