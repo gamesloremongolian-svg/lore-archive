@@ -381,7 +381,7 @@ $("chatForm").addEventListener("submit",async e=>{
 });
 function rankFor(xp){return [...rankLevels].reverse().find(r=>xp>=r.min)||rankLevels[0];}
 async function refreshGamification(){
- const user=communityUser||((await supabase.auth.getUser()).data.user);
+ const user=(await supabase.auth.getUser()).data.user;communityUser=user;
  if(!user){$("rankDisplayName").textContent="Зочин хэрэглэгч";return;}
  const {data,error}=await supabase.from("profiles").select("display_name,total_xp,lore_coins,season_xp,season_id").eq("id",user.id).maybeSingle();
  if(error){$("rankProgressText").textContent=error.message;return;}
@@ -392,16 +392,17 @@ async function refreshGamification(){
  const prev=rank.min,progress=next===null?100:Math.max(0,Math.min(100,(xp-prev)/(next-prev)*100));$("rankProgress").style.width=progress+"%";$("rankProgressText").textContent=next===null?"Дээд Rank хүрсэн байна.":"Дараагийн Rank ("+rankLevels[rankLevels.indexOf(rank)+1].name+") хүртэл "+Math.max(0,next-xp)+" XP";
 }
 async function loadCoinStore(){
- const {data,error}=await supabase.from("lore_coin_items").select("id,name,description,coin_cost,item_type,discount_percent").eq("enabled",true).order("coin_cost");
+ const user=(await supabase.auth.getUser()).data.user;communityUser=user;const {data,error}=await supabase.from("lore_coin_items").select("id,name,description,coin_cost,item_type,discount_percent").eq("enabled",true).order("coin_cost");
  const el=$("coinStore");if(error){el.textContent=error.message;return;}
- el.innerHTML=(data||[]).map(x=>'<div class="store-item"><b>'+safeText(x.name)+'</b><p class="portal-note">'+safeText(x.description||x.item_type)+'</p><strong style="color:#ffd58d">'+x.coin_cost+' Coins</strong><br><button class="btn" style="margin-top:8px" data-redeem="'+safeText(x.id)+'">Авах</button></div>').join("")||"Одоогоор бараа алга.";
+ el.innerHTML=(data||[]).map(x=>'<div class="store-item"><b>'+safeText(x.name)+'</b><p class="portal-note">'+safeText(x.description||x.item_type)+'</p><strong style="color:#ffd58d">'+x.coin_cost+' Coins</strong><br><button class="btn" style="margin-top:8px" data-redeem="'+safeText(x.id)+'" '+(user?.is_anonymous?'disabled title="Бүртгэлтэй хэрэглэгч шаардлагатай"':'')+'>Авах</button></div>').join("")||"Одоогоор бараа алга.";
  el.querySelectorAll("[data-redeem]").forEach(b=>b.onclick=async()=>{try{await ensureCommunityUser();const {data,error}=await supabase.rpc("redeem_lore_coins",{p_item_id:b.dataset.redeem});if(error)throw error;$("storeStatus").textContent=data.message||("Амжилттай. Үлдэгдэл: "+data.remaining_coins);await refreshGamification();}catch(e){$("storeStatus").textContent=e.message;}});
 }
 async function loadLoreLeaderboard(){
  const {data,error}=await supabase.rpc("lore_leaderboard",{p_limit:10});const el=$("loreLeaderboard");if(error){el.textContent=error.message;return;}
  el.innerHTML=(data||[]).map((x,i)=>'<div class="leader-row"><span>#'+(i+1)+' '+safeText(x.display_name)+'<br><small>'+safeText(x.rank_name)+'</small></span><b>'+Number(x.total_xp).toLocaleString("mn-MN")+' XP</b></div>').join("")||"Одоогоор жагсаалт хоосон.";
 }
-$("dailyReward").onclick=async()=>{try{await ensureCommunityUser();const {data,error}=await supabase.rpc("claim_daily_lore_reward");if(error)throw error;$("dailyRewardStatus").textContent=data.message||"Бонус шалгагдлаа.";await refreshGamification();}catch(e){$("dailyRewardStatus").textContent=e.message;}};
+$("dailyReward").onclick=async()=>{try{const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Өдрийн бонус авахын тулд Premium хэсэгт бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.");const {data,error}=await supabase.rpc("claim_daily_lore_reward");if(error)throw error;$("dailyRewardStatus").textContent=data.message||"Бонус шалгагдлаа.";await refreshGamification();}catch(e){$("dailyRewardStatus").textContent=e.message;}};
+supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=await supabase.auth.getUser();communityUser=user;await refreshGamification();await loadCoinStore();},0)});
 (async()=>{try{await ensureCommunityUser();$("chatStatus").textContent="Чатад холбогдлоо.";await loadChatChannels();await selectChatChannel("global","# Global Chat");await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();}catch(e){$("chatStatus").textContent=e.message;$("dailyRewardStatus").textContent="Бонус авахын тулд хэрэглэгчийн session шаардлагатай.";}})();
 </script>
 </body></html>
