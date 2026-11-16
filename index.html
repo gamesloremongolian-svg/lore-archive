@@ -870,13 +870,22 @@ async function loadLoreLeaderboard(){
 }
 $("dailyReward").onclick=async()=>{try{const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Өдрийн бонус авахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.");const {data,error}=await supabase.rpc("claim_daily_lore_reward");if(error)throw error;$("dailyRewardStatus").textContent=data.message||"Бонус шалгагдлаа.";await refreshGamification();}catch(e){$("dailyRewardStatus").textContent=e.message;}};
 supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=await supabase.auth.getUser();communityUser=user;await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();},0)});
+async function runOptionalStartup(label,task){
+ try{await task();return true;}
+ catch(e){console.warn("LOREVERSE startup ["+label+"]:",e);$("dailyRewardStatus").textContent=label+" ачаалж чадсангүй: "+(e?.message||String(e));return false;}
+}
 (async()=>{
- try{
-  await loadCommunityFeed();
-  await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();await loadPublishedLore();await loadCommunityEvents();await loadAccountPanel();await loadMySupportTickets();
-  await updatePresence();await loadOnlineCount();
-  setInterval(async()=>{await updatePresence();await loadOnlineCount();},45000);
- }catch(e){console.warn("LOREVERSE optional startup:",e);$("dailyRewardStatus").textContent="Зарим нэмэлт боломж түр ачаалж чадсангүй.";}
+ await runOptionalStartup("Community feed",loadCommunityFeed);
+ await runOptionalStartup("Rank ба Coins",refreshGamification);
+ await runOptionalStartup("Бонусын дэлгүүр",loadCoinStore);
+ await runOptionalStartup("Leaderboard",loadLoreLeaderboard);
+ await runOptionalStartup("Нийтлэгдсэн Lore",loadPublishedLore);
+ await runOptionalStartup("Community events",loadCommunityEvents);
+ await runOptionalStartup("Мэдэгдэл",loadAccountPanel);
+ await runOptionalStartup("Тусламжийн хүсэлт",loadMySupportTickets);
+ await runOptionalStartup("Онлайн төлөв",updatePresence);
+ await runOptionalStartup("Онлайн тоолуур",loadOnlineCount);
+ setInterval(async()=>{await runOptionalStartup("Онлайн төлөв",updatePresence);await runOptionalStartup("Онлайн тоолуур",loadOnlineCount);},45000);
 })();
 
 </script>
