@@ -1,15 +1,16 @@
-name: LOREVERSE Mobile Build
+name: LOREVERSE Android Build
 
 on:
   workflow_dispatch:
   push:
     paths:
       - 'package.json'
+      - 'package-lock.json'
       - 'capacitor.config.ts'
       - 'index.html'
       - 'chat/**'
       - 'assets/**'
-      - 'scripts/prepare-web.mjs'
+      - 'scripts/**'
       - '.github/workflows/mobile-build.yml'
 
 permissions:
@@ -29,34 +30,19 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - run: npm install
-      - run: npm run build
-      - run: npx cap add android
-      - run: npx cap sync android
+      - name: Install dependencies
+        run: npm install
+      - name: Build web assets
+        run: npm run build
+      - name: Add Android platform
+        run: npx cap add android
+      - name: Sync Capacitor
+        run: npx cap sync android
       - name: Build debug APK
         run: cd android && ./gradlew assembleDebug
-      - uses: actions/upload-artifact@v4
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
         with:
           name: loreverse-android-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-
-  ios-simulator:
-    name: iOS simulator build (unsigned)
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - run: npm install
-      - run: npm run build
-      - run: npx cap add ios
-      - run: npx cap sync ios
-      - name: Build iOS simulator app
-        run: xcodebuild -workspace ios/App/App.xcworkspace -scheme App -sdk iphonesimulator -configuration Debug -derivedDataPath build CODE_SIGNING_ALLOWED=NO build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: loreverse-ios-simulator
-          path: build/Build/Products/Debug-iphonesimulator/App.app
           if-no-files-found: error
