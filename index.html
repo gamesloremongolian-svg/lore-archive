@@ -130,6 +130,35 @@ body{background:radial-gradient(ellipse at 12% 0%,#672b7866 0,transparent 36%),r
 .catalog-detail{white-space:normal;line-height:1.7}
 .catalog-detail img{width:100%;max-height:260px;object-fit:contain;border-radius:12px}
 \n
+
+/* Hybrid community feed */
+.community-feed-layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px}
+.feed-panel,.feed-side{background:linear-gradient(145deg,#211633,#12182a);border:1px solid #624477;border-radius:18px;padding:16px}
+.feed-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.feed-tab{border:1px solid #59406e;background:#130e21;color:#eee;border-radius:999px;padding:9px 14px;cursor:pointer}
+.feed-tab.active{background:linear-gradient(100deg,#a64ee0,#557de8);border-color:transparent}
+.feed-composer{display:grid;gap:9px;padding:13px;border:1px solid #4b3860;border-radius:14px;background:#100b1d;margin-bottom:14px}
+.feed-composer textarea{width:100%;min-height:90px;resize:vertical}
+.feed-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.feed-controls select,.feed-controls input{max-width:220px}
+.feed-post{border:1px solid #49345f;border-radius:15px;padding:14px;background:#171326;margin:10px 0}
+.feed-post-head{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.feed-author{display:flex;gap:9px;align-items:center;min-width:0}
+.feed-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;background:#49345f}
+.feed-post-body{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6;margin:12px 0}
+.feed-post-media{width:100%;max-height:460px;object-fit:contain;border-radius:12px;background:#0b0914}
+.feed-post-actions{display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid #40304f;padding-top:10px}
+.feed-post-actions button{border:1px solid #514267;border-radius:10px;padding:7px 10px;background:#211832;color:#eee;cursor:pointer}
+.feed-post-actions button.liked{border-color:#d879ed;color:#f3b6ff}
+.feed-empty{padding:26px;text-align:center;color:#b9acc9;border:1px dashed #5b456f;border-radius:14px}
+.feed-game-list{display:grid;gap:7px;margin-top:10px}
+.feed-game{display:flex;justify-content:space-between;align-items:center;width:100%;border:1px solid transparent;border-radius:10px;background:#100b1e;color:#eee;padding:10px;cursor:pointer;text-align:left}
+.feed-game.active,.feed-game:hover{border-color:#b77cff;background:#8f55d522}
+.feed-comment{border-top:1px solid #49345f;margin-top:10px;padding-top:10px}
+.feed-comment-row{display:flex;gap:7px;margin-top:8px}
+.feed-comment-row input{flex:1;min-width:0}
+@media(max-width:850px){.community-feed-layout{grid-template-columns:1fr}.feed-side{order:-1}.feed-game-list{display:flex;overflow:auto}.feed-game{min-width:max-content}}
+
 /* Community + gamification */
 .community-grid{display:grid;grid-template-columns:280px 1fr;gap:16px}
 .community-side,.community-main,.rank-card{background:linear-gradient(145deg,#211633,#12182a);border:1px solid #624477;border-radius:20px;padding:18px}
@@ -297,6 +326,48 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
   <a class="media-card" href="games/zenless-zone-zero/" style="background-image:url('https://cdn.spaziogames.it/storage/media/2024/07/17382/zenless-zone-zero-recensione-cover.jpg?aspect_ratio=16%3A9&width=1260')"><small>HOYOVERSE</small><strong>Zenless Zone Zero</strong><span>New Eridu</span></a>
   <a class="media-card" href="games/arknights/" style="background-image:url('https://i0.wp.com/anitrendz.net/news/wp-content/uploads/2023/09/arknightsperishinfrost_keyvisual-1-scaled-e1695201337364.jpg?resize=696%2C394&ssl=1')"><small>HYPERGRYPH</small><strong>Arknights</strong><span>Terra-ийн түүх</span></a>
   <a class="media-card" href="games/blue-archive/" style="background-image:url('https://assets.st-note.com/img/1652714623464-cukHkwJRNJ.jpg?fit=bounds&height=2000&quality=85&width=2000')"><small>NEXON GAMES</small><strong>Blue Archive</strong><span>Kivotos-ийн архив</span></a>
+ </div>
+</section>
+
+
+<section class="section" id="communityFeed">
+ <div class="section-head"><div><div class="eyebrow">LOREVERSE SOCIAL · GAME COMMUNITIES</div><h2>Community Feed</h2><p>Бүх тоглоомын нэгдсэн урсгал болон тоглоом тус бүрийн тусгай community.</p></div></div>
+ <div class="community-feed-layout">
+  <div class="feed-panel">
+   <div class="feed-tabs" id="communityFeedTabs">
+    <button class="feed-tab active" type="button" data-feed-tab="global">Global</button>
+    <button class="feed-tab" type="button" data-feed-tab="following">Following</button>
+    <button class="feed-tab" type="button" data-feed-tab="recommended">Recommended</button>
+   </div>
+   <form class="feed-composer" id="communityPostForm">
+    <textarea class="form-field" id="communityPostBody" maxlength="5000" placeholder="Юу хуваалцмаар байна? Lore, мэдээ, асуулт эсвэл fanart..."></textarea>
+    <div class="feed-controls">
+     <select class="form-field" id="communityPostGame" aria-label="Game">
+      <option value="general">General</option><option value="genshin-impact">Genshin Impact</option><option value="wuthering-waves">Wuthering Waves</option><option value="ananta">ANANTA</option><option value="honkai-star-rail">Honkai: Star Rail</option><option value="zenless-zone-zero">Zenless Zone Zero</option><option value="arknights">Arknights</option><option value="blue-archive">Blue Archive</option>
+     </select>
+     <select class="form-field" id="communityPostCategory" aria-label="Post category"><option value="discussion">Discussion</option><option value="news">News</option><option value="question">Question</option><option value="guide">Guide</option><option value="fanart">Fanart</option><option value="event">Event</option></select>
+     <select class="form-field" id="communityPostSpoiler" aria-label="Spoiler level"><option value="none">No spoiler</option><option value="minor">Minor spoiler</option><option value="major">Major spoiler</option></select>
+     <input class="form-field" id="communityPostImage" type="file" accept="image/jpeg,image/png,image/webp,image/gif" aria-label="Attach image">
+     <button class="btn primary" id="communityPostSubmit" type="submit">Publish post</button>
+    </div>
+    <small class="portal-note" id="communityPostStatus">Зураг 15 MB хүртэл. Нийтлэхийн тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ.</small>
+   </form>
+   <div id="communityPostList" aria-live="polite"><div class="feed-empty">Нийтлэлүүд ачаалж байна…</div></div>
+  </div>
+  <aside class="feed-side">
+   <div class="eyebrow">GAME HUBS</div><h3 style="margin:6px 0">Тоглоом сонгох</h3>
+   <div class="feed-game-list" id="communityGameList">
+    <button class="feed-game active" type="button" data-game="all">All games <span>↗</span></button>
+    <button class="feed-game" type="button" data-game="genshin-impact">Genshin Impact <span>↗</span></button>
+    <button class="feed-game" type="button" data-game="wuthering-waves">Wuthering Waves <span>↗</span></button>
+    <button class="feed-game" type="button" data-game="ananta">ANANTA <span>↗</span></button>
+    <button class="feed-game" type="button" data-game="honkai-star-rail">Honkai: Star Rail <span>↗</span></button>
+    <button class="feed-game" type="button" data-game="zenless-zone-zero">Zenless Zone Zero <span>↗</span></button>
+    <button class="feed-game" type="button" data-game="arknights">Arknights <span>↗</span></button>
+    <button class="feed-game" type="button" data-game="blue-archive">Blue Archive <span>↗</span></button>
+   </div>
+   <p class="portal-note" style="margin-top:14px">Нэг профайл, нэг Rank — бүх тоглоомын community-д.</p>
+  </aside>
  </div>
 </section>
 
@@ -575,6 +646,78 @@ const safeText=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;","
 let communityUser=null,activeChatChannel="global-chat",chatSubscription=null,reactionSubscription=null,presenceSubscription=null,replyTarget=null,chatRows=[];
 async function ensureCommunityUser(){let {data:{user}}=await supabase.auth.getUser();if(!user){const {data,error}=await supabase.auth.signInAnonymously();if(error)throw new Error("Чат бичихэд Anonymous Sign-ins идэвхтэй байх шаардлагатай. ("+error.message+")");user=data.user;}communityUser=user;return user;}
 function rankFor(xp){return [...rankLevels].reverse().find(r=>xp>=r.min)||rankLevels[0];}
+
+/* Hybrid community feed */
+let communityFeedTab="global",communityFeedGame="all",communityFeedRows=[];
+const feedGames={"genshin-impact":"Genshin Impact","wuthering-waves":"Wuthering Waves","ananta":"ANANTA","honkai-star-rail":"Honkai: Star Rail","zenless-zone-zero":"Zenless Zone Zero","arknights":"Arknights","blue-archive":"Blue Archive","general":"General"};
+function feedEsc(v){return safeText(String(v??""));}
+async function loadCommunityFeed(){
+ const list=$("communityPostList");if(!list)return;
+ list.innerHTML='<div class="feed-empty">Нийтлэлүүдийг ачаалж байна…</div>';
+ let q=supabase.from("community_posts").select("id,author_id,game_slug,category,body,spoiler_level,created_at").eq("status","published").order("created_at",{ascending:false}).limit(40);
+ if(communityFeedGame!=="all")q=q.eq("game_slug",communityFeedGame);
+ if(communityFeedTab==="following"){
+  const u=(await supabase.auth.getUser()).data.user;
+  if(!u||u.is_anonymous){list.innerHTML='<div class="feed-empty">Following feed үзэхийн тулд нэвтэрнэ үү.</div>';return;}
+  const {data:follows,error:fe}=await supabase.from("community_follows").select("followed_id").eq("follower_id",u.id);
+  if(fe)throw fe;
+  const ids=(follows||[]).map(x=>x.followed_id);
+  if(!ids.length){list.innerHTML='<div class="feed-empty">Одоогоор дагадаг хэрэглэгч алга.</div>';return;}
+  q=q.in("author_id",ids);
+ }
+ const {data,error}=await q;if(error){list.innerHTML='<div class="feed-empty">'+feedEsc(error.message)+'</div>';return;}
+ const rows=data||[];communityFeedRows=rows;
+ if(!rows.length){list.innerHTML='<div class="feed-empty">Одоогоор нийтлэл алга. Эхний нийтлэлийг чи оруулаарай.</div>';return;}
+ const ids=rows.map(x=>x.id),users=[...new Set(rows.map(x=>x.author_id))];
+ const [profiles,media,likes,comments,current]=await Promise.all([
+  supabase.from("profiles").select("id,display_name,avatar_url,total_xp").in("id",users),
+  supabase.from("community_post_media").select("post_id,media_url,media_type").in("post_id",ids),
+  supabase.from("community_post_likes").select("post_id,user_id").in("post_id",ids),
+  supabase.from("community_post_comments").select("post_id").eq("status","published").in("post_id",ids),
+  supabase.auth.getUser()
+ ]);
+ const profileMap=Object.fromEntries((profiles.data||[]).map(x=>[x.id,x]));
+ const mediaMap=Object.fromEntries((media.data||[]).map(x=>[x.post_id,x]));
+ const likeCounts={},commentCounts={},myLikes=new Set();
+ (likes.data||[]).forEach(x=>{likeCounts[x.post_id]=(likeCounts[x.post_id]||0)+1;if(current.data.user?.id===x.user_id)myLikes.add(x.post_id);});
+ (comments.data||[]).forEach(x=>commentCounts[x.post_id]=(commentCounts[x.post_id]||0)+1);
+ if(communityFeedTab==="recommended")rows.sort((a,b)=>(likeCounts[b.id]||0)-(likeCounts[a.id]||0)||new Date(b.created_at)-new Date(a.created_at));
+ list.innerHTML=rows.map(p=>{
+  const profile=profileMap[p.author_id]||{},m=mediaMap[p.id],avatar=profile.avatar_url&&/^https:\/\//i.test(profile.avatar_url)?'<img class="feed-avatar" src="'+feedEsc(profile.avatar_url)+'" alt="">':'<div class="feed-avatar"></div>';
+  const spoiler=p.spoiler_level!=="none"?'<span class="pill">⚠ '+feedEsc(p.spoiler_level)+' spoiler</span>':"";
+  return '<article class="feed-post" data-post="'+p.id+'"><div class="feed-post-head"><div class="feed-author">'+avatar+'<div><b>'+feedEsc(profile.display_name||"Lore Explorer")+'</b><div class="portal-note">'+feedEsc(feedGames[p.game_slug]||p.game_slug)+' · '+new Date(p.created_at).toLocaleString()+'</div></div></div><span class="pill">'+feedEsc(p.category)+'</span></div><div class="feed-post-body">'+feedEsc(p.body)+'</div>'+spoiler+(m?'<img class="feed-post-media" loading="lazy" src="'+feedEsc(m.media_url)+'" alt="Post image">':'')+'<div class="feed-post-actions"><button type="button" data-post-like="'+p.id+'" class="'+(myLikes.has(p.id)?"liked":"")+'">♥ '+(likeCounts[p.id]||0)+' Like</button><button type="button" data-post-comments="'+p.id+'">Comment '+(commentCounts[p.id]||0)+'</button><button type="button" data-post-follow="'+p.author_id+'">Follow</button></div><div class="feed-comment" id="comments-'+p.id+'" hidden><div class="feed-comment-list"></div><div class="feed-comment-row"><input class="form-field" maxlength="1500" placeholder="Сэтгэгдэл бичих…" data-comment-input="'+p.id+'"><button class="btn" type="button" data-comment-send="'+p.id+'">Send</button></div></div></article>';
+ }).join("");
+ list.querySelectorAll("[data-post-like]").forEach(b=>b.onclick=async()=>{
+  try{const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Like дарахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.");const id=b.dataset.postLike;const exists=myLikes.has(id);const res=exists?await supabase.from("community_post_likes").delete().eq("post_id",id).eq("user_id",u.id):await supabase.from("community_post_likes").insert({post_id:id,user_id:u.id});if(res.error)throw res.error;await loadCommunityFeed();}catch(e){$("communityPostStatus").textContent=e.message;}
+ });
+ list.querySelectorAll("[data-post-follow]").forEach(b=>b.onclick=async()=>{
+  try{const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Follow хийхийн тулд нэвтэрнэ үү.");const target=b.dataset.postFollow;if(target===u.id)throw new Error("Өөрийгөө дагах боломжгүй.");const {data,error}=await supabase.from("community_follows").select("follower_id").eq("follower_id",u.id).eq("followed_id",target).maybeSingle();if(error)throw error;const res=data?await supabase.from("community_follows").delete().eq("follower_id",u.id).eq("followed_id",target):await supabase.from("community_follows").insert({follower_id:u.id,followed_id:target});if(res.error)throw res.error;b.textContent=data?"Follow":"Following";}catch(e){$("communityPostStatus").textContent=e.message;}
+ });
+ list.querySelectorAll("[data-post-comments]").forEach(b=>b.onclick=async()=>{
+  const id=b.dataset.postComments,box=$("comments-"+id);box.hidden=!box.hidden;if(box.hidden)return;
+  const {data,error}=await supabase.from("community_post_comments").select("id,author_id,body,created_at").eq("post_id",id).eq("status","published").order("created_at").limit(30);
+  const el=box.querySelector(".feed-comment-list");el.innerHTML=error?feedEsc(error.message):(data||[]).map(c=>'<p><b>'+feedEsc(c.author_id.slice(0,8))+'</b> · '+feedEsc(c.body)+'</p>').join("")||'<p class="portal-note">Сэтгэгдэл алга.</p>';
+ });
+ list.querySelectorAll("[data-comment-send]").forEach(b=>b.onclick=async()=>{
+  try{const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Сэтгэгдэл бичихийн тулд нэвтэрнэ үү.");const id=b.dataset.commentSend,input=list.querySelector('[data-comment-input="'+id+'"]'),body=input.value.trim();if(!body)return;const {error}=await supabase.from("community_post_comments").insert({post_id:id,author_id:u.id,body});if(error)throw error;input.value="";await loadCommunityFeed();}catch(e){$("communityPostStatus").textContent=e.message;}
+ });
+}
+$("communityFeedTabs")?.addEventListener("click",e=>{const b=e.target.closest("[data-feed-tab]");if(!b)return;communityFeedTab=b.dataset.feedTab;$("communityFeedTabs").querySelectorAll(".feed-tab").forEach(x=>x.classList.toggle("active",x===b));loadCommunityFeed().catch(e=>$("communityPostList").textContent=e.message);});
+$("communityGameList")?.addEventListener("click",e=>{const b=e.target.closest("[data-game]");if(!b)return;communityFeedGame=b.dataset.game;$("communityGameList").querySelectorAll(".feed-game").forEach(x=>x.classList.toggle("active",x===b));loadCommunityFeed().catch(e=>$("communityPostList").textContent=e.message);});
+$("communityPostForm")?.addEventListener("submit",async e=>{
+ e.preventDefault();const button=$("communityPostSubmit"),body=$("communityPostBody").value.trim(),file=$("communityPostImage").files[0];
+ if(!body){$("communityPostStatus").textContent="Нийтлэлийн текстээ бичнэ үү.";return;}
+ if(file&&(!/^image\/(jpeg|png|webp|gif)$/.test(file.type)||file.size>15*1024*1024)){$("communityPostStatus").textContent="JPG, PNG, WEBP, GIF зураг 15 MB хүртэл зөвшөөрнө.";return;}
+ button.disabled=true;
+ try{
+  const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Нийтлэл оруулахын тулд профайлаасаа бүртгүүлж эсвэл нэвтэрнэ үү.");
+  const {data:post,error}=await supabase.from("community_posts").insert({author_id:u.id,game_slug:$("communityPostGame").value,category:$("communityPostCategory").value,body,spoiler_level:$("communityPostSpoiler").value}).select("id").single();if(error)throw error;
+  if(file){const path=u.id+"/"+post.id+"/"+crypto.randomUUID()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");const upload=await supabase.storage.from("community-media").upload(path,file,{contentType:file.type,upsert:false});if(upload.error)throw upload.error;const {data:publicUrl}=supabase.storage.from("community-media").getPublicUrl(path);const saved=await supabase.from("community_post_media").insert({post_id:post.id,author_id:u.id,media_url:publicUrl.publicUrl,media_type:"image"});if(saved.error)throw saved.error;}
+  $("communityPostBody").value="";$("communityPostImage").value="";$("communityPostStatus").textContent="Нийтлэл амжилттай нийтлэгдлээ.";communityFeedTab="global";$("communityFeedTabs").querySelectorAll(".feed-tab").forEach(x=>x.classList.toggle("active",x.dataset.feedTab==="global"));await loadCommunityFeed();
+ }catch(err){$("communityPostStatus").textContent=err.message||"Нийтлэл нийтэлж чадсангүй.";}
+ finally{button.disabled=false;}
+});
+
 async function loadChatChannels(){
  const {data,error}=await supabase.from("chat_channels").select("id,name,description,channel_type").eq("enabled",true).order("sort_order");
  const el=$("chatChannels");if(error){el.textContent=error.message;return;}
@@ -724,6 +867,7 @@ supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=aw
   catch(e){$("chatStatus").textContent="Чат унших боломжтой. Бичих эрх холбогдоогүй: "+e.message;}
  });
  try{
+  await loadCommunityFeed();
   await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();await loadPublishedLore();await loadCommunityEvents();await loadAccountPanel();await loadMySupportTickets();
   await updatePresence();await loadOnlineCount();
   setInterval(async()=>{await updatePresence();await loadOnlineCount();},45000);
