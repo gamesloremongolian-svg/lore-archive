@@ -323,6 +323,26 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
 <div class="visual-label">LOREVERSE · EVERY UNIVERSE HAS A STORY</div>
 </div></section>
 
+<section class="knowledge-hub" id="all-universes">
+ <div class="knowledge-hub-head"><div><div class="eyebrow">THE KNOWLEDGE OF ALL UNIVERSES</div><h2>Бүх ертөнцийн мэдлэг</h2><p>Тоглоом, анимэ, манга, роман болон зохиомол ертөнц бүрийн түүх, дүр, газар нутаг, онол, судалгааг нэг нэгдсэн архиваас нээ.</p></div><a class="btn primary" href="#archive">Бүх Lore архив руу ↗</a></div>
+ <div class="knowledge-hub-grid">
+  <a class="knowledge-hub-card" href="#games"><strong>Тоглоомын ертөнц</strong><span>Genshin, Wuthering Waves, ANANTA болон бусад</span><em>GAME WORLDS ↗</em></a>
+  <a class="knowledge-hub-card" href="#anime"><strong>Анимэ</strong><span>Цуврал, дүрүүд, үйл явдал, ертөнцийн түүх</span><em>ANIME ARCHIVE ↗</em></a>
+  <a class="knowledge-hub-card" href="#all-categories"><strong>Манга</strong><span>Манга, бүлэг, дүр, зохиолын судалгаа</span><em>MANGA ARCHIVE ↗</em></a>
+  <a class="knowledge-hub-card" href="archive/"><strong>Light Novel</strong><span>Роман, зохиолын ертөнц ба дүрүүд</span><em>LIGHT NOVEL ↗</em></a>
+  <a class="knowledge-hub-card" href="archive/"><strong>Web Novel</strong><span>Вэб роман, цуврал өгүүлэмж, lore</span><em>WEB NOVEL ↗</em></a>
+  <a class="knowledge-hub-card" href="#publishedLore"><strong>Universe Archive</strong><span>Нэгдсэн хайлт, эх сурвалжтай Lore судалгаа</span><em>EXPLORE ARCHIVE ↗</em></a>
+ </div>
+ <div class="knowledge-hub-footer"><span class="portal-note">Нэг платформ. Олон ертөнц. Хязгааргүй мэдлэг.</span><a class="btn" href="#publishedLore">Бүх мэдээллийг хайх</a></div>
+</section>
+
+<section class="section archive" id="archive"><span id="publishedLore" aria-hidden="true"></span>
+ <div class="section-head"><div><div class="eyebrow">EDITORIAL DATABASE</div><h2>Бүх Lore — нэгдсэн архив</h2><p>Тоглоом, анимэ, манга болон бусад ертөнцийн нийтлэгдсэн lore судалгаа, дүрийн мэдээлэл, мэдээ, гарын авлагыг нэг хайлт, нэг шүүлтүүрээр үзнэ. Зөвхөн редакц нийтэлсэн материал энд харагдана.</p></div></div>
+ <div class="toolbar" style="flex-wrap:wrap"><input id="publishedSearch" class="search" type="search" placeholder="Гарчиг, дүр, тоглоом, агуулгаар хайх..."><select class="form-field" id="publishedType"><option value="all">Бүх төрөл</option><option value="lore">Lore судалгаа</option><option value="game">Тоглоом</option><option value="anime">Анимэ</option><option value="manga">Манга</option><option value="news">Мэдээ</option><option value="guide">Гарын авлага</option><option value="work">Бүтээл</option><option value="character">Дүр</option><option value="location">Байршил</option><option value="faction">Фракц</option><option value="event">Үйл явдал</option></select><select class="form-field" id="publishedGame"><option value="all">Бүх ертөнц</option><option>Genshin Impact</option><option>Wuthering Waves</option><option>ANANTA</option><option>Honkai: Star Rail</option><option>Zenless Zone Zero</option><option>Arknights</option><option>Blue Archive</option><option>Бусад</option></select><label class="chip"><input id="bookmarksOnly" type="checkbox" style="accent-color:#c07bff"> Зөвхөн хадгалсан</label></div><div class="portal-note" id="publishedCount"></div>
+ <div id="publishedPosts" class="articles"><p class="portal-note">Нийтлэл ачаалж байна…</p></div>
+ <div id="publishedStatus" class="portal-note"></div>
+</section>
+
 <section class="section" id="premium">
  <div class="section-head"><div><div class="eyebrow">LOREVERSE PREMIUM</div><h2>Гишүүнчлэл ба тусгай архив</h2><p>Нээлттэй нийтлэлүүд үнэгүй. Premium судалгаа, дэлгэрэнгүй lore-г гишүүнчлэлээр нээнэ.</p></div></div>
  <div class="portal-grid">
@@ -337,18 +357,9 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
  <div class="portal-panel" style="margin-top:16px"><div class="eyebrow">MEMBERS ONLY ARCHIVE</div><h3>Premium lore сан</h3><p>Таны эрхэд нийцсэн Premium нийтлэлүүд энд харагдана.</p><div id="premiumArticles" class="articles"><p class="portal-note">Нэвтэрсний дараа эрхтэй нийтлэлүүдийг шалгана.</p></div></div>
 </section>
 
-<section class="knowledge-hub" id="all-universes">
- <div class="knowledge-hub-head"><div><div class="eyebrow">THE KNOWLEDGE OF ALL UNIVERSES</div><h2>Бүх ертөнцийн мэдлэг</h2><p>Тоглоом, анимэ, манга, роман болон зохиомол ертөнц бүрийн түүх, дүр, газар нутаг, онол, судалгааг нэг нэгдсэн архиваас нээ.</p></div><a class="btn primary" href="#archive">Бүх Lore архив руу ↗</a></div>
- <div class="knowledge-hub-grid">
-  <a class="knowledge-hub-card" href="#games"><strong>Тоглоомын ертөнц</strong><span>Genshin, Wuthering Waves, ANANTA болон бусад</span><em>GAME WORLDS ↗</em></a>
-  <a class="knowledge-hub-card" href="#anime"><strong>Анимэ</strong><span>Цуврал, дүрүүд, үйл явдал, ертөнцийн түүх</span><em>ANIME ARCHIVE ↗</em></a>
-  <a class="knowledge-hub-card" href="#all-categories"><strong>Манга</strong><span>Манга, бүлэг, дүр, зохиолын судалгаа</span><em>MANGA ARCHIVE ↗</em></a>
-  <a class="knowledge-hub-card" href="archive/"><strong>Light Novel</strong><span>Роман, зохиолын ертөнц ба дүрүүд</span><em>LIGHT NOVEL ↗</em></a>
-  <a class="knowledge-hub-card" href="archive/"><strong>Web Novel</strong><span>Вэб роман, цуврал өгүүлэмж, lore</span><em>WEB NOVEL ↗</em></a>
-  <a class="knowledge-hub-card" href="#publishedLore"><strong>Universe Archive</strong><span>Нэгдсэн хайлт, эх сурвалжтай Lore судалгаа</span><em>EXPLORE ARCHIVE ↗</em></a>
- </div>
- <div class="knowledge-hub-footer"><span class="portal-note">Нэг платформ. Олон ертөнц. Хязгааргүй мэдлэг.</span><a class="btn" href="#publishedLore">Бүх мэдээллийг хайх</a></div>
-</section>
+
+
+
 
 
 
@@ -485,12 +496,7 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
 <section class="section archive" id="legacyArchive" hidden><div class="section-head"><div><div class="eyebrow">LORE DATABASE</div><h2>Lore архив</h2><p>Хуучин танилцуулгын жишээ хэсэг. Нийтлэгдсэн бүх материал үндсэн нэгдсэн архивт байна.</p></div></div><div class="toolbar"><input id="search" class="search" type="search" placeholder="Нийтлэл, дүр, сэдэв хайх..."><select id="sort" class="select"><option value="new">Шинэ нь эхэнд</option><option value="az">Нэрээр A–Z</option></select></div><div class="filters" id="filters"><button class="chip active" data-game="all">Бүгд</button><button class="chip" data-game="Genshin Impact">Genshin</button><button class="chip" data-game="Wuthering Waves">Wuthering Waves</button><button class="chip" data-game="ANANTA">ANANTA</button><button class="chip" data-game="Honkai: Star Rail">Honkai: Star Rail</button><button class="chip" data-game="Zenless Zone Zero">Zenless Zone Zero</button><button class="chip" data-game="Arknights">Arknights</button><button class="chip" data-game="Blue Archive">Blue Archive</button></div><div class="articles" id="articles"></div><div class="empty" id="empty">Тохирох нийтлэл олдсонгүй.</div><p class="note">Тайлбар: Эхний нийтлэлүүд нь архивын танилцуулга контент. Албан ёсны эх сурвалжаар нягталсан судалгааг редакцын шалгалтын дараа нийтэлнэ.</p></section>
 
 
-<section class="section archive" id="archive"><span id="publishedLore" aria-hidden="true"></span>
- <div class="section-head"><div><div class="eyebrow">EDITORIAL DATABASE</div><h2>Бүх Lore — нэгдсэн архив</h2><p>Тоглоом, анимэ, манга болон бусад ертөнцийн нийтлэгдсэн lore судалгаа, дүрийн мэдээлэл, мэдээ, гарын авлагыг нэг хайлт, нэг шүүлтүүрээр үзнэ. Зөвхөн редакц нийтэлсэн материал энд харагдана.</p></div></div>
- <div class="toolbar" style="flex-wrap:wrap"><input id="publishedSearch" class="search" type="search" placeholder="Гарчиг, дүр, тоглоом, агуулгаар хайх..."><select class="form-field" id="publishedType"><option value="all">Бүх төрөл</option><option value="lore">Lore судалгаа</option><option value="game">Тоглоом</option><option value="anime">Анимэ</option><option value="manga">Манга</option><option value="news">Мэдээ</option><option value="guide">Гарын авлага</option><option value="work">Бүтээл</option><option value="character">Дүр</option><option value="location">Байршил</option><option value="faction">Фракц</option><option value="event">Үйл явдал</option></select><select class="form-field" id="publishedGame"><option value="all">Бүх ертөнц</option><option>Genshin Impact</option><option>Wuthering Waves</option><option>ANANTA</option><option>Honkai: Star Rail</option><option>Zenless Zone Zero</option><option>Arknights</option><option>Blue Archive</option><option>Бусад</option></select><label class="chip"><input id="bookmarksOnly" type="checkbox" style="accent-color:#c07bff"> Зөвхөн хадгалсан</label></div><div class="portal-note" id="publishedCount"></div>
- <div id="publishedPosts" class="articles"><p class="portal-note">Нийтлэл ачаалж байна…</p></div>
- <div id="publishedStatus" class="portal-note"></div>
-</section>
+
 <div class="modal" id="feedbackModal" role="dialog" aria-modal="true"><div class="dialog">
  <div class="dialogtop"><div><div class="eyebrow">EDITORIAL FEEDBACK</div><h2>Нийтлэлд санал өгөх</h2></div><button class="close" id="feedbackClose" type="button">✕</button></div>
  <form id="feedbackForm"><input id="feedbackPostId" type="hidden">
