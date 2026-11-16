@@ -129,7 +129,8 @@ $("generate").onclick=generate;
 $("copyPrompt").onclick=async()=>{try{await navigator.clipboard.writeText($("chatPrompt").value);say("genState","Заавар хууллаа. ChatGPT-д буулгана уу.");}catch{say("genState","Зааврыг гараар сонгож хуулна уу.");}};
 $("importResponse").onclick=()=>{
  try{
-  const d=JSON.parse($("chatResponse").value.trim());\n  if(!d||typeof d!=="object"||Array.isArray(d))throw new Error("JSON-ийн үндсэн утга object байх ёстой.");
+  const d=JSON.parse($("chatResponse").value.trim());
+  if(!d||typeof d!=="object"||Array.isArray(d))throw new Error("JSON-ийн үндсэн утга object байх ёстой.");
   const topic=$("topic").value.trim();
   const title=String(d.title||topic).trim();
   const slug=String(d.slug||("lore-"+Date.now())).trim().toLowerCase();
