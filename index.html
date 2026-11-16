@@ -269,7 +269,7 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
 </style></style>
 </head>
 <body>
-<header class="wrap topbar"><a class="brand" href="#"><span class="mark">✦</span> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх">☰</button><nav class="nav" id="mainNav"><a href="#all-universes">Бүх ертөнцийн мэдлэг</a><a href="#all-categories">Ангилал</a><a href="#anime">Анимэ</a><a href="#games">Тоглоом</a><a href="#all-categories">Манга</a><a href="archive/">Novel</a><a href="#archive">Lore Archive</a><a href="chat/">Хувийн чат</a><a href="#community">Community</a></nav><div class="actions"><button class="ghost" id="profileOpen" type="button">Миний профайл</button><button class="ghost" id="notificationsOpen" type="button" aria-label="Мэдэгдэл">🔔 <span id="notificationCount">0</span></button><select class="select" id="lang" aria-label="Language"><option value="mn">MN</option><option value="en">EN</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div></header>
+<header class="wrap topbar"><a class="brand" href="#"><span class="mark">✦</span> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх">☰</button><nav class="nav" id="mainNav"><a href="#all-universes">Бүх ертөнцийн мэдлэг</a><a href="#all-categories">Ангилал</a><a href="#anime">Анимэ</a><a href="#games">Тоглоом</a><a href="#all-categories">Манга</a><a href="archive/">Novel</a><a href="#archive">Lore Archive</a><a href="chat/">Хувийн чат</a></nav><div class="actions"><button class="ghost" id="profileOpen" type="button">Миний профайл</button><button class="ghost" id="notificationsOpen" type="button" aria-label="Мэдэгдэл">🔔 <span id="notificationCount">0</span></button><select class="select" id="lang" aria-label="Language"><option value="mn">MN</option><option value="en">EN</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div></header>
 <div class="wrap" id="accountTools" hidden>
  <section class="portal-panel" style="margin-top:14px">
   <div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><div><div class="eyebrow">NOTIFICATION CENTER</div><h3 style="margin:4px 0">Мэдэгдэл</h3></div><button class="btn" id="notificationsClose" type="button">Хаах</button></div>
@@ -444,20 +444,7 @@ section,.section,.community-grid,.community-side,.community-main{min-width:0;max
   </aside> </div>
 </section>
 
-<section class="section" id="community">
- <div class="section-head"><div><div class="eyebrow">LOREVERSE COMMUNITY</div><h2>Нийтийн чат</h2><p>Бүртгэлгүй зочид ч уншиж, anonymous session-оор мессеж бичиж болно. XP нь зөвхөн баталгаажсан хувь нэмэрт олгоно.</p></div><a class="btn primary" href="chat/">Хувийн чат нээх →</a></div>
- <div class="community-grid">
-  <aside class="community-side"><div class="eyebrow">CHANNELS</div><h3 style="margin:6px 0">Сувгууд</h3><div id="chatChannels" class="channel-list"><p class="portal-note">Сувгууд ачаалж байна…</p></div><p class="portal-note">Дүрэм: доромжлол, спам, давтан мессеж хориглоно.</p></aside>
-  <div class="community-main"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><div><b id="chatChannelTitle"># global-chat</b><div class="portal-note" id="chatStatus">Чат холбогдож байна…</div></div><span class="tag">REALTIME</span></div>
-   <div class="chat-tools"><input id="chatSearch" class="form-field" placeholder="Энэ сувгийн мессеж хайх…"><button class="btn" id="clearChatSearch" type="button">Цэвэрлэх</button><span class="tag" id="chatOnline">Онлайн: —</span></div>
-   <div id="chatPinned" class="chat-pinned" hidden></div>
-   <div id="chatFeed" class="chat-feed" aria-live="polite"><p class="portal-note">Мессеж ачаалж байна…</p></div>
-   <div id="replyPreview" class="reply-preview" hidden></div>
-   <div id="chatForm" class="chat-compose"><input id="chatInput" class="form-field" maxlength="1200" placeholder="Мессеж бичих..." autocomplete="off"><button class="btn primary" id="chatSendButton" type="button">Илгээх</button></div>
-   <div class="chat-foot"><span class="portal-note">4 секундийн cooldown · 1200 тэмдэгтийн хязгаар</span><span class="portal-note">Нэр болон Rank таны профайлаас харагдана</span></div>
-  </div>
- </div>
-</section>
+
 
 <section class="section" id="ranks">
  <div class="section-head"><div><div class="eyebrow">XP · LORE COINS · SEASONS</div><h2>Rank ба Bonus</h2><p>Lifetime Rank тогтмол хадгалагдана. Seasonal Rank улирал бүр шинэчлэгдэнэ.</p></div></div>
@@ -835,11 +822,11 @@ async function loadChatMessages(){
 async function updatePresence(){
  const u=communityUser;if(!u)return;
  const {error}=await supabase.from("chat_presence").upsert({user_id:u.id,display_name:u.is_anonymous?"Guest":(u.user_metadata?.display_name||u.email?.split("@")[0]||"Member"),channel_id:activeChatChannel,last_seen:new Date().toISOString()},{onConflict:"user_id"});
- if(error)$("chatStatus").textContent="Presence: "+error.message;
+ if(error)console.warn("Presence:",error.message);
 }
 async function loadOnlineCount(){
  const {count,error}=await supabase.from("chat_presence").select("user_id",{count:"exact",head:true}).gt("last_seen",new Date(Date.now()-120000).toISOString());
- $("chatOnline").textContent=error?"Онлайн: —":"Онлайн: "+(count||0);
+ $("onlineCount").textContent=error?"—":String(count||0);
 }
 async function selectChatChannel(id,label){
  activeChatChannel=id;$("chatChannelTitle").textContent=label||("# "+id);
@@ -849,8 +836,6 @@ async function selectChatChannel(id,label){
  chatSubscription=supabase.channel("loreverse-chat-"+id).on("postgres_changes",{event:"*",schema:"public",table:"chat_messages",filter:"channel_id=eq."+id},()=>loadChatMessages()).subscribe();
  reactionSubscription=supabase.channel("loreverse-reactions-"+id).on("postgres_changes",{event:"*",schema:"public",table:"chat_reactions"},()=>loadChatMessages()).subscribe();
 }
-$("chatSearch").addEventListener("input",renderChatMessages);
-$("clearChatSearch").onclick=()=>{$("chatSearch").value="";renderChatMessages();};
 async function sendCommunityChatMessage(event){
  event?.preventDefault?.();event?.stopPropagation?.();event?.stopImmediatePropagation?.();
  const input=$("chatInput"),button=$("chatSendButton"),body=input.value.trim();
@@ -865,10 +850,6 @@ async function sendCommunityChatMessage(event){
  }catch(err){$("chatStatus").textContent=err.message||"Мессеж илгээж чадсангүй.";}
  finally{button.disabled=false;input.focus();}
 }
-$("chatSendButton").addEventListener("click",sendCommunityChatMessage);
-$("chatInput").addEventListener("keydown",event=>{
- if(event.key==="Enter"&&!event.shiftKey){event.preventDefault();event.stopPropagation();sendCommunityChatMessage(event);}
-});
 async function refreshGamification(){
  const user=(await supabase.auth.getUser()).data.user;communityUser=user;if(!user){$("rankDisplayName").textContent="Зочин хэрэглэгч";return;}
  const {data,error}=await supabase.from("profiles").select("display_name,total_xp,lore_coins,season_xp,season_id").eq("id",user.id).maybeSingle();
@@ -891,26 +872,6 @@ async function loadLoreLeaderboard(){
 $("dailyReward").onclick=async()=>{try{const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Өдрийн бонус авахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.");const {data,error}=await supabase.rpc("claim_daily_lore_reward");if(error)throw error;$("dailyRewardStatus").textContent=data.message||"Бонус шалгагдлаа.";await refreshGamification();}catch(e){$("dailyRewardStatus").textContent=e.message;}};
 supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=await supabase.auth.getUser();communityUser=user;await refreshGamification();await loadCoinStore();},0)});
 (async()=>{
- const chatReady=(async()=>{
-  try{
-   await loadChatChannels();
-   await selectChatChannel("global-chat","# Global Chat");
-   $("chatStatus").textContent="Чат унших боломжтой. Мессеж бичихийн тулд зочны эрх холбогдоно.";
-   return true;
-  }catch(e){
-   $("chatStatus").textContent="Чат ачаалж чадсангүй: "+(e?.message||"Тодорхойгүй алдаа");
-   const feed=$("chatFeed");
-   if(feed)feed.innerHTML='<div class="portal-note">Чат сервертэй холбогдож чадсангүй.</div><button type="button" id="retryChatInit" class="btn">Дахин оролдох</button>';
-   $("retryChatInit")?.addEventListener("click",()=>{loadChatChannels().then(()=>selectChatChannel("global-chat","# Global Chat")).catch(err=>$("chatStatus").textContent=err.message);});
-   return false;
-  }
- })();
- // Public reading must not wait for anonymous authentication.
- chatReady.then(async ready=>{
-  if(!ready)return;
-  try{await Promise.race([ensureCommunityUser(),new Promise((_,reject)=>setTimeout(()=>reject(new Error("Зочны нэвтрэлт удаж байна. Та чатыг уншиж болох ч мессеж бичихийн тулд дахин оролдоно уу.")),10000))]);}
-  catch(e){$("chatStatus").textContent="Чат унших боломжтой. Бичих эрх холбогдоогүй: "+e.message;}
- });
  try{
   await loadCommunityFeed();
   await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();await loadPublishedLore();await loadCommunityEvents();await loadAccountPanel();await loadMySupportTickets();
