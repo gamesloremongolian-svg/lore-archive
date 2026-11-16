@@ -1,4 +1,4 @@
-name: LOREVERSE Android Release AAB
+name: LOREVERSE Android APK and Play Release
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
       - '.github/workflows/android-release.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   android-release:
@@ -59,9 +59,17 @@ jobs:
           print("compileSdkVersion=36 and targetSdkVersion=36")
           PY
 
-      - name: Build release Android App Bundle
+      - name: Build release Android App Bundle and installable APK
         working-directory: android
-        run: ./gradlew bundleRelease
+        run: ./gradlew bundleRelease assembleDebug
+
+      - name: Prepare direct-download APK
+        run: |
+          set -euo pipefail
+          APK="android/app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$APK"
+          mkdir -p release-apk
+          cp "$APK" release-apk/LOREVERSE.apk
 
       - name: Sign AAB when upload-key secrets are configured
         id: sign
@@ -96,3 +104,19 @@ jobs:
           path: release-artifact/*.aab
           if-no-files-found: error
           retention-days: 14
+
+
+      - name: Publish direct-download Android APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: android-apk-beta
+          name: LOREVERSE Android APK (Beta)
+          body: |
+            LOREVERSE Android APK beta build.
+            This is a directly installable debug-signed testing build, not the Google Play production release.
+            Install only if you trust this repository. Android may ask you to allow installation from this source.
+          prerelease: true
+          make_latest: false
+          files: release-apk/LOREVERSE.apk
+          overwrite_files: true
+          fail_on_unmatched_files: true
