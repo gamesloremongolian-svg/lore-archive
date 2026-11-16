@@ -1,0 +1,42 @@
+name: LOREVERSE Website Auto Tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: "17 21 * * *"
+permissions:
+  contents: read
+concurrency:
+  group: loreverse-website-tests-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm install
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run website tests
+        run: npm run test:e2e
+        env:
+          BASE_URL: https://loreverse-ctrl.github.io/lore-archive/
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: loreverse-playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 14
