@@ -1374,41 +1374,56 @@ const $=id=>document.getElementById(id);
 const updateEsc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const updateDate=value=>{if(!value)return "Огноо тодорхойгүй";const d=new Date(value);return Number.isNaN(d.getTime())?"Огноо тодорхойгүй":d.toLocaleDateString("mn-MN",{year:"numeric",month:"long",day:"numeric"});};
 let latestAppRelease=null;
+let installedAppInfo={version:"Вэб",build:"0"};
+let latestAppAsset=null;
 async function openAppApk(url){
  if(!url)throw new Error("APK татах холбоос олдсонгүй.");
  if(Capacitor.isNativePlatform()) await Browser.open({url});
  else window.open(url,"_blank","noopener,noreferrer");
 }
+function renderAppReleaseList(releases){
+ const host=$("appReleaseList");if(!host)return;
+ const rows=releases.slice(0,4);
+ if(!rows.length){host.innerHTML='<div class="update-empty">APK хувилбарын түүх олдсонгүй.</div>';return;}
+ host.innerHTML=rows.map(r=>{
+  const asset=(r.assets||[]).find(a=>/\.apk$/i.test(a.name));
+  const date=updateDate(r.published_at||r.created_at);
+  const body=String(r.body||"").trim().slice(0,320);
+  return '<article class="update-item"><div class="update-meta">'+updateEsc(r.tag_name)+' · '+updateEsc(date)+'</div><strong>'+updateEsc(r.name||r.tag_name)+'</strong>'+(body?'<p class="update-desc">'+updateEsc(body)+'</p>':'')+(asset?'<a class="update-link" href="'+updateEsc(asset.browser_download_url)+'" target="_blank" rel="noopener noreferrer">Энэ APK-г татах · '+(asset.size/1048576).toFixed(1)+' MB ↗</a>':'<span class="update-desc">APK файл хавсаргаагүй</span>')+'</article>';
+ }).join("");
+}
 async function checkAppUpdate(){
  const status=$("appUpdateStatus"),download=$("downloadAppUpdate");
  if(!status)return;
- status.textContent="GitHub-оос хамгийн сүүлийн APK хувилбарыг шалгаж байна…";download.hidden=true;
+ status.textContent="GitHub-оос хамгийн сүүлийн Android APK хувилбарыг шалгаж байна…";
+ download.hidden=true;
  try{
   const [response,info]=await Promise.all([
-   fetch("https://api.github.com/repos/loreverse-ctrl/lore-archive/releases?per_page=20",{headers:{Accept:"application/vnd.github+json"},cache:"no-store"}),
+   fetch("https://api.github.com/repos/loreverse-ctrl/lore-archive/releases?per_page=30",{headers:{Accept:"application/vnd.github+json"},cache:"no-store"}),
    App.getInfo().catch(()=>({version:"Вэб",build:"0"}))
   ]);
   if(!response.ok)throw new Error("GitHub Releases хүсэлт амжилтгүй ("+response.status+").");
   const releases=await response.json();
-  latestAppRelease=(Array.isArray(releases)?releases:[]).filter(r=>!r.draft).find(r=>(r.assets||[]).some(a=>/\.apk$/i.test(a.name)))||null;
-  if(!latestAppRelease)throw new Error("Одоогоор APK файлтай нийтлэгдсэн хувилбар олдсонгүй.");
-  const asset=latestAppRelease.assets.find(a=>/\.apk$/i.test(a.name));
+  const apkReleases=(Array.isArray(releases)?releases:[]).filter(r=>!r.draft&&(r.assets||[]).some(a=>/\.apk$/i.test(a.name)));
+  latestAppRelease=apkReleases[0]||null;
+  if(!latestAppRelease)throw new Error("APK файлтай нийтлэгдсэн хувилбар олдсонгүй.");
+  latestAppAsset=latestAppRelease.assets.find(a=>/\.apk$/i.test(a.name));
+  installedAppInfo=info||{version:"Тодорхойгүй",build:"0"};
   const remoteBuild=Number((latestAppRelease.tag_name||"").match(/android-build-(\d+)/i)?.[1]||0);
-  const localBuild=Number(info.build||0);
-  const newer=Capacitor.isNativePlatform()&&remoteBuild>0&&localBuild>0?remoteBuild>localBuild:true;
-  status.innerHTML=(newer?'<b style="color:#9ceaff">Шинэ хувилбар байна.</b> ':'<b style="color:#a8e6b0">Хамгийн сүүлийн хувилбар олдлоо.</b> ')+updateEsc(latestAppRelease.name||latestAppRelease.tag_name)+' · '+updateEsc(latestAppRelease.tag_name)+'<br><span class="update-desc">Таны апп: '+updateEsc(info.version||"тодорхойгүй")+' (build '+updateEsc(info.build||"—")+') · APK: '+(asset.size/1048576).toFixed(1)+' MB</span>';
-  download.hidden=false;download.textContent=newer?"Шинэ APK татах ↓":"APK дахин татах ↓";
-  $("appReleaseList").innerHTML='<article class="update-item"><div class="update-meta">'+updateEsc(latestAppRelease.tag_name)+' · '+updateDate(latestAppRelease.published_at||latestAppRelease.created_at)+'</div><strong>'+updateEsc(latestAppRelease.name||"LOREVERSE Android")+'</strong><p class="update-desc">'+updateEsc(String(latestAppRelease.body||"").trim().slice(0,240))+'</p></article>';
- }catch(error){status.textContent="Шинэчлэлт шалгаж чадсангүй: "+error.message;throw error;}
+  const localBuild=Number(installedAppInfo.build||0);
+  const isNative=Capacitor.isNativePlatform();
+  const newer=isNative&&remoteBuild>0&&localBuild>0?remoteBuild>localBuild:false;
+  const same=isNative&&remoteBuild>0&&localBuild>0&&remoteBuild===localBuild;
+  const state=newer?'<b style="color:#9ceaff">ШИНЭ ХУВИЛБАР БЭЛЭН БОЛЛОО</b>':same?'<b style="color:#a8e6b0">Таны апп шинэчлэгдсэн байна.</b>':'<b style="color:#a8e6b0">Хамгийн сүүлийн APK бэлэн байна.</b>';
+  status.innerHTML=state+'<br>'+updateEsc(latestAppRelease.name||latestAppRelease.tag_name)+' · '+updateEsc(latestAppRelease.tag_name)+'<br><span class="update-desc">Суулгасан хувилбар: '+updateEsc(installedAppInfo.version||"—")+' · build '+updateEsc(installedAppInfo.build||"—")+'<br>Сүүлийн build: '+(remoteBuild||"—")+' · APK '+(latestAppAsset.size/1048576).toFixed(1)+' MB'+(newer?'<br>Шинэ APK-г татаж суулгаад аппыг дахин нээнэ үү.':'')+'</span>';
+  download.hidden=false;
+  download.textContent=newer?"Шинэ APK татах ↓":(isNative?"Одоогийн APK дахин татах ↓":"Android APK татах ↓");
+  renderAppReleaseList(apkReleases);
+ }catch(error){
+  status.textContent="Шинэчлэлт шалгаж чадсангүй: "+error.message;
+  throw error;
+ }
 }
-async function loadAppReleases(){
- const host=$("appReleaseList");if(!host)return;
- try{await checkAppUpdate();}
- catch(error){host.innerHTML='<div class="update-empty">Хувилбарын мэдээлэл ачаалж чадсангүй. <a class="update-link" href="https://github.com/loreverse-ctrl/lore-archive/releases">GitHub Releases ↗</a></div>';}
-}
-$("checkAppUpdate")?.addEventListener("click",()=>checkAppUpdate().catch(()=>{}));
-$("appUpdateQuickOpen")?.addEventListener("click",()=>{setTimeout(()=>checkAppUpdate().catch(()=>{}),180);});
-$("downloadAppUpdate")?.addEventListener("click",()=>{if(latestAppRelease){const asset=latestAppRelease.assets.find(a=>/\.apk$/i.test(a.name));if(asset)openAppApk(asset.browser_download_url).catch(e=>{$("appUpdateStatus").textContent="Татаж эхлүүлэхэд алдаа: "+e.message;});}});
 async function loadEditorialUpdates(){
  const host=$("editorialUpdateList");if(!host)return;
  const {data,error}=await supabase.from("content_posts").select("id,title,slug,summary,content_type,language_code,published_at,updated_at,is_premium").eq("status","published").eq("is_premium",false).order("published_at",{ascending:false}).limit(6);
