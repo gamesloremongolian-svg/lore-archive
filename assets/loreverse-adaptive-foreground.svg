@@ -1,7 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 432 432">
-<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset=".48" stop-color="#e5d5ff"/><stop offset="1" stop-color="#9257f4"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-<g transform="translate(216 216)" fill="none" stroke="url(#g)" filter="url(#glow)">
-<circle r="144" stroke-width="5" opacity=".4"/><circle r="118" stroke-width="4" opacity=".5"/>
-<path d="M0-164 26-30 160 0 26 30 0 164-26 30-160 0-26-30Z" stroke-width="11" stroke-linejoin="round"/>
-<path d="M0-84 12-12 84 0 12 12 0 84-12 12-84 0-12-12Z" fill="url(#g)" stroke="none"/>
-</g></svg>
+<defs><linearGradient id="face" x2=".2" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#c7b5ff"/></linearGradient><linearGradient id="orbit"><stop stop-color="#3bf5ff"/><stop offset=".5" stop-color="#b95cff"/><stop offset="1" stop-color="#ff72db"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<g fill="none" stroke="url(#orbit)" stroke-width="12" filter="url(#glow)"><ellipse cx="216" cy="218" rx="178" ry="66" transform="rotate(-17 216 218)"/><ellipse cx="216" cy="218" rx="178" ry="66" transform="rotate(17 216 218)"/></g>
+<circle cx="216" cy="190" r="125" fill="#17388f" stroke="#47eaff" stroke-width="6" filter="url(#glow)"/>
+<g fill="url(#face)" stroke="#fff" stroke-width="4" stroke-linecap="round" filter="url(#glow)"><path d="M163 153 135 116M269 153 297 116" fill="none" stroke-width="15"/><path d="M128 245Q128 160 216 160Q304 160 304 245Z"/></g>
+<g fill="#11152f"><circle cx="181" cy="203" r="12"/><circle cx="251" cy="203" r="12"/></g>
+<path d="M216 257l12 27 28 12-28 12-12 28-12-28-28-12 28-12z" fill="#fff5c4" filter="url(#glow)"/>
+</svg>
