@@ -2411,6 +2411,8 @@ $("supportTicketForm").addEventListener("submit",async e=>{
 $("reloadMyTickets").onclick=loadMySupportTickets;
 
 
+/* LOREVERSE AI chat — initialize only after the chat HTML exists (Android-safe) */
+function initializeLoreAiChat(){
 /* LOREVERSE AI chat — reliable Android tap and keyboard submission */
 const loreAiPanel=document.getElementById("loreAiPanel");
 const loreAiMessages=document.getElementById("loreAiMessages");
@@ -2495,6 +2497,14 @@ loreAiQuestion.addEventListener("keydown",event=>{
 if(loreAiPanel.parentElement!==document.body)document.body.appendChild(loreAiPanel);
 
 
+
+
+}
+if(document.readyState==="loading"){
+ document.addEventListener("DOMContentLoaded",initializeLoreAiChat,{once:true});
+}else{
+ initializeLoreAiChat();
+}
 
 document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBankAccount"){try{await navigator.clipboard.writeText("5622218472");$("bankCopyStatus").textContent="Дансны дугаар хууллаа.";}catch(_){$("bankCopyStatus").textContent="Дугаар: 5622218472";}}});
 
