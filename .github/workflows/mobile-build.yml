@@ -89,22 +89,24 @@ jobs:
           s = p.read_text()
           if "loreverse-debug.keystore" in s:
               raise SystemExit("Persistent signing configuration already exists; refusing duplicate patch.")
-          block = '''
-              signingConfigs {
-                  debug {
-                      storeFile file(System.getProperty("user.home") + "/.android/loreverse-debug.keystore")
-                      storePassword System.getenv("ANDROID_DEBUG_KEYSTORE_PASSWORD")
-                      keyAlias "loreverse"
-                      keyPassword System.getenv("ANDROID_DEBUG_KEYSTORE_PASSWORD")
-                  }
-              }
-          '''
           marker = "    buildTypes {"
           if marker not in s:
               raise SystemExit("Could not find Android buildTypes block.")
-          s = s.replace(marker, block + chr(10) + marker + chr(10) + '        debug { signingConfig signingConfigs.debug }', 1)
+          insert_lines = [
+              "    signingConfigs {",
+              "        debug {",
+              '            storeFile file(System.getProperty("user.home") + "/.android/loreverse-debug.keystore")',
+              '            storePassword System.getenv("ANDROID_DEBUG_KEYSTORE_PASSWORD")',
+              '            keyAlias "loreverse"',
+              '            keyPassword System.getenv("ANDROID_DEBUG_KEYSTORE_PASSWORD")',
+              "        }",
+              "    }",
+          ]
+          insert = chr(10).join(insert_lines)
+          s = s.replace(marker, insert + chr(10) + marker + chr(10) + "        debug { signingConfig signingConfigs.debug }", 1)
           p.write_text(s)
-          PY
+          print("Inserted Android signing configuration using explicit newline-joined lines.")
+          PYY
       - name: Build debug APK
         run: cd android && ./gradlew assembleDebug
       - name: Upload Android APK
