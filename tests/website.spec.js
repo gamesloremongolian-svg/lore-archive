@@ -27,6 +27,20 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('.skip-link')).toBeFocused();
   });
 
+  test('public sitemap and crawler rules are published', async ({ request }) => {
+    const sitemap = await request.get(new URL('sitemap.xml', baseURL).toString());
+    const robots = await request.get(new URL('robots.txt', baseURL).toString());
+    expect(sitemap.ok()).toBe(true);
+    expect(robots.ok()).toBe(true);
+    const sitemapText = await sitemap.text();
+    const robotsText = await robots.text();
+    expect(sitemapText).toContain('<urlset');
+    expect(sitemapText).toContain('/lore-archive/knowledge/');
+    expect(robotsText).toContain('Sitemap: https://loreverse-ctrl.github.io/lore-archive/sitemap.xml');
+    expect(robotsText).toContain('Disallow: /admin/');
+    expect(robotsText).toContain('Disallow: /editorial/');
+  });
+
   test('internal hash links resolve to an element', async ({ page }) => {
     await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
     const broken = await page.locator('a[href*="#"]').evaluateAll(links => {
