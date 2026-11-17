@@ -2,6 +2,56 @@
 <html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080914"><title>LOREVERSE Admin</title>
 <style>
 :root{color-scheme:dark;--bg:#080914;--panel:#13162b;--line:#2a2e4b;--muted:#a6a8c0;--text:#f5f3ff;--violet:#9d76ff;--cyan:#69e4ef}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#39225e,transparent 48%),var(--bg);color:var(--text);font:15px/1.6 system-ui,sans-serif}.wrap{width:min(900px,calc(100% - 28px));margin:40px auto}.brand{font-weight:950;letter-spacing:.13em}.brand span{color:#b18aff}.panel{margin-top:25px;background:#13162beF;border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 18px 70px #0005}.eyebrow{font-size:10px;letter-spacing:.22em;color:var(--cyan);font-weight:800}.title{font-size:32px;line-height:1.15;margin:8px 0 20px}input,select,textarea{width:100%;background:#090c1b;border:1px solid var(--line);border-radius:10px;color:var(--text);padding:12px;margin:6px 0 14px;font:inherit}textarea{min-height:120px}label{font-size:12px;color:var(--muted)}button,.btn{border:0;border-radius:10px;background:linear-gradient(110deg,#8d58f5,#566fe8);color:white;font-weight:800;padding:12px 17px;cursor:pointer}.muted{color:var(--muted);font-size:12px}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1}.hidden{display:none}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.tabs button{background:#222641}.status{padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin:12px 0;color:var(--muted);font-size:13px}.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:#0c1020;border:1px solid var(--line);border-radius:12px;padding:15px}.stat b{display:block;font-size:22px}.list{padding:12px;border-bottom:1px solid var(--line)}a{color:var(--cyan)}@media(max-width:560px){.panel{padding:17px}.statgrid{grid-template-columns:1fr}.title{font-size:26px}}
+
+/* LOREVERSE Admin — responsive cosmic control center */
+:root{--bg:#080615;--panel:#17102b;--line:#684582;--muted:#d0c1e2;--text:#fffaff;--violet:#bd75ff;--cyan:#64eaff;--pink:#ff70c8;--gold:#ffd36e}
+body{background:radial-gradient(ellipse at 8% 0%,#963bd044,transparent 35%),radial-gradient(ellipse at 95% 22%,#167ed033,transparent 32%),linear-gradient(145deg,#080615,#10091f 55%,#071521);color:var(--text)}
+.wrap{width:min(1180px,calc(100% - 28px));margin:24px auto 48px}
+.brand{font-size:18px;text-decoration:none;color:#fff;text-shadow:0 0 18px #b76cff66}
+.brand span{background:linear-gradient(90deg,#ff83d2,#bd83ff,#65eaff);background-clip:text;color:transparent}
+.panel{background:linear-gradient(145deg,#241438ee,#11182df2);border-color:#795295;box-shadow:0 20px 70px #0007,0 0 28px #a65bff14;backdrop-filter:blur(16px)}
+.title{background:linear-gradient(100deg,#fff,#e4baff 52%,#83eaff);background-clip:text;color:transparent}
+.eyebrow{color:#78eaff;text-shadow:0 0 14px #64eaff55}
+input,select,textarea{background:#0c0a1c;border-color:#65457e;color:#fff}
+input:focus,select:focus,textarea:focus{outline:2px solid #bd75ff;outline-offset:1px;border-color:#bd75ff}
+button,.btn{background:linear-gradient(110deg,#e65eb7,#9558ef 55%,#347fd1);box-shadow:0 8px 24px #a24cff30;transition:filter .18s,transform .18s}
+button:hover,.btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+button:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.tabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:9px;padding:12px;border:1px solid #684582;border-radius:17px;background:#0b091bcc}
+.tabs button{min-height:43px;padding:10px 12px;background:linear-gradient(145deg,#302044,#17152f);border:1px solid #65457e;box-shadow:none}
+.tabs button:hover,.tabs button:focus-visible{border-color:#ff8bd4;background:linear-gradient(110deg,#6b347a,#2b3773)}
+.tabs button[data-tab="corrections"]{border-color:#d3a24c;color:#ffe2a0}
+.status,.stat,.list{background:#100d22;border-color:#604078;border-radius:12px}
+.stat{background:linear-gradient(145deg,#2c1944,#12253b)}
+.stat b{background:linear-gradient(90deg,#ff8bd4,#7eeaff);background-clip:text;color:transparent}
+.list{margin:9px 0;padding:14px;border:1px solid #51376a}
+a{color:#7eeaff}
+.hidden{display:none!important}
+#dash>.eyebrow{font-size:11px}
+#dash>.title{margin-bottom:12px}
+#dash>.statgrid{margin:16px 0}
+#dash>.tabs{position:sticky;top:8px;z-index:20;backdrop-filter:blur(18px)}
+#dash>[id$="Tab"]:not(.hidden){animation:adminFade .2s ease}
+@keyframes adminFade{from{opacity:.5;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+#authPanel,#recoveryPanel{max-width:620px;margin:40px auto}
+#authPanel .row button,#recoveryPanel>button{min-height:46px}
+#dash .row{align-items:center}
+#dash label{display:block;margin-top:8px}
+#dash input[type=checkbox]{width:auto}
+#dash .muted{line-height:1.65}
+@media(max-width:700px){
+ .wrap{width:calc(100% - 20px);margin:12px auto 30px}
+ .panel{padding:15px;border-radius:16px;margin-top:16px}
+ .title{font-size:27px}
+ #dash>.tabs{position:sticky;top:0;grid-template-columns:repeat(2,minmax(0,1fr));max-height:38vh;overflow-y:auto;padding:9px}
+ #dash>.tabs button{font-size:12px;min-height:42px;padding:9px 7px}
+ .statgrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+ .stat{padding:10px 8px}.stat b{font-size:19px}.stat .muted{font-size:10px}
+ #dash .row>*{min-width:0}
+ #dash input,#dash select,#dash textarea{font-size:16px}
+}
+@media(max-width:420px){.statgrid{grid-template-columns:1fr 1fr}#dash>.tabs{grid-template-columns:1fr 1fr}}
+
 </style></head><body><main class="wrap"><p style="display:flex;justify-content:flex-end;align-items:center;gap:8px"><label for="lang">Interface language</label><select id="lang" style="width:auto;margin:0"><option value="mn">Монгол</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option></select></p>
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><a href="../index.html" class="brand">✦ LORE<span>VERSE</span></a><a class="btn" href="../index.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:7px">← Нүүр хуудас руу буцах</a></div>
 <section class="panel" id="authPanel"><div class="eyebrow">SECURE EDITORIAL WORKSPACE</div><h1 class="title">Админ нэвтрэх</h1><p class="muted">Бүртгэл үүсгэх эсвэл багийн бүртгэлээр нэвтэрнэ. Админ эрхийг эзэмшигч баталгаажуулсны дараа нээнэ.</p>
@@ -15,7 +65,7 @@
 <div class="tabs"><button data-tab="post">Нийтлэл</button><button data-tab="ads">Зар</button><button data-tab="team">Баг</button><button data-tab="premium">Premium</button><button data-tab="community">Community</button><button data-tab="users">Бүртгэлүүд</button><button data-tab="hiring">Туслах авах</button><button data-tab="analytics">Analytics</button><button data-tab="events">Event</button><button data-tab="feedback">Санал хүсэлт</button><button data-tab="corrections" id="ownerCorrectionsTab" class="hidden">Засварын хүсэлт · Owner</button><button data-tab="notifications">Мэдэгдэл</button><button data-tab="support">Support Desk</button><button data-tab="sticker">Sticker Lab</button><button data-tab="system">Системийн шалгалт</button><button id="logout">Гарах</button></div>
 <div id="stickerTab" class="hidden"><h2>✦ LOREVERSE Sticker Lab</h2><p class="muted">Стикер үүсгэгчийг Admin дотроос шууд ашиглана. Шинэ цонхоор нээх шаардлагагүй.</p><div style="border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#090b17"><iframe title="LOREVERSE Sticker Lab" src="../tools/sticker-maker.html" style="display:block;width:100%;height:920px;border:0;background:#090b17" loading="lazy"></iframe></div><p class="muted">Стикер PNG хэлбэрээр таны төхөөрөмжид татагдана. Энэ нь нийтлэлд автоматаар нийтлэхгүй.</p></div><div id="postTab"><h2>Нийтлэл үүсгэх</h2><label>Тоглоом / ертөнц</label><select id="postGame"><option value="">Ерөнхий / хамаарахгүй</option><option>Genshin Impact</option><option>Wuthering Waves</option><option>ANANTA</option><option>Honkai: Star Rail</option><option>Zenless Zone Zero</option><option>Arknights</option><option>Blue Archive</option><option>Бусад</option></select><label>Дүр / сэдэв (заавал биш)</label><input id="postCharacter" maxlength="120" placeholder="Жишээ: ALBEDO, Chaos..."><label>Эх сурвалжийн холбоосууд (мөр бүрт нэг HTTPS URL)</label><textarea id="postSources" rows="3" placeholder="https://..."></textarea><label>Агуулгын төрөл</label><select id="type"><option value="anime">Анимэ</option><option value="game">Тоглоом</option><option value="manga">Манга</option><option value="lore">Lore</option><option value="news">Мэдээ</option><option value="guide">Гарын авлага</option></select><label>Гарчиг</label><input id="postTitle" placeholder="Нийтлэлийн гарчиг"><label>URL slug (латин)</label><input id="slug" placeholder="article-slug"><label>Товч тайлбар</label><textarea id="summary" placeholder="Товч танилцуулга"></textarea><label>Үндсэн агуулга (текст)</label><textarea id="body" placeholder="Нийтлэлийн агуулга"></textarea><label>Нүүр зургийн URL</label><input id="cover" placeholder="https://..."><label><input id="isPremium" type="checkbox"> Premium гишүүдэд зориулсан нийтлэл</label><div class="row"><button id="draft">Ноорог хадгалах</button><button id="publish">Нийтлэх</button></div><div id="postMsg" class="status"></div></div>
 <div id="adsTab" class="hidden"><h2>Зарын хүсэлтүүд</h2><div id="adsList" class="muted">Зар татаж байна…</div></div>
-<div id="teamTab" class="hidden"><h2>Багийн эрх</h2><p class="muted">Owner/Admin нь багийн гишүүдийг удирдана. Шинэ гишүүнийг эхлээд хэрэглэгчээр бүртгүүлсний дараа эрх олгоно.</p><label>Багийн гишүүний хэрэглэгчийн UUID</label><input id="staffId" placeholder="Auth user UUID"><label>Эрх</label><select id="staffRole"><option value="editor">Editor — нийтлэл</option><option value="ads_manager">Ads manager — зар</option><option value="admin">Admin — удирдлага</option></select><button id="addStaff">Эрх олгох</button><div id="teamMsg" class="status"></div></div><div id="premiumTab" class="hidden"><h2>Premium багцын үнэ</h2><p class="muted">Үнэ MNT-ээр тохируулна. QPay автомат нэхэмжлэл хараахан холбогдоогүй.</p><div id="planList">Багцуудыг ачаалж байна…</div><div id="planMsg" class="status"></div></div>
+<div id="teamTab" class="hidden"><h2>Багийн эрх · Owner</h2><p class="muted">Зөвхөн Owner багийн эрх олгох болон өөрчлөх боломжтой.</p><p class="muted">Owner/Admin нь багийн гишүүдийг удирдана. Шинэ гишүүнийг эхлээд хэрэглэгчээр бүртгүүлсний дараа эрх олгоно.</p><label>Багийн гишүүний хэрэглэгчийн UUID</label><input id="staffId" placeholder="Auth user UUID"><label>Эрх</label><select id="staffRole"><option value="editor">Editor — нийтлэл</option><option value="ads_manager">Ads manager — зар</option><option value="admin">Admin — удирдлага</option></select><button id="addStaff">Эрх олгох</button><div id="teamMsg" class="status"></div></div><div id="premiumTab" class="hidden"><h2>Premium багцын үнэ</h2><p class="muted">Үнэ MNT-ээр тохируулна. QPay автомат нэхэмжлэл хараахан холбогдоогүй.</p><div id="planList">Багцуудыг ачаалж байна…</div><div id="planMsg" class="status"></div></div>
 </div><div id="hiringTab" class="hidden"><h2>Туслах ажилтан авах</h2><p class="muted">Ирсэн хүсэлтүүдийг шалгаж, зөвшөөрөхөд хэрэглэгчийн имэйлээр нь бүртгэлтэй эсэхийг шалган багт Editor эсвэл Ads manager эрхээр нэмнэ. Owner/Admin эрхийг энэ цэсээр олгохгүй.</p><button id="reloadApplications" type="button">Хүсэлт шинэчлэх</button><div id="applicationsMsg" class="status">Хүсэлтүүдийг ачаалж байна…</div><div id="applicationsList"></div></div><div id="usersTab" class="hidden"><h2>Хэрэглэгчийн бүртгэл</h2><p class="muted">Бүртгэлүүдийг харах болон шаардлагатай үед Auth бүртгэлийг устгах. Идэвхтэй багийн гишүүд болон өөрийн админ бүртгэлийг устгах боломжгүй. Устгал буцаах боломжгүй.</p><div class="row"><button id="reloadUsers" type="button">Жагсаалт шинэчлэх</button></div><div id="usersMsg" class="status">Хэрэглэгчдийн жагсаалтыг ачаална уу.</div><div id="usersList"></div></div>
 <div id="analyticsTab" class="hidden"><h2>LOREVERSE Analytics</h2><p class="muted">Одоогийн өгөгдлийн сан дахь тоон үзүүлэлтүүд. Page view-ийн бодит бүртгэл тусдаа tracking шаарддаг.</p><button id="reloadAnalytics" type="button">Шинэчлэх</button><div class="statgrid" id="analyticsCards"></div><h3>Өдрийн статистик · сүүлийн 14 мөр</h3><div id="analyticsDaily" class="status"></div></div>
 <div id="eventsTab" class="hidden"><h2>Community Event удирдлага</h2><label>Арга хэмжээний нэр</label><input id="eventTitle" maxlength="160" placeholder="Lore Quiz — Season 01"><label>Тайлбар</label><textarea id="eventDescription" maxlength="5000"></textarea><div class="row"><div><label>Төрөл</label><select id="eventType"><option value="quiz">Lore Quiz</option><option value="competition">Тэмцээн</option><option value="discussion">Хэлэлцүүлэг</option><option value="community">Community</option></select></div><div><label>XP шагнал (0–5000)</label><input id="eventXp" type="number" min="0" max="5000" value="0"></div><div><label>Coins шагнал (0–5000)</label><input id="eventCoins" type="number" min="0" max="5000" value="0"></div></div><div class="row"><div><label>Эхлэх цаг</label><input id="eventStart" type="datetime-local"></div><div><label>Дуусах цаг</label><input id="eventEnd" type="datetime-local"></div></div><div class="row"><button id="saveEventDraft" type="button">Ноорог хадгалах</button><button id="publishEvent" type="button">Нийтлэх</button></div><div id="eventsMsg" class="status"></div><h3>Арга хэмжээнүүд</h3><button id="reloadEvents" type="button">Жагсаалт шинэчлэх</button><div id="eventsList"></div></div>
@@ -58,9 +108,48 @@ try {
   const supabase=createClient('https://nfacspfctvunwbxtvvyi.supabase.co','sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1');
   authMsg.textContent='Supabase клиент бэлэн. Нэвтрэх эсвэл бүртгүүлэх боломжтой.';
 const $=id=>document.getElementById(id), say=(id,msg)=>$(id).textContent=msg;
-let currentStaffRole=null; async function enter(){const {data:{user}}=await supabase.auth.getUser();if(!user)return;const {data:staff,error}=await supabase.from('staff_members').select('role,active').eq('user_id',user.id).maybeSingle();if(error){say('authMsg','Эрхийн мэдээлэл шалгахад алдаа гарлаа: '+error.message);return}if(!staff||!staff.active){say('authMsg','Бүртгэл амжилттай. Админ эзэмшигч таныг багийн гишүүнээр баталгаажуулсны дараа самбар нээгдэнэ.');return} currentStaffRole=staff.role; $('ownerCorrectionsTab').classList.toggle('hidden',staff.role!=='owner'); $('authPanel').classList.add('hidden');$('dash').classList.remove('hidden');say('welcome',user.email+' · '+staff.role);await loadCounts();await loadAds();await loadPlans();}
+let currentStaffRole=null;
+const roleTabs={
+ owner:['post','ads','team','premium','community','users','hiring','analytics','events','feedback','corrections','notifications','support','sticker','system'],
+ admin:['post','ads','premium','community','users','hiring','analytics','events','feedback','notifications','support','sticker','system'],
+ editor:['post','feedback','system'],
+ ads_manager:['ads','system']
+};
+const roleLabels={owner:'Owner · Бүрэн эрх',admin:'Admin · Удирдлага',editor:'Editor · Контент',ads_manager:'Ads Manager · Зар'};
+function can(action){const map={owner:['*'],admin:['content','ads','premium','community','users','hiring','analytics','events','feedback','notifications','support','sticker','system'],editor:['content','feedback','system'],ads_manager:['ads','system']};return (map[currentStaffRole]||[]).includes('*')||(map[currentStaffRole]||[]).includes(action);}
+function showAllowedTabs(){
+ const allowed=roleTabs[currentStaffRole]||[];
+ document.querySelectorAll('.tabs [data-tab]').forEach(b=>b.classList.toggle('hidden',!allowed.includes(b.dataset.tab)));
+ $('ownerCorrectionsTab').classList.toggle('hidden',currentStaffRole!=='owner');
+ $('logout').classList.remove('hidden');
+ const aiLink=document.querySelector('#dash > p a[href="../editorial/ai.html"]');
+ if(aiLink)aiLink.parentElement.classList.toggle('hidden',!['owner','admin','editor'].includes(currentStaffRole));
+}
+async function enter(){
+ const {data:{user}}=await supabase.auth.getUser();if(!user)return;
+ const {data:staff,error}=await supabase.from('staff_members').select('role,active').eq('user_id',user.id).maybeSingle();
+ if(error){say('authMsg','Эрхийн мэдээлэл шалгахад алдаа гарлаа: '+error.message);return;}
+ if(!staff||!staff.active){say('authMsg','Бүртгэл амжилттай. Owner таныг багийн гишүүнээр баталгаажуулсны дараа самбар нээгдэнэ.');return;}
+ if(!roleTabs[staff.role]){say('authMsg','Таны эрхийн төрөл танигдсангүй. Owner-той холбогдоно уу.');return;}
+ currentStaffRole=staff.role;showAllowedTabs();
+ $('authPanel').classList.add('hidden');$('dash').classList.remove('hidden');
+ say('welcome',user.email+' · '+(roleLabels[staff.role]||staff.role));
+ await loadCounts();
+ if(can('ads'))await loadAds();
+ if(can('premium'))await loadPlans();
+}
 async function loadCounts(){for(const [table,id] of [['content_posts','postCount'],['advertisements','adCount'],['memberships','memberCount']]){const {count}=await supabase.from(table).select('*',{count:'exact',head:true});$(id).textContent=count??'—'}}
-async function loadAds(){const {data,error}=await supabase.from('advertisements').select('id,title,status,price_amount,currency,created_at').order('created_at',{ascending:false}).limit(30);$('adsList').innerHTML=error?error.message:(data?.length?data.map(a=>'<div class="list"><b>'+esc(a.title)+'</b><br><span class="muted">'+esc(a.status)+' · '+a.price_amount+' '+esc(a.currency)+'</span> <button data-approve="'+a.id+'">Зөвшөөрөх</button></div>').join():'Зарын хүсэлт алга');document.querySelectorAll('[data-approve]').forEach(b=>b.onclick=async()=>{const {error}=await supabase.from('advertisements').update({status:'approved'}).eq('id',b.dataset.approve);if(error)alert(error.message);await loadAds()})}
+async function loadAds(){
+ if(!can('ads'))return;
+ const {data,error}=await supabase.from('advertisements').select('id,title,status,price_amount,currency,created_at').order('created_at',{ascending:false}).limit(30);
+ $('adsList').innerHTML=error?esc(error.message):(data?.length?data.map(a=>'<div class="list"><b>'+esc(a.title)+'</b><br><span class="muted">'+esc(a.status)+' · '+a.price_amount+' '+esc(a.currency)+'</span>'+(a.status==='pending'&&can('ads')?' <button data-approve="'+a.id+'">Зөвшөөрөх</button>':'')+'</div>').join():'Зарын хүсэлт алга');
+ $('adsList').querySelectorAll('[data-approve]').forEach(b=>b.onclick=async()=>{
+  if(!can('ads'))return;
+  if(!confirm('Энэ зарыг зөвшөөрөх үү?'))return;
+  const {error}=await supabase.from('advertisements').update({status:'approved'}).eq('id',b.dataset.approve).eq('status','pending');
+  if(error)alert(error.message);await loadAds();
+ });
+}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 $('forgotLink').onclick=async(e)=>{e.preventDefault();const email=$('email').value.trim();if(!email){say('authMsg','Эхлээд бүртгэлтэй имэйл хаягаа оруулна уу.');$('email').focus();return}const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});say('authMsg',error?'Сэргээх имэйл илгээхэд алдаа гарлаа: '+error.message:'Нууц үг сэргээх холбоосыг илгээх хүсэлт амжилттай. Имэйл болон Spam хавтсаа шалгана уу.')};
 $('savePassword').onclick=async()=>{const p=$('newPassword').value,cp=$('confirmPassword').value;if(p.length<8){say('recoveryMsg','Нууц үг дор хаяж 8 тэмдэгт байна.');return}if(p!==cp){say('recoveryMsg','Нууц үгнүүд хоорондоо таарахгүй байна.');return}const {error}=await supabase.auth.updateUser({password:p});say('recoveryMsg',error?'Нууц үг шинэчлэхэд алдаа гарлаа: '+error.message:'Нууц үг амжилттай шинэчлэгдлээ. Одоо нэвтэрч болно.');if(!error){await supabase.auth.signOut();$('recoveryPanel').classList.add('hidden');$('authPanel').classList.remove('hidden')}};
@@ -68,10 +157,17 @@ $('login').onclick=async()=>{const email=$('email').value.trim(),password=$('pas
 $('signup').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;if(!email||password.length<8){say('authMsg','Зөв имэйл болон дор хаяж 8 тэмдэгттэй нууц үг оруулна уу.');return}const b=$('signup');b.disabled=true;try{const {data,error}=await supabase.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}});if(error)throw error;say('authMsg',data.session?'Бүртгэл амжилттай үүслээ. Нэвтэрсэн байна.':'Бүртгэл үүслээ. Имэйлдээ ирсэн баталгаажуулах холбоосыг дарна уу. Spam хавтсыг мөн шалгаарай.')}catch(e){say('authMsg','Бүртгүүлэхэд алдаа гарлаа: '+(e.message||String(e)))}finally{b.disabled=false}};
 $('logout').onclick=async()=>{await supabase.auth.signOut();location.reload()};
 $('draft').onclick=()=>savePost('draft');$('publish').onclick=()=>savePost('published');
-async function savePost(status){const {data:{user}}=await supabase.auth.getUser();const title=$('postTitle').value.trim(),slug=$('slug').value.trim();if(!title||!slug){say('postMsg','Гарчиг болон slug заавал бөглөнө.');return}const sources=$('postSources').value.split(String.fromCharCode(10)).map(x=>x.trim()).filter(Boolean);if(sources.some(x=>!x.toLowerCase().startsWith('https://'))){say('postMsg','Эх сурвалж бүр HTTPS холбоос байх ёстой.');return}if(status==='published'&&sources.length===0){say('postMsg','Нийтлэхийн өмнө дор хаяж нэг эх сурвалж нэмнэ үү.');return}const {error}=await supabase.from('content_posts').insert({content_type:$('type').value,title,slug,summary:$('summary').value,body:{text:$('body').value},cover_image_url:$('cover').value||null,game_title:$('postGame').value||null,character_name:$('postCharacter').value.trim()||null,source_urls:sources,status,is_premium:$('isPremium').checked,author_id:user.id,published_at:status==='published'?new Date().toISOString():null});say('postMsg',error?error.message:'Амжилттай хадгаллаа.');await loadCounts()}
-$('addStaff').onclick=async()=>{const {error}=await supabase.from('staff_members').upsert({user_id:$('staffId').value.trim(),role:$('staffRole').value,active:true});say('teamMsg',error?error.message:'Багийн эрх олголоо.')};
+async function savePost(status){if(!can('content')){say('postMsg','Нийтлэл удирдах эрх шаардлагатай.');return;}const {data:{user}}=await supabase.auth.getUser();const title=$('postTitle').value.trim(),slug=$('slug').value.trim();if(!title||!slug){say('postMsg','Гарчиг болон slug заавал бөглөнө.');return}const sources=$('postSources').value.split(String.fromCharCode(10)).map(x=>x.trim()).filter(Boolean);if(sources.some(x=>!x.toLowerCase().startsWith('https://'))){say('postMsg','Эх сурвалж бүр HTTPS холбоос байх ёстой.');return}if(status==='published'&&sources.length===0){say('postMsg','Нийтлэхийн өмнө дор хаяж нэг эх сурвалж нэмнэ үү.');return}const {error}=await supabase.from('content_posts').insert({content_type:$('type').value,title,slug,summary:$('summary').value,body:{text:$('body').value},cover_image_url:$('cover').value||null,game_title:$('postGame').value||null,character_name:$('postCharacter').value.trim()||null,source_urls:sources,status,is_premium:$('isPremium').checked,author_id:user.id,published_at:status==='published'?new Date().toISOString():null});say('postMsg',error?error.message:'Амжилттай хадгаллаа.');await loadCounts()}
+$('addStaff').onclick=async()=>{
+ if(currentStaffRole!=='owner'){say('teamMsg','Зөвхөн Owner багийн эрх олгоно.');return;}
+ const userId=$('staffId').value.trim(),role=$('staffRole').value;
+ if(!userId){say('teamMsg','Хэрэглэгчийн UUID оруулна уу.');return;}
+ if(!['admin','editor','ads_manager'].includes(role)){say('teamMsg','Энэ цэсээр зөвхөн Admin, Editor, Ads Manager эрх олгоно.');return;}
+ const {error}=await supabase.from('staff_members').upsert({user_id:userId,role,active:true});
+ say('teamMsg',error?error.message:'Багийн эрх олголоо.');
+};
 
-async function loadPlans(){
+async function loadPlans(){if(!can('premium'))return;
  const {data,error}=await supabase.from('membership_plans').select('plan_code,name,description,duration_days,price_amount,currency,enabled').order('duration_days');
  $('planList').innerHTML=error?error.message:(data||[]).map(p=>'<div class="list"><b>'+esc(p.name)+'</b><p class="muted">'+esc(p.description)+'</p><label>Үнэ ('+esc(p.currency)+')</label><input type="number" min="1" step="1" data-price="'+esc(p.plan_code)+'" value="'+(p.price_amount??'')+'" placeholder="Үнийг оруулна уу"><button data-save-plan="'+esc(p.plan_code)+'">Үнэ хадгалах</button></div>').join('');
  document.querySelectorAll('[data-save-plan]').forEach(b=>b.onclick=async()=>{
@@ -142,7 +238,7 @@ $('grantReward').onclick=async()=>{
  const {data,error}=await supabase.rpc('grant_lore_reward',{p_user_id:userId,p_event_key:eventKey,p_xp:xp,p_coins:coins,p_reference_id:referenceId});
  say('rewardMsg',error?error.message:(data?.message||'Дууслаа.'));
 };
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{if(b.dataset.tab==='corrections'&&currentStaffRole!=='owner'){say('welcome','Энэ хэсэг зөвхөн Owner эрхтэй.');return}['post','ads','team','premium','community','users','hiring','analytics','events','feedback','corrections','notifications','support','sticker','system'].forEach(t=>$(t+'Tab').classList.toggle('hidden',t!==b.dataset.tab));if(b.dataset.tab==='premium')loadPlans();if(b.dataset.tab==='community')loadCommunity();if(b.dataset.tab==='users')loadUsers();if(b.dataset.tab==='hiring')loadApplications();if(b.dataset.tab==='analytics')loadAnalytics();if(b.dataset.tab==='events')loadEvents();if(b.dataset.tab==='feedback')loadFeedback();if(b.dataset.tab==='corrections')loadCorrections();if(b.dataset.tab==='support')loadAdminTickets()});
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{if(!(roleTabs[currentStaffRole]||[]).includes(b.dataset.tab)){say('welcome','Таны эрх энэ хэсэгт нэвтрэх боломжгүй.');return;}['post','ads','team','premium','community','users','hiring','analytics','events','feedback','corrections','notifications','support','sticker','system'].forEach(t=>$(t+'Tab').classList.toggle('hidden',t!==b.dataset.tab));if(b.dataset.tab==='premium')loadPlans();if(b.dataset.tab==='community')loadCommunity();if(b.dataset.tab==='users')loadUsers();if(b.dataset.tab==='hiring')loadApplications();if(b.dataset.tab==='analytics')loadAnalytics();if(b.dataset.tab==='events')loadEvents();if(b.dataset.tab==='feedback')loadFeedback();if(b.dataset.tab==='corrections')loadCorrections();if(b.dataset.tab==='support')loadAdminTickets()});
 
 supabase.auth.onAuthStateChange((event)=>{if(event==='PASSWORD_RECOVERY'){$('authPanel').classList.add('hidden');$('dash').classList.add('hidden');$('recoveryPanel').classList.remove('hidden')}});enter();
 
