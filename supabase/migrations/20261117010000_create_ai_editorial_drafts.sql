@@ -1,3 +1,25 @@
+-- Staff membership table shared by the admin and AI editorial workspaces.
+-- The first owner must be provisioned manually after creating their Auth account.
+create table if not exists public.staff_members (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  role text not null check (role in ('owner','admin','editor')),
+  active boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+alter table public.staff_members enable row level security;
+grant select on public.staff_members to authenticated;
+grant insert, update, delete on public.staff_members to authenticated;
+drop policy if exists "staff read own membership" on public.staff_members;
+create policy "staff read own membership" on public.staff_members
+  for select to authenticated
+  using (user_id = auth.uid() or public.is_staff(array['owner','admin']));
+drop policy if exists "owners manage staff memberships" on public.staff_members;
+create policy "owners manage staff memberships" on public.staff_members
+  for all to authenticated
+  using (public.is_staff(array['owner']))
+  with check (public.is_staff(array['owner']));
+
 -- AI editorial drafts used by /editorial/ai.html.
 -- Relies on public.staff_members(user_id, role, active) already existing.
 
