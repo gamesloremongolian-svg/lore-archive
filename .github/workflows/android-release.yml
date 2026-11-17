@@ -126,7 +126,9 @@ jobs:
           mkdir -p "$HOME/.android"
           printf '%s' "$ANDROID_DEBUG_KEYSTORE_BASE64" | base64 --decode > "$HOME/.android/loreverse-debug.keystore"
           chmod 600 "$HOME/.android/loreverse-debug.keystore"
-          keytool -list -keystore "$HOME/.android/loreverse-debug.keystore" -storepass "$ANDROID_DEBUG_KEYSTORE_PASSWORD" -alias loreverse >/dev/null
+          echo "Checking keystore file and alias (password is never printed)."
+          test -s "$HOME/.android/loreverse-debug.keystore" || { echo "::error::Decoded keystore file is empty."; exit 1; }
+          keytool -list -keystore "$HOME/.android/loreverse-debug.keystore" -storepass "$ANDROID_DEBUG_KEYSTORE_PASSWORD" -alias loreverse
           python3 - <<'PY'
           from pathlib import Path
           p = Path("android/app/build.gradle")
