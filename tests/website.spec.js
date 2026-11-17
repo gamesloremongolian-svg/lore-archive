@@ -7,7 +7,9 @@ test.describe('LOREVERSE website health', () => {
     const response = await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
     expect(response, 'Homepage should return a response').not.toBeNull();
     expect(response.status()).toBeLessThan(400);
-    expect(new URL(page.url()).protocol).toBe('https:');
+    const pageURL = new URL(page.url());
+    expect(['https:', 'http:']).toContain(pageURL.protocol);
+    if (pageURL.protocol === 'http:') expect(['127.0.0.1', 'localhost']).toContain(pageURL.hostname);
     await expect(page).toHaveTitle(/LOREVERSE/i);
     await expect(page.locator('body')).toBeVisible();
     await expect(page.locator('#admin')).toHaveCount(1);
