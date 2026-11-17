@@ -1,8 +1,8 @@
 User-agent: *
 Allow: /
-Disallow: /admin/
-Disallow: /chat/
-Disallow: /editorial/
-Disallow: /tools/
+Disallow: /lore-archive/admin/
+Disallow: /lore-archive/chat/
+Disallow: /lore-archive/editorial/
+Disallow: /lore-archive/tools/
 
 Sitemap: https://loreverse-ctrl.github.io/lore-archive/sitemap.xml
