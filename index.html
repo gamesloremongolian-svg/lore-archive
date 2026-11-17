@@ -1484,10 +1484,14 @@ const fmt=n=>Number(n||0).toLocaleString("mn-MN");
 
 
 <section class="section portal-grid" id="payment">
- <div class="portal-panel"><div class="eyebrow">PAYMENT CENTER</div><h2>Premium төлбөр</h2><p>Бүртгэлтэй хэрэглэгч Premium багцаа сонгоод QPay QR нэхэмжлэл үүсгэнэ. Төлбөр баталгаажсаны дараа эрх идэвхжинэ.</p><div class="portal-grid"><div class="feature"><h3>QPay автомат төлбөр</h3><p>Сарын болон жилийн багцынхаа төлбөрийг QPay апп-аар уншуулна.</p><div class="portal-actions" style="flex-wrap:wrap"><button class="btn primary" type="button" data-qpay-plan="monthly">Сарын багц · 5,000₮</button><button class="btn" type="button" data-qpay-plan="yearly">Жилийн багц · 60,000₮</button></div><p class="portal-note" id="qpayStatus" aria-live="polite">Төлбөр үүсгэхийн тулд эхлээд имэйлээр нэвтэрнэ үү.</p><div id="qpayInvoice" hidden class="feature" style="margin-top:14px"><h3 id="qpayInvoiceTitle">QPay нэхэмжлэл</h3><div id="qpayQrWrap" style="text-align:center"></div><p id="qpayInvoiceText" class="portal-note"></p><div id="qpayLinks" class="portal-actions" style="flex-wrap:wrap"></div><button class="btn primary" id="qpayCheckPayment" type="button" disabled>Төлбөр шалгах</button><p id="qpayCheckStatus" class="portal-note" aria-live="polite"></p></div></div><div class="feature"><h3>Хаан Банк · Шилжүүлэг</h3><p><b>Данс эзэмшигч:</b> Батравжих Батаа</p><p><b>Дансны дугаар:</b> <strong style="font-size:20px;letter-spacing:.08em">5622218472</strong></p><p><b>Банк:</b> Хаан Банк</p><p>Гүйлгээний утгад LOREVERSE хэрэглэгчийн имэйл болон сонгосон багцаа бичнэ үү.</p><button class="btn" type="button" id="copyBankAccount">Дансны дугаар хуулах</button><span class="portal-note" id="bankCopyStatus"></span><p class="portal-note">Шилжүүлгийн баримтыг Support хэсгийн Төлбөр ангиллаар илгээнэ. Админ баталгаажуулсны дараа эрх олгоно.</p></div></div><p class="portal-note">QPay төлбөрийн төлөвийг зөвхөн QPay серверээс шалгаж баталгаажуулна. QR код үүссэн нь төлбөр амжилттай болсон гэсэн үг биш.</p></div>
- 
-
- </section>
+ <div class="portal-panel"><div class="eyebrow">PAYMENT CENTER · BANK TRANSFER</div><h2>Premium төлбөр</h2><p>Одоогоор Premium эрхийг банкны шилжүүлгээр авна. Шилжүүлгийг админ шалгаж баталгаажуулсны дараа эрх идэвхжинэ.</p>
+  <div class="portal-grid">
+   <div class="feature"><h3>Хаан Банк · Шилжүүлэг</h3><p><b>Данс эзэмшигч:</b> Батравжих Батаа</p><p><b>Дансны дугаар:</b> <strong style="font-size:20px;letter-spacing:.08em">5622218472</strong></p><p><b>Банк:</b> Хаан Банк</p><button class="btn" type="button" id="copyBankAccount">Дансны дугаар хуулах</button><span class="portal-note" id="bankCopyStatus" aria-live="polite"></span><p>Гүйлгээний утгад LOREVERSE-д бүртгүүлсэн имэйл болон багцын нэрээ бичнэ үү.</p><div class="portal-actions" style="flex-wrap:wrap"><button class="btn primary" type="button" data-bank-plan="monthly">Сарын багц · 5,000₮ төлөх</button><button class="btn" type="button" data-bank-plan="yearly">Жилийн багц · 60,000₮ төлөх</button></div><p class="portal-note">Төлбөр хийсний дараа доорх “Админтай холбогдох” хэсэгт Төлбөр ангиллаар хүсэлт үүсгэж, баримтын холбоос хавсаргана уу.</p><a class="btn" href="#supportTickets">Төлбөрийн баримт илгээх ↗</a></div>
+   <div class="feature"><h3>Төлбөр баталгаажуулах журам</h3><ol><li>Premium багцаа сонгоно.</li><li>Дээрх данс руу яг тохирох дүнг шилжүүлнэ.</li><li>Гүйлгээний утгад бүртгэлтэй имэйл, багцаа бичнэ.</li><li>Баримтын холбоосоо Support → Төлбөр хүсэлтэд илгээнэ.</li><li>Админ дансны орлого, баримтыг шалгаж баталгаажуулна.</li></ol><p class="portal-note">Хүсэлт илгээсэн төдийд Premium эрх нээгдэхгүй. Зөвхөн бодит орлого баталгаажсаны дараа эрх олгоно.</p></div>
+  </div>
+  <div hidden aria-hidden="true"><div id="qpayInvoice"></div><button id="qpayCheckPayment" type="button"></button><span id="qpayStatus"></span><span id="qpayCheckStatus"></span><span id="qpayInvoiceTitle"></span><span id="qpayQrWrap"></span><span id="qpayInvoiceText"></span><span id="qpayLinks"></span></div>
+ </div>
+</section>
 </div>
 
 
@@ -1689,6 +1693,20 @@ async function loreverseSignOut(button,note){
 $("memberLogout").onclick=()=>loreverseSignOut($("memberLogout"),$("memberAuthNote"));
 supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{await refreshMember();await loadPublishedLore();},0);});
 loadMembershipPlans();refreshMember();
+
+document.querySelectorAll("[data-bank-plan]").forEach(button=>{
+ button.addEventListener("click",async()=>{
+  const plan=button.dataset.bankPlan;
+  const {data:{user}}=await supabase.auth.getUser();
+  if(!user||user.is_anonymous){memberMsg("Төлбөрийн хүсэлт үүсгэхийн тулд эхлээд имэйлээр нэвтэрнэ үү.");$("memberEmail")?.focus();$("premium")?.scrollIntoView({behavior:"smooth"});return;}
+  const planName=plan==="yearly"?"Жилийн Premium · 60,000₮":"Сарын Premium · 5,000₮";
+  $("ticketCategory").value="payment";
+  $("ticketSubject").value="Premium банкны шилжүүлгийн баримт — "+planName;
+  $("ticketMessage").value="Бүртгэлтэй имэйл: "+(user.email||"")+"\\nСонгосон багц: "+planName+"\\nШилжүүлсэн дүн: "+(plan==="yearly"?"60,000₮":"5,000₮")+"\\nГүйлгээний утга: "+(user.email||"")+" / "+planName+"\\n\\nБанкны шилжүүлгийн баримтыг хавсаргасан холбоосоор шалгаж өгнө үү.";
+  $("ticketAttachment").focus();
+  $("supportTickets").scrollIntoView({behavior:"smooth",block:"start"});
+ });
+});
 
 let activeQpayPaymentId=null;
 function qpayStatus(message){const el=$("qpayStatus");if(el)el.textContent=message;}
