@@ -1937,7 +1937,29 @@ async function loadLoreLeaderboard(){
  const {data,error}=await supabase.rpc("lore_leaderboard",{p_limit:10});if(error){el.textContent=error.message;return;}
  el.innerHTML=(data||[]).map((x,i)=>'<div class="leader-row"><span>#'+(i+1)+' '+safeText(x.display_name)+'<br><small>'+safeText(x.rank_name)+'</small></span><b>'+Number(x.total_xp).toLocaleString("mn-MN")+' XP</b></div>').join("")||"Одоогоор жагсаалт хоосон.";
 }
-$("dailyReward").onclick=async()=>{try{const u=await ensureCommunityUser();if(u.is_anonymous)throw new Error("Өдрийн бонус авахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.");const {data,error}=await supabase.rpc("claim_daily_lore_reward");if(error)throw error;$("dailyRewardStatus").textContent=data.message||"Бонус шалгагдлаа.";await refreshGamification();}catch(e){$("dailyRewardStatus").textContent=e.message;}};
+$("dailyReward").addEventListener("click",async()=>{
+ const button=$("dailyReward"),status=$("dailyRewardStatus");
+ button.disabled=true;status.textContent="Бонусын эрхийг шалгаж байна…";
+ try{
+  const {data:{user},error:authError}=await supabase.auth.getUser();
+  if(authError)throw authError;
+  if(!user||user.is_anonymous){
+   status.textContent="Бонус авахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү. Нэвтрэх цонх нээгдлээ.";
+   $("profileModal").classList.add("open");
+   $("profileIdentity").textContent="Өдрийн бонус авахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.";
+   $("accountEmail").focus();
+   return;
+  }
+  status.textContent="Өдрийн бонусыг бүртгэж байна…";
+  const {data,error}=await supabase.rpc("claim_daily_lore_reward");
+  if(error)throw error;
+  status.textContent=data?.message||(data?.claimed?"Өдрийн бонус амжилттай авлаа.":"Бонусын төлөв шинэчлэгдлээ.");
+  await refreshGamification();
+ }catch(e){
+  console.error("LOREVERSE daily reward:",e);
+  status.textContent="Бонус олгож чадсангүй: "+(e?.message||"Тодорхойгүй алдаа");
+ }finally{button.disabled=false;}
+});
 supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=await supabase.auth.getUser();communityUser=user;await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();},0)});
 async function runOptionalStartup(label,task){
  try{await task();return true;}
