@@ -99,9 +99,11 @@ jobs:
           # Explicitly attach the persistent key to the debug variant.
           p.write_text(s)
           PY
-      - name: Warn if persistent signing secrets are missing
-        if: ${{ env.ANDROID_DEBUG_KEYSTORE_BASE64 == '' || env.ANDROID_DEBUG_KEYSTORE_PASSWORD == '' }}
-        run: echo "::warning::Persistent signing secrets are missing; this build cannot be guaranteed compatible with future updates."
+      - name: Verify persistent debug signing secrets
+        run: |
+          set -euo pipefail
+          test -n "$ANDROID_DEBUG_KEYSTORE_BASE64" || { echo "::error::Missing ANDROID_DEBUG_KEYSTORE_BASE64 repository secret."; exit 1; }
+          test -n "$ANDROID_DEBUG_KEYSTORE_PASSWORD" || { echo "::error::Missing ANDROID_DEBUG_KEYSTORE_PASSWORD repository secret."; exit 1; }
 
       - name: Build debug APK
         run: cd android && ./gradlew assembleDebug
