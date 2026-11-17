@@ -1933,7 +1933,7 @@ supabase.auth.onAuthStateChange(()=>{setTimeout(()=>{loadAdAdmin();},0);});
  <header id="loreAiHead"><div><b>✦ LOREVERSE AI</b><div style="font-size:11px;opacity:.8">Монгол хэл дээрх Lore судлаач</div></div><button id="loreAiClose" type="button" aria-label="Хаах">×</button></header>
  <div id="loreAiMessages" aria-live="polite"><div class="lore-ai-msg bot">Сайн байна уу! Би LOREVERSE-ийн AI туслах. Тоглоом, дүр, ертөнцийн lore-ийн талаар асуугаарай. Хариултаа нийтлэгдсэн LOREVERSE мэдээллийн сантай тулгана.</div></div>
  <div id="loreAiMeta">Нэвтэрсэн хэрэглэгчид өдөрт 10 асуулт · API хэрэглээ төлбөртэй</div>
- <form id="loreAiForm"><textarea id="loreAiQuestion" rows="2" maxlength="1800" placeholder="Lore-ийн талаар асуугаарай..." required></textarea><button id="loreAiSend" type="submit">Илгээх</button></form>
+ <form id="loreAiForm"><textarea id="loreAiQuestion" rows="2" maxlength="1800" placeholder="Lore-ийн талаар асуугаарай..." required></textarea><button id="loreAiSend" type="button">Илгээх</button></form>
  <button id="loreAiContactAdmin" type="button">Админтай холбогдох</button>
 </section>
 <style id="loreAiEmergencyLauncherFix">
@@ -2178,31 +2178,30 @@ async function submitLoreAiQuestion(){
   loreAiQuestion.focus();
  }
 }
+/* Isolate the AI panel from parent forms, links and page-level click handlers. */
+loreAiSend.type="button";
 loreAiSend.addEventListener("click",event=>{
  event.preventDefault();
  event.stopPropagation();
  event.stopImmediatePropagation();
  submitLoreAiQuestion();
-});
+},{capture:true});
 loreAiForm.addEventListener("submit",event=>{
  event.preventDefault();
  event.stopPropagation();
  event.stopImmediatePropagation();
  submitLoreAiQuestion();
-});
-/* Prevent surrounding navigation/delegated handlers from hijacking the AI form. */
-[loreAiForm,loreAiSend,loreAiQuestion].forEach(el=>{
- ["click","pointerdown","pointerup"].forEach(type=>el.addEventListener(type,event=>{
-  event.stopPropagation();
- },{capture:true}));
-});
+},{capture:true});
 loreAiQuestion.addEventListener("keydown",event=>{
  if(event.key==="Enter"&&!event.shiftKey){
   event.preventDefault();
   event.stopPropagation();
   submitLoreAiQuestion();
  }
-});
+},{capture:true});
+/* Move the floating assistant out of any surrounding layout/form context. */
+if(loreAiPanel.parentElement!==document.body)document.body.appendChild(loreAiPanel);
+
 
 
 document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBankAccount"){try{await navigator.clipboard.writeText("5622218472");$("bankCopyStatus").textContent="Дансны дугаар хууллаа.";}catch(_){$("bankCopyStatus").textContent="Дугаар: 5622218472";}}});
