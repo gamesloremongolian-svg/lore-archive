@@ -49,4 +49,34 @@ test.describe('LOREVERSE website health', () => {
     await page.waitForTimeout(1500);
     expect(errors).toEqual([]);
   });
+  test('mobile app navigation and AI launcher respond to taps', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+
+    const hero = page.locator('#home');
+    const adGuide = page.locator('#ad-guide-section');
+    await expect(hero).toBeVisible();
+    await expect(adGuide).toBeVisible();
+    const order = await page.evaluate(() => {
+      const hero = document.querySelector('#home');
+      const ad = document.querySelector('#ad-guide-section');
+      return Boolean(hero && ad && hero.compareDocumentPosition(ad) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    expect(order, 'Ad Guide should appear directly after the homepage hero').toBe(true);
+
+    const navToggle = page.locator('#navToggle');
+    const nav = page.locator('#mainNav');
+    await navToggle.click();
+    await expect(nav).toHaveClass(/open/);
+    await expect(navToggle).toHaveAttribute('aria-expanded', 'true');
+    await nav.locator('a[href="#anime"]').click();
+    await expect(nav).not.toHaveClass(/open/);
+    await expect(navToggle).toHaveAttribute('aria-expanded', 'false');
+
+    await page.locator('#loreAiLauncher').click();
+    await expect(page.locator('#loreAiPanel')).toHaveClass(/open/);
+    await page.locator('#loreAiClose').click();
+    await expect(page.locator('#loreAiPanel')).not.toHaveClass(/open/);
+  });
+
 });
