@@ -1432,7 +1432,7 @@ const fmt=n=>Number(n||0).toLocaleString("mn-MN");
    if(result.error)throw result.error;
    const stats=result.data||{};
    visits.textContent=fmt(stats.total_visits);
-   onif(line)line.textContent=fmt(stats.online_now);
+   if(online)online.textContent=fmt(stats.online_now);
   };
   const tracked=await client.rpc("track_loreverse_visit",{p_session_id:visitId});
   if(tracked.error)throw tracked.error;
