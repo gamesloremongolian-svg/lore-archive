@@ -37,7 +37,7 @@ function addLayer(type,extra={}){const l={id:nextId++,type,x:320,y:320,size:type
 function drawLayer(l){
  ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';
  if(l.type==='image'&&l.img){const ratio=Math.min(l.size/l.img.width,l.size/l.img.height);const w=l.img.width*ratio,h=l.img.height*ratio;ctx.drawImage(l.img,l.x-w/2,l.y-h/2,w,h);}
- else if(l.type==='emoji'){ctx.font=l.size+'px system-ui, "Apple Color Emoji", "Segoe UI Emoji";ctx.fillText(l.emoji,l.x,l.y);}
+ else if(l.type==='emoji'){ctx.font=l.size+'px system-ui, "Apple Color Emoji", "Segoe UI Emoji"';ctx.fillText(l.emoji,l.x,l.y);}
  else {ctx.font='900 '+l.size+'px system-ui, sans-serif';ctx.lineJoin='round';ctx.lineWidth=l.stroke*2;ctx.strokeStyle=l.outline;if(l.stroke)ctx.strokeText(l.text||' ',l.x,l.y,590);ctx.fillStyle=l.color;ctx.fillText(l.text||' ',l.x,l.y,590);}
  ctx.restore();
 }
