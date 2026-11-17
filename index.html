@@ -1438,6 +1438,7 @@ import { Browser } from "@capacitor/browser";
 import { Capacitor } from "@capacitor/core";
 const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
 const $=id=>document.getElementById(id);
+async function cachedPublicData(key,query,ttl=300000){try{return{data:await window.LOREVERSE_DATA_HUB.remember("supabase:public:"+key,async()=>{const{data,error}=await query();if(error)throw error;return data||[];},ttl),error:null};}catch(error){return{data:null,error};}}
 /* Site activity is initialized by an isolated script below the activity section. */
 
 
@@ -1498,7 +1499,7 @@ async function checkAppUpdate(){
 }
 async function loadEditorialUpdates(){
  const host=$("editorialUpdateList");if(!host)return;
- const {data,error}=await supabase.from("content_posts").select("id,title,slug,summary,content_type,language_code,published_at,updated_at,is_premium").eq("status","published").eq("is_premium",false).order("published_at",{ascending:false}).limit(6);
+ const {data,error}=await cachedPublicData("editorial-updates:mn",()=>supabase.from("content_posts").select("id,title,slug,summary,content_type,language_code,published_at,updated_at,is_premium").eq("status","published").eq("is_premium",false).order("published_at",{ascending:false}).limit(6),120000);
  if(error){host.innerHTML='<div class="update-empty">Шинэ мэдээлэл татахад алдаа гарлаа. '+updateEsc(error.message)+'</div>';return;}
  const rows=(data||[]).filter(p=>p.language_code==="mn");
  if(!rows.length){host.innerHTML='<div class="update-empty">Одоогоор нийтлэгдсэн шинэ мэдээлэл алга. Админ хэсгээс нийтлэл нийтлэхэд энд автоматаар харагдана.</div>';return;}
@@ -1571,7 +1572,7 @@ if(adMascotSpeak){
  });
 }
 const memberMsg=t=>{$("memberStatus").textContent=t;};
-async function loadMembershipPlans(){const {data,error}=await supabase.from("membership_plans").select("plan_code,name,description,duration_days,price_amount,currency,enabled").eq("enabled",true).order("duration_days");$("membershipPlans").innerHTML=error?("<p>"+error.message+"</p>"):(data||[]).map(p=>'<div class="list" style="padding:12px 0;border-bottom:1px solid #624477"><b>'+p.name+'</b><p>'+p.description+'</p><strong>'+(p.price_amount===null?"Үнэ тохируулагдаж байна":Number(p.price_amount).toLocaleString("mn-MN")+" "+p.currency)+'</strong></div>').join("")||"<p>Одоогоор идэвхтэй багц алга.</p>";}
+async function loadMembershipPlans(){const {data,error}=await cachedPublicData("membership-plans:enabled",()=>supabase.from("membership_plans").select("plan_code,name,description,duration_days,price_amount,currency,enabled").eq("enabled",true).order("duration_days"),600000);$("membershipPlans").innerHTML=error?("<p>"+error.message+"</p>"):(data||[]).map(p=>'<div class="list" style="padding:12px 0;border-bottom:1px solid #624477"><b>'+p.name+'</b><p>'+p.description+'</p><strong>'+(p.price_amount===null?"Үнэ тохируулагдаж байна":Number(p.price_amount).toLocaleString("mn-MN")+" "+p.currency)+'</strong></div>').join("")||"<p>Одоогоор идэвхтэй багц алга.</p>";}
 async function loadPremiumArticles(){const {data,error}=await supabase.from("content_posts").select("id,title,summary,body,content_type,language_code,published_at").eq("status","published").eq("is_premium",true).order("published_at",{ascending:false}).limit(30);const el=$("premiumArticles");if(error){el.textContent="Premium архивыг ачаалж чадсангүй: "+error.message;return;}el.innerHTML=(data||[]).map(p=>'<article class="article"><div class="tag">'+p.content_type.toUpperCase()+' · PREMIUM</div><h3>'+String(p.title).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))+'</h3><p>'+String(p.summary||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))+'</p><button type="button" data-premium-open="'+p.id+'">Бүрэн унших →</button></article>').join("")||'<p class="portal-note">Одоогоор таны эрхэд харагдах Premium нийтлэл алга.</p>';el.querySelectorAll("[data-premium-open]").forEach(b=>b.onclick=()=>{const p=data.find(x=>x.id===b.dataset.premiumOpen);if(!p)return;const body=p.body&&typeof p.body==="object"?(p.body.text||JSON.stringify(p.body,null,2)):String(p.body||"");$("modalGame").textContent=p.content_type.toUpperCase()+" · PREMIUM";$("modalTitle").textContent=p.title;$("modalBody").textContent=body;const src=Array.isArray(p.source_urls)?p.source_urls:[];let srcBox=$("modalSources");if(!srcBox){srcBox=document.createElement("div");srcBox.id="modalSources";$("modalBody").after(srcBox);}srcBox.innerHTML=src.length?"<h3>Эх сурвалж</h3>"+src.map((u,i)=>/^https:\/\//i.test(u)?"<p><a href=\""+safeText(u)+"\" target=\"_blank\" rel=\"noopener noreferrer\">Эх сурвалж "+(i+1)+" ↗</a></p>":"").join(""):"";$("modal").classList.add("open");});}
 async function refreshMember(){const {data:{user}}=await supabase.auth.getUser();$("memberLogout").hidden=!user;if(!user){$("memberHeading").textContent="Premium эрхээ нээх";memberMsg("Нэвтрээгүй байна. Premium нийтлэлд нэвтрэхийн тулд бүртгүүлнэ үү.");$("premiumArticles").innerHTML='<p class="portal-note">Premium архивыг харахын тулд нэвтэрнэ үү.</p>';return;}$("memberHeading").textContent=user.email||"Гишүүн";const {data,error}=await supabase.from("memberships").select("plan_code,status,starts_at,ends_at").eq("user_id",user.id).eq("status","active").gt("ends_at",new Date().toISOString()).order("ends_at",{ascending:false}).limit(1).maybeSingle();memberMsg(error?"Гишүүнчлэлийн төлөв шалгахад алдаа гарлаа.":data?"Premium идэвхтэй · "+data.plan_code+" · "+new Date(data.ends_at).toLocaleDateString("mn-MN")+" хүртэл":"Үнэгүй хэрэглэгч · Premium багц сонгон эрхээ нээнэ үү.");await loadPremiumArticles();}
 $("memberLogin").onclick=async()=>{const {error}=await supabase.auth.signInWithPassword({email:$("memberEmail").value.trim(),password:$("memberPassword").value});memberMsg(error?error.message:"Нэвтэрлээ.");if(!error)await refreshMember();};
@@ -1789,7 +1790,7 @@ $("communityPostForm")?.addEventListener("submit",async e=>{
 });
 
 async function loadChatChannels(){
- const {data,error}=await supabase.from("chat_channels").select("id,name,description,channel_type").eq("enabled",true).order("sort_order");
+ const {data,error}=await cachedPublicData("chat-channels:enabled",()=>supabase.from("chat_channels").select("id,name,description,channel_type").eq("enabled",true).order("sort_order"),300000);
  const el=$("chatChannels");if(error){el.textContent=error.message;return;}
  el.innerHTML=(data||[]).map(x=>'<button type="button" class="channel-btn '+(x.id===activeChatChannel?'active':'')+'" data-chat-channel="'+safeText(x.id)+'"># '+safeText(x.name)+'</button>').join("");
  el.querySelectorAll("[data-chat-channel]").forEach(b=>b.onclick=()=>selectChatChannel(b.dataset.chatChannel,b.textContent));
@@ -1964,7 +1965,7 @@ adForm.addEventListener("submit",async ev=>{
 });
 async function loadPublicAds(){
  const host=$("adPublicList");if(!host)return;
- const {data,error}=await supabase.from("advertisement_requests").select("id,title,description,image_url,target_url,placement").eq("status","approved").or("start_date.is.null,start_date.lte."+new Date().toISOString().slice(0,10)).or("end_date.is.null,end_date.gte."+new Date().toISOString().slice(0,10)).order("placement").order("created_at",{ascending:false}).limit(9);
+ const today=new Date().toISOString().slice(0,10);const {data,error}=await cachedPublicData("approved-ads:"+today,()=>supabase.from("advertisement_requests").select("id,title,description,image_url,target_url,placement").eq("status","approved").or("start_date.is.null,start_date.lte."+today).or("end_date.is.null,end_date.gte."+today).order("placement").order("created_at",{ascending:false}).limit(9),60000);
  if(error){host.innerHTML='<p class="portal-note">Заруудыг ачаалж чадсангүй.</p>';return;}
  const cards=(data||[]).slice(0,2).map(ad=>'<article class="ad-card"><img src="'+safeText(ad.image_url)+'" alt="'+safeText(ad.title)+'" loading="lazy" referrerpolicy="no-referrer"><div class="ad-card-body"><span class="ad-label">'+(ad.placement==="featured"?"ОНЦЛОХ ЗАР":"SPONSORED")+'</span><h3>'+safeText(ad.title)+'</h3><p>'+safeText(ad.description)+'</p><a href="'+safeText(ad.target_url)+'" target="_blank" rel="noopener noreferrer nofollow sponsored">Дэлгэрэнгүй ↗</a></div></article>') .join("");
  const empty='<div class="ad-empty-promo"><span>ТАНЫ ЗАР ЭНД БАЙРШИНА<small>LOREVERSE · ADVERTISE HERE</small></span></div>';
@@ -2155,7 +2156,7 @@ $("feedbackForm").addEventListener("submit",async e=>{
 
 /* Public community event calendar */
 async function loadCommunityEvents(){
- const el=$("publicEvents");const {data,error}=await supabase.from("community_events").select("id,title,description,event_type,starts_at,ends_at,reward_xp,reward_coins").eq("status","published").gte("ends_at",new Date().toISOString()).order("starts_at").limit(30);
+ const el=$("publicEvents");const now=new Date().toISOString();const {data,error}=await cachedPublicData("community-events:published",()=>supabase.from("community_events").select("id,title,description,event_type,starts_at,ends_at,reward_xp,reward_coins").eq("status","published").gte("ends_at",now).order("starts_at").limit(30),60000);
  if(error){el.textContent="Event ачаалж чадсангүй: "+error.message;return;}
  const {data:{user}}=await supabase.auth.getUser();
  let joined=new Set();
