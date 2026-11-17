@@ -2357,7 +2357,8 @@ document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBank
     '<section class="anime-detail-panel" id="animeTabRelated"><h2>Холбоотой бүтээл</h2><div class="anime-detail-tags">'+related+'</div></section></div>'+
     '<aside><section class="anime-detail-panel"><h2>Үндсэн мэдээлэл</h2><div class="anime-detail-stats">'+stats.map(x=>'<div class="anime-detail-stat"><small>'+esc(x[0])+'</small><strong>'+esc(x[1])+'</strong></div>').join("")+'</div></section><section class="anime-detail-panel"><h2>Төрөл</h2><div class="anime-detail-tags">'+genres.map(g=>'<span class="anime-detail-tag">'+esc(g)+'</span>').join("")+'</div></section></aside></div>'+
     '<p style="text-align:center;color:#818ca7;font-size:11px">Мэдээллийн эх сурвалж: AniList · LOREVERSE нь албан ёсны лиценз эзэмшигч биш.</p>';
-   if(window.LOREVERSE_TRANSLATE_NODES)window.LOREVERSE_TRANSLATE_NODES(body,"#animeTabOverview p");\n   body.querySelector("#animeDetailFavorite").addEventListener("click",()=>toggleFav(m.id,title(m)));
+   if(window.LOREVERSE_TRANSLATE_NODES)window.LOREVERSE_TRANSLATE_NODES(body,"#animeTabOverview p");
+   body.querySelector("#animeDetailFavorite").addEventListener("click",()=>toggleFav(m.id,title(m)));
    body.querySelector("#animeDetailSource").addEventListener("click",()=>window.open(m.siteUrl||"https://anilist.co/anime/"+m.id,"_blank","noopener"));
    body.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>{body.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b));const ids={overview:"Overview",characters:"Characters",staff:"Staff",related:"Related"};body.querySelector("#animeTab"+ids[b.dataset.tab])?.scrollIntoView({behavior:"smooth",block:"start"})}));
    body.querySelectorAll("[data-anime-id]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();open(a.dataset.animeId)}));updateFav(m.id);
