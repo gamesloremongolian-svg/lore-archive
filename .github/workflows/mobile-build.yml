@@ -95,7 +95,7 @@ jobs:
     """
           if "buildTypes {" not in s:
               raise SystemExit("Could not find Android buildTypes block.")
-          s = s.replace("    buildTypes {", block + "\n    buildTypes {", 1)
+          s = s.replace("    buildTypes {", block + "\n    buildTypes {\n        debug { signingConfig signingConfigs.debug }", 1)
           # Explicitly attach the persistent key to the debug variant.
           p.write_text(s)
           PY
