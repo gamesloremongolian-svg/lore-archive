@@ -41,6 +41,20 @@ test.describe('LOREVERSE website health', () => {
     expect(robotsText).toContain('Disallow: /lore-archive/editorial/');
   });
 
+  test('winter festival decorations can be toggled and respect reduced motion', async ({ page }) => {
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('.winter-banner')).toContainText('WINTER FESTIVAL');
+    await expect(page.locator('#winterSnow')).toHaveAttribute('aria-hidden', 'true');
+    const toggle = page.locator('#winterToggle');
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    await expect(page.locator('html')).toHaveClass(/winter-effects-off/);
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('html')).not.toHaveClass(/winter-effects-off/);
+  });
+
   test('internal hash links resolve to an element', async ({ page }) => {
     await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
     const broken = await page.locator('a[href*="#"]').evaluateAll(links => {
