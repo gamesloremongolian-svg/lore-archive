@@ -20,7 +20,7 @@ test.describe('LOREVERSE website health', () => {
     await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('.skip-link')).toHaveAttribute('href', '#main-content');
     await expect(page.locator('#main-content')).toHaveCount(1);
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', baseURL);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://lore-archive.pages.dev/');
     await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', /LOREVERSE/i);
     await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /LOREVERSE/i);
     await page.keyboard.press('Tab');
