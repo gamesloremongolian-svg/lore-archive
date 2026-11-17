@@ -2,11 +2,6 @@ name: Build LOREVERSE Android APK
 
 on:
   workflow_dispatch:
-    branches: [main]
-    paths:
-      - '.github/workflows/android-debug.yml'
-      - 'assets/loreverse-adaptive-foreground.svg'
-      - 'assets/loreverse-app-icon.svg'
 
 permissions:
   contents: read
@@ -104,7 +99,6 @@ jobs:
           s = s.replace(marker, insert + chr(10) + marker + chr(10) + "        debug { signingConfig signingConfigs.debug }", 1)
           p.write_text(s)
           print("Inserted Android signing configuration using explicit newline-joined lines.")
-          PYY
       - name: Verify persistent debug signing secrets
         run: |
           set -euo pipefail
