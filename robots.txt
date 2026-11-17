@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /chat/
+Disallow: /tools/
+
+Sitemap: https://loreverse-ctrl.github.io/lore-archive/sitemap.xml
