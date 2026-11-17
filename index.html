@@ -976,6 +976,65 @@ input[type=checkbox]{accent-color:#a98bff}a:focus-visible,button:focus-visible,i
 #appVersionNavLink{color:#ffb6e5;font-weight:900}
 #appVersionNavLink:hover,#appVersionNavLink:focus-visible{color:#fff}
 </style>
+
+<style id="loreverse-colorful-refresh-2026">
+:root{
+ --bg:#080615;--panel:#17102b;--panel2:#21143b;--line:#604078;
+ --text:#fffaff;--muted:#d0c1e2;--violet:#b76cff;--cyan:#64eaff;
+ --pink:#ff70c8;--gold:#ffd36e;--radius:24px;
+}
+body{
+ background:
+  radial-gradient(ellipse at 8% 8%,#9b35d455 0,transparent 30%),
+  radial-gradient(ellipse at 92% 18%,#167ed044 0,transparent 28%),
+  radial-gradient(ellipse at 50% 72%,#5b2a9a2b 0,transparent 42%),
+  linear-gradient(155deg,#080615 0%,#10091f 48%,#071521 100%);
+}
+.topbar{border-bottom-color:#d69cff35}
+.brand{color:#fff}
+.mark{background:linear-gradient(135deg,#ff70c8,#a66bff 52%,#64eaff);box-shadow:0 0 25px #b76cff77}
+.nav a:hover{color:var(--pink);text-shadow:0 0 16px #ff70c877}
+.select,.ghost,.search,.form-field{border-color:#694783;background:linear-gradient(145deg,#211331,#111326);color:#fff}
+.hero{position:relative}
+.eyebrow,.tag{color:var(--cyan);text-shadow:0 0 14px #64eaff55}
+.gradient{background:linear-gradient(100deg,#ff83d2 0%,#bd83ff 42%,#65eaff 78%,#ffe08a 100%);background-clip:text}
+.hero p,.section-head p{color:#d6c9e8}
+.btn{border-color:#76508f;background:linear-gradient(135deg,#2a1940,#15152d);transition:transform .2s,box-shadow .2s,filter .2s}
+.btn.primary{color:#fff;background:linear-gradient(105deg,#ed59b5 0%,#9655f4 48%,#397fe8 100%);box-shadow:0 10px 32px #a24cff55,0 0 18px #ed59b533}
+.btn:hover{filter:brightness(1.16);box-shadow:0 12px 32px #9b55ff44}
+.visual{background:radial-gradient(circle at 22% 25%,#ff70c866,transparent 30%),radial-gradient(circle at 78% 72%,#54e8ff55,transparent 32%),linear-gradient(145deg,#45205f,#1b1739 55%,#0d3446);border-color:#dca5ff66;box-shadow:0 25px 80px #8f43d833,inset 0 0 55px #b76cff16}
+.ring{border-color:#ffb0e9;box-shadow:0 0 65px #c66aff55,inset 0 0 45px #64eaff25}
+.ring:before{border-color:#64eaffaa}.ring:after{border-color:#ff70c8aa}
+.core{color:#fff;text-shadow:0 0 22px #ff9be3,0 0 55px #8b6bff}
+.float{background:#160d2dcc;border-color:#ffffff55;color:#fff4ff;box-shadow:0 5px 24px #0005}
+.stat,.stats .stat{background:linear-gradient(135deg,#2b1743dd,#12253bdd);border-color:#81569e;box-shadow:0 10px 30px #0004}
+.stat strong{background:linear-gradient(90deg,#ff8bd4,#7eeaff);background-clip:text;color:transparent}
+.world{border-color:#76518f;box-shadow:0 12px 32px #0005}
+.world:hover{border-color:#ff8bd4;box-shadow:0 15px 42px #bd64ff35}
+.world .code{background:linear-gradient(135deg,#e65db7dd,#7957e8dd);box-shadow:0 0 20px #a65bff66}
+.archive,.portal-panel,.feed-panel,.feed-side{background:linear-gradient(145deg,#241438f2,#11182deF);border-color:#714b8c;box-shadow:0 18px 50px #0004}
+.chip{border-color:#70508b;color:#e4d5f3}
+.chip.active,.chip:hover{background:linear-gradient(100deg,#d84eae44,#7b5bff55);border-color:#ff8bd4;color:#fff;box-shadow:0 0 18px #bb64ff33}
+.article,.feature,.live-box,.feed-post{background:linear-gradient(145deg,#2b1940,#14192e);border-color:#624578}
+.article:hover{border-color:#ff8bd4;box-shadow:0 12px 30px #a94fff26}
+.article button,.world a{color:#79eaff}
+.feature h3,.article h3,.world h3{color:#fff}
+.footer{border-top-color:#d69cff35}
+.media-card{border-color:#9665b2;box-shadow:0 12px 32px #0007,0 0 18px #a65bff20}
+.portal-actions .btn{background:linear-gradient(110deg,#d84eae,#7858ec,#277fc0);color:#fff}
+.feed-tab.active{background:linear-gradient(100deg,#e85eb9,#8558f1,#328ecb)}
+.modal{backdrop-filter:blur(12px)}
+.dialog{background:linear-gradient(145deg,#2a1940,#11182d);border-color:#a36ac3}
+@media(max-width:560px){
+ .hero{background:radial-gradient(ellipse at 50% 0%,#a64bdb20,transparent 65%)}
+ .btn.primary{box-shadow:0 8px 24px #a24cff44}
+}
+@media(prefers-reduced-motion:no-preference){
+ .btn,.world,.article,.chip{transition:all .22s ease}
+ .btn:hover,.world:hover,.article:hover{transform:translateY(-3px)}
+}
+</style>
+
 </head>
 <body>
 <header class="wrap topbar"><a class="brand" href="#"><img class="mark mark-image" src="./assets/loreverse-mark.svg" alt=""> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх" onclick="(function(b){var n=document.getElementById('mainNav');if(!n)return;var o=n.classList.toggle('open');b.setAttribute('aria-expanded',String(o));b.textContent=o?'✕':'☰';})(this)">☰</button><nav class="nav" id="mainNav" onclick="if(event.target.closest('a')){this.classList.remove('open');var b=document.getElementById('navToggle');if(b){b.setAttribute('aria-expanded','false');b.textContent='☰';}}"><a href="#all-categories">Бүх ертөнцийн мэдлэг</a><a href="#all-categories">Ангилал</a><a href="#anime">Анимэ</a><a href="#games">Тоглоом</a><a href="#manga">Манга</a><a href="archive/">Novel</a><a href="#archive">Lore Archive</a><a href="#loreverse-updates">Шинэчлэл</a><a id="appVersionNavLink" href="#app-update">Аппын хувилбар</a><a href="chat/">Хувийн чат</a><a class="admin-nav-link" href="admin/" aria-label="Админ хэсэгт нэвтрэх">Админ ↗</a><a href="knowledge/">Ертөнцийн сан</a></nav><div class="actions"><a class="ghost" id="appUpdateQuickOpen" href="#app-update" style="font-size:11px;font-weight:850;color:#ffb6e5;white-space:nowrap">APK шинэчлэх ↻</a><button class="ghost" id="notificationsOpen" type="button" aria-label="Мэдэгдэл">🔔 <span id="notificationCount">0</span></button><select class="select" id="lang" aria-label="Language" data-no-translate="true" translate="no"><option value="mn" data-no-translate="true">Монгол</option><option value="en" data-no-translate="true">English</option><option value="ja" data-no-translate="true">日本語</option><option value="ko" data-no-translate="true">한국어</option></select></div></header>
