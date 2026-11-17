@@ -1903,7 +1903,7 @@ supabase.auth.onAuthStateChange(()=>{setTimeout(()=>{loadAdAdmin();},0);});
 (()=>{const launch=document.getElementById("loreAiLauncher"),panel=document.getElementById("loreAiPanel"),close=document.getElementById("loreAiClose");if(!launch||!panel)return;launch.addEventListener("click",()=>{panel.classList.add("open");panel.setAttribute("aria-hidden","false");},{capture:true});if(close)close.addEventListener("click",()=>{panel.classList.remove("open");panel.setAttribute("aria-hidden","true");},{capture:true});const contact=document.getElementById("loreAiContactAdmin");if(contact)contact.addEventListener("click",()=>{panel.classList.remove("open");panel.setAttribute("aria-hidden","true");const target=document.getElementById("supportTickets");if(target){target.scrollIntoView({behavior:"smooth",block:"start"});target.setAttribute("tabindex","-1");setTimeout(()=>target.focus({preventScroll:true}),450);}},{capture:true});})();
 </script>
 <script>
-(()=>{const b=document.getElementById('navToggle'),n=document.getElementById('mainNav');if(!b||!n)return;n.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{n.classList.remove('open');b.setAttribute('aria-expanded','false');b.textContent='☰';}));})();
+(()=>{const b=document.getElementById('navToggle'),n=document.getElementById('mainNav');if(!b||!n)return;const close=()=>{n.classList.remove('open');b.setAttribute('aria-expanded','false');b.textContent='☰';};n.addEventListener('click',e=>{const a=e.target.closest('a');if(a)close();},true);n.addEventListener('keydown',e=>{if(e.key==='Escape')close();});})();
 
 /* LOREVERSE account profile + notification center */
 async function loadAccountPanel(){
