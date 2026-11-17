@@ -70,6 +70,15 @@ def main():
                 f"({parser.scripts} open, {parser.script_closes} close)"
             )
 
+        if path == Path("knowledge/index.html"):
+            knowledge_required = {"search", "filter", "gameGrid", "animeGrid"}
+            missing = sorted(knowledge_required - set(parser.ids))
+            if missing:
+                errors.append(
+                    "knowledge/index.html: missing required knowledge elements: "
+                    + ", ".join(missing)
+                )
+
         if path == Path("archive/index.html"):
             archive_required = {
                 "publicArchive", "publicArchiveResults", "publicArchiveLang",
