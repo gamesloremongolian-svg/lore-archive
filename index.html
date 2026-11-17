@@ -1203,8 +1203,9 @@ body{
 <section class="section" id="manga">
  <div class="section-head"><div><div class="eyebrow">MANGA ARCHIVE</div><h2>Манганы ертөнц</h2><p>Манга бүтээлүүдийг нэрээр хайж, нүүр зураг болон товч танилцуулгыг үзээрэй.</p></div></div>
  <div class="manga-featured">
-  <div class="manga-rail-head"><strong>ТРЕНД БОЛЖ БУЙ МАНГА</strong><span>Автоматаар гүйлгэнэ · Хулгана эсвэл хуруугаар түр зогсоож болно</span></div>
-  <div class="carousel-viewport" id="mangaRailViewport"><div class="carousel-track" id="mangaPopularRail"><div class="media-card"><strong>Мэдээлэл ачаалж байна…</strong></div></div></div>
+  <div class="manga-rail-head"><strong>ТРЕНД БОЛЖ БУЙ МАНГА</strong><span>Хуруугаар чирэх эсвэл сум ашиглан гүйлгэнэ</span><div class="manga-rail-controls"><button id="mangaRailPrev" type="button" aria-label="Өмнөх манга">‹</button><button id="mangaRailNext" type="button" aria-label="Дараагийн манга">›</button></div></div>
+  <div class="carousel-viewport" id="mangaRailViewport" role="region" aria-label="Тренд болж буй манга" tabindex="0"><div class="carousel-track" id="mangaPopularRail"><div class="media-card"><strong>Мэдээлэл ачаалж байна…</strong></div></div></div>
+  <p class="manga-rail-status" id="mangaRailStatus" aria-live="polite">Манганы каталогоос мэдээлэл ачаалж байна…</p>
  </div>
  <div class="archive">
   <div class="toolbar"><input class="search" id="mangaSearch" type="search" placeholder="Манганы нэрээр хайх..."><button class="btn primary" id="mangaSearchBtn" type="button">Манга хайх</button></div>
@@ -2348,51 +2349,58 @@ document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBank
  };
 })(); 
 
-/* Manga featured rail — matched to the Game Universe cards */
+/* Manga featured rail — touch-first horizontal carousel */
 #manga .manga-featured{margin:0 0 20px;padding:17px;border:1px solid #594077;border-radius:20px;background:linear-gradient(145deg,#1b1730,#111020)}
 #manga .manga-rail-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
 #manga .manga-rail-head strong{font-size:11px;letter-spacing:.14em;color:#d9b4ff}
 #manga .manga-rail-head span{font-size:10px;color:var(--muted)}
-#manga .carousel-viewport{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;mask-image:linear-gradient(90deg,transparent,#000 2%,#000 98%,transparent)}
-#manga .carousel-viewport::-webkit-scrollbar{display:none}
-#manga .carousel-track{width:max-content;min-width:100%;animation:none!important;transform:none!important}
-#manga .carousel-track .media-card{flex:0 0 230px;min-height:175px}
-@media(max-width:650px){#manga .manga-featured{padding:12px}#manga .carousel-track .media-card{flex-basis:195px}}
+#manga .manga-rail-controls{display:flex;gap:7px;margin-left:auto}
+#manga .manga-rail-controls button{min-width:34px;min-height:32px;border:1px solid #66508b;border-radius:9px;background:#201936;color:#fff;font-weight:800;cursor:pointer;touch-action:manipulation}
+#manga .manga-rail-controls button:focus-visible{outline:2px solid #d9b4ff;outline-offset:2px}
+#manga .carousel-viewport{display:block;width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#76539d #171326;cursor:grab;scroll-snap-type:x proximity}
+#manga .carousel-viewport:active{cursor:grabbing}
+#manga .carousel-viewport::-webkit-scrollbar{height:5px}
+#manga .carousel-viewport::-webkit-scrollbar-thumb{background:#76539d;border-radius:8px}
+#manga .carousel-track{display:flex;flex-flow:row nowrap;align-items:stretch;gap:12px;width:max-content;min-width:100%;animation:none!important;transform:none!important;will-change:scroll-position}
+#manga .carousel-track .media-card{display:flex;flex:0 0 230px;width:230px;min-height:175px;white-space:normal;scroll-snap-align:start}
+#manga .manga-rail-status{margin:8px 0 0;color:var(--muted);font-size:10px}
+@media(max-width:650px){#manga .manga-featured{padding:12px}#manga .carousel-track .media-card{flex-basis:195px;width:195px}}
 @media(prefers-reduced-motion:reduce){#manga .carousel-viewport{scroll-behavior:auto}}
 
-/* Trending Manga cards + seamless auto-scroll */
+/* Trending Manga rail — robust API fallback, touch scroll and pause/resume */
 (()=>{
- const rail=document.getElementById("mangaPopularRail"),viewport=document.getElementById("mangaRailViewport");
+ const rail=document.getElementById("mangaPopularRail"),viewport=document.getElementById("mangaRailViewport"),status=document.getElementById("mangaRailStatus");
+ const prev=document.getElementById("mangaRailPrev"),next=document.getElementById("mangaRailNext");
  if(!rail||!viewport)return;
- const esc=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+ const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ async function request(url,options){
+  try{if(window.LOREVERSE_DATA_HUB?.fetchJSON){const r=await window.LOREVERSE_DATA_HUB.fetchJSON(url,options);if(r?.ok&&typeof r.json==="function")return await r.json();}}
+  catch(error){console.warn("Manga Data Hub fallback:",error);}
+  const r=await fetch(url,options);if(!r.ok)throw new Error("AniList HTTP "+r.status);return await r.json();
+ }
  const gql='query{Page(page:1,perPage:18){media(type:MANGA,isAdult:false,sort:TRENDING_DESC){siteUrl title{romaji english userPreferred} coverImage{large medium} format startDate{year}}}}';
- window.LOREVERSE_DATA_HUB.fetchJSON("https://graphql.anilist.co",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({query:gql})})
- .then(r=>{if(!r.ok)throw new Error("AniList "+r.status);return r.json();})
+ request("https://graphql.anilist.co",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({query:gql})})
  .then(payload=>{
+  if(payload.errors?.length)throw new Error(payload.errors[0].message||"AniList каталогийн алдаа");
   const rows=payload.data?.Page?.media||[];if(!rows.length)throw new Error("Манга олдсонгүй");
   const cards=rows.map(m=>{
-   const title=m.title?.userPreferred||m.title?.english||m.title?.romaji||"Манга";
-   const cover=m.coverImage?.large||m.coverImage?.medium||"";
-   const year=m.startDate?.year||"";
-   return '<a class="media-card" href="'+esc(m.siteUrl||"https://anilist.co")+'" target="_blank" rel="noopener noreferrer" style="background-image:linear-gradient(0deg,#080817ed 0%,#08081730 70%),url(\''+esc(cover)+'\')"><small> MANGA · '+esc(m.format||"COMIC")+'</small><strong>'+esc(title)+'</strong><span>'+esc(year||"AniList каталог")+'</span></a>';
+   const title=m.title?.userPreferred||m.title?.english||m.title?.romaji||"Манга",cover=m.coverImage?.large||m.coverImage?.medium||"",year=m.startDate?.year||"";
+   return '<a class="media-card" href="'+esc(m.siteUrl||"https://anilist.co")+'" target="_blank" rel="noopener noreferrer" style="background-image:linear-gradient(0deg,#080817ed 0%,#08081730 70%),url(&quot;'+esc(cover)+'&quot;)"><small>MANGA · '+esc(m.format||"COMIC")+'</small><strong>'+esc(title)+'</strong><span>'+esc(year||"AniList каталог")+'</span></a>';
   }).join("");
   rail.innerHTML=cards+cards;
   Array.from(rail.children).slice(rows.length).forEach(node=>{node.setAttribute("aria-hidden","true");node.querySelectorAll("a,button").forEach(a=>a.tabIndex=-1);});
-  let raf=0,last=0,paused=false,resumeTimer=0;
-  const half=()=>rail.scrollWidth/2;
-  function tick(t){if(!last)last=t;const dt=Math.min(40,t-last);last=t;if(!paused&&half()>viewport.clientWidth){viewport.scrollLeft+=dt*.035;if(viewport.scrollLeft>=half())viewport.scrollLeft-=half();}raf=requestAnimationFrame(tick);}
-  function pause(){paused=true;clearTimeout(resumeTimer);}
-  function resume(){clearTimeout(resumeTimer);resumeTimer=setTimeout(()=>{paused=false;},1300);}
-  viewport.addEventListener("pointerdown",pause,{passive:true});
-  viewport.addEventListener("pointerup",resume,{passive:true});
-  viewport.addEventListener("pointercancel",resume,{passive:true});
-  viewport.addEventListener("mouseenter",pause);
-  viewport.addEventListener("mouseleave",resume);
-  viewport.addEventListener("focusin",pause);
-  viewport.addEventListener("focusout",resume);
-  if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches)raf=requestAnimationFrame(tick);
-  document.addEventListener("visibilitychange",()=>{if(document.hidden){cancelAnimationFrame(raf);last=0;}else if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches){last=0;raf=requestAnimationFrame(tick);}});
- }).catch(error=>{rail.innerHTML='<div class="media-card"><strong>Манганы мэдээлэл түр ачаалж чадсангүй</strong><span>Доорх хайлтаар бүтээлээ хайж болно.</span></div>';console.warn("Manga rail:",error);});
+  let raf=0,last=0,paused=false,resumeTimer=0;const half=()=>rail.scrollWidth/2,reduce=window.matchMedia("(prefers-reduced-motion: reduce)");
+  function tick(t){if(!last)last=t;const dt=Math.min(40,t-last);last=t;if(!paused&&half()>viewport.clientWidth){viewport.scrollLeft+=dt*.022;if(viewport.scrollLeft>=half())viewport.scrollLeft-=half();}raf=requestAnimationFrame(tick);}
+  function pause(){paused=true;clearTimeout(resumeTimer);}function resume(){clearTimeout(resumeTimer);resumeTimer=setTimeout(()=>{paused=false;},1800);}
+  const nudge=dir=>{pause();viewport.scrollBy({left:dir*Math.max(210,viewport.clientWidth*.72),behavior:reduce.matches?"auto":"smooth"});resume();};
+  prev?.addEventListener("click",()=>nudge(-1));next?.addEventListener("click",()=>nudge(1));
+  viewport.addEventListener("pointerdown",pause,{passive:true});viewport.addEventListener("pointerup",resume,{passive:true});viewport.addEventListener("pointercancel",resume,{passive:true});
+  viewport.addEventListener("mouseenter",pause);viewport.addEventListener("mouseleave",resume);viewport.addEventListener("focusin",pause);viewport.addEventListener("focusout",resume);
+  if(!reduce.matches)raf=requestAnimationFrame(tick);
+  document.addEventListener("visibilitychange",()=>{if(document.hidden){cancelAnimationFrame(raf);last=0;}else if(!reduce.matches){last=0;raf=requestAnimationFrame(tick);}});
+  reduce.addEventListener?.("change",()=>{if(reduce.matches){cancelAnimationFrame(raf);paused=true;}else{paused=false;last=0;raf=requestAnimationFrame(tick);}});
+  if(status)status.textContent="AniList каталогоос "+rows.length+" тренд манга ачааллаа · Хуруугаар чирж эсвэл сум дарж гүйлгэнэ.";
+ }).catch(error=>{rail.innerHTML='<div class="media-card"><strong>Манганы мэдээлэл түр ачаалж чадсангүй</strong><span>'+esc(error.message||"Сүлжээний алдаа")+'</span></div>';if(status)status.textContent="Манганы каталог ачаалсангүй. Доорх хайлтаар дахин оролдоно уу.";console.warn("Manga rail:",error);});
 })();
 
 /* Dedicated Manga archive search */
@@ -2414,9 +2422,11 @@ document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBank
   busy=true;button.disabled=true;more.disabled=true;status.textContent="Манганы мэдээлэл ачаалж байна…";
   const gql='query ($search:String,$page:Int){Page(page:$page,perPage:12){pageInfo{hasNextPage} media(search:$search,type:MANGA,sort:SEARCH_MATCH,isAdult:false){id siteUrl description format status startDate{year} title{romaji english userPreferred} coverImage{medium large}}}}';
   try{
-   const response=await window.LOREVERSE_DATA_HUB.fetchJSON("https://graphql.anilist.co",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({query:gql,variables:{search:q,page}})});
-   if(!response.ok)throw new Error("AniList хүсэлт амжилтгүй ("+response.status+").");
-   const payload=await response.json();if(payload.errors?.length)throw new Error(payload.errors[0].message||"Каталогийн алдаа.");
+   const options={method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({query:gql,variables:{search:q,page}})};
+   let payload=null,hubError=null;
+   try{if(window.LOREVERSE_DATA_HUB?.fetchJSON){const response=await window.LOREVERSE_DATA_HUB.fetchJSON("https://graphql.anilist.co",options);if(response?.ok&&typeof response.json==="function")payload=await response.json();else throw new Error("Data Hub буруу хариу буцаалаа.");}}catch(error){hubError=error;}
+   if(!payload){const response=await fetch("https://graphql.anilist.co",options);if(!response.ok)throw new Error("AniList HTTP "+response.status+(hubError?" · Data Hub: "+(hubError.message||hubError):""));payload=await response.json();}
+   if(payload.errors?.length)throw new Error(payload.errors[0].message||"Каталогийн алдаа.");
    const data=payload.data?.Page;if(!data)throw new Error("Хариу хоосон байна.");
    hasNext=!!data.pageInfo?.hasNextPage;const rows=data.media||[];
    out.insertAdjacentHTML("beforeend",rows.map(card).join(""));
