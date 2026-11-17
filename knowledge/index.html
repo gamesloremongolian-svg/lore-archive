@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080914">
+<meta name="description" content="LOREVERSE — тоглоом, анимэний ертөнцийн танилцуулга, нэр томьёо, lore мэдлэгийн сан.">
+<title>Ертөнцийн сан — LOREVERSE</title>
+<style>
+:root{color-scheme:dark;--bg:#080914;--panel:#111326;--panel2:#171a32;--line:#292d49;--text:#f4f3ff;--muted:#a5a6bd;--violet:#9b70ff;--cyan:#67e4ef}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 50% -15%,#35205c 0,transparent 42%),var(--bg);color:var(--text);font:15px/1.65 Inter,system-ui,sans-serif}.wrap{width:min(1120px,calc(100% - 32px));margin:auto}a{color:inherit;text-decoration:none}.top{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid #ffffff18}.brand{font-weight:950;letter-spacing:.12em}.back{color:var(--cyan)}.hero{padding:54px 0 28px}.eyebrow{color:var(--cyan);font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:12px}.hero h1{font-size:clamp(32px,6vw,58px);line-height:1.08;margin:10px 0}.hero p{max-width:720px;color:var(--muted)}.tools{display:flex;gap:10px;flex-wrap:wrap;margin:25px 0}.tools input,.tools select{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:13px 15px;min-height:46px}.tools input{flex:1;min-width:220px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:35px 0 16px}.section-head h2{margin:0;font-size:25px}.count{color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:14px}.card{background:linear-gradient(145deg,#1b2035,#101423);border:1px solid #34334e;border-radius:18px;padding:20px;transition:.2s}.card:hover{transform:translateY(-3px);border-color:var(--violet)}.tag{display:inline-block;border:1px solid #7562a4;color:#cbbcff;border-radius:99px;padding:2px 9px;font-size:11px;font-weight:800}.card h3{margin:12px 0 3px;font-size:20px}.meta{color:var(--cyan);font-size:12px}.card p{color:#c0c1d2;margin:10px 0}.terms{border-top:1px solid #ffffff18;margin-top:14px;padding-top:12px}.terms summary{cursor:pointer;color:#cbbcff;font-weight:750}.terms ul{padding-left:18px;color:var(--muted);font-size:13px}.terms li{margin:7px 0}.anime .card{padding:16px}.empty{display:none;color:var(--muted);padding:24px;text-align:center}.foot{padding:40px 0;color:var(--muted);font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><a class="brand" href="../">LOREVERSE</a><a class="back" href="../">← Үндсэн сайт руу буцах</a></header>
+<section class="hero"><div class="eyebrow">LOREVERSE KNOWLEDGE BASE</div><h1>Ертөнцийн <span style="color:#bba2ff">мэдлэгийн сан</span></h1><p>Тоглоом, анимэний ертөнц, түүх, гол ойлголт болон нэр томьёог нэг дороос судлаарай. Энэ хэсэг нь gaming-knowledge-platform багцын Монгол хэл дээрх мэдээллийн бүтцийг LOREVERSE-д тохируулан нэгтгэсэн хувилбар юм.</p>
+<div class="tools"><input id="search" type="search" placeholder="Тоглоом, анимэ, нэр томьёогоор хайх…" aria-label="Мэдээлэл хайх"><select id="filter" aria-label="Ангилал"><option value="all">Бүх ангилал</option><option value="game">Тоглоом</option><option value="anime">Анимэ</option></select></div>
+</section>
+<section id="games"><div class="section-head"><h2>Тоглоомын ертөнц</h2><span class="count" id="gameCount"></span></div><div class="grid" id="gameGrid"></div></section>
+<section id="anime" class="anime"><div class="section-head"><h2>Анимэний ертөнц</h2><span class="count" id="animeCount"></span></div><div class="grid" id="animeGrid"></div></section>
+<div class="empty" id="empty">Таны хайлтад тохирох мэдээлэл олдсонгүй.</div>
+<footer class="foot">LOREVERSE · Ертөнцийн мэдлэг нэг дор · Мэдээлэл шинэчлэгдэх боломжтой</footer>
+</div>
+<script>
+const games = [
+{n:"Genshin Impact",d:"HoYoverse",tag:"Teyvat-ийн нууцууд",desc:"Teyvat тивд өрнөх нээлттэй ертөнцийн action RPG. Аялагч алга болсон ах эгчээ хайж, үндэстнүүдээр аялна. Үндэстэн бүр нэг элемент, нэг Archon-той холбоотой.",terms:[["Teyvat","Тоглоомын ертөнц болох тив."],["Archon","Үндэстэн бүрийг захирдаг бурхан."],["Vision","Элементийн хүчийг ашиглах боломж олгодог бэлгэдэл."],["Khaenri'ah","Түүхэнд сүйрсэн нууцлаг орон."]]},
+{n:"Wuthering Waves",d:"Kuro Games",tag:"Resonator-ийн ертөнц",desc:"Нээлттэй ертөнцийн action RPG. Санах ойгүй сэрсэн Resonator дэлхийг сүйтгэсэн гамшгийн нууцыг тайлахаар аялна.",terms:[["Resonator","Онцгой хүч (Resonance) агуулсан хүн."],["Lament","Ертөнцийг сүйрүүлсэн гамшиг."],["Tacet Discord","Дэлхий дээр аюул учруулдаг дайсагнагч оршнолууд."],["Rover","Үндсэн дүр, тоглогчийн дүр."]]},
+{n:"ANANTA",d:"Хөгжүүлэлтийн шатанд",tag:"Нууцлаг хотын амьдрал",desc:"Орчин үеийн хотын орчинд өрнөх, ер бусын үзэгдэл бүхий нээлттэй ертөнцийн тоглоом. Албан ёсны мэдээлэл өөрчлөгдөж магадгүй.",terms:[]},
+{n:"Honkai: Star Rail",d:"HoYoverse",tag:"Оддын аялал",desc:"Сансрын уран зөгнөлт, ээлжлэн тулалддаг RPG. Trailblazer Astral Express галт тэргээр ертөнцүүдээр аялж, Stellaron-той холбоотой нууцыг мөрдөнө.",terms:[["Astral Express","Орчлон ертөнцөөр аялдаг галт тэрэг."],["Trailblazer","Үндсэн дүр, зам нээгч."],["Stellaron","Ертөнцөд аюул авчирдаг нууцлаг үзэгдэл."],["Aeon","Нэг Зам (Path)-ыг төлөөлдөг бурхан шиг оршнол."]]},
+{n:"Zenless Zone Zero",d:"HoYoverse",tag:"New Eridu-ийн түүх",desc:"Хотын уран зөгнөлт action RPG. Гамшгийн дараа үлдсэн New Eridu хотод Proxy нар Hollow руу орох хүмүүсийг чиглүүлдэг.",terms:[["New Eridu","Тоглоомын гол хот."],["Hollow","Аюултай, орон зайн гажуудалтай бүс."],["Proxy","Hollow руу орох хүмүүсийг чиглүүлэгч."],["Ethereal","Hollow дахь дайсагнагч оршнолууд."]]},
+{n:"Arknights",d:"Hypergryph",tag:"Terra-ийн ертөнц",desc:"Стратегийн tower-defense RPG. Terra ертөнцөд Originium-ын гамшиг, Infected хүмүүсийн зовлон, Rhodes Island-ийн ажиллагааг дагана.",terms:[["Terra","Тоглоомын ертөнц."],["Originium","Эрчим хүчний эх үүсвэр болдог ч аюултай эрдэс."],["Oripathy","Originium-аас үүсэх өвчин."],["Rhodes Island","Тоглогчийн ажилладаг байгууллага."]]},
+{n:"Blue Archive",d:"Nexon",tag:"Kivotos-ийн архив",desc:"Сургуулийн сэдэвтэй RPG. Тоглогч Sensei болж, Kivotos дахь сурагчдад тусална.",terms:[["Kivotos","Олон академитай хот-улс."],["Schale","Sensei ажилладаг байгууллага."],["Sensei","Тоглогчийн дүр, багш."]]}
+];
+const anime = [
+{n:"Frieren: Beyond Journey's End",d:"Madhouse",y:2023},
+{n:"Attack on Titan",d:"Wit Studio / MAPPA",y:2013},
+{n:"Fullmetal Alchemist: Brotherhood",d:"Bones",y:2009},
+{n:"Cowboy Bebop",d:"Sunrise",y:1998},
+{n:"Steins;Gate",d:"White Fox",y:2011}
+];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function render(){
+ const q=document.getElementById("search").value.trim().toLowerCase(), f=document.getElementById("filter").value;
+ const gs=games.filter(g=>(f==="all"||f==="game")&&[g.n,g.d,g.tag,g.desc,...g.terms.flat()].join(" ").toLowerCase().includes(q));
+ const as=anime.filter(a=>(f==="all"||f==="anime")&&[a.n,a.d,a.y].join(" ").toLowerCase().includes(q));
+ document.getElementById("gameGrid").innerHTML=gs.map(g=>'<article class="card"><span class="tag">ТОГЛООМ</span><h3>'+esc(g.n)+'</h3><div class="meta">'+esc(g.d)+' · '+esc(g.tag)+'</div><p>'+esc(g.desc)+'</p>'+(g.terms.length?'<details class="terms"><summary>Гол нэр томьёо ('+g.terms.length+')</summary><ul>'+g.terms.map(t=>'<li><b>'+esc(t[0])+'</b> — '+esc(t[1])+'</li>').join("")+'</ul></details>':'')+'</article>').join("");
+ document.getElementById("animeGrid").innerHTML=as.map(a=>'<article class="card"><span class="tag">АНИМЭ</span><h3>'+esc(a.n)+'</h3><div class="meta">'+esc(a.d)+' · '+a.y+'</div></article>').join("");
+ document.getElementById("gameCount").textContent=gs.length+" тоглоом";document.getElementById("animeCount").textContent=as.length+" анимэ";document.getElementById("games").style.display=(f==="anime"?"none":"block");document.getElementById("anime").style.display=(f==="game"?"none":"block");document.getElementById("empty").style.display=gs.length+as.length?"none":"block";
+}
+document.getElementById("search").addEventListener("input",render);document.getElementById("filter").addEventListener("change",render);render();
+</script>
+</body></html>
