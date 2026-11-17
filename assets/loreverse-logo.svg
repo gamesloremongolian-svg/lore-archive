@@ -1,13 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" role="img" aria-labelledby="t d">
-<title id="t">LOREVERSE</title><desc id="d">Cosmic compass emblem and LOREVERSE wordmark</desc>
-<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".48" stop-color="#e5d5ff"/><stop offset="1" stop-color="#9b70ff"/></linearGradient><radialGradient id="bg"><stop stop-color="#24133f"/><stop offset="1" stop-color="#080914"/></radialGradient><filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-<rect width="1200" height="360" rx="30" fill="url(#bg)"/>
-<g transform="translate(178 180)" fill="none" stroke="url(#g)" filter="url(#glow)">
-<circle r="130" stroke-width="2" opacity=".38"/><circle r="108" stroke-width="2" opacity=".5"/>
-<path d="M0-150 23-28 145 0 23 28 0 150-23 28-145 0-23-28Z" stroke-width="8" stroke-linejoin="round"/>
-<path d="M-102-102Q0-190 102-102M-102 102Q0 190 102 102" stroke-width="4" opacity=".8"/>
-<path d="M0-78 10-10 78 0 10 10 0 78-10 10-78 0-10-10Z" fill="url(#g)" stroke="none"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 420" role="img" aria-labelledby="t d">
+<title id="t">LOREVERSE</title><desc id="d">Colorful cosmic fantasy LOREVERSE emblem with an Android mascot, orbital rings and star compass</desc>
+<defs>
+ <linearGradient id="word" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff8ff"/><stop offset=".32" stop-color="#ffc1ed"/><stop offset=".62" stop-color="#bca2ff"/><stop offset="1" stop-color="#65edff"/></linearGradient>
+ <linearGradient id="orbit" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#42f4ff"/><stop offset=".48" stop-color="#a45bff"/><stop offset="1" stop-color="#ff77d8"/></linearGradient>
+ <radialGradient id="planet"><stop stop-color="#53dcff"/><stop offset=".55" stop-color="#2844b7"/><stop offset="1" stop-color="#101039"/></radialGradient>
+ <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#151044"/><stop offset=".62" stop-color="#312064"/><stop offset="1" stop-color="#08152f"/></linearGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect x="5" y="5" width="1390" height="410" rx="52" fill="url(#sky)" stroke="url(#orbit)" stroke-width="7"/>
+<g fill="#fff"><circle cx="70" cy="70" r="3"/><circle cx="330" cy="54" r="3"/><circle cx="1090" cy="65" r="3"/><circle cx="1330" cy="95" r="3"/><circle cx="1250" cy="325" r="2.5"/><circle cx="85" cy="315" r="2.5"/></g>
+<g transform="translate(300 190)" filter="url(#glow)">
+ <circle r="145" fill="url(#planet)" stroke="#69eaff" stroke-width="5"/>
+ <path d="M-112-30Q-45-132 72-102Q132-45 112 34Q45 0-10 30Q-82 65-112-30Z" fill="#338bff" opacity=".42"/>
+ <ellipse rx="196" ry="69" fill="none" stroke="url(#orbit)" stroke-width="13" transform="rotate(-18)"/>
+ <ellipse rx="196" ry="69" fill="none" stroke="#58eaff" stroke-width="4" transform="rotate(22)" opacity=".8"/>
+ <g fill="#fff" stroke="#fff" stroke-linecap="round"><path d="M-42-45-70-83M42-45 70-83" stroke-width="13" fill="none"/><path d="M-94 47Q-94-47 0-47Q94-47 94 47Z"/></g>
+ <g fill="#141238"><circle cx="-38" cy="0" r="10"/><circle cx="38" cy="0" r="10"/></g>
+ <path d="M0 64l10 23 24 10-24 10-10 24-10-24-24-10 24-10z" fill="#fff4b8"/>
 </g>
-<text x="360" y="218" fill="url(#g)" font-family="Georgia,serif" font-size="126" letter-spacing="4">LOREVERSE</text>
-<path d="M365 264H1090" stroke="url(#g)" stroke-width="3" opacity=".75"/><path d="M725 248l14 16-14 16-14-16Z" fill="#e8d7ff"/>
+<g transform="translate(300 190)" fill="none" stroke="#ffb9e9" stroke-width="5" opacity=".95"><path d="M-235-100q-40-45-64 0 24 40 64 0zm0 0q40-45 64 0-24 40-64 0z"/><circle cy="-100" r="8" fill="#ffb9e9"/><path d="M245 112q-34-40-54 0 20 34 54 0zm0 0q34-40 54 0-20 34-54 0z"/><circle cx="245" cy="112" r="7" fill="#ffb9e9"/></g>
+<path d="M95 365H1320" stroke="url(#orbit)" stroke-width="3" opacity=".7"/>
+<g fill="#111943" stroke="#7d8aff" stroke-width="3"><path d="M155 362l22-80 20 80zm48 0 17-55 18 55zm75 0 18-96 19 96zm50 0 16-62 17 62z"/></g>
+<text x="555" y="242" fill="url(#word)" stroke="#452c91" stroke-width="2" paint-order="stroke" font-family="Georgia,serif" font-size="142" font-weight="bold" letter-spacing="2" filter="url(#glow)">LOREVERSE</text>
+<path d="M570 285H1290" stroke="url(#orbit)" stroke-width="4"/><path d="M930 270l16 16-16 16-16-16z" fill="#fff2c7" filter="url(#glow)"/>
+<text x="575" y="335" fill="#d9d4ff" font-family="Arial,sans-serif" font-size="22" letter-spacing="9">ANIME · GAMES · MANGA · LORE</text>
 </svg>
