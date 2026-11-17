@@ -95,7 +95,7 @@ def main():
             source = path.read_text(encoding="utf-8")
             if "rel=\"canonical\"" not in source:
                 errors.append("index.html: missing canonical URL")
-            if "class=\"skip-link\"" not in source or \"id=\\\"main-content\\\"".replace("\\", "") not in source:
+            if 'class="skip-link"' not in source or 'id="main-content"' not in source:
                 errors.append("index.html: missing accessible skip navigation target")
             missing = sorted(required - set(parser.ids))
             if missing:
