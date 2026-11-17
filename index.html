@@ -1147,7 +1147,7 @@ html.winter-effects-off .winter-snow{display:none}
   <div class="hero-slogan">БҮХ ЕРТӨНЦИЙН МЭДЛЭГ НЭГ ДОР.</div>
   <img class="hero-brand-logo" src="./assets/loreverse-logo.svg" alt="LOREVERSE">
   <p>Дуртай анимэ, тоглоом, манга ертөнцийнхөө түүх, дүрүүд, нууц, онолыг нэг дороос нээ.</p>
-  <div class="hero-buttons"><a class="btn primary" href="#anime">Анимэ үзэх ↗</a><a class="btn" href="#all-categories">Бүх ангилал</a><a class="btn" href="#app-update" aria-label="Аппын шинэчлэлт шалгах">Апп шинэчлэх ↻</a></div>
+  <div class="hero-buttons"><a class="btn primary" href="#anime">Анимэ үзэх ↗</a><a class="btn" href="#all-categories">Бүх ангилал</a><a class="btn" href="#invite">Найзаа урих ↗</a><a class="btn" href="#app-update" aria-label="Аппын шинэчлэлт шалгах">Апп шинэчлэх ↻</a></div>
   <div class="winter-banner" role="note"><span class="winter-banner-icon" aria-hidden="true">🎄</span><div><strong>WINTER FESTIVAL · 2027</strong><span>Шинэ он хүртэл хамтдаа шинэ ертөнц нээцгээе</span></div><span class="winter-star" aria-hidden="true">✦</span></div>
   <div class="new-year-countdown" id="newYearCountdown" role="timer" aria-live="off" aria-label="2027 оны шинэ он хүртэлх хугацаа">
    <div class="new-year-countdown-title"><span>✦</span> 2027 ОНЫ ШИНЭ ОН ХҮРТЭЛ <span>✦</span></div>
@@ -1474,6 +1474,25 @@ const fmt=n=>Number(n||0).toLocaleString("mn-MN");
  <div class="event-rewards"><strong>Оролцооны урамшуулал</strong><span>XP · Lore Coins · Community чансаа</span></div>
 </section>
 
+
+<section class="section" id="invite">
+ <div class="section-head"><div><div class="eyebrow">LOREVERSE INVITE PROGRAM</div><h2>Найзаа LOREVERSE-д урь</h2><p>Өөрийн урилгын холбоосыг найзуудтайгаа хуваалц. Тэд имэйлээ баталгаажуулж бүртгүүлсний дараа урилга тоологдоно.</p></div></div>
+ <div class="portal-panel" style="border:1px solid #b76cff88;background:linear-gradient(125deg,#25143d,#14283d);box-shadow:0 14px 40px #8f43d822">
+  <div class="eyebrow">ТАНЫ ХУВИЙН УРИЛГА</div>
+  <div id="inviteLoggedOut"><h3>Урилгын холбоос авахын тулд нэвтэрнэ үү</h3><p>LOREVERSE аккаунтаараа нэвтэрсний дараа таны хувийн урилгын код үүснэ.</p><button class="btn primary" id="inviteLogin" type="button">Нэвтрэх / Бүртгүүлэх</button></div>
+  <div id="inviteDashboard" hidden>
+   <div class="portal-grid" style="align-items:stretch">
+    <div class="feature"><div class="eyebrow">ТАНЫ УРИЛГЫН КОД</div><strong id="inviteCode" style="display:block;font-size:clamp(24px,5vw,36px);letter-spacing:.12em;margin:8px 0">----------</strong><span class="portal-note">Энэ код таны аккаунтад холбогдсон.</span></div>
+    <div class="feature"><div class="eyebrow">БАТАЛГААЖСАН УРИЛГА</div><strong id="inviteCount" style="display:block;font-size:36px;margin:8px 0">0</strong><span class="portal-note">Имэйлээ баталгаажуулсан шинэ хэрэглэгч</span></div>
+   </div>
+   <label for="inviteUrl" style="display:block;margin-top:16px">Таны урилгын холбоос</label><input class="form-field" id="inviteUrl" type="url" readonly>
+   <div class="portal-actions" style="flex-wrap:wrap"><button class="btn primary" id="inviteShare" type="button">Холбоос хуваалцах</button><button class="btn" id="inviteCopy" type="button">Холбоос хуулах</button><button class="btn" id="inviteRefresh" type="button">Шинэчлэх</button></div>
+  </div>
+  <p class="portal-note" id="inviteStatus" role="status" aria-live="polite">Урилгын системийг ачаалж байна…</p>
+  <div style="margin-top:14px;padding:12px;border-radius:14px;background:#0c1020aa"><strong>Хэрхэн тоологдох вэ?</strong><ol style="margin:8px 0 0;padding-left:20px"><li>Найз тань таны холбоосоор LOREVERSE-д орно.</li><li>Тэр имэйлээр бүртгүүлж, баталгаажуулна.</li><li>Анх удаа нэвтрэхэд урилга автоматаар бүртгэгдэнэ.</li></ol><p class="portal-note" style="margin:10px 0 0">Өөрийн кодоор өөрийгөө урих боломжгүй. Нэг хэрэглэгч зөвхөн нэг урилгад холбогдоно. Урамшуулал одоогоор идэвхгүй; баталгаажаагүй бонус амлахгүй.</p></div>
+ </div>
+</section>
+
 <section class="section" id="support">
  <div class="section-head"><div><div class="eyebrow">HELP & SERVICES</div><h2>Туслах цэс ба үйлчилгээ</h2><p>Үндсэн мэдээлэл, архивын дараа гишүүнчлэл болон платформын нэмэлт үйлчилгээг эндээс сонгоорой.</p></div></div>
  <div class="portal-panel staff-entry" style="margin:0 0 16px;border:1px solid #b76cff88;background:linear-gradient(115deg,#30174a,#14283d);box-shadow:0 12px 36px #8f43d833">
@@ -1543,7 +1562,7 @@ const fmt=n=>Number(n||0).toLocaleString("mn-MN");
 </section>
 
 <section class="section feature-row" id="about"><div class="feature"><div class="eyebrow">OUR MISSION</div><h3>Нэг платформ. Олон ертөнц.</h3><p>Тоглоом, анимэ сонирхогчдод зориулсан lore, дүр, түүх, судалгааны нэгдсэн сан бүтээнэ.</p></div><div class="feature"><div class="eyebrow">EDITORIAL STANDARD</div><h3>Баримт ба таамгийг ялгана.</h3><p>Албан ёсны өгүүлэмж, тоглоом доторх эшлэл, баталгаажаагүй онолыг тусад нь тэмдэглэж, эх сурвалжийг ил тод дурдана.</p></div></section>
-</main><footer class="wrap footer"><div><b>© 2026 LOREVERSE</b><div>Фэнүүдийн бүтээсэн, албан бус мэдлэгийн платформ.</div></div><nav class="footer-nav" aria-label="Туслах цэс"><a href="#reportError">Алдаа мэдээлэх</a><a href="#support">Туслах цэс</a><a href="#events">Event</a><a href="#premium">Premium</a><a href="#payment">Төлбөр</a><a href="#app-update">Апп шинэчлэх</a><a href="#admin">Админ</a><a href="#about">Төслийн тухай</a><a href="legal/">Үйлчилгээний нөхцөл</a><a href="legal/#privacy">Нууцлалын бодлого</a><a href="rank/">Rank & Bonus</a></nav></footer>
+</main><footer class="wrap footer"><div><b>© 2026 LOREVERSE</b><div>Фэнүүдийн бүтээсэн, албан бус мэдлэгийн платформ.</div></div><nav class="footer-nav" aria-label="Туслах цэс"><a href="#reportError">Алдаа мэдээлэх</a><a href="#support">Туслах цэс</a><a href="#events">Event</a><a href="#invite">Найзаа урих</a><a href="#premium">Premium</a><a href="#payment">Төлбөр</a><a href="#app-update">Апп шинэчлэх</a><a href="#admin">Админ</a><a href="#about">Төслийн тухай</a><a href="legal/">Үйлчилгээний нөхцөл</a><a href="legal/#privacy">Нууцлалын бодлого</a><a href="rank/">Rank & Bonus</a></nav></footer>
 <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="dialog"><div class="dialogtop"><div><div class="eyebrow" id="modalGame"></div><h2 id="modalTitle"></h2></div><button class="close" id="close" aria-label="Close">✕</button></div><p id="modalBody"></p><div class="note">Эх сурвалжийг нийтлэхийн өмнө редакцаар нягтална.</div></div></div>
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
@@ -3210,4 +3229,73 @@ if (panel && launcher && form && input && send && messages) {
   window.__loreAiModuleReady = true;
 }
 </script>
+
+<script type="module" id="loreverseReferralModule">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
+const referralClient=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
+const inviteEl=id=>document.getElementById(id);
+const inviteStatus=inviteEl("inviteStatus");
+let pendingReferral="";
+try{
+ const urlCode=new URL(location.href).searchParams.get("ref");
+ if(urlCode && /^[A-Za-z0-9]{6,20}$/.test(urlCode)){
+  pendingReferral=urlCode.toUpperCase();
+  sessionStorage.setItem("loreverse_pending_referral",pendingReferral);
+ }
+ pendingReferral=pendingReferral||sessionStorage.getItem("loreverse_pending_referral")||"";
+}catch(_){}
+function inviteMessage(message,isError=false){
+ if(!inviteStatus)return;
+ inviteStatus.textContent=message;
+ inviteStatus.style.color=isError?"#ffb4b4":"#c8d7ee";
+}
+async function loadInviteDashboard(){
+ const {data:{user},error:authError}=await referralClient.auth.getUser();
+ const signedIn=!!user&&!user.is_anonymous;
+ inviteEl("inviteLoggedOut").hidden=signedIn;
+ inviteEl("inviteDashboard").hidden=!signedIn;
+ if(authError)throw authError;
+ if(!signedIn){inviteMessage(pendingReferral?"Урилгын код хадгалагдлаа. Бүртгүүлж, имэйлээ баталгаажуулсны дараа тоологдоно.":"Хувийн урилгын холбоосоо авахын тулд нэвтэрнэ үү.");return;}
+ if(pendingReferral){
+  const {data:claim,error:claimError}=await referralClient.rpc("claim_loreverse_referral",{p_code:pendingReferral});
+  if(claimError)throw claimError;
+  if(claim?.claimed){
+   sessionStorage.removeItem("loreverse_pending_referral");pendingReferral="";
+   inviteMessage("Урилга амжилттай бүртгэгдлээ. LOREVERSE-д тавтай морил!");
+  }else if(claim?.reason==="email_unconfirmed"){
+   inviteMessage("Имэйлээ баталгаажуулсны дараа урилга автоматаар бүртгэгдэнэ.");
+  }else if(["code_not_found","self_referral","already_claimed","invalid_code"].includes(claim?.reason)){
+   sessionStorage.removeItem("loreverse_pending_referral");pendingReferral="";
+   inviteMessage(claim.reason==="already_claimed"?"Таны аккаунтад өмнө нь урилга бүртгэгдсэн байна.":"Урилгын код хүчингүй эсвэл ашиглах боломжгүй байна.",true);
+  }
+ }
+ const {data,error}=await referralClient.rpc("get_my_loreverse_referrals");
+ if(error)throw error;
+ inviteEl("inviteCode").textContent=data.code;
+ inviteEl("inviteCount").textContent=Number(data.invite_count||0).toLocaleString("mn-MN");
+ inviteEl("inviteUrl").value=data.invite_url;
+ if(!pendingReferral && !inviteStatus.textContent.includes("Урилга амжилттай"))inviteMessage("Таны урилгын холбоос бэлэн. Найзуудтайгаа хуваалцаарай.");
+}
+inviteEl("inviteLogin")?.addEventListener("click",()=>{
+ inviteEl("profileModal")?.classList.add("open");
+ inviteEl("profileIdentity").textContent="Найзаа урих систем ашиглахын тулд бүртгэлээрээ нэвтэрнэ үү.";
+ inviteEl("accountEmail")?.focus();
+});
+inviteEl("inviteCopy")?.addEventListener("click",async()=>{
+ const value=inviteEl("inviteUrl")?.value;if(!value)return;
+ try{await navigator.clipboard.writeText(value);inviteMessage("Урилгын холбоос хуулагдлаа.");}
+ catch(_){inviteEl("inviteUrl").focus();inviteEl("inviteUrl").select();inviteMessage("Холбоосыг сонголоо. Удаан дарж Copy / Хуулах сонгоно уу.");}
+});
+inviteEl("inviteShare")?.addEventListener("click",async()=>{
+ const url=inviteEl("inviteUrl")?.value;if(!url)return;
+ try{
+  if(navigator.share)await navigator.share({title:"LOREVERSE-д нэгдээрэй",text:"Анимэ, манга, тоглоомын ертөнцийн мэдлэгийг хамтдаа нээцгээе!",url});
+  else{await navigator.clipboard.writeText(url);inviteMessage("Таны төхөөрөмж шууд хуваалцах боломжгүй тул холбоосыг хууллаа.");}
+ }catch(error){if(error?.name!=="AbortError")inviteMessage("Хуваалцаж чадсангүй. Холбоос хуулах товчийг ашиглана уу.",true);}
+});
+inviteEl("inviteRefresh")?.addEventListener("click",()=>loadInviteDashboard().catch(e=>inviteMessage("Мэдээлэл шинэчилж чадсангүй: "+e.message,true)));
+referralClient.auth.onAuthStateChange(()=>setTimeout(()=>loadInviteDashboard().catch(e=>inviteMessage("Урилгын системийн алдаа: "+e.message,true)),0));
+loadInviteDashboard().catch(e=>inviteMessage("Урилгын систем ачаалж чадсангүй: "+e.message,true));
+</script>
+
 </html>
