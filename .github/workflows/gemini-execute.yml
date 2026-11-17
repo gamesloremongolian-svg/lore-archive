@@ -1,0 +1,54 @@
+name: LOREVERSE Gemini Execute Approved Fix
+
+on:
+  workflow_call:
+    inputs:
+      additional_context:
+        type: string
+        required: false
+
+permissions:
+  contents: write
+  id-token: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  execute:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check Gemini secret
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -z "$GEMINI_API_KEY" ]; then
+            echo "::error::Repository secret GEMINI_API_KEY is missing."
+            exit 1
+          fi
+      - name: Run Gemini approved execution
+        uses: google-github-actions/run-gemini-cli@v0
+        env:
+          GEMINI_CLI_TRUST_WORKSPACE: 'true'
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          github_issue_number: ${{ github.event.issue.number }}
+          workflow_name: loreverse-gemini-execute
+          prompt: '/gemini-plan-execute'
+          settings: |
+            {
+              "model": { "maxSessionTurns": 20 },
+              "mcpServers": {
+                "github": {
+                  "command": "docker",
+                  "args": ["run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "ghcr.io/github/github-mcp-server:v0.27.0"],
+                  "includeTools": ["add_issue_comment", "issue_read", "get_file_contents", "search_code", "create_branch", "create_or_update_file", "create_pull_request", "push_files"],
+                  "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}" }
+                }
+              },
+              "tools": { "core": [] }
+            }
