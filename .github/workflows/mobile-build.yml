@@ -69,34 +69,34 @@ jobs:
           cp "$RES/mipmap-anydpi-v26/ic_launcher.xml" "$RES/mipmap-anydpi-v26/ic_launcher_round.xml"
 
       - name: Configure persistent debug APK signing
-        if: ${{ env.ANDROID_DEBUG_KEYSTORE_BASE64 != '' && env.ANDROID_DEBUG_KEYSTORE_PASSWORD != '' }}
         run: |
           set -euo pipefail
+          test -n "$ANDROID_DEBUG_KEYSTORE_BASE64" || { echo "::error::Missing ANDROID_DEBUG_KEYSTORE_BASE64 repository secret."; exit 1; }
+          test -n "$ANDROID_DEBUG_KEYSTORE_PASSWORD" || { echo "::error::Missing ANDROID_DEBUG_KEYSTORE_PASSWORD repository secret."; exit 1; }
           mkdir -p "$HOME/.android"
           printf '%s' "$ANDROID_DEBUG_KEYSTORE_BASE64" | base64 --decode > "$HOME/.android/loreverse-debug.keystore"
           chmod 600 "$HOME/.android/loreverse-debug.keystore"
           keytool -list -keystore "$HOME/.android/loreverse-debug.keystore" -storepass "$ANDROID_DEBUG_KEYSTORE_PASSWORD" -alias loreverse >/dev/null
           python3 - <<'PY'
           from pathlib import Path
-          import os
           p = Path("android/app/build.gradle")
           s = p.read_text()
-          if "signingConfigs" in s and "loreverse-debug.keystore" in s:
-              raise SystemExit("Signing configuration already exists; refusing duplicate patch.")
-          block = """
-    signingConfigs {
-        debug {
-            storeFile file(System.getProperty("user.home") + "/.android/loreverse-debug.keystore")
-            storePassword System.getenv("ANDROID_DEBUG_KEYSTORE_PASSWORD")
-            keyAlias "loreverse"
-            keyPassword System.getenv("ANDROID_DEBUG_KEYSTORE_PASSWORD")
-        }
-    }
-    """
-          if "buildTypes {" not in s:
+          if "loreverse-debug.keystore" in s:
+              raise SystemExit("Persistent signing configuration already exists; refusing duplicate patch.")
+          block = '''
+              signingConfigs {
+                  debug {
+                      storeFile file(System.getProperty("user.home") + "/.android/loreverse-debug.keystore")
+                      storePassword System.getenv("ANDROID_DEBUG_KEYSTORE_PASSWORD")
+                      keyAlias "loreverse"
+                      keyPassword System.getenv("ANDROID_DEBUG_KEYSTORE_PASSWORD")
+                  }
+              }
+          '''
+          marker = "    buildTypes {"
+          if marker not in s:
               raise SystemExit("Could not find Android buildTypes block.")
-          s = s.replace("    buildTypes {", block + "\n    buildTypes {\n        debug { signingConfig signingConfigs.debug }", 1)
-          # Explicitly attach the persistent key to the debug variant.
+          s = s.replace(marker, block + "\n" + marker + '\n        debug { signingConfig signingConfigs.debug }', 1)
           p.write_text(s)
           PY
       - name: Verify persistent debug signing secrets
