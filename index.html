@@ -2799,13 +2799,20 @@ async function openArchiveAnime(id){
   const cover=w.franchise?.cover_image_url||"";
   const content=tr?.content&&typeof tr.content==="object"?tr.content:{};
   const sources=Array.isArray(tr?.sources)?tr.sources:[];
+  const renderArchiveSource=(source,index)=>{
+   const item=typeof source==="string"?{url:source}:source&&typeof source==="object"?source:{label:String(source??"")};
+   const url=typeof item.url==="string"?item.url:(typeof item.href==="string"?item.href:"");
+   const label=String(item.title||item.label||item.name||item.description||(url?"Албан ёсны эх сурвалж "+(index+1):"Эх сурвалж "+(index+1)));
+   const validUrl=url.startsWith("https://")||url.startsWith("http://");
+   return '<li class="anime-detail-source-item">'+(validUrl?'<a class="anime-detail-source-link" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+esc(label)+' <span aria-hidden="true">↗</span></a>':'<span class="anime-detail-source-label">'+esc(label)+'</span>')+'</li>';
+  };
   body.innerHTML='<div class="anime-detail-banner">'+(cover?'<img src="'+esc(cover)+'" alt="" onerror="this.hidden=true">':"")+'</div>'+
    '<div class="anime-detail-head">'+(cover?'<img class="anime-detail-cover" src="'+esc(cover)+'" alt="'+esc(title)+'">':'')+
    '<div class="anime-detail-title"><div class="anime-detail-brand">LOREVERSE UNIFIED ARCHIVE · '+esc(w.franchise?.name||"ANIME")+'</div><h1>'+esc(title)+'</h1><p>'+esc(w.franchise?.description||"")+'</p><div class="anime-detail-actions"><span class="anime-detail-tag">'+esc(w.release_year||"Он тодорхойгүй")+'</span><span class="anime-detail-tag">Канон: '+esc(tr?.canon_status||"unknown")+'</span><span class="anime-detail-tag">Spoiler: '+esc(tr?.spoiler_level||"none")+'</span></div></div></div>'+
    '<div class="anime-detail-grid"><div><section class="anime-detail-panel"><h2>Танилцуулга</h2><p>'+esc(tr?.synopsis||content.synopsis||"Танилцуулга хараахан нийтлэгдээгүй.")+'</p>'+(content.body?'<p>'+esc(content.body)+'</p>':"")+'</section>'+
    '<section class="anime-detail-panel"><h2>Дүрүүд ба ертөнцийн объект</h2><div class="anime-detail-cast">'+(entityHtml||"Нэгдсэн архивт дүрийн мэдээлэл нийтлэгдээгүй.")+'</div></section>'+
    '<section class="anime-detail-panel"><h2>Timeline · Үйл явдал</h2><div class="anime-detail-stats">'+(timelineHtml||"Нэгдсэн архивт timeline мэдээлэл нийтлэгдээгүй.")+'</div></section>'+
-   '<section class="anime-detail-panel"><h2>Эх сурвалж</h2>'+(sources.length?'<ul>'+sources.map(x=>'<li>'+(typeof x==="string"&&/^https?:\/\//i.test(x)?'<a href="'+esc(x)+'" target="_blank" rel="noopener noreferrer">'+esc(x)+'</a>':esc(typeof x==="string"?x:JSON.stringify(x)))+'</li>').join("")+'</ul>':"Эх сурвалжийн жагсаалт нийтлэгдээгүй.")+'</section></div>'+
+   '<section class="anime-detail-panel"><h2>Эх сурвалж</h2>'+(sources.length?'<ul>'+sources.map(renderArchiveSource).join('')+'</ul>':"Эх сурвалжийн жагсаалт нийтлэгдээгүй.")+'</section></div>'+
    '<aside><section class="anime-detail-panel"><h2>Бүтээлийн мэдээлэл</h2><div class="anime-detail-stats"><div class="anime-detail-stat"><small>Төрөл</small><strong>'+esc(w.work_type)+'</strong></div><div class="anime-detail-stat"><small>Гарсан он</small><strong>'+esc(w.release_year||"—")+'</strong></div><div class="anime-detail-stat"><small>Франчайз</small><strong>'+esc(w.franchise?.name||"—")+'</strong></div><div class="anime-detail-stat"><small>Эх сурвалж</small><strong>LOREVERSE Archive</strong></div></div></section></aside></div>'+
    '<p style="text-align:center;color:#818ca7;font-size:11px">Мэдээллийн эх сурвалж: LOREVERSE Нэгдсэн Lore Archive.</p>';
  }catch(error){body.innerHTML='<div class="anime-detail-state anime-detail-error">Нэгдсэн архиваас мэдээлэл ачаалж чадсангүй.<br>'+esc(error?.message||String(error))+'<br><button class="anime-detail-back" id="unifiedAnimeRetry" type="button">Дахин оролдох</button> <a class="anime-detail-back" href="archive/">Нэгдсэн архив нээх</a></div>';$("unifiedAnimeRetry")?.addEventListener("click",()=>openArchiveAnime(id));}
@@ -2998,6 +3005,54 @@ apply();
 }
 @media(prefers-reduced-motion:reduce){
  .ad-mascot-character,.mascot-float,.mascot-eye,.ad-mascot-board,.ad-mascot-spark{animation:none!important}
+}
+</style>
+
+
+<style id="loreverse-anime-detail-mobile-fix-v1">
+.anime-detail-shell,.anime-detail-shell *{box-sizing:border-box}
+.anime-detail-shell{width:100%;max-width:100vw;overflow-x:hidden}
+.anime-detail-top{width:100%;max-width:100%;min-width:0;flex-wrap:wrap}
+.anime-detail-brand{min-width:0;overflow-wrap:anywhere}
+.anime-detail-content{min-width:0;max-width:100%}
+.anime-detail-grid,.anime-detail-grid>div,.anime-detail-grid>aside{min-width:0;max-width:100%}
+.anime-detail-panel{min-width:0;max-width:100%;overflow-wrap:anywhere}
+.anime-detail-panel p,.anime-detail-stat strong,.anime-detail-source-link{overflow-wrap:anywhere;word-break:break-word}
+.anime-detail-panel ul{padding-left:20px;margin:8px 0 0}
+.anime-detail-source-item{padding:10px 12px;margin:8px 0;list-style:disc;background:linear-gradient(110deg,#192541,#171b32);border:1px solid #465071;border-radius:11px}
+.anime-detail-source-link{display:inline-flex;gap:7px;align-items:flex-start;color:#8fe7ef;font-size:13px;line-height:1.55;text-decoration:none}
+.anime-detail-source-link:hover{text-decoration:underline;color:#fff}
+.anime-detail-source-label{color:#c6cce0;font-size:13px;line-height:1.55}
+.anime-detail-cast{min-width:0;max-width:100%;flex-wrap:wrap}
+.anime-detail-person{flex:1 1 105px;min-width:0;max-width:150px;overflow-wrap:anywhere}
+@media(max-width:650px){
+ .anime-detail-top{gap:9px;padding:10px 12px}
+ .anime-detail-back{flex:none}
+ .anime-detail-brand{font-size:10px;letter-spacing:.08em}
+ .anime-detail-content{width:calc(100% - 24px);margin-bottom:35px}
+ .anime-detail-banner{height:190px;border-radius:0 0 14px 14px}
+ .anime-detail-head{grid-template-columns:92px minmax(0,1fr);gap:12px;margin-top:-55px;padding:0 4px}
+ .anime-detail-cover{width:92px}
+ .anime-detail-title{min-width:0}
+ .anime-detail-title h1{font-size:clamp(19px,5.8vw,25px);overflow-wrap:anywhere}
+ .anime-detail-title p{font-size:11px}
+ .anime-detail-grid{grid-template-columns:minmax(0,1fr);gap:0}
+ .anime-detail-panel{padding:15px;margin-bottom:12px;border-radius:13px}
+ .anime-detail-panel h2{font-size:16px}
+ .anime-detail-stats{grid-template-columns:minmax(0,1fr);gap:8px}
+ .anime-detail-stat{min-width:0;padding:12px}
+ .anime-detail-stat strong{font-size:14px}
+ .anime-detail-cast{gap:9px}
+ .anime-detail-person{flex:1 1 95px;max-width:calc(50% - 5px)}
+ .anime-detail-source-item{padding:10px;margin:7px 0}
+ .anime-detail-source-link,.anime-detail-source-label{font-size:12px}
+}
+@media(max-width:370px){
+ .anime-detail-head{grid-template-columns:78px minmax(0,1fr)}
+ .anime-detail-cover{width:78px}
+ .anime-detail-title h1{font-size:18px}
+ .anime-detail-actions{gap:5px}
+ .anime-detail-tag{font-size:9px;padding:5px 7px}
 }
 </style>
 
