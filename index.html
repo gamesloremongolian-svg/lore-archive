@@ -1451,8 +1451,27 @@ let installedAppInfo={version:"Вэб",build:"0"};
 let latestAppAsset=null;
 async function openAppApk(url){
  if(!url)throw new Error("APK татах холбоос олдсонгүй.");
- if(Capacitor.isNativePlatform()) await Browser.open({url});
- else window.open(url,"_blank","noopener,noreferrer");
+ const downloadUrl=url+(url.includes("?")?"&":"?")+"download=1";
+ const native=!!(window.Capacitor?.isNativePlatform?.());
+ const status=$("appUpdateStatus");
+ if(status)status.textContent="APK татах холбоосыг нээж байна…";
+ if(native){
+  try{
+   if(window.Capacitor?.Plugins?.Browser?.open){await window.Capacitor.Plugins.Browser.open({url:downloadUrl});return;}
+   if(typeof Browser!=="undefined"&&Browser.open){await Browser.open({url:downloadUrl});return;}
+  }catch(error){
+   console.warn("Capacitor Browser нээж чадсангүй; системийн холбоосоор үргэлжлүүлнэ.",error);
+  }
+ }
+ const link=document.createElement("a");
+ link.href=downloadUrl;
+ link.target="_blank";
+ link.rel="noopener noreferrer";
+ link.download="LOREVERSE.apk";
+ document.body.appendChild(link);
+ link.click();
+ link.remove();
+ if(status)status.textContent="Таталт эхлэхгүй бол нээгдсэн хуудсан дахь Download товчийг дарна уу.";
 }
 function renderAppReleaseList(releases){
  const host=$("appReleaseList");if(!host)return;
