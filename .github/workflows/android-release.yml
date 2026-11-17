@@ -216,3 +216,4 @@ jobs:
           files: release-apk/LOREVERSE.apk
           overwrite_files: true
           fail_on_unmatched_files: true
+# Re-run build after persistent Android signing secrets were configured.
