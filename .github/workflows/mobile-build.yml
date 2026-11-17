@@ -8,6 +8,7 @@ on:
       - 'package-lock.json'
       - 'capacitor.config.ts'
       - 'index.html'
+      - 'knowledge/**'
       - 'chat/**'
       - 'assets/**'
       - 'scripts/**'
