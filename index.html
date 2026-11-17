@@ -1278,7 +1278,7 @@ body{
   <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><div class="eyebrow">YOUR LIFETIME RANK</div><h3 id="lifetimeRank" style="margin:5px 0">Rookie</h3><span class="portal-note" id="rankDisplayName">Зочин хэрэглэгч</span></div><div><div class="eyebrow">LORE COINS</div><h3 id="coinBalance" style="margin:5px 0;color:#ffd58d">0</h3></div></div>
   <div class="rank-stats" style="margin-top:16px"><div class="rank-stat"><b id="totalXp">0</b><span class="portal-note">Lifetime XP</span></div><div class="rank-stat"><b id="seasonXp">0</b><span class="portal-note">Season XP</span></div><div class="rank-stat"><b id="nextRankXp">100</b><span class="portal-note">Дараагийн Rank босго</span></div></div>
   <div class="progress-track"><div id="rankProgress" class="progress-fill"></div></div><div class="portal-note" id="rankProgressText">Дараагийн Rank хүртэл 100 XP</div>
-  <div class="portal-actions"><button class="btn primary" id="dailyReward" type="button">Өдрийн бонус авах · +5 XP / +2 Coins</button><span id="dailyRewardStatus" class="portal-note"></span></div>
+  <div class="portal-actions"><button class="btn primary" id="dailyReward" type="button">Өдрийн бонус авах · +5 XP / +2 Coins</button><span id="dailyRewardStatus" class="portal-note" role="status" aria-live="polite" style="display:block;min-height:24px;margin-top:10px;padding:10px 12px;border:1px solid #8d79d855;border-radius:10px;background:#17152b;color:#c9c4e8;font-weight:700">Бонус авахад бэлэн.</span></div>
  </div>
  <div class="portal-grid" style="margin-top:16px">
   <div class="portal-panel" id="coinStorePanel" hidden><div class="eyebrow">LORE COINS STORE</div><h3>Бонусын дэлгүүр</h3><p>Цуглуулсан Coins-оор Premium хөнгөлөлт болон профайлын гоёл авна.</p><div id="coinStore" class="store-grid">Дэлгүүр ачаалж байна…</div><p class="portal-note" id="storeStatus"></p></div>
@@ -1939,12 +1939,12 @@ async function loadLoreLeaderboard(){
 }
 $("dailyReward").addEventListener("click",async()=>{
  const button=$("dailyReward"),status=$("dailyRewardStatus");
- button.disabled=true;status.textContent="Бонусын эрхийг шалгаж байна…";
+ button.disabled=true;status.textContent="✓ Товч дарлаа. Бонусын эрхийг шалгаж байна…";status.style.color="#9fe8c2";status.scrollIntoView({behavior:"smooth",block:"nearest"});
  try{
   const {data:{user},error:authError}=await supabase.auth.getUser();
   if(authError)throw authError;
   if(!user||user.is_anonymous){
-   status.textContent="Бонус авахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү. Нэвтрэх цонх нээгдлээ.";
+   status.textContent="Товч дарлаа. Бонус авахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү — нэвтрэх цонх нээгдлээ.";status.style.color="#ffd58d";
    $("profileModal").classList.add("open");
    $("profileIdentity").textContent="Өдрийн бонус авахын тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.";
    $("accountEmail").focus();
@@ -1953,11 +1953,11 @@ $("dailyReward").addEventListener("click",async()=>{
   status.textContent="Өдрийн бонусыг бүртгэж байна…";
   const {data,error}=await supabase.rpc("claim_daily_lore_reward");
   if(error)throw error;
-  status.textContent=data?.message||(data?.claimed?"Өдрийн бонус амжилттай авлаа.":"Бонусын төлөв шинэчлэгдлээ.");
+  status.textContent=(data?.claimed?"✓ Амжилттай! ":"ℹ ")+(data?.message||"Бонусын төлөв шинэчлэгдлээ.");status.style.color=data?.claimed?"#9fe8c2":"#ffd58d";
   await refreshGamification();
  }catch(e){
   console.error("LOREVERSE daily reward:",e);
-  status.textContent="Бонус олгож чадсангүй: "+(e?.message||"Тодорхойгүй алдаа");
+  status.textContent="✕ Бонус олгож чадсангүй: "+(e?.message||"Тодорхойгүй алдаа");status.style.color="#ff9caa";
  }finally{button.disabled=false;}
 });
 supabase.auth.onAuthStateChange(()=>{setTimeout(async()=>{const {data:{user}}=await supabase.auth.getUser();communityUser=user;await refreshGamification();await loadCoinStore();await loadLoreLeaderboard();},0)});
