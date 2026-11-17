@@ -21,7 +21,7 @@ test.describe('LOREVERSE website health', () => {
     const broken = await page.locator('a[href*="#"]').evaluateAll(links => {
       return links.map(link => {
         const url = new URL(link.href, location.href);
-        if (url.origin !== location.origin || !url.hash || url.hash === '#' || url.hash.startsWith('#anime-')) return null;
+        if (url.origin !== location.origin || url.pathname !== location.pathname || !url.hash || url.hash === '#' || url.hash.startsWith('#anime-')) return null;
         let id;
         try { id = decodeURIComponent(url.hash.slice(1)); } catch { return link.getAttribute('href'); }
         return document.getElementById(id) ? null : link.getAttribute('href');
