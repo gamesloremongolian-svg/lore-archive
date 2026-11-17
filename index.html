@@ -2983,8 +2983,11 @@ apply();
 
 <style id="loreverseMobilePerformanceFix">
 @media(max-width:760px){
+ html{scroll-behavior:auto!important;scroll-padding-top:72px}
+ body{background-attachment:scroll!important}
  .winter-snow{display:none!important}
  .topbar,#loreverseMobileNav,.modal,.dialog{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+ *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
  .hero .visual::before,.visual::before,.ring,.core,.float,.ad-empty-promo::before,.ad-empty-promo::after,.ad-empty-promo span{animation:none!important}
  .catalog-card img,.world,.catalog-card{transition:none!important}
 }
