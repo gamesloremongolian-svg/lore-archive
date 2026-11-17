@@ -1184,7 +1184,6 @@ html.winter-effects-off .winter-snow{display:none}
   </svg>
   <div class="ad-mascot-board"><span class="ad-mascot-spark">✦</span><strong>ЭНД ТАНЫ ЗАР<br>СУРТАЛЧИЛГАА<br>ЯВНА</strong><span class="ad-mascot-caption">LOREVERSE · ADVERTISE HERE</span></div>
  </div>
- <p class="ad-mascot-line" id="adMascotLine">Сайн байна уу! Энд таны зар сурталчилгаа явна.</p>
  <button class="btn primary ad-mascot-speak" id="adMascotSpeak" type="button">▶ Дуугаар сонсох</button>
  <small class="ad-mascot-hint">Дууг эхлүүлэхийн тулд товчийг дарна уу.</small>
 </aside>
@@ -1401,7 +1400,7 @@ const fmt=n=>Number(n||0).toLocaleString("mn-MN");
    if(result.error)throw result.error;
    const stats=result.data||{};
    visits.textContent=fmt(stats.total_visits);
-   online.textContent=fmt(stats.online_now);
+   onif(line)line.textContent=fmt(stats.online_now);
   };
   const tracked=await client.rpc("track_loreverse_visit",{p_session_id:visitId});
   if(tracked.error)throw tracked.error;
