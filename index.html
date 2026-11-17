@@ -1449,17 +1449,59 @@ refreshLoreverseUpdates();
 
 const adMascotSpeak=$("adMascotSpeak");
 if(adMascotSpeak){
- adMascotSpeak.addEventListener("click",()=>{
+ adMascotSpeak.addEventListener("click",async()=>{
   const phrase="Энд таны зар сурталчилгаа явна.";
   const line=$("adMascotLine");
-  if(!("speechSynthesis" in window)||!("SpeechSynthesisUtterance" in window)){line.textContent=phrase+" (Таны браузер дуугаар унших боломжгүй байна.)";return;}
-  window.speechSynthesis.cancel();
-  const utterance=new SpeechSynthesisUtterance(phrase);
-  utterance.lang="mn-MN";utterance.rate=.88;utterance.pitch=1.12;
-  utterance.onstart=()=>{$("loreverseAdMascot").classList.add("is-speaking");line.textContent="✦ "+phrase;adMascotSpeak.textContent="◼ Дуу тоглож байна…";};
-  utterance.onend=()=>{$("loreverseAdMascot").classList.remove("is-speaking");adMascotSpeak.textContent="▶ Дахин сонсох";};
-  utterance.onerror=()=>{$("loreverseAdMascot").classList.remove("is-speaking");adMascotSpeak.textContent="▶ Дуугаар сонсох";line.textContent=phrase+" (Дууны хөдөлгүүр энэ хэлийг дэмжихгүй байж магадгүй.)";};
-  window.speechSynthesis.speak(utterance);
+  const mascot=$("loreverseAdMascot");
+  const synth=window.speechSynthesis;
+  if(!synth||!("SpeechSynthesisUtterance" in window)){
+   line.textContent="Энэ төхөөрөмж дуугаар унших хөдөлгүүргүй байна. Android-ийн Text-to-speech тохиргоог шалгана уу.";
+   return;
+  }
+  adMascotSpeak.disabled=true;
+  adMascotSpeak.textContent="◌ Дуу бэлдэж байна…";
+  try{
+   synth.cancel();
+   let voices=synth.getVoices();
+   if(!voices.length){
+    await new Promise(resolve=>{
+     let finished=false;
+     const done=()=>{if(finished)return;finished=true;clearTimeout(timer);synth.removeEventListener("voiceschanged",done);resolve();};
+     const timer=setTimeout(done,1200);
+     synth.addEventListener("voiceschanged",done);
+    });
+    voices=synth.getVoices();
+   }
+   const mongolianVoice=voices.find(v=>/^mn([_-]|$)/i.test(v.lang));
+   const selectedVoice=mongolianVoice||voices.find(v=>v.default)||voices[0]||null;
+   const utterance=new SpeechSynthesisUtterance(phrase);
+   if(selectedVoice){utterance.voice=selectedVoice;utterance.lang=selectedVoice.lang;}
+   else{utterance.lang=navigator.language||"en-US";}
+   utterance.rate=.88;utterance.pitch=1.08;
+   utterance.onstart=()=>{
+    mascot?.classList.add("is-speaking");
+    line.textContent=mongolianVoice?"✦ "+phrase:"Монгол хэлний хоолой олдсонгүй. Төхөөрөмжийн үндсэн хоолойгоор уншиж байна.";
+    adMascotSpeak.textContent="◼ Дуу тоглож байна…";
+   };
+   utterance.onend=()=>{
+    mascot?.classList.remove("is-speaking");
+    adMascotSpeak.textContent="▶ Дахин сонсох";
+    adMascotSpeak.disabled=false;
+   };
+   utterance.onerror=event=>{
+    mascot?.classList.remove("is-speaking");
+    adMascotSpeak.textContent="▶ Дуугаар сонсох";
+    adMascotSpeak.disabled=false;
+    line.textContent="Дуу тоглуулж чадсангүй ("+(event.error||"unknown")+"). Android-ийн Тохиргоо → Text-to-speech output хэсгийг шалгана уу.";
+   };
+   synth.speak(utterance);
+   setTimeout(()=>{if(adMascotSpeak.disabled&&synth.speaking){adMascotSpeak.disabled=false;}},8000);
+  }catch(error){
+   mascot?.classList.remove("is-speaking");
+   adMascotSpeak.textContent="▶ Дуугаар сонсох";
+   adMascotSpeak.disabled=false;
+   line.textContent="Дуу эхлүүлэхэд алдаа гарлаа: "+error.message;
+  }
  });
 }
 const memberMsg=t=>{$("memberStatus").textContent=t;};
