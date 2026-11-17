@@ -2411,101 +2411,6 @@ $("supportTicketForm").addEventListener("submit",async e=>{
 $("reloadMyTickets").onclick=loadMySupportTickets;
 
 
-/* LOREVERSE AI chat — initialize only after the chat HTML exists (Android-safe) */
-function initializeLoreAiChat(){
-/* LOREVERSE AI chat — reliable Android tap and keyboard submission */
-const loreAiPanel=document.getElementById("loreAiPanel");
-const loreAiMessages=document.getElementById("loreAiMessages");
-const loreAiQuestion=document.getElementById("loreAiQuestion");
-const loreAiForm=document.getElementById("loreAiForm");
-const loreAiSend=document.getElementById("loreAiSend");
-let loreAiSending=false;
-function loreAiMessage(text,who){
- const node=document.createElement("div");
- node.className="lore-ai-msg "+who;
- node.textContent=text;
- loreAiMessages.appendChild(node);
- loreAiMessages.scrollTop=loreAiMessages.scrollHeight;
- return node;
-}
-document.getElementById("loreAiLauncher").onclick=()=>loreAiPanel.classList.add("open");
-document.getElementById("loreAiClose").onclick=()=>loreAiPanel.classList.remove("open");
-async function loreAiErrorText(error){
- const ctx=error?.context;
- if(ctx&&typeof ctx.clone==="function"){
-  try{const payload=await ctx.clone().json();if(payload?.error)return payload.error;}catch(_){}
-  try{const body=await ctx.clone().text();if(body)return body.slice(0,500);}catch(_){}
- }
- return error?.message||"LORE AI үйлчилгээтэй холбогдож чадсангүй. Дахин оролдоно уу.";
-}
-async function submitLoreAiQuestion(){
- if(loreAiSending)return;
- const question=loreAiQuestion.value.trim();
- if(!question){loreAiQuestion.focus();return;}
- loreAiSending=true;
- loreAiSend.disabled=true;
- loreAiSend.textContent="Илгээж байна…";
- loreAiMessage(question,"user");
- loreAiQuestion.value="";
- const pending=loreAiMessage("Нэвтрэлт болон AI холболтыг шалгаж байна…","bot");
- try{
-  const {data:sessionData,error:sessionError}=await supabase.auth.getUser();
-  if(sessionError)throw new Error("Нэвтрэлтийг шалгаж чадсангүй. Хуудсаа дахин ачаалаад нэвтэрнэ үү.");
-  const user=sessionData?.user;
-  if(!user||user.is_anonymous){
-   pending.textContent="LORE AI ашиглахын тулд имэйлээр бүртгүүлж, нэвтэрсэн байх шаардлагатай. Нэвтэрсний дараа дахин асуултаа илгээнэ үү.";
-   return;
-  }
-  pending.textContent="Хариулт боловсруулж байна…";
-  const {data,error}=await supabase.functions.invoke("lore-ai",{body:{question}});
-  if(error)throw new Error(await loreAiErrorText(error));
-  if(data?.error)throw new Error(data.error);
-  if(!data?.answer)throw new Error("AI хариу буцаасангүй. Түр хүлээгээд дахин оролдоно уу.");
-  pending.textContent=data.answer;
-  document.getElementById("loreAiMeta").textContent="Өнөөдөр үлдсэн асуулт: "+data.remaining+" · Өдөрт 10 асуулт";
- }catch(err){
-  pending.textContent=err.message||"LORE AI туслахтай холбогдож чадсангүй. Дахин оролдоно уу.";
- }finally{
-  loreAiSending=false;
-  loreAiSend.disabled=false;
-  loreAiSend.textContent="Илгээх";
-  loreAiQuestion.focus();
- }
-}
-/* Isolate the AI panel from parent forms, links and page-level click handlers. */
-loreAiSend.type="button";
-loreAiSend.addEventListener("click",event=>{
- event.preventDefault();
- event.stopPropagation();
- event.stopImmediatePropagation();
- submitLoreAiQuestion();
-},{capture:true});
-loreAiForm.addEventListener("submit",event=>{
- event.preventDefault();
- event.stopPropagation();
- event.stopImmediatePropagation();
- submitLoreAiQuestion();
-},{capture:true});
-loreAiQuestion.addEventListener("keydown",event=>{
- if(event.key==="Enter"&&!event.shiftKey){
-  event.preventDefault();
-  event.stopPropagation();
-  submitLoreAiQuestion();
- }
-},{capture:true});
-/* Move the floating assistant out of any surrounding layout/form context. */
-if(loreAiPanel.parentElement!==document.body)document.body.appendChild(loreAiPanel);
-
-
-
-
-}
-if(document.readyState==="loading"){
- document.addEventListener("DOMContentLoaded",initializeLoreAiChat,{once:true});
-}else{
- initializeLoreAiChat();
-}
-
 document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBankAccount"){try{await navigator.clipboard.writeText("5622218472");$("bankCopyStatus").textContent="Дансны дугаар хууллаа.";}catch(_){$("bankCopyStatus").textContent="Дугаар: 5622218472";}}});
 
 
@@ -3003,4 +2908,109 @@ apply();
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 </style>
-</body></html>
+</body>
+<script type="module" id="loreverse-ai-chat-v2">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
+
+const db = createClient(
+  "https://nfacspfctvunwbxtvvyi.supabase.co",
+  "sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1"
+);
+
+const panel = document.getElementById("loreAiPanel");
+const launcher = document.getElementById("loreAiLauncher");
+const closeButton = document.getElementById("loreAiClose");
+const form = document.getElementById("loreAiForm");
+const input = document.getElementById("loreAiQuestion");
+const send = document.getElementById("loreAiSend");
+const messages = document.getElementById("loreAiMessages");
+const meta = document.getElementById("loreAiMeta");
+
+if (panel && launcher && form && input && send && messages) {
+  if (panel.parentElement !== document.body) document.body.appendChild(panel);
+
+  const addMessage = (value, role) => {
+    const node = document.createElement("div");
+    node.className = "lore-ai-msg " + role;
+    node.textContent = value;
+    messages.appendChild(node);
+    messages.scrollTop = messages.scrollHeight;
+    return node;
+  };
+
+  let sending = false;
+  const sendQuestion = async () => {
+    if (sending) return;
+    const question = input.value.trim();
+    if (!question) {
+      input.focus();
+      return;
+    }
+
+    sending = true;
+    send.disabled = true;
+    send.textContent = "Илгээж байна…";
+    addMessage(question, "user");
+    input.value = "";
+    const pending = addMessage("Холболтыг шалгаж байна…", "bot");
+
+    try {
+      const { data: authData, error: authError } = await db.auth.getUser();
+      if (authError) throw new Error("Нэвтрэлтийг шалгаж чадсангүй. Хуудсаа дахин ачаалаад нэвтэрнэ үү.");
+      if (!authData?.user || authData.user.is_anonymous) {
+        pending.textContent = "LORE AI ашиглахын тулд эхлээд имэйлээр нэвтэрнэ үү.";
+        return;
+      }
+
+      pending.textContent = "Хариулт боловсруулж байна…";
+      const { data, error } = await db.functions.invoke("lore-ai", {
+        body: { question }
+      });
+
+      if (error) {
+        let detail = error.message || "Сервертэй холбогдож чадсангүй.";
+        try {
+          const response = error.context;
+          if (response && typeof response.clone === "function") {
+            const payload = await response.clone().json();
+            if (payload?.error) detail = payload.error;
+          }
+        } catch (_) {}
+        throw new Error(detail);
+      }
+      if (data?.error) throw new Error(data.error);
+      if (!data?.answer) throw new Error("AI хариу буцаасангүй. Дахин оролдоно уу.");
+
+      pending.textContent = data.answer;
+      if (meta && Number.isFinite(Number(data.remaining))) {
+        meta.textContent = "Өнөөдөр үлдсэн асуулт: " + data.remaining + " · Өдөрт 10 асуулт";
+      }
+    } catch (error) {
+      pending.textContent = error?.message || "LORE AI-тай холбогдож чадсангүй.";
+    } finally {
+      sending = false;
+      send.disabled = false;
+      send.textContent = "Илгээх";
+      input.focus();
+    }
+  };
+
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    sendQuestion();
+  });
+  send.addEventListener("click", event => {
+    event.preventDefault();
+    sendQuestion();
+  });
+  input.addEventListener("keydown", event => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      sendQuestion();
+    }
+  });
+  launcher.addEventListener("click", () => panel.classList.add("open"));
+  if (closeButton) closeButton.addEventListener("click", () => panel.classList.remove("open"));
+}
+</script>
+</html>
