@@ -102,7 +102,7 @@ jobs:
           marker = "    buildTypes {"
           if marker not in s:
               raise SystemExit("Could not find Android buildTypes block.")
-          s = s.replace(marker, block + "\n" + marker + '\n        debug { signingConfig signingConfigs.debug }', 1)
+          s = s.replace(marker, block + chr(10) + marker + chr(10) + '        debug { signingConfig signingConfigs.debug }', 1)
           p.write_text(s)
           PY
       - name: Build debug APK
