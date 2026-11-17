@@ -24,6 +24,9 @@ jobs:
   android-release:
     name: Build Android release AAB
     runs-on: ubuntu-latest
+    env:
+      ANDROID_DEBUG_KEYSTORE_BASE64: ${{ secrets.ANDROID_DEBUG_KEYSTORE_BASE64 }}
+      ANDROID_DEBUG_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_DEBUG_KEYSTORE_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -114,6 +117,38 @@ jobs:
           path.write_text(content)
           print("compileSdkVersion=36 and targetSdkVersion=36")
           PY
+
+      - name: Configure persistent debug APK signing
+        if: ${{ env.ANDROID_DEBUG_KEYSTORE_BASE64 != '' && env.ANDROID_DEBUG_KEYSTORE_PASSWORD != '' }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.android"
+          printf '%s' "$ANDROID_DEBUG_KEYSTORE_BASE64" | base64 --decode > "$HOME/.android/loreverse-debug.keystore"
+          chmod 600 "$HOME/.android/loreverse-debug.keystore"
+          keytool -list -keystore "$HOME/.android/loreverse-debug.keystore" -storepass "$ANDROID_DEBUG_KEYSTORE_PASSWORD" -alias loreverse >/dev/null
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("android/app/build.gradle")
+          s = p.read_text()
+          block = """
+    signingConfigs {
+        debug {
+            storeFile file(System.getProperty("user.home") + "/.android/loreverse-debug.keystore")
+            storePassword System.getenv("ANDROID_DEBUG_KEYSTORE_PASSWORD")
+            keyAlias "loreverse"
+            keyPassword System.getenv("ANDROID_DEBUG_KEYSTORE_PASSWORD")
+        }
+    }
+    """
+          if "buildTypes {" not in s:
+              raise SystemExit("Could not find Android buildTypes block.")
+          s = s.replace("    buildTypes {", block + "\n    buildTypes {", 1)
+          s = s.replace("        debug {", "        debug {\n            signingConfig signingConfigs.debug", 1)
+          p.write_text(s)
+          PY
+      - name: Warn if persistent signing secrets are missing
+        if: ${{ env.ANDROID_DEBUG_KEYSTORE_BASE64 == '' || env.ANDROID_DEBUG_KEYSTORE_PASSWORD == '' }}
+        run: echo "::warning::Persistent signing secrets are missing; the APK may not be compatible with future updates."
 
       - name: Build release Android App Bundle and installable APK
         working-directory: android
