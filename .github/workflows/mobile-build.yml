@@ -68,22 +68,6 @@ jobs:
           EOF
           cp "$RES/mipmap-anydpi-v26/ic_launcher.xml" "$RES/mipmap-anydpi-v26/ic_launcher_round.xml"
 
-      - name: Configure persistent LOREVERSE debug signing key
-        if: ${{ env.ANDROID_DEBUG_KEYSTORE_BASE64 != '' }}
-        env:
-          ANDROID_DEBUG_KEYSTORE_BASE64: ${{ secrets.ANDROID_DEBUG_KEYSTORE_BASE64 }}
-        run: |
-          set -euo pipefail
-          mkdir -p "$HOME/.android"
-          printf '%s' "$ANDROID_DEBUG_KEYSTORE_BASE64" | base64 --decode > "$HOME/.android/debug.keystore"
-          chmod 600 "$HOME/.android/debug.keystore"
-          keytool -list -keystore "$HOME/.android/debug.keystore" -storepass android -alias androiddebugkey >/dev/null
-          echo "Persistent debug signing key configured."
-
-      - name: Warn when persistent signing key is not configured
-        if: ${{ env.ANDROID_DEBUG_KEYSTORE_BASE64 == '' }}
-        run: echo "::warning::ANDROID_DEBUG_KEYSTORE_BASE64 is missing. This APK will use a temporary runner key and cannot update installs signed by another key."
-
       - name: Configure persistent debug APK signing
         if: ${{ env.ANDROID_DEBUG_KEYSTORE_BASE64 != '' && env.ANDROID_DEBUG_KEYSTORE_PASSWORD != '' }}
         run: |
