@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'mn.loreverse.app',
-  appName: 'LOREVERSE',
+  appId: 'mn.loreverse.app.next',
+  appName: 'LOREVERSE 2.0',
   webDir: 'www',
   bundledWebRuntime: false,
   backgroundColor: '#080808',
