@@ -4,6 +4,7 @@ from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path
 import sys
+import xml.etree.ElementTree as ET
 
 
 class SiteParser(HTMLParser):
@@ -116,6 +117,32 @@ def main():
             errors.append(
                 "editorial/index.html: translation form must read translationLang"
             )
+
+    sitemap_path = Path("sitemap.xml")
+    if not sitemap_path.is_file():
+        errors.append("sitemap.xml: missing public sitemap")
+    else:
+        try:
+            root = ET.parse(sitemap_path).getroot()
+            namespace = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+            locations = [node.text or "" for node in root.findall("sm:url/sm:loc", namespace)]
+            base = "https://loreverse-ctrl.github.io/lore-archive/"
+            if not locations:
+                errors.append("sitemap.xml: no URLs found")
+            for url in locations:
+                if not url.startswith(base):
+                    errors.append(f"sitemap.xml: URL outside canonical site: {url}")
+                    continue
+                relative = url[len(base):].strip("/")
+                target = Path(relative) / "index.html" if relative else Path("index.html")
+                if not target.is_file():
+                    errors.append(f"sitemap.xml: URL has no published page: {url}")
+        except ET.ParseError as error:
+            errors.append(f"sitemap.xml: invalid XML: {error}")
+
+    robots_path = Path("robots.txt")
+    if not robots_path.is_file() or "Sitemap: https://loreverse-ctrl.github.io/lore-archive/sitemap.xml" not in robots_path.read_text(encoding="utf-8"):
+        errors.append("robots.txt: missing sitemap declaration")
 
     if errors:
         for error in errors:
