@@ -1609,7 +1609,7 @@ async function openAppApk(url){
 }
 function renderAppReleaseList(releases){
  const host=$("appReleaseList");if(!host)return;
- const rows=releases.slice(0,4);
+ const rows=releases.slice(0,1); // Зөвхөн хамгийн сүүлийн APK-г харуулна; хуучин build-үүдийг жагсаалтаас нууна.
  if(!rows.length){host.innerHTML='<div class="update-empty">APK хувилбарын түүх олдсонгүй.</div>';return;}
  host.innerHTML=rows.map(r=>{
   const asset=(r.assets||[]).find(a=>/\.apk$/i.test(a.name));
