@@ -47,7 +47,7 @@ jobs:
               fi
             done
             echo "LOREVERSE_EOF"
-          } >> "$GITHUB_ENV"
+          } >> "$GITHUB_OUTPUT"
       - name: Run Gemini planning (direct API, retry on 503)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -81,7 +81,7 @@ jobs:
           PLAN=$(jq -r '[.candidates[0].content.parts[]?.text // empty] | join("\n")' /tmp/gemini-response.json)
           [ -n "$PLAN" ] || { echo "::error::Gemini returned no plan text."; exit 1; }
           {
-            echo "GEMINI_PLAN<<LOREVERSE_PLAN"
+            echo "plan<<LOREVERSE_PLAN"
             printf '%s\n' "$PLAN"
             echo "LOREVERSE_PLAN"
           } >> "$GITHUB_ENV"
