@@ -2005,6 +2005,22 @@ supabase.auth.onAuthStateChange(()=>{setTimeout(()=>{loadAdAdmin();},0);});
 #loreAiLauncher{position:fixed!important;right:18px!important;bottom:76px!important;z-index:2147483647!important;display:flex!important;align-items:center!important;justify-content:center!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;touch-action:manipulation!important;cursor:pointer!important}
 #loreAiPanel{z-index:2147483646!important;pointer-events:auto!important}
 #loreAiPanel.open{display:flex!important}
+
+/* LOREVERSE cosmic fantasy brand system */
+:root{--bg:#070817;--panel:#11122e;--panel2:#1c1740;--line:#59417e;--text:#fff8ff;--muted:#c5b9dc;--violet:#b66cff;--cyan:#66edff;--pink:#ff83d9;--gold:#ffd78d;--radius:24px}
+body{background:radial-gradient(ellipse at 12% 3%,#a33be844 0,transparent 30%),radial-gradient(ellipse at 90% 18%,#126ac755 0,transparent 32%),radial-gradient(ellipse at 50% 100%,#7d2aa733 0,transparent 38%),linear-gradient(180deg,#08091d 0%,#100c2b 48%,#080a1d 100%)}
+.topbar{background:rgba(8,8,27,.92);border-bottom:1px solid #a56cff55;box-shadow:0 8px 35px #07061688}
+.brand{letter-spacing:.13em;text-shadow:0 0 18px #bd7cff77}.mark-image{width:44px;height:44px;box-shadow:0 0 24px #a65cff99}
+.hero{position:relative}.hero:before{content:"";position:absolute;inset:12px -20px 0;border-radius:36px;background:radial-gradient(ellipse at 78% 40%,#4e3cc455,transparent 46%),linear-gradient(115deg,#26103f44,#102e5544);border:1px solid #a76cff30;pointer-events:none}
+.hero-brand-logo{width:min(100%,680px);filter:drop-shadow(0 0 24px #b45aff55)}
+.hero-art{border:1px solid #9b72ff88;box-shadow:0 20px 70px #7b36d955,0 0 0 4px #a95fff18}
+.archive,.article,.feature,.portal-panel,.dialog,.world,.stat,.section-card{border-color:#6e4b98!important;box-shadow:0 12px 35px #05041666, inset 0 1px #ffffff0d}
+.archive{background:linear-gradient(145deg,#20143dcc,#101a35e8)}.article{background:linear-gradient(145deg,#271743,#111831)}.feature,.portal-panel{background:linear-gradient(145deg,#25183d,#101b34)}
+.btn.primary{background:linear-gradient(105deg,#ff77cf,#a45cff 52%,#43dfff);color:#100c25;border:1px solid #ffd3f4;box-shadow:0 10px 35px #b34cff66}
+.btn,.chip,.ghost{border-color:#76539d}.btn:hover,.chip:hover,.ghost:hover{box-shadow:0 0 22px #b45aff66;border-color:#f5a9ff}
+.section-head h2,.hero h1{text-shadow:0 0 24px #9f63ff33}
+#loreAiLauncher{box-shadow:0 0 25px #bd5cff88,0 8px 25px #0009}
+@media(max-width:760px){.hero:before{inset:4px -8px 0;border-radius:24px}.hero-brand-logo{max-height:110px;object-fit:contain}}
 </style>
 <script id="loreAiEmergencyLauncherFixScript">
 (()=>{const launch=document.getElementById("loreAiLauncher"),panel=document.getElementById("loreAiPanel"),close=document.getElementById("loreAiClose");if(!launch||!panel)return;launch.addEventListener("click",()=>{panel.classList.add("open");panel.setAttribute("aria-hidden","false");},{capture:true});if(close)close.addEventListener("click",()=>{panel.classList.remove("open");panel.setAttribute("aria-hidden","true");},{capture:true});const contact=document.getElementById("loreAiContactAdmin");if(contact)contact.addEventListener("click",()=>{panel.classList.remove("open");panel.setAttribute("aria-hidden","true");const target=document.getElementById("supportTickets");if(target){target.scrollIntoView({behavior:"smooth",block:"start"});target.setAttribute("tabindex","-1");setTimeout(()=>target.focus({preventScroll:true}),450);}},{capture:true});})();
