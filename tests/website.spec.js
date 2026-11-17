@@ -37,8 +37,8 @@ test.describe('LOREVERSE website health', () => {
     expect(sitemapText).toContain('<urlset');
     expect(sitemapText).toContain('/lore-archive/knowledge/');
     expect(robotsText).toContain('Sitemap: https://loreverse-ctrl.github.io/lore-archive/sitemap.xml');
-    expect(robotsText).toContain('Disallow: /admin/');
-    expect(robotsText).toContain('Disallow: /editorial/');
+    expect(robotsText).toContain('Disallow: /lore-archive/admin/');
+    expect(robotsText).toContain('Disallow: /lore-archive/editorial/');
   });
 
   test('internal hash links resolve to an element', async ({ page }) => {
