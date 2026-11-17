@@ -16,6 +16,17 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('#archive')).toHaveCount(1);
   });
 
+  test('homepage exposes accessible skip navigation and social metadata', async ({ page }) => {
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('.skip-link')).toHaveAttribute('href', '#main-content');
+    await expect(page.locator('#main-content')).toHaveCount(1);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', baseURL);
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', /LOREVERSE/i);
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /LOREVERSE/i);
+    await page.keyboard.press('Tab');
+    await expect(page.locator('.skip-link')).toBeFocused();
+  });
+
   test('internal hash links resolve to an element', async ({ page }) => {
     await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
     const broken = await page.locator('a[href*="#"]').evaluateAll(links => {
