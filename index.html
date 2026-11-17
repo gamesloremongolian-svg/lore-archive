@@ -1035,6 +1035,20 @@ body{
 }
 </style>
 
+
+/* LOREVERSE mobile quick navigation — safe additive patch */
+#loreverseMobileNav{display:none}
+@media(max-width:760px){
+ body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+ #loreverseMobileNav{position:fixed;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:9997;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:7px;border:1px solid #a77bd866;border-radius:18px;background:rgba(17,12,31,.96);box-shadow:0 12px 38px #000b;backdrop-filter:blur(18px)}
+ #loreverseMobileNav a{min-width:0;min-height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:12px;color:#d9cce8;font-size:10px;font-weight:800;line-height:1.2;text-decoration:none}
+ #loreverseMobileNav a span{font-size:17px;line-height:1.1}
+ #loreverseMobileNav a[aria-current="page"]{color:#fff;background:linear-gradient(135deg,#9a5de7,#d45cae)}
+ #loreverseMobileNav a:focus-visible{outline:2px solid #8deaff;outline-offset:2px}
+ #loreAiLauncher{bottom:calc(82px + env(safe-area-inset-bottom,0px))!important}
+ #loreAiPanel{bottom:calc(82px + env(safe-area-inset-bottom,0px))!important}
+}
+
 </head>
 <body>
 <header class="wrap topbar"><a class="brand" href="#"><img class="mark mark-image" src="./assets/loreverse-mark.svg" alt=""> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх" onclick="(function(b){var n=document.getElementById('mainNav');if(!n)return;var o=n.classList.toggle('open');b.setAttribute('aria-expanded',String(o));b.textContent=o?'✕':'☰';})(this)">☰</button><nav class="nav" id="mainNav" onclick="if(event.target.closest('a')){this.classList.remove('open');var b=document.getElementById('navToggle');if(b){b.setAttribute('aria-expanded','false');b.textContent='☰';}}"><a href="#all-categories">Бүх ертөнцийн мэдлэг</a><a href="#anime">Анимэ</a><a href="#games">Тоглоом</a><a href="#manga">Манга</a><a href="archive/">Novel</a><a href="#archive">Lore Archive</a><a href="#loreverse-updates">Шинэчлэл</a><a href="chat/">Хувийн чат</a><a class="admin-nav-link" href="./admin/index.html" aria-label="Админ болон туслах ажилтны самбар">Админ / Туслах ↗</a><a href="knowledge/">Ертөнцийн сан</a></nav><div class="actions"><a class="ghost" id="appUpdateQuickOpen" href="#app-update" style="font-size:11px;font-weight:850;color:#ffb6e5;white-space:nowrap">APK шинэчлэх ↻</a><button class="ghost" id="notificationsOpen" type="button" aria-label="Мэдэгдэл">🔔 <span id="notificationCount">0</span></button><select class="select" id="lang" aria-label="Language" data-no-translate="true" translate="no"><option value="mn" data-no-translate="true">Монгол</option><option value="en" data-no-translate="true">English</option><option value="ja" data-no-translate="true">日本語</option><option value="ko" data-no-translate="true">한국어</option></select></div></header>
@@ -1629,12 +1643,13 @@ document.querySelectorAll("[data-qpay-plan]").forEach(button=>{
    const {data,error}=await supabase.functions.invoke("qpay-payment",{body:{action:"create_invoice",plan_code:planCode}});
    if(error)throw error;
    if(!data||!data.ok||!data.invoice_id)throw new Error(data?.error||"QPay нэхэмжлэл үүссэнгүй.");
-   activeQpayPaymentId=data.payment_id;
+   if(!data.payment_id)throw new Error("QPay нэхэмжлэлийн төлбөрийн ID ирсэнгүй. Админд мэдэгдэнэ үү.");
+    activeQpayPaymentId=data.payment_id;
    $("qpayInvoiceTitle").textContent=data.plan_name+" · "+Number(data.amount).toLocaleString("mn-MN")+"₮";
    const qrWrap=$("qpayQrWrap");qrWrap.replaceChildren();   if(data.qr_image){
     const img=document.createElement("img");img.alt="QPay төлбөрийн QR код";img.style.cssText="display:block;width:min(280px,100%);height:auto;margin:12px auto;background:#fff;padding:10px;border-radius:12px";
     const raw=String(data.qr_image);
-    img.src=raw.startsWith("data:image/")?raw:"data:image/png;base64,"+raw;
+    img.src=/^data:image\//i.test(raw)?raw:"data:image/png;base64,"+raw;
     qrWrap.appendChild(img);
    }else if(data.qr_text){
     const p=document.createElement("p");p.textContent=data.qr_text;qrWrap.appendChild(p);
@@ -2783,4 +2798,22 @@ $("animeDetailBack")?.addEventListener("click",closeArchiveAnime);
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&shell?.classList.contains("open"))closeArchiveAnime();});
 loadArchive();
 </script>
+
+<nav id="loreverseMobileNav" aria-label="Гар утасны үндсэн цэс">
+ <a href="#" aria-label="Нүүр хуудас"><span aria-hidden="true">⌂</span>Нүүр</a>
+ <a href="#all-categories" aria-label="Бүх ертөнц"><span aria-hidden="true">✧</span>Ертөнц</a>
+ <a href="#payment" aria-label="QPay төлбөр"><span aria-hidden="true">₮</span>QPay</a>
+ <a href="#supportTickets" aria-label="Админтай холбогдох"><span aria-hidden="true">✉</span>Админ</a>
+</nav>
+<script id="loreverseMobileNavBehavior">
+(()=>{const nav=document.getElementById("loreverseMobileNav");if(!nav)return;
+ const links=[...nav.querySelectorAll("a")];
+ const setActive=hash=>{links.forEach(a=>{const active=(a.getAttribute("href")||"#")===hash;a.toggleAttribute("aria-current",active);if(active)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current");});};
+ links.forEach(a=>a.addEventListener("click",()=>{const hash=a.getAttribute("href")||"#";setActive(hash);if(hash!=="#"){const target=document.querySelector(hash);if(target){setTimeout(()=>target.scrollIntoView({behavior:"smooth",block:"start"}),0);}}}));
+ const sections=["all-categories","payment","supportTickets"].map(id=>document.getElementById(id)).filter(Boolean);
+ if("IntersectionObserver"in window){const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(visible)setActive("#"+visible.target.id);},{rootMargin:"-15% 0px -65% 0px",threshold:[0,.2,.5]});sections.forEach(el=>observer.observe(el));}
+ setActive("#");
+})();
+</script>
+
 </body></html>
