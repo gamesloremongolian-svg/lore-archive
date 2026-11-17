@@ -2495,12 +2495,35 @@ document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBank
  function toggleFav(id,name){let f=favorites();f=f.some(x=>x.id===id)?f.filter(x=>x.id!==id):[...f,{id,name}];try{localStorage.setItem(key,JSON.stringify(f));updateFav(id)}catch{alert("Энэ төхөөрөмж дээр хадгалах боломжгүй байна.")}}
  const val=x=>String(x||"—").replaceAll("_"," ");
  const fmtDate=d=>d?.year?(d.day&&d.month?d.year+"."+String(d.month).padStart(2,"0")+"."+String(d.day).padStart(2,"0"):d.year):"—";
+ async function fetchAnimeDetailData(id){
+  const options={method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({query,variables:{id}})};
+  let hubError=null;
+  try{
+   if(window.LOREVERSE_DATA_HUB?.fetchJSON){
+    const cachedResponse=await window.LOREVERSE_DATA_HUB.fetchJSON(endpoint,options);
+    if(!cachedResponse||typeof cachedResponse.json!=="function")throw new Error("Data Hub буруу хариу буцаалаа.");
+    if(cachedResponse.ok===false)throw new Error("AniList HTTP "+(cachedResponse.status??"тодорхойгүй"));
+    return await cachedResponse.json();
+   }
+  }catch(error){hubError=error;}
+  try{
+   const response=await fetch(endpoint,options);
+   if(!response.ok){
+    let detail="";try{const payload=await response.json();detail=payload.errors?.[0]?.message||payload.message||"";}catch(_){}
+    throw new Error("AniList HTTP "+response.status+(detail?": "+detail:""));
+   }
+   return await response.json();
+  }catch(error){
+   const reason=error?.message||String(error)||"Тодорхойгүй сүлжээний алдаа";
+   const hubReason=hubError?.message||"";
+   throw new Error("AniList сервертэй холбогдож чадсангүй. "+reason+(hubReason&&hubReason!==reason?" (Data Hub: "+hubReason+")":""));
+  }
+ }
  async function load(id){
   body.innerHTML='<div class="anime-detail-state">AniList каталогоос мэдээлэл ачаалж байна…</div>';
   try{
-   const res=await window.LOREVERSE_DATA_HUB.fetchJSON(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({query,variables:{id}})});
-   if(!res.ok)throw new Error("AniList хүсэлт амжилтгүй ("+res.status+").");
-   const json=await res.json();if(json.errors?.length)throw new Error(json.errors[0].message);
+   const json=await fetchAnimeDetailData(id);
+   if(json.errors?.length)throw new Error(json.errors[0].message||"AniList каталогийн алдаа.");
    const m=json.data?.Media;if(!m)throw new Error("Анимэ мэдээлэл олдсонгүй.");
    const cover=m.coverImage?.extraLarge||m.coverImage?.large||"",banner=m.bannerImage||cover,genres=m.genres||[],synopsis=clean(m.description)||"Танилцуулга одоогоор байхгүй.";
    const people=edges=>edges.map(e=>'<div class="anime-detail-person">'+(e.node.image?.large?'<img loading="lazy" src="'+esc(e.node.image.large)+'" alt="'+esc(e.node.name.full)+'">':'<div style="aspect-ratio:3/4;background:#202944;border-radius:9px"></div>')+'<strong>'+esc(e.node.name.full)+'</strong><span>'+esc(e.role)+'</span></div>').join("");
@@ -2522,7 +2545,7 @@ document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBank
    body.querySelector("#animeDetailSource").addEventListener("click",()=>window.open(m.siteUrl||"https://anilist.co/anime/"+m.id,"_blank","noopener"));
    body.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>{body.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b));const ids={overview:"Overview",characters:"Characters",staff:"Staff",related:"Related"};body.querySelector("#animeTab"+ids[b.dataset.tab])?.scrollIntoView({behavior:"smooth",block:"start"})}));
    body.querySelectorAll("[data-anime-id]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();open(a.dataset.animeId)}));updateFav(m.id);
-  }catch(err){body.innerHTML='<div class="anime-detail-state anime-detail-error">Анимэний мэдээлэл ачаалж чадсангүй.<br>'+esc(err.message)+'<br><button class="anime-detail-back" id="animeDetailRetry" type="button">Дахин оролдох</button></div>';body.querySelector("#animeDetailRetry")?.addEventListener("click",()=>load(id))}
+  }catch(err){const message=err?.message||String(err)||"Тодорхойгүй алдаа";body.innerHTML='<div class="anime-detail-state anime-detail-error">Анимэний мэдээлэл ачаалж чадсангүй.<br>'+esc(message)+'<br><button class="anime-detail-back" id="animeDetailRetry" type="button">Дахин оролдох</button> <a class="anime-detail-back" href="https://anilist.co/anime/'+id+'" target="_blank" rel="noopener noreferrer">AniList дээр харах ↗</a></div>';body.querySelector("#animeDetailRetry")?.addEventListener("click",()=>load(id))}
  }
  document.getElementById("animeDetailBack").addEventListener("click",close);
  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&root.classList.contains("open"))close()});
