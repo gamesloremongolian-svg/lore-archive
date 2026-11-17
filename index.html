@@ -1101,6 +1101,25 @@ html.winter-effects-off .winter-snow{display:none}
 @media(max-width:360px){.winter-calendar-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.winter-day{transition:none}.winter-day:not(:disabled):hover{transform:none}}
 </style>
+<style id="loreverse-manga-rail-fix">
+/* Manga featured rail — touch-first horizontal carousel */
+#manga .manga-featured{margin:0 0 20px;padding:17px;border:1px solid #594077;border-radius:20px;background:linear-gradient(145deg,#1b1730,#111020)}
+#manga .manga-rail-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+#manga .manga-rail-head strong{font-size:11px;letter-spacing:.14em;color:#d9b4ff}
+#manga .manga-rail-head span{font-size:10px;color:var(--muted)}
+#manga .manga-rail-controls{display:flex;gap:7px;margin-left:auto}
+#manga .manga-rail-controls button{min-width:34px;min-height:32px;border:1px solid #66508b;border-radius:9px;background:#201936;color:#fff;font-weight:800;cursor:pointer;touch-action:manipulation}
+#manga .manga-rail-controls button:focus-visible{outline:2px solid #d9b4ff;outline-offset:2px}
+#manga .carousel-viewport{display:block;width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#76539d #171326;cursor:grab;scroll-snap-type:x proximity}
+#manga .carousel-viewport:active{cursor:grabbing}
+#manga .carousel-viewport::-webkit-scrollbar{height:5px}
+#manga .carousel-viewport::-webkit-scrollbar-thumb{background:#76539d;border-radius:8px}
+#manga .carousel-track{display:flex;flex-flow:row nowrap;align-items:stretch;gap:12px;width:max-content;min-width:100%;animation:none!important;transform:none!important;will-change:scroll-position}
+#manga .carousel-track .media-card{display:flex;flex:0 0 230px;width:230px;min-height:175px;white-space:normal;scroll-snap-align:start}
+#manga .manga-rail-status{margin:8px 0 0;color:var(--muted);font-size:10px}
+@media(max-width:650px){#manga .manga-featured{padding:12px}#manga .carousel-track .media-card{flex-basis:195px;width:195px}}
+@media(prefers-reduced-motion:reduce){#manga .carousel-viewport{scroll-behavior:auto}}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Үндсэн агуулга руу очих</a>
@@ -2157,7 +2176,7 @@ adForm.addEventListener("submit",async ev=>{
  if(!user||user.is_anonymous){status.textContent="Эхлээд Premium хэсэгт бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.";return;}
  const required=["adAdvertiser","adEmail","adTitle","adDescription","adImage","adTarget"];
  if(required.some(id=>!$(id).value.trim())){status.textContent="Бүх шаардлагатай талбарыг бөглөнө үү.";return;}
- if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test($("adEmail").value.trim())){status.textContent="Имэйл хаягаа зөв оруулна уу.";return;}
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($("adEmail").value.trim())){status.textContent="Имэйл хаягаа зөв оруулна уу.";return;}
  const imageUrl=$("adImage").value.trim(),targetUrl=$("adTarget").value.trim();
  const validHttps=v=>{try{return new URL(v).protocol==="https:";}catch{return false;}};
  if(!validHttps(imageUrl)||!validHttps(targetUrl)){status.textContent="Зургийн болон очих холбоос https:// байх ёстой.";return;}
@@ -2463,24 +2482,6 @@ document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBank
  };
 })(); 
 
-/* Manga featured rail — touch-first horizontal carousel */
-#manga .manga-featured{margin:0 0 20px;padding:17px;border:1px solid #594077;border-radius:20px;background:linear-gradient(145deg,#1b1730,#111020)}
-#manga .manga-rail-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
-#manga .manga-rail-head strong{font-size:11px;letter-spacing:.14em;color:#d9b4ff}
-#manga .manga-rail-head span{font-size:10px;color:var(--muted)}
-#manga .manga-rail-controls{display:flex;gap:7px;margin-left:auto}
-#manga .manga-rail-controls button{min-width:34px;min-height:32px;border:1px solid #66508b;border-radius:9px;background:#201936;color:#fff;font-weight:800;cursor:pointer;touch-action:manipulation}
-#manga .manga-rail-controls button:focus-visible{outline:2px solid #d9b4ff;outline-offset:2px}
-#manga .carousel-viewport{display:block;width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#76539d #171326;cursor:grab;scroll-snap-type:x proximity}
-#manga .carousel-viewport:active{cursor:grabbing}
-#manga .carousel-viewport::-webkit-scrollbar{height:5px}
-#manga .carousel-viewport::-webkit-scrollbar-thumb{background:#76539d;border-radius:8px}
-#manga .carousel-track{display:flex;flex-flow:row nowrap;align-items:stretch;gap:12px;width:max-content;min-width:100%;animation:none!important;transform:none!important;will-change:scroll-position}
-#manga .carousel-track .media-card{display:flex;flex:0 0 230px;width:230px;min-height:175px;white-space:normal;scroll-snap-align:start}
-#manga .manga-rail-status{margin:8px 0 0;color:var(--muted);font-size:10px}
-@media(max-width:650px){#manga .manga-featured{padding:12px}#manga .carousel-track .media-card{flex-basis:195px;width:195px}}
-@media(prefers-reduced-motion:reduce){#manga .carousel-viewport{scroll-behavior:auto}}
-
 /* Unified Manga Archive — published Supabase records + AniList cover artwork */
 (()=>{
  const rail=document.getElementById("mangaPopularRail"),viewport=document.getElementById("mangaRailViewport"),status=document.getElementById("mangaRailStatus");
@@ -2488,7 +2489,7 @@ document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBank
  const prev=document.getElementById("mangaRailPrev"),next=document.getElementById("mangaRailNext");
  if(!rail||!viewport)return;
  const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
- const clean=v=>String(v||"").replace(/<br\\s*\\/?\\s*>/gi," ").replace(/<[^>]*>/g," ").replace(/\\s+/g," ").trim();
+ const clean=v=>String(v||"").replace(/<br\s*\/?\s*>/gi," ").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
  let records=[];
  async function coverFor(title){
   const query='query($search:String){Page(page:1,perPage:1){media(search:$search,type:MANGA,isAdult:false){siteUrl coverImage{large medium} title{userPreferred english romaji} format}}}';
