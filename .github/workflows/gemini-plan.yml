@@ -49,6 +49,7 @@ jobs:
             echo "LOREVERSE_EOF"
           } >> "$GITHUB_ENV"
       - name: Run Gemini planning (direct API, retry on 503)
+        id: gemini
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ISSUE_CONTEXT: ${{ env.ISSUE_CONTEXT }}
