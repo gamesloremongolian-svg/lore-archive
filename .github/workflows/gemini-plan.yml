@@ -84,14 +84,14 @@ jobs:
             echo "plan<<LOREVERSE_PLAN"
             printf '%s\n' "$PLAN"
             echo "LOREVERSE_PLAN"
-          } >> "$GITHUB_ENV"
+          } >> "$GITHUB_OUTPUT"
       - name: Post plan to issue
         if: success()
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
-          GEMINI_PLAN: ${{ steps.gemini.outputs.summary }}
+          GEMINI_PLAN: ${{ steps.gemini.outputs.plan }}
         run: |
           if [ -z "$GEMINI_PLAN" ]; then
             echo "::error::Gemini returned an empty plan."
