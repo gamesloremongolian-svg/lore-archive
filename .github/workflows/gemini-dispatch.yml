@@ -1,0 +1,68 @@
+name: LOREVERSE Gemini AI Fix
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  dispatch:
+    if: >-
+      github.event.issue.pull_request == null &&
+      github.event.sender.type == 'User' &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association) &&
+      startsWith(github.event.comment.body, '@gemini-cli')
+    runs-on: ubuntu-latest
+    outputs:
+      command: ${{ steps.route.outputs.command }}
+      request: ${{ steps.route.outputs.request }}
+    steps:
+      - name: Route request
+        id: route
+        env:
+          COMMENT: ${{ github.event.comment.body }}
+        run: |
+          if [[ "$COMMENT" == "@gemini-cli /approve"* ]]; then
+            echo "command=execute" >> "$GITHUB_OUTPUT"
+          else
+            echo "command=plan" >> "$GITHUB_OUTPUT"
+          fi
+          {
+            echo "request<<LOREVERSE_REQUEST"
+            printf '%s\n' "$COMMENT"
+            echo "LOREVERSE_REQUEST"
+          } >> "$GITHUB_OUTPUT"
+      - name: Acknowledge request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: gh issue comment "$ISSUE_NUMBER" --repo "$REPOSITORY" --body "🤖 LOREVERSE Gemini AI хүсэлтийг хүлээн авлаа. Ажиллах явцыг Actions хэсгээс харж болно."
+  plan:
+    needs: dispatch
+    if: needs.dispatch.outputs.command == 'plan'
+    uses: ./.github/workflows/gemini-plan.yml
+    with:
+      additional_context: ${{ needs.dispatch.outputs.request }}
+    secrets: inherit
+    permissions:
+      contents: read
+      id-token: write
+      issues: write
+      pull-requests: write
+  execute:
+    needs: dispatch
+    if: needs.dispatch.outputs.command == 'execute'
+    uses: ./.github/workflows/gemini-execute.yml
+    with:
+      additional_context: ${{ needs.dispatch.outputs.request }}
+    secrets: inherit
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+      pull-requests: write
