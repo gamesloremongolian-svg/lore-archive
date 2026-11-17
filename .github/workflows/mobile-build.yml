@@ -37,6 +37,8 @@ jobs:
           java-version: '21'
       - name: Install dependencies
         run: npm install
+      - name: Validate inline JavaScript
+        run: npm run check:web
       - name: Build web assets
         run: npm run build
       - name: Add Android platform
