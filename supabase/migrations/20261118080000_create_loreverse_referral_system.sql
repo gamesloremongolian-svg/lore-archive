@@ -40,7 +40,7 @@ begin
 
   if v_code is null then
     loop
-      v_code := upper(substr(encode(gen_random_bytes(8), 'hex'), 1, 10));
+      v_code := upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 10));
       begin
         insert into public.loreverse_referral_codes(user_id, code)
         values (v_user, v_code);
