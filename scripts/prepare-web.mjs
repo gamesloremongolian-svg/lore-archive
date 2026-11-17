@@ -6,7 +6,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const out = path.join(root, 'www');
 const excluded = new Set([
   '.git', '.github', 'node_modules', 'android', 'ios', 'www', 'dist',
-  'package.json', 'package-lock.json', 'capacitor.config.ts', 'tsconfig.json'
+  'package.json', 'package-lock.json', 'capacitor.config.ts', 'tsconfig.json',
+  'tests', 'scripts', 'supabase', 'README.md', 'ANDROID_RELEASE.md', 'index.backup.html'
 ]);
 
 await rm(out, { recursive: true, force: true });
