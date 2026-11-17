@@ -1433,9 +1433,9 @@ const fmt=n=>Number(n||0).toLocaleString("mn-MN");
 <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="dialog"><div class="dialogtop"><div><div class="eyebrow" id="modalGame"></div><h2 id="modalTitle"></h2></div><button class="close" id="close" aria-label="Close">✕</button></div><p id="modalBody"></p><div class="note">Эх сурвалжийг нийтлэхийн өмнө редакцаар нягтална.</div></div></div>
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
-import { App } from "@capacitor/app";
-import { Browser } from "@capacitor/browser";
-import { Capacitor } from "@capacitor/core";
+import { App } from "https://esm.sh/@capacitor/app@7.0.0";
+import { Browser } from "https://esm.sh/@capacitor/browser@7.0.0";
+import { Capacitor } from "https://esm.sh/@capacitor/core@7.0.0";
 const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
 const $=id=>document.getElementById(id);
 async function cachedPublicData(key,query,ttl=300000){try{return{data:await window.LOREVERSE_DATA_HUB.remember("supabase:public:"+key,async()=>{const{data,error}=await query();if(error)throw error;return data||[];},ttl),error:null};}catch(error){return{data:null,error};}}
