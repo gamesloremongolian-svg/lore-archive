@@ -15,7 +15,7 @@ jobs:
       github.event.issue.pull_request == null &&
       github.event.sender.type == 'User' &&
       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association) &&
-      startsWith(github.event.comment.body, '@gemini-cli')
+      (startsWith(github.event.comment.body, '@gemini-cli') || startsWith(github.event.comment.body, 'gemini-cli'))
     runs-on: ubuntu-latest
     outputs:
       command: ${{ steps.route.outputs.command }}
@@ -26,7 +26,7 @@ jobs:
         env:
           COMMENT: ${{ github.event.comment.body }}
         run: |
-          if [[ "$COMMENT" == "@gemini-cli /approve"* ]]; then
+          if [[ "$COMMENT" == "@gemini-cli /approve"* || "$COMMENT" == "gemini-cli /approve"* ]]; then
             echo "command=execute" >> "$GITHUB_OUTPUT"
           else
             echo "command=plan" >> "$GITHUB_OUTPUT"
