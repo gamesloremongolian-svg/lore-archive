@@ -2,14 +2,16 @@ name: LOREVERSE Android Build
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
     paths:
+      - 'index.html'
+      - '**/*.html'
+      - 'assets/**'
+      - 'manifest.webmanifest'
       - 'package.json'
       - 'package-lock.json'
       - 'capacitor.config.ts'
-      - 'index.html'
-      - 'knowledge/**'
-      - 'chat/**'
-      - 'assets/**'
       - 'scripts/**'
       - '.github/workflows/mobile-build.yml'
 
