@@ -113,3 +113,4 @@ jobs:
           name: loreverse-android-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+# Re-run build after persistent Android signing secrets were configured.
