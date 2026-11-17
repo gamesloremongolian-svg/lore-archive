@@ -3058,6 +3058,52 @@ apply();
 </style>
 
 </body>
+<script id="loreverse-ai-classic-fallback">
+(()=> {
+  const form=document.getElementById("loreAiForm");
+  const input=document.getElementById("loreAiQuestion");
+  const send=document.getElementById("loreAiSend");
+  const messages=document.getElementById("loreAiMessages");
+  const meta=document.getElementById("loreAiMeta");
+  if(!form||!input||!send||!messages)return;
+  let busy=false;
+  const add=(value,role)=>{const el=document.createElement("div");el.className="lore-ai-msg "+role;el.textContent=value;messages.appendChild(el);messages.scrollTop=messages.scrollHeight;return el;};
+  const submit=async()=>{
+    if(window.__loreAiModuleReady||busy)return;
+    const question=input.value.trim();if(!question){input.focus();return;}
+    busy=true;send.disabled=true;send.textContent="Илгээж байна…";
+    add(question,"user");input.value="";const pending=add("Холболтыг шалгаж байна…","bot");
+    try{
+      let session=null;
+      for(let i=0;i<localStorage.length;i++){
+        const key=localStorage.key(i);
+        if(key==="sb-nfacspfctvunwbxtvvyi-auth-token"){
+          try{session=JSON.parse(localStorage.getItem(key)||"null");}catch(_){}
+          break;
+        }
+      }
+      const token=session?.access_token;
+      if(!token)throw new Error("LORE AI ашиглахын тулд эхлээд имэйлээр нэвтэрнэ үү.");
+      pending.textContent="Хариулт боловсруулж байна…";
+      const response=await fetch("https://nfacspfctvunwbxtvvyi.supabase.co/functions/v1/lore-ai",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","apikey":"sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1","Authorization":"Bearer "+token},
+        body:JSON.stringify({question})
+      });
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(data?.error||data?.message||("Серверийн алдаа: "+response.status));
+      if(data?.error)throw new Error(data.error);
+      if(!data?.answer)throw new Error("AI хариулт буцаасангүй. Дахин оролдоно уу.");
+      pending.textContent=data.answer;
+      if(meta&&Number.isFinite(Number(data.remaining)))meta.textContent="Өнөөдөр үлдсэн асуулт: "+data.remaining+" · Өдөрт 10 асуулт";
+    }catch(error){pending.textContent=error?.message||"LORE AI-тай холбогдож чадсангүй.";}
+    finally{busy=false;send.disabled=false;send.textContent="Илгээх";input.focus();}
+  };
+  send.addEventListener("click",e=>{if(window.__loreAiModuleReady)return;e.preventDefault();submit();});
+  form.addEventListener("submit",e=>{if(window.__loreAiModuleReady)return;e.preventDefault();submit();});
+  input.addEventListener("keydown",e=>{if(window.__loreAiModuleReady)return;if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();submit();}});
+})();
+</script>
 <script type="module" id="loreverse-ai-chat-v2">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
 
@@ -3160,6 +3206,7 @@ if (panel && launcher && form && input && send && messages) {
   });
   launcher.addEventListener("click", () => panel.classList.add("open"));
   if (closeButton) closeButton.addEventListener("click", () => panel.classList.remove("open"));
+  window.__loreAiModuleReady = true;
 }
 </script>
 </html>
