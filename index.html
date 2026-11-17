@@ -3240,9 +3240,9 @@ try{
  const urlCode=new URL(location.href).searchParams.get("ref");
  if(urlCode && /^[A-Za-z0-9]{6,20}$/.test(urlCode)){
   pendingReferral=urlCode.toUpperCase();
-  sessionStorage.setItem("loreverse_pending_referral",pendingReferral);
+  localStorage.setItem("loreverse_pending_referral",pendingReferral);
  }
- pendingReferral=pendingReferral||sessionStorage.getItem("loreverse_pending_referral")||"";
+ pendingReferral=pendingReferral||localStorage.getItem("loreverse_pending_referral")||"";
 }catch(_){}
 function inviteMessage(message,isError=false){
  if(!inviteStatus)return;
@@ -3260,13 +3260,13 @@ async function loadInviteDashboard(){
   const {data:claim,error:claimError}=await referralClient.rpc("claim_loreverse_referral",{p_code:pendingReferral});
   if(claimError)throw claimError;
   if(claim?.claimed){
-   sessionStorage.removeItem("loreverse_pending_referral");pendingReferral="";
+   localStorage.removeItem("loreverse_pending_referral");pendingReferral="";
    inviteMessage("Урилга амжилттай бүртгэгдлээ. LOREVERSE-д тавтай морил!");
   }else if(claim?.reason==="email_unconfirmed"){
    inviteMessage("Имэйлээ баталгаажуулсны дараа урилга автоматаар бүртгэгдэнэ.");
-  }else if(["code_not_found","self_referral","already_claimed","invalid_code"].includes(claim?.reason)){
-   sessionStorage.removeItem("loreverse_pending_referral");pendingReferral="";
-   inviteMessage(claim.reason==="already_claimed"?"Таны аккаунтад өмнө нь урилга бүртгэгдсэн байна.":"Урилгын код хүчингүй эсвэл ашиглах боломжгүй байна.",true);
+  }else if(["code_not_found","self_referral","already_claimed","invalid_code","existing_account"].includes(claim?.reason)){
+   localStorage.removeItem("loreverse_pending_referral");pendingReferral="";
+   inviteMessage(claim.reason==="already_claimed"?"Таны аккаунтад өмнө нь урилга бүртгэгдсэн байна.":claim.reason==="existing_account"?"Энэ урилга зөвхөн шинээр бүртгүүлсэн хэрэглэгчид хүчинтэй.":"Урилгын код хүчингүй эсвэл ашиглах боломжгүй байна.",true);
   }
  }
  const {data,error}=await referralClient.rpc("get_my_loreverse_referrals");
