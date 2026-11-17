@@ -97,7 +97,6 @@ jobs:
               raise SystemExit("Could not find Android buildTypes block.")
           s = s.replace("    buildTypes {", block + "\n    buildTypes {", 1)
           # Explicitly attach the persistent key to the debug variant.
-          s = s.replace("        debug {", "        debug {\n            signingConfig signingConfigs.debug", 1)
           p.write_text(s)
           PY
       - name: Warn if persistent signing secrets are missing
