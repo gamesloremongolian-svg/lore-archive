@@ -1130,6 +1130,16 @@ html.winter-effects-off .winter-snow{display:none}
   <p>Дуртай анимэ, тоглоом, манга ертөнцийнхөө түүх, дүрүүд, нууц, онолыг нэг дороос нээ.</p>
   <div class="hero-buttons"><a class="btn primary" href="#anime">Анимэ үзэх ↗</a><a class="btn" href="#all-categories">Бүх ангилал</a><a class="btn" href="#app-update" aria-label="Аппын шинэчлэлт шалгах">Апп шинэчлэх ↻</a></div>
   <div class="winter-banner" role="note"><span class="winter-banner-icon" aria-hidden="true">🎄</span><div><strong>WINTER FESTIVAL · 2027</strong><span>Шинэ он хүртэл хамтдаа шинэ ертөнц нээцгээе</span></div><span class="winter-star" aria-hidden="true">✦</span></div>
+  <div class="new-year-countdown" id="newYearCountdown" role="timer" aria-live="off" aria-label="2027 оны шинэ он хүртэлх хугацаа">
+   <div class="new-year-countdown-title"><span>✦</span> 2027 ОНЫ ШИНЭ ОН ХҮРТЭЛ <span>✦</span></div>
+   <div class="new-year-countdown-grid">
+    <div class="new-year-time"><strong id="nyDays">00</strong><span>ӨДӨР</span></div>
+    <div class="new-year-time"><strong id="nyHours">00</strong><span>ЦАГ</span></div>
+    <div class="new-year-time"><strong id="nyMinutes">00</strong><span>МИНУТ</span></div>
+    <div class="new-year-time"><strong id="nySeconds">00</strong><span>СЕКУНД</span></div>
+   </div>
+   <div class="new-year-countdown-note" id="nyCountdownNote">Шинэ он хүртэл хамтдаа тоолъё!</div>
+  </div>
   <div class="hero-dots" id="heroAnimeDots"><span></span><span></span><span></span></div>
  </div>
  <a class="hero-art" id="heroAnimeVisual" href="#anime" aria-label="Онцлох анимэ">
@@ -2907,6 +2917,39 @@ apply();
  .catalog-card img,.world,.catalog-card{transition:none!important}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+<style id="loreverse-new-year-countdown">
+.new-year-countdown{width:min(560px,100%);margin:12px 0 4px;padding:14px 16px 12px;border:1px solid #b78cff80;border-radius:15px;background:linear-gradient(120deg,#28164dcc,#101b3ddd 65%,#193e57cc);box-shadow:0 0 22px #a56aff20,inset 0 0 22px #7adfff0c;text-align:center}
+.new-year-countdown-title{margin-bottom:11px;color:#f3d88e;font-size:10px;font-weight:900;letter-spacing:.15em}
+.new-year-countdown-title span{color:#9beaff;padding:0 4px}
+.new-year-countdown-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.new-year-time{min-width:0;padding:10px 4px 8px;border:1px solid #a88be65c;border-radius:10px;background:#0a1029a8}
+.new-year-time strong{display:block;color:#fff;font-size:clamp(22px,6vw,32px);font-variant-numeric:tabular-nums;line-height:1.1;text-shadow:0 0 13px #a98aff75}
+.new-year-time span{display:block;margin-top:5px;color:#bceeff;font-size:9px;font-weight:800;letter-spacing:.1em}
+.new-year-countdown-note{margin-top:10px;color:#d9c9ed;font-size:11px}
+@media(max-width:380px){.new-year-countdown{padding:11px 9px}.new-year-countdown-grid{gap:5px}.new-year-time{padding:9px 2px 7px}.new-year-time span{font-size:8px}}
+</style>
+<script id="loreverse-new-year-countdown-script">
+(()=>{
+ const ids=["nyDays","nyHours","nyMinutes","nySeconds"];
+ const nodes=ids.map(id=>document.getElementById(id));
+ const note=document.getElementById("nyCountdownNote");
+ if(nodes.some(node=>!node))return;
+ const target=Date.parse("2027-01-01T00:00:00+08:00");
+ const pad=n=>String(n).padStart(2,"0");
+ const update=()=>{
+  let left=Math.max(0,target-Date.now());
+  const days=Math.floor(left/86400000);left%=86400000;
+  const hours=Math.floor(left/3600000);left%=3600000;
+  const minutes=Math.floor(left/60000);left%=60000;
+  const seconds=Math.floor(left/1000);
+  [days,hours,minutes,seconds].forEach((v,i)=>nodes[i].textContent=pad(v));
+  if(target-Date.now()<=0){note.textContent="🎉 ШИНЭ ОНЫ МЭНД ХҮРГЭЕ!";clearInterval(timer);}
+ };
+ update();
+ const timer=setInterval(update,1000);
+})();
+</script>
 </style>
 </body>
 <script type="module" id="loreverse-ai-chat-v2">
