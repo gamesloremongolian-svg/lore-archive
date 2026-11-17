@@ -2685,4 +2685,110 @@ document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBank
 })();
 </script>
 
+
+<script type="module" id="loreverseAnimeUnifiedArchive">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
+const db=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const lang=()=>["mn","en","ja","ko"].includes(localStorage.getItem("loreverse-language"))?localStorage.getItem("loreverse-language"):"mn";
+let animeWorks=[];
+const shell=$("animeDetailShell"),body=$("animeDetailBody");
+function card(w){
+ const f=w.franchise||{},tr=w.translation||{};
+ const title=tr.title||w.canonical_title||f.name||"Нэргүй анимэ";
+ const cover=f.cover_image_url||"";
+ return '<a class="anime-poster" href="#anime-archive-'+esc(w.id)+'" data-archive-anime-id="'+esc(w.id)+'">'+
+ (cover?'<img loading="lazy" src="'+esc(cover)+'" alt="'+esc(title)+'" onerror="this.hidden=true">':'<div class="anime-poster no-image"><span>LOREVERSE ARCHIVE</span></div>')+
+ '<div class="anime-poster-info"><small>ANIME ARCHIVE · '+esc(w.release_year||"")+'</small><strong>'+esc(title)+'</strong><span>'+esc((tr.synopsis||f.description||"Нэгдсэн Lore Archive-д бүртгэгдсэн анимэ").slice(0,150))+'</span></div></a>';
+}
+function showEmpty(id,msg){const el=$(id);if(el)el.innerHTML='<div class="anime-loading">'+esc(msg)+' <a href="archive/" style="color:#9ceaff">Нэгдсэн архив нээх ↗</a></div>';}
+async function loadArchive(){
+ const status=$("animeSourceNote");
+ try{
+  if(status)status.textContent="LOREVERSE Нэгдсэн Lore Archive-аас нийтлэгдсэн анимэ мэдээлэл ачаалж байна…";
+  const {data:franchises,error:fe}=await db.from("archive_franchises").select("id,name,description,cover_image_url,category").eq("category","anime").eq("status","published").order("name").limit(200);
+  if(fe)throw fe;
+  const ids=(franchises||[]).map(x=>x.id);
+  if(!ids.length){["animePopularRail","animeMovieRail","animeTrendingRail"].forEach(id=>showEmpty(id,"Нэгдсэн архивт одоогоор нийтлэгдсэн анимэ алга."));if(status)status.textContent="Анимэний мэдээллийг LOREVERSE Нэгдсэн Lore Archive-аас авна. Одоогоор нийтлэгдсэн анимэ бүртгэл алга.";return;}
+  const {data:works,error:we}=await db.from("archive_works").select("id,franchise_id,slug,canonical_title,work_type,release_year,external_ids,updated_at").in("franchise_id",ids).eq("status","published").in("work_type",["anime","other"]).order("updated_at",{ascending:false}).limit(500);
+  if(we)throw we;
+  const workIds=(works||[]).map(x=>x.id);
+  let translations=[];
+  if(workIds.length){
+   const {data,error}=await db.from("archive_work_translations").select("work_id,language_code,title,synopsis,content,canon_status,spoiler_level,sources").in("work_id",workIds).eq("editorial_status","published").in("language_code",[lang(),"en"]).limit(1000);
+   if(error)throw error;translations=data||[];
+  }
+  const trMap=new Map();
+  for(const t of translations){if(!trMap.has(t.work_id)||t.language_code===lang())trMap.set(t.work_id,t);}
+  const fMap=new Map(franchises.map(x=>[x.id,x]));
+  animeWorks=(works||[]).map(w=>({...w,franchise:fMap.get(w.franchise_id)||{},translation:trMap.get(w.id)||null}));
+  const series=animeWorks.filter(w=>String(w.external_ids?.format||"").toUpperCase()!=="MOVIE");
+  const movies=animeWorks.filter(w=>String(w.external_ids?.format||"").toUpperCase()==="MOVIE");
+  const render=(id,rows)=>{const el=$(id);if(!el)return;el.innerHTML=rows.length?rows.map(card).join(""):'<div class="anime-loading">Энэ ангилалд нийтлэгдсэн бүтээл алга. <a href="archive/" style="color:#9ceaff">Нэгдсэн архив ↗</a></div>';};
+  render("animePopularRail",series);
+  render("animeMovieRail",movies);
+  render("animeTrendingRail",animeWorks.slice(0,24));
+  if(status)status.textContent="Эх сурвалж: LOREVERSE Нэгдсэн Lore Archive · "+animeWorks.length+" нийтлэгдсэн анимэ бүтээл.";
+ }catch(error){
+  const message=error?.message||String(error)||"Тодорхойгүй алдаа";
+  ["animePopularRail","animeMovieRail","animeTrendingRail"].forEach(id=>showEmpty(id,"Нэгдсэн архивын мэдээлэл ачаалж чадсангүй: "+message));
+  if(status)status.textContent="Нэгдсэн архивын холболтын алдаа: "+message;
+  console.error("LOREVERSE unified anime archive:",error);
+ }
+}
+async function openArchiveAnime(id){
+ if(!shell||!body)return;
+ shell.classList.add("open");shell.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";
+ body.innerHTML='<div class="anime-detail-state">Нэгдсэн Lore Archive-аас мэдээлэл ачаалж байна…</div>';
+ try{
+  let w=animeWorks.find(x=>x.id===id);
+  if(!w){
+   const {data,error}=await db.from("archive_works").select("id,franchise_id,slug,canonical_title,work_type,release_year,external_ids,updated_at").eq("id",id).eq("status","published").maybeSingle();
+   if(error)throw error;if(!data)throw new Error("Энэ бүтээл Нэгдсэн архивт нийтлэгдээгүй байна.");
+   const {data:f,error:fe}=await db.from("archive_franchises").select("id,name,description,cover_image_url,category").eq("id",data.franchise_id).eq("status","published").maybeSingle();
+   if(fe)throw fe;w={...data,franchise:f||{}};
+  }
+  let tr=w.translation||null;
+  if(!tr){const {data,error}=await db.from("archive_work_translations").select("title,synopsis,content,canon_status,spoiler_level,sources,language_code").eq("work_id",id).eq("editorial_status","published").in("language_code",[lang(),"en"]).limit(2);if(error)throw error;tr=(data||[]).find(x=>x.language_code===lang())||(data||[])[0]||null;}
+  const [{data:entities,error:ee},{data:events,error:te}]=await Promise.all([
+   db.from("archive_entities").select("id,entity_type,canonical_name,slug,metadata").eq("work_id",id).eq("status","published").limit(500),
+   db.from("archive_timeline_events").select("id,event_key,sort_order,in_universe_date,spoiler_level,metadata").eq("work_id",id).eq("status","published").order("sort_order").limit(500)
+  ]);
+  if(ee)throw ee;if(te)throw te;
+  const entityIds=(entities||[]).map(x=>x.id),eventIds=(events||[]).map(x=>x.id);
+  let et=[],rels=[],tt=[];
+  if(entityIds.length){
+   const [a,b]=await Promise.all([
+    db.from("archive_entity_translations").select("entity_id,language_code,display_name,description,content,sources").in("entity_id",entityIds).eq("editorial_status","published").in("language_code",[lang(),"en"]),
+    db.from("archive_entity_relations").select("from_entity_id,to_entity_id,relation_type,description").in("from_entity_id",entityIds).eq("status","published")
+   ]);
+   if(a.error)throw a.error;if(b.error)throw b.error;et=a.data||[];rels=b.data||[];
+  }
+  if(eventIds.length){const a=await db.from("archive_timeline_translations").select("event_id,language_code,title,summary,content,sources").in("event_id",eventIds).eq("editorial_status","published").in("language_code",[lang(),"en"]);if(a.error)throw a.error;tt=a.data||[];}
+  const best=(arr,id)=>arr.find(x=>x[Object.keys(x).find(k=>k==="entity_id"||k==="event_id") ]===id&&x.language_code===lang())||arr.find(x=>(x.entity_id||x.event_id)===id)||null;
+  const names=new Map((entities||[]).map(x=>[x.id,best(et,x.id)?.display_name||x.canonical_name]));
+  const entityHtml=(entities||[]).map(e=>{const t=best(et,e.id);const related=rels.filter(r=>r.from_entity_id===e.id).map(r=>esc(r.relation_type)+" → "+esc(names.get(r.to_entity_id)||"")).join(" · ");return '<div class="anime-detail-person"><strong>'+esc(t?.display_name||e.canonical_name)+'</strong><span>'+esc(e.entity_type)+'</span><p>'+esc(t?.description||"")+'</p>'+(related?'<small>'+related+'</small>':"")+'</div>';}).join("");
+  const timelineHtml=(events||[]).map(e=>{const t=best(tt,e.id);return '<div class="anime-detail-stat"><small>#'+esc(e.sort_order)+' · '+esc(e.in_universe_date||"")+'</small><strong>'+esc(t?.title||e.event_key)+'</strong><p>'+esc(t?.summary||"")+'</p><small>SPOILER: '+esc(e.spoiler_level)+'</small></div>';}).join("");
+  const title=tr?.title||w.canonical_title||w.franchise?.name||"Нэргүй бүтээл";
+  const cover=w.franchise?.cover_image_url||"";
+  const content=tr?.content&&typeof tr.content==="object"?tr.content:{};
+  const sources=Array.isArray(tr?.sources)?tr.sources:[];
+  body.innerHTML='<div class="anime-detail-banner">'+(cover?'<img src="'+esc(cover)+'" alt="" onerror="this.hidden=true">':"")+'</div>'+
+   '<div class="anime-detail-head">'+(cover?'<img class="anime-detail-cover" src="'+esc(cover)+'" alt="'+esc(title)+'">':'')+
+   '<div class="anime-detail-title"><div class="anime-detail-brand">LOREVERSE UNIFIED ARCHIVE · '+esc(w.franchise?.name||"ANIME")+'</div><h1>'+esc(title)+'</h1><p>'+esc(w.franchise?.description||"")+'</p><div class="anime-detail-actions"><span class="anime-detail-tag">'+esc(w.release_year||"Он тодорхойгүй")+'</span><span class="anime-detail-tag">Канон: '+esc(tr?.canon_status||"unknown")+'</span><span class="anime-detail-tag">Spoiler: '+esc(tr?.spoiler_level||"none")+'</span></div></div></div>'+
+   '<div class="anime-detail-grid"><div><section class="anime-detail-panel"><h2>Танилцуулга</h2><p>'+esc(tr?.synopsis||content.synopsis||"Танилцуулга хараахан нийтлэгдээгүй.")+'</p>'+(content.body?'<p>'+esc(content.body)+'</p>':"")+'</section>'+
+   '<section class="anime-detail-panel"><h2>Дүрүүд ба ертөнцийн объект</h2><div class="anime-detail-cast">'+(entityHtml||"Нэгдсэн архивт дүрийн мэдээлэл нийтлэгдээгүй.")+'</div></section>'+
+   '<section class="anime-detail-panel"><h2>Timeline · Үйл явдал</h2><div class="anime-detail-stats">'+(timelineHtml||"Нэгдсэн архивт timeline мэдээлэл нийтлэгдээгүй.")+'</div></section>'+
+   '<section class="anime-detail-panel"><h2>Эх сурвалж</h2>'+(sources.length?'<ul>'+sources.map(x=>'<li>'+(typeof x==="string"&&/^https?:\/\//i.test(x)?'<a href="'+esc(x)+'" target="_blank" rel="noopener noreferrer">'+esc(x)+'</a>':esc(typeof x==="string"?x:JSON.stringify(x)))+'</li>').join("")+'</ul>':"Эх сурвалжийн жагсаалт нийтлэгдээгүй.")+'</section></div>'+
+   '<aside><section class="anime-detail-panel"><h2>Бүтээлийн мэдээлэл</h2><div class="anime-detail-stats"><div class="anime-detail-stat"><small>Төрөл</small><strong>'+esc(w.work_type)+'</strong></div><div class="anime-detail-stat"><small>Гарсан он</small><strong>'+esc(w.release_year||"—")+'</strong></div><div class="anime-detail-stat"><small>Франчайз</small><strong>'+esc(w.franchise?.name||"—")+'</strong></div><div class="anime-detail-stat"><small>Эх сурвалж</small><strong>LOREVERSE Archive</strong></div></div></section></aside></div>'+
+   '<p style="text-align:center;color:#818ca7;font-size:11px">Мэдээллийн эх сурвалж: LOREVERSE Нэгдсэн Lore Archive.</p>';
+ }catch(error){body.innerHTML='<div class="anime-detail-state anime-detail-error">Нэгдсэн архиваас мэдээлэл ачаалж чадсангүй.<br>'+esc(error?.message||String(error))+'<br><button class="anime-detail-back" id="unifiedAnimeRetry" type="button">Дахин оролдох</button> <a class="anime-detail-back" href="archive/">Нэгдсэн архив нээх</a></div>';$("unifiedAnimeRetry")?.addEventListener("click",()=>openArchiveAnime(id));}
+}
+function closeArchiveAnime(){if(!shell)return;shell.classList.remove("open");shell.setAttribute("aria-hidden","true");document.body.style.overflow="";}
+document.addEventListener("click",e=>{const a=e.target.closest("[data-archive-anime-id]");if(!a)return;e.preventDefault();openArchiveAnime(a.dataset.archiveAnimeId);});
+$("animeDetailBack")?.addEventListener("click",closeArchiveAnime);
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&shell?.classList.contains("open"))closeArchiveAnime();});
+loadArchive();
+</script>
 </body></html>
