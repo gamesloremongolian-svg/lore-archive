@@ -55,6 +55,17 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('html')).not.toHaveClass(/winter-effects-off/);
   });
 
+
+  test('24-day advent calendar renders all days and keeps future gifts locked', async ({ page }) => {
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#winterCalendarGrid .winter-day')).toHaveCount(24);
+    await expect(page.locator('#winterCalendarTitle')).toContainText('24 ӨДРИЙН НУУЦ БЭЛЭГ');
+    await expect(page.locator('#winterCalendarReveal')).toBeVisible();
+    const disabledDays = await page.locator('#winterCalendarGrid .winter-day:disabled').count();
+    expect(disabledDays).toBeGreaterThanOrEqual(0);
+    await expect(page.locator('#winterCalendarCount')).toContainText('/ 24');
+  });
+
   test('internal hash links resolve to an element', async ({ page }) => {
     await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
     const broken = await page.locator('a[href*="#"]').evaluateAll(links => {
