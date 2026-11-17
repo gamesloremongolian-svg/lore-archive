@@ -1060,10 +1060,30 @@ body{
  #loreAiPanel{bottom:calc(82px + env(safe-area-inset-bottom,0px))!important}
 }
 
+
+<style id="loreverse-winter-festival">
+/* Lightweight seasonal winter treatment */
+.winter-banner{display:flex;align-items:center;gap:12px;max-width:560px;margin:22px 0 4px;padding:12px 15px;border:1px solid #d7a94e66;border-radius:12px;background:linear-gradient(105deg,#d7a94e16,#9b70ff12 55%,#67e4ef0b);box-shadow:inset 0 0 24px #d7a94e08}
+.winter-banner-icon{font-size:25px;filter:drop-shadow(0 0 9px #e9bd5b66)}
+.winter-banner strong,.winter-banner div span{display:block}
+.winter-banner strong{font-size:10px;letter-spacing:.18em;color:#f2cf82}
+.winter-banner div span{margin-top:2px;font-size:11px;color:#e5d8e9}
+.winter-star{margin-left:auto;color:#f5d994;font-size:22px;text-shadow:0 0 14px #f5d994}
+.winter-toggle{border-color:#b78c4b66;color:#f5d994;white-space:nowrap;cursor:pointer}
+.winter-toggle:hover{border-color:#f5d994;background:#d7a94e18}
+.winter-snow{position:fixed;inset:0;z-index:2;overflow:hidden;pointer-events:none;opacity:.48}
+.winter-snow::before,.winter-snow::after{content:"";position:absolute;inset:-100% 0 0;pointer-events:none;background-repeat:repeat;background-size:230px 230px;animation:loreverseSnowFall 22s linear infinite}
+.winter-snow::before{background-image:radial-gradient(2px 2px at 22px 34px,#fff 98%,transparent),radial-gradient(1.5px 1.5px at 112px 78px,#d9efff 98%,transparent),radial-gradient(2px 2px at 186px 166px,#fff 98%,transparent),radial-gradient(1px 1px at 65px 194px,#fff 98%,transparent)}
+.winter-snow::after{background-image:radial-gradient(1px 1px at 42px 92px,#fff 98%,transparent),radial-gradient(2px 2px at 154px 42px,#e8f8ff 98%,transparent),radial-gradient(1px 1px at 205px 202px,#fff 98%,transparent);background-size:310px 310px;animation-duration:32s;animation-delay:-12s;opacity:.65}
+@keyframes loreverseSnowFall{from{transform:translate3d(0,0,0)}to{transform:translate3d(-24px,100vh,0)}}
+html.winter-effects-off .winter-snow{display:none}
+@media(max-width:560px){.winter-banner{gap:9px;margin-top:17px;padding:10px 12px}.winter-banner-icon{font-size:21px}.winter-banner strong{font-size:9px}.winter-banner div span{font-size:10px}.winter-toggle{padding:8px 9px;font-size:11px}.winter-toggle span{display:none}}
+@media(prefers-reduced-motion:reduce){.winter-snow{display:none!important}.winter-banner-icon,.winter-star{filter:none;text-shadow:none}}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Үндсэн агуулга руу очих</a>
-<header class="wrap topbar"><a class="brand" href="#"><img class="mark mark-image" src="./assets/loreverse-mark.svg" alt=""> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх" onclick="(function(b){var n=document.getElementById('mainNav');if(!n)return;var o=n.classList.toggle('open');b.setAttribute('aria-expanded',String(o));b.textContent=o?'✕':'☰';})(this)">☰</button><nav class="nav" id="mainNav" onclick="if(event.target.closest('a')){this.classList.remove('open');var b=document.getElementById('navToggle');if(b){b.setAttribute('aria-expanded','false');b.textContent='☰';}}"><a href="#all-categories">Бүх ертөнцийн мэдлэг</a><a href="#anime">Анимэ</a><a href="#games">Тоглоом</a><a href="#manga">Манга</a><a href="archive/">Novel</a><a href="#archive">Lore Archive</a><a href="#loreverse-updates">Шинэчлэл</a><a href="chat/">Хувийн чат</a><a class="admin-nav-link" href="./admin/index.html" aria-label="Админ болон туслах ажилтны самбар">Админ / Туслах ↗</a><a href="knowledge/">Ертөнцийн сан</a></nav><div class="actions"><a class="ghost" id="appUpdateQuickOpen" href="#app-update" style="font-size:11px;font-weight:850;color:#ffb6e5;white-space:nowrap">APK шинэчлэх ↻</a><button class="ghost" id="notificationsOpen" type="button" aria-label="Мэдэгдэл">🔔 <span id="notificationCount">0</span></button><select class="select" id="lang" aria-label="Language" data-no-translate="true" translate="no"><option value="mn" data-no-translate="true">Монгол</option><option value="en" data-no-translate="true">English</option><option value="ja" data-no-translate="true">日本語</option><option value="ko" data-no-translate="true">한국어</option></select></div></header>
+<header class="wrap topbar"><a class="brand" href="#"><img class="mark mark-image" src="./assets/loreverse-mark.svg" alt=""> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх" onclick="(function(b){var n=document.getElementById('mainNav');if(!n)return;var o=n.classList.toggle('open');b.setAttribute('aria-expanded',String(o));b.textContent=o?'✕':'☰';})(this)">☰</button><nav class="nav" id="mainNav" onclick="if(event.target.closest('a')){this.classList.remove('open');var b=document.getElementById('navToggle');if(b){b.setAttribute('aria-expanded','false');b.textContent='☰';}}"><a href="#all-categories">Бүх ертөнцийн мэдлэг</a><a href="#anime">Анимэ</a><a href="#games">Тоглоом</a><a href="#manga">Манга</a><a href="archive/">Novel</a><a href="#archive">Lore Archive</a><a href="#loreverse-updates">Шинэчлэл</a><a href="chat/">Хувийн чат</a><a class="admin-nav-link" href="./admin/index.html" aria-label="Админ болон туслах ажилтны самбар">Админ / Туслах ↗</a><a href="knowledge/">Ертөнцийн сан</a></nav><div class="actions"><button class="ghost winter-toggle" id="winterToggle" type="button" aria-pressed="true" aria-label="Цасны эффект унтраах">❄️ <span>Цас</span></button><a class="ghost" id="appUpdateQuickOpen" href="#app-update" style="font-size:11px;font-weight:850;color:#ffb6e5;white-space:nowrap">APK шинэчлэх ↻</a><button class="ghost" id="notificationsOpen" type="button" aria-label="Мэдэгдэл">🔔 <span id="notificationCount">0</span></button><select class="select" id="lang" aria-label="Language" data-no-translate="true" translate="no"><option value="mn" data-no-translate="true">Монгол</option><option value="en" data-no-translate="true">English</option><option value="ja" data-no-translate="true">日本語</option><option value="ko" data-no-translate="true">한국어</option></select></div></header>
 <div class="wrap" id="accountTools" hidden>
  <section class="portal-panel" style="margin-top:14px">
   <div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><div><div class="eyebrow">NOTIFICATION CENTER</div><h3 style="margin:4px 0">Мэдэгдэл</h3></div><button class="btn" id="notificationsClose" type="button">Хаах</button></div>
@@ -1088,6 +1108,7 @@ body{
   <img class="hero-brand-logo" src="./assets/loreverse-logo.svg" alt="LOREVERSE">
   <p>Дуртай анимэ, тоглоом, манга ертөнцийнхөө түүх, дүрүүд, нууц, онолыг нэг дороос нээ.</p>
   <div class="hero-buttons"><a class="btn primary" href="#anime">Анимэ үзэх ↗</a><a class="btn" href="#all-categories">Бүх ангилал</a><a class="btn" href="#app-update" aria-label="Аппын шинэчлэлт шалгах">Апп шинэчлэх ↻</a></div>
+  <div class="winter-banner" role="note"><span class="winter-banner-icon" aria-hidden="true">🎄</span><div><strong>WINTER FESTIVAL · 2027</strong><span>Шинэ он хүртэл хамтдаа шинэ ертөнц нээцгээе</span></div><span class="winter-star" aria-hidden="true">✦</span></div>
   <div class="hero-dots" id="heroAnimeDots"><span></span><span></span><span></span></div>
  </div>
  <a class="hero-art" id="heroAnimeVisual" href="#anime" aria-label="Онцлох анимэ">
@@ -2837,4 +2858,13 @@ loadArchive();
 })();
 </script>
 
+<div class="winter-snow" id="winterSnow" aria-hidden="true"></div>
+<script id="loreverseWinterFestival">
+(()=>{const root=document.documentElement;const button=document.getElementById("winterToggle");if(!button)return;
+let enabled=true;try{enabled=localStorage.getItem("loreverse-winter-snow")!=="off";}catch(_){}
+const apply=()=>{root.classList.toggle("winter-effects-off",!enabled);button.setAttribute("aria-pressed",String(enabled));button.setAttribute("aria-label",enabled?"Цасны эффект унтраах":"Цасны эффект асаах");const label=button.querySelector("span");if(label)label.textContent=enabled?"Цас":"Цас off";};
+button.addEventListener("click",()=>{enabled=!enabled;apply();try{localStorage.setItem("loreverse-winter-snow",enabled?"on":"off");}catch(_){}});
+apply();
+})();
+</script>
 </body></html>
