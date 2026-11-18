@@ -126,7 +126,7 @@ def main():
             root = ET.parse(sitemap_path).getroot()
             namespace = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
             locations = [node.text or "" for node in root.findall("sm:url/sm:loc", namespace)]
-            base = "https://loreverse-ctrl.github.io/lore-archive/"
+            base = "https://lore-archive.pages.dev/"
             if not locations:
                 errors.append("sitemap.xml: no URLs found")
             for url in locations:
@@ -141,7 +141,7 @@ def main():
             errors.append(f"sitemap.xml: invalid XML: {error}")
 
     robots_path = Path("robots.txt")
-    if not robots_path.is_file() or "Sitemap: https://loreverse-ctrl.github.io/lore-archive/sitemap.xml" not in robots_path.read_text(encoding="utf-8"):
+    if not robots_path.is_file() or "Sitemap: https://lore-archive.pages.dev/sitemap.xml" not in robots_path.read_text(encoding="utf-8"):
         errors.append("robots.txt: missing sitemap declaration")
 
     if errors:
