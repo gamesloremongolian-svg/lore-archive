@@ -3083,6 +3083,37 @@ apply();
 @media(prefers-reduced-motion:reduce){
  .ad-mascot-character,.mascot-float,.mascot-eye,.ad-mascot-board,.ad-mascot-spark{animation:none!important}
 }
+@media(max-width:760px){
+ body{font-size:14px;line-height:1.55}
+ .wrap{width:calc(100% - 22px)}
+ .section{margin-top:22px!important;margin-bottom:22px!important}
+ .section-head{gap:8px;margin-bottom:12px}
+ .section-head h2{font-size:clamp(21px,6vw,28px);line-height:1.18;margin:5px 0}
+ .section-head p{font-size:12px;line-height:1.45}
+ .portal-panel,.feature,.archive{padding:15px!important;border-radius:17px}
+ .portal-panel h3,.feature h3{font-size:17px;line-height:1.25}
+ .portal-panel p,.feature p{font-size:12px;line-height:1.5}
+ .portal-grid,.portal-actions,.toolbar{gap:8px}
+ .form-field,input,select,textarea{font-size:14px!important;padding:10px 12px!important}
+ .hero{padding:22px 14px!important;margin-top:10px}
+ .hero h1{font-size:clamp(27px,8vw,36px)!important}
+ .hero p{font-size:13px}
+ .stats{margin-bottom:22px}
+ .world{min-height:135px;padding:12px}
+ .catalog-card>img,.catalog-card>.catalog-art-fallback{height:145px}
+ .catalog-card .catalog-info{padding:11px}
+ #loreverseMobileNav{left:8px;right:8px;bottom:calc(6px + env(safe-area-inset-bottom,0px));padding:5px;gap:3px;border-radius:15px}
+ #loreverseMobileNav a{min-height:42px;font-size:9px;gap:1px}
+ #loreverseMobileNav a span{font-size:15px}
+ body{padding-bottom:calc(78px + env(safe-area-inset-bottom,0px))}
+ #loreAiLauncher{bottom:calc(92px + env(safe-area-inset-bottom,0px))!important}
+ #loreAiPanel{bottom:calc(92px + env(safe-area-inset-bottom,0px))!important;height:calc(100dvh - 125px)!important}
+}
+@media(max-width:380px){
+ .wrap{width:calc(100% - 18px)}
+ .portal-panel,.feature,.archive{padding:12px!important}
+ #loreverseMobileNav a{font-size:8px}
+}
 </style>
 
 
