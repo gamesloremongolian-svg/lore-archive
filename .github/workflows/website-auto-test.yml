@@ -25,6 +25,8 @@ jobs:
           node-version: 20
       - name: Install dependencies
         run: npm install
+      - name: Check inline JavaScript syntax
+        run: npm run check:web
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
       - name: Start local website server
