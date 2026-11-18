@@ -972,7 +972,7 @@ input[type=checkbox]{accent-color:#a98bff}a:focus-visible,button:focus-visible,i
 @media(max-width:760px){.topbar{background:rgba(10,14,29,.97)}.nav a{background:#151b31;border-color:rgba(145,157,203,.3)}.event-types{grid-template-columns:1fr}.event-type{min-height:180px}}
 @media(max-width:560px){.hero-streaming{padding:17px}.hero-art{min-height:260px}.anime-poster{flex-basis:145px;min-height:245px}}
 
-\n/* Admin shortcut in primary navigation */\n.admin-nav-link{padding:7px 12px;border:1px solid #a66bff88;border-radius:10px;background:linear-gradient(110deg,#8c4be522,#4cb9df18);color:#f2d8ff!important;font-weight:800;white-space:nowrap}.admin-nav-link:hover{border-color:#ff9bd8;background:#ff8bcf22}\n@media(max-width:850px){.admin-nav-link{display:inline-flex;align-items:center}}\n</style>
+\n/* Admin shortcut in primary navigation */\n.admin-nav-link{padding:7px 12px;border:1px solid #a66bff88;border-radius:10px;background:linear-gradient(110deg,#8c4be522,#4cb9df18);color:#f2d8ff!important;font-weight:800;white-space:nowrap}.admin-nav-link:hover{border-color:#ff9bd8;background:#ff8bcf22}\n@media(max-width:850px){.admin-nav-link{display:inline-flex;align-items:center}}\n.hero-art-original{position:absolute;inset:0;background:radial-gradient(circle at 50% 35%,#b78cff66,transparent 25%),radial-gradient(circle at 70% 65%,#69e6ff55,transparent 32%),linear-gradient(145deg,#211633,#10182c 58%,#123349)}.hero-art-original:before,.hero-art-original:after{content:"";position:absolute;border:1px solid #d8baff66;border-radius:50%;width:58%;aspect-ratio:1;left:21%;top:12%;box-shadow:0 0 50px #9b70ff22}.hero-art-original:after{transform:scaleX(.55) rotate(45deg);border-color:#72e5ef88}</style>
 <style id="loreverseAnimeDetailStyles">
 .anime-detail-shell{position:fixed;inset:0;z-index:10050;display:none;overflow:auto;background:#090d1c;color:#f2efff}.anime-detail-shell.open{display:block}
 .anime-detail-top{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:12px;padding:12px 18px;background:#090d1cf2;border-bottom:1px solid #343b5b;backdrop-filter:blur(14px)}
@@ -1187,7 +1187,7 @@ html.winter-effects-off .winter-snow{display:none}
   <div class="hero-dots" id="heroAnimeDots"><span></span><span></span><span></span></div>
  </div>
  <a class="hero-art" id="heroAnimeVisual" href="#anime" aria-label="Онцлох анимэ">
-  <img id="heroAnimeImage" class="loaded" src="" alt="LOREVERSE — анимэ архивын дүрслэл" fetchpriority="high" onerror="this.classList.remove('loaded');document.getElementById('heroAnimeVisual').classList.add('no-image')">
+  <div class="hero-art-original" role="img" aria-label="LOREVERSE-ийн өөрийн хийсэн анимэ архивын дүрслэл"></div>
   <div class="hero-art-shade"></div>
   <div class="hero-art-caption"><small id="heroAnimeMeta">FEATURED ANIME</small><strong id="heroAnimeTitle">Онцлох анимэ</strong><span id="heroAnimeDescription">Анимэ ертөнцтэй танилцаарай</span></div>
  </a>
