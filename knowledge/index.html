@@ -18,7 +18,7 @@
 <div class="tools"><input id="search" type="search" placeholder="Тоглоом, анимэ, нэр томьёогоор хайх…" aria-label="Мэдээлэл хайх"><select id="filter" aria-label="Ангилал"><option value="all">Бүх ангилал</option><option value="game">Тоглоом</option><option value="anime">Анимэ</option><option value="manga">Манга</option><option value="light_novel">Light Novel</option><option value="web_novel">Web Novel</option></select></div>
 </section>
 <section id="games"><div class="section-head"><h2>Тоглоомын ертөнц</h2><span class="count" id="gameCount"></span></div><div class="grid" id="gameGrid"></div></section>
-<section id="anime" class="anime"><div class="section-head"><h2>Анимэний ертөнц</h2><span class="count" id="animeCount"></span></div><div class="grid" id="animeGrid"></div></section>
+<section id="anime" class="anime"><div class="section-head"><h2>Анимэ · Манга · Novel</h2><span class="count" id="animeCount"></span></div><div class="grid" id="animeGrid"></div></section>
 <div class="empty" id="empty">Таны хайлтад тохирох мэдээлэл олдсонгүй.</div>
 <footer class="foot">LOREVERSE · Ертөнцийн мэдлэг нэг дор · Мэдээлэл шинэчлэгдэх боломжтой</footer>
 </div>
@@ -36,7 +36,7 @@ async function loadKnowledge(){
   const {createClient}=await import("https://esm.sh/@supabase/supabase-js@2.119.0");
   const db=createClient(SUPABASE_URL,SUPABASE_KEY);
   const [wr,er]=await Promise.all([
-   db.from("archive_works").select("id,slug,canonical_title,work_type,release_year,archive_franchises!inner(name,slug,category),archive_work_translations!inner(title,synopsis,language_code,editorial_status,canon_status,spoiler_level,sources)").eq("status","published").eq("archive_franchises.status","published").eq("archive_work_translations.language_code","mn").eq("archive_work_translations.editorial_status","published").order("canonical_title"),
+   db.from("archive_works").select("id,franchise_id,slug,canonical_title,work_type,release_year,archive_franchises!inner(name,slug,category,status),archive_work_translations!inner(title,synopsis,language_code,editorial_status,canon_status,spoiler_level,sources)").eq("status","published").eq("archive_franchises.status","published").eq("archive_work_translations.language_code","mn").eq("archive_work_translations.editorial_status","published").order("canonical_title"),
    db.from("archive_entities").select("id,work_id,franchise_id,entity_type,canonical_name,archive_entity_translations!inner(display_name,description,language_code,editorial_status)").eq("status","published").eq("archive_entity_translations.language_code","mn").eq("archive_entity_translations.editorial_status","published")
   ]);
   if(wr.error)throw wr.error;if(er.error)throw er.error;
