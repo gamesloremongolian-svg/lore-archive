@@ -64,7 +64,7 @@ jobs:
           s = p.read_text()
           s, n = re.subn(r'versionCode\s+\d+', f'versionCode {100000 + int(os.environ["BUILD_NUMBER"])}', s, count=1)
           if n != 1: raise SystemExit("Could not set versionCode")
-          s, n = re.subn(r'versionName\s+"[^"]+"', f'versionName "3.0.{os.environ["BUILD_NUMBER"]}"', s, count=1)
+          s, n = re.subn(r'versionName\s+"[^"]+"', 'versionName "1.0.0"', s, count=1)
           if n != 1: raise SystemExit("Could not set versionName")
           p.write_text(s)
           v = Path("android/variables.gradle")
@@ -130,14 +130,14 @@ jobs:
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: loreverse-v3.0.${{ github.run_number }}
-          name: LOREVERSE 3.0.${{ github.run_number }}
+          tag_name: loreverse-v1.0.0-${{ github.run_number }}
+          name: LOREVERSE 1.0.0
           body: |
-            New-key LOREVERSE release.
+            LOREVERSE 1.0.0 — official first release with refreshed mobile layout and new signing key.
             Package ID: mn.loreverse.app
             Install only after uninstalling the previous app signed with the old key.
-          prerelease: true
-          make_latest: false
+          prerelease: false
+          make_latest: true
           files: |
             release/LOREVERSE.apk
             release/LOREVERSE-release.aab
@@ -145,7 +145,7 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: LOREVERSE-3.0-release
+          name: LOREVERSE-1.0.0-release
           path: release/*
           if-no-files-found: error
           retention-days: 30
