@@ -1,6 +1,11 @@
 name: LOREVERSE Play Store Assets
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'assets/loreverse-app-icon.svg'
+      - 'store-assets/**'
+      - '.github/workflows/play-store-assets.yml'
 permissions:
   contents: read
 jobs:
