@@ -1051,7 +1051,7 @@ body{
 #loreverseMobileNav{display:none}
 @media(max-width:760px){
  body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
- #loreverseMobileNav{position:fixed;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:9997;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:7px;border:1px solid #a77bd866;border-radius:18px;background:rgba(17,12,31,.96);box-shadow:0 12px 38px #000b;backdrop-filter:blur(18px)}
+ #loreverseMobileNav{position:fixed;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:9997;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;padding:7px;border:1px solid #a77bd866;border-radius:18px;background:rgba(17,12,31,.96);box-shadow:0 12px 38px #000b;backdrop-filter:blur(18px)}
  #loreverseMobileNav a{min-width:0;min-height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:12px;color:#d9cce8;font-size:10px;font-weight:800;line-height:1.2;text-decoration:none}
  #loreverseMobileNav a span{font-size:17px;line-height:1.1}
  #loreverseMobileNav a[aria-current="page"]{color:#fff;background:linear-gradient(135deg,#9a5de7,#d45cae)}
@@ -2891,6 +2891,8 @@ loadArchive();
 <nav id="loreverseMobileNav" aria-label="Гар утасны үндсэн цэс">
  <a href="#" aria-label="Нүүр хуудас"><span aria-hidden="true">⌂</span>Нүүр</a>
  <a href="#all-categories" aria-label="Бүх ертөнц"><span aria-hidden="true">✧</span>Ертөнц</a>
+ <a href="chat/" aria-label="Хувийн чат"><span aria-hidden="true">▣</span>Чат</a>
+ <a href="uid-lookup/" aria-label="UID Lookup"><span aria-hidden="true">⌕</span>UID</a>
  <a href="#payment" aria-label="QPay төлбөр"><span aria-hidden="true">₮</span>QPay</a>
  <a href="#supportTickets" aria-label="Админтай холбогдох"><span aria-hidden="true">✉</span>Админ</a>
 </nav>
@@ -2898,7 +2900,7 @@ loadArchive();
 (()=>{const nav=document.getElementById("loreverseMobileNav");if(!nav)return;
  const links=[...nav.querySelectorAll("a")];
  const setActive=hash=>{links.forEach(a=>{const active=(a.getAttribute("href")||"#")===hash;a.toggleAttribute("aria-current",active);if(active)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current");});};
- links.forEach(a=>a.addEventListener("click",()=>{const hash=a.getAttribute("href")||"#";setActive(hash);if(hash!=="#"){const target=document.querySelector(hash);if(target){setTimeout(()=>target.scrollIntoView({behavior:"smooth",block:"start"}),0);}}}));
+ links.forEach(a=>a.addEventListener("click",()=>{const hash=a.getAttribute("href")||"#";setActive(hash);if(hash.startsWith("#")&&hash!=="#"){const target=document.querySelector(hash);if(target){setTimeout(()=>target.scrollIntoView({behavior:"smooth",block:"start"}),0);}}}));
  const sections=["all-categories","payment","supportTickets"].map(id=>document.getElementById(id)).filter(Boolean);
  if("IntersectionObserver"in window){const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(visible)setActive("#"+visible.target.id);},{rootMargin:"-15% 0px -65% 0px",threshold:[0,.2,.5]});sections.forEach(el=>observer.observe(el));}
  setActive("#");
