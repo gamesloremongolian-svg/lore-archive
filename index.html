@@ -1683,7 +1683,7 @@ async function loadEditorialUpdates(){
   if(error)throw error;
   const rows=data||[];
   if(!rows.length){host.innerHTML='<div class="update-empty">Одоогоор нийтлэгдсэн шинэ мэдээлэл алга. Админ хэсгээс нийтлэл нийтлэхэд энд автоматаар харагдана.</div>';return;}
-  host.innerHTML=rows.slice(0,2).map(p=>'<article class="update-item"><div class="update-meta">'+updateEsc(String(p.content_type||"LORE").toUpperCase())+' · '+updateDate(p.published_at||p.updated_at)+'</div><strong>'+updateEsc(p.title)+'</strong>'+(p.summary?'<p class="update-desc">'+updateEsc(p.summary)+'</p>':'')+'<a class="update-link" href="#catalog"'">Дэлгэрэнгүй ↗</a></article>').join("");
+  host.innerHTML=rows.slice(0,2).map(p=>'<article class="update-item"><div class="update-meta">'+updateEsc(String(p.content_type||"LORE").toUpperCase())+' · '+updateDate(p.published_at||p.updated_at)+'</div><strong>'+updateEsc(p.title)+'</strong>'+(p.summary?'<p class="update-desc">'+updateEsc(p.summary)+'</p>':'')+'<a class="update-link" href="#catalog">Дэлгэрэнгүй ↗</a></article>').join("");
  }catch(error){
   host.innerHTML='<div class="update-empty">Шинэ мэдээлэл татахад алдаа гарлаа: '+updateEsc(error.message||String(error))+'</div>';
  }
