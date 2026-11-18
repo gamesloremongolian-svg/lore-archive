@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="500" viewBox="0 0 1024 500">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#09091b"/><stop offset=".48" stop-color="#21154b"/><stop offset="1" stop-color="#073c50"/></linearGradient>
+ <linearGradient id="title" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#c39cff"/><stop offset=".55" stop-color="#73e5f1"/><stop offset="1" stop-color="#ff9bdc"/></linearGradient>
+ <radialGradient id="orb"><stop stop-color="#8f60ff" stop-opacity=".5"/><stop offset="1" stop-color="#8f60ff" stop-opacity="0"/></radialGradient>
+ <filter id="blur"><feGaussianBlur stdDeviation="28"/></filter>
+</defs>
+<rect width="1024" height="500" fill="url(#bg)"/>
+<circle cx="790" cy="250" r="300" fill="url(#orb)" filter="url(#blur)"/>
+<circle cx="180" cy="80" r="160" fill="url(#orb)" filter="url(#blur)"/>
+<g fill="none" stroke="#a88aff" opacity=".25"><circle cx="820" cy="240" r="185" stroke-width="2"/><circle cx="820" cy="240" r="145"/><ellipse cx="820" cy="240" rx="210" ry="82" transform="rotate(-25 820 240)"/><ellipse cx="820" cy="240" rx="210" ry="82" transform="rotate(25 820 240)"/></g>
+<g fill="#fff" opacity=".7"><circle cx="650" cy="75" r="3"/><circle cx="930" cy="92" r="3"/><circle cx="730" cy="400" r="2"/><circle cx="980" cy="350" r="2"/><circle cx="580" cy="260" r="2"/></g>
+<g transform="translate(610 68) scale(.62)"><circle cx="256" cy="256" r="190" fill="#11133c" stroke="url(#title)" stroke-width="9"/><path d="M100 250Q175 95 320 105Q405 130 425 245" fill="none" stroke="#55e9ff" stroke-width="12"/><ellipse cx="256" cy="256" rx="220" ry="76" transform="rotate(-17 256 256)" fill="none" stroke="url(#title)" stroke-width="13"/><ellipse cx="256" cy="256" rx="220" ry="76" transform="rotate(17 256 256)" fill="none" stroke="url(#title)" stroke-width="9" opacity=".8"/><path d="M145 290Q145 165 256 165Q367 165 367 290Z" fill="#f3f1ff"/><circle cx="215" cy="226" r="15" fill="#151735"/><circle cx="297" cy="226" r="15" fill="#151735"/><path d="M256 282l14 29 31 13-31 13-14 30-13-30-31-13 31-13z" fill="#fff0b6"/></g>
+<text x="64" y="176" fill="#8beaf3" font-family="Arial,sans-serif" font-size="22" font-weight="700" letter-spacing="7">ANIME · GAMES · MANGA · LORE</text>
+<text x="60" y="268" fill="url(#title)" font-family="Arial,sans-serif" font-size="82" font-weight="900" letter-spacing="1">LOREVERSE</text>
+<text x="65" y="326" fill="#f5f2ff" font-family="Arial,sans-serif" font-size="28" font-weight="600">БҮХ ЕРТӨНЦИЙН МЭДЛЭГ НЭГ ДОР</text>
+<g font-family="Arial,sans-serif" font-size="18" font-weight="700">
+ <rect x="64" y="374" width="132" height="42" rx="21" fill="#ffffff12" stroke="#9b70ff"/><text x="130" y="401" text-anchor="middle" fill="#e8d8ff">LORE</text>
+ <rect x="210" y="374" width="142" height="42" rx="21" fill="#ffffff12" stroke="#67e4ef"/><text x="281" y="401" text-anchor="middle" fill="#c9fbff">GUIDES</text>
+ <rect x="366" y="374" width="160" height="42" rx="21" fill="#ffffff12" stroke="#ed8bd6"/><text x="446" y="401" text-anchor="middle" fill="#ffd8f3">COMMUNITY</text>
+</g>
+</svg>
