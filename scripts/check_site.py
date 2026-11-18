@@ -43,7 +43,7 @@ def main():
     total_ids = 0
     total_scripts = 0
     required = {
-        "catalogTabs", "catalogSearch", "catalogGo", "catalogStatus",
+        "all-categories", "publishedSearch", "catalogGo", "catalogStatus",
         "catalogResults", "catalogMore", "publishedPosts", "loreAiLauncher",
     }
 
