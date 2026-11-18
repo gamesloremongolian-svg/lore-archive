@@ -2,13 +2,15 @@ const allowedOrigins = new Set([
   "https://loreverse-ctrl.github.io",
   "https://localhost",
   "capacitor://localhost",
+  "https://e-archive.pages.dev",
+  "https://lore-archive.pages.dev",
 ]);
 const publishableKey = "sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1";
 const rate = new Map<string, { count: number; reset: number }>();
 
 function headers(origin: string | null) {
   const h = new Headers({
-    "Access-Control-Allow-Headers": "apikey, authorization, x-client-info, content-type",
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-retry-count, traceparent, tracestate, baggage",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Max-Age": "86400",
     "Content-Type": "application/json; charset=utf-8",
@@ -43,6 +45,7 @@ Deno.serve(async (req: Request) => {
     if (!texts.length || texts.length > 12 || texts.some((x: string) => !x) || texts.reduce((n: number, x: string) => n + x.length, 0) > 6000) {
       return reply(400, { error: "Provide 1–12 text items, with 6000 characters total or fewer." });
     }
+
     const key = Deno.env.get("OPENAI_API_KEY");
     if (!key) return reply(503, { error: "Translation service is not configured." });
     const instructions = [
