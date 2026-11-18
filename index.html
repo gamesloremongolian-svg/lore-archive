@@ -2751,36 +2751,61 @@ function card(w){
 function showEmpty(id,msg){const el=$(id);if(el)el.innerHTML='<div class="anime-loading">'+esc(msg)+' <a href="archive/" style="color:#9ceaff">Нэгдсэн архив нээх ↗</a></div>';}
 async function loadArchive(){
  const status=$("animeSourceNote");
+ const render=(id,html)=>{const el=$(id);if(el)el.innerHTML=html||'<div class="anime-loading">Одоогоор мэдээлэл алга.</div>';};
+ if(status)status.textContent="Анимэ цуврал ба киноны мэдээллийг ачаалж байна…";
+ // Редакторын баталгаажуулсан цуврал, lore мэдээлэл.
  try{
-  if(status)status.textContent="LOREVERSE Нэгдсэн Lore Archive-аас нийтлэгдсэн анимэ мэдээлэл ачаалж байна…";
   const {data:franchises,error:fe}=await db.from("archive_franchises").select("id,name,description,cover_image_url,category").eq("category","anime").eq("status","published").order("name").limit(200);
   if(fe)throw fe;
   const ids=(franchises||[]).map(x=>x.id);
-  if(!ids.length){["animePopularRail","animeMovieRail","animeTrendingRail"].forEach(id=>showEmpty(id,"Нэгдсэн архивт одоогоор нийтлэгдсэн анимэ алга."));if(status)status.textContent="Анимэний мэдээллийг LOREVERSE Нэгдсэн Lore Archive-аас авна. Одоогоор нийтлэгдсэн анимэ бүртгэл алга.";return;}
-  const {data:works,error:we}=await db.from("archive_works").select("id,franchise_id,slug,canonical_title,work_type,release_year,external_ids,updated_at").in("franchise_id",ids).eq("status","published").in("work_type",["anime","other"]).order("updated_at",{ascending:false}).limit(500);
-  if(we)throw we;
-  const workIds=(works||[]).map(x=>x.id);
-  let translations=[];
-  if(workIds.length){
-   const {data,error}=await db.from("archive_work_translations").select("work_id,language_code,title,synopsis,content,canon_status,spoiler_level,sources").in("work_id",workIds).eq("editorial_status","published").in("language_code",[lang(),"en"]).limit(1000);
-   if(error)throw error;translations=data||[];
+  if(ids.length){
+   const {data:works,error:we}=await db.from("archive_works").select("id,franchise_id,slug,canonical_title,work_type,release_year,external_ids,updated_at").in("franchise_id",ids).eq("status","published").in("work_type",["anime","other"]).order("updated_at",{ascending:false}).limit(500);
+   if(we)throw we;
+   const workIds=(works||[]).map(x=>x.id);
+   let translations=[];
+   if(workIds.length){
+    const {data,error}=await db.from("archive_work_translations").select("work_id,language_code,title,synopsis,content,canon_status,spoiler_level,sources").in("work_id",workIds).eq("editorial_status","published").in("language_code",[lang(),"en"]).limit(1000);
+    if(error)throw error;translations=data||[];
+   }
+   const trMap=new Map();
+   for(const t of translations){if(!trMap.has(t.work_id)||t.language_code===lang())trMap.set(t.work_id,t);}
+   const fMap=new Map(franchises.map(x=>[x.id,x]));
+   animeWorks=(works||[]).map(w=>({...w,franchise:fMap.get(w.franchise_id)||{},translation:trMap.get(w.id)||null}));
+   const series=animeWorks.filter(w=>String(w.external_ids?.format||"").toUpperCase()!=="MOVIE");
+   render("animePopularRail",series.map(w=>card(w)).join(""));
+   render("animeTrendingRail",animeWorks.slice(0,24).map(w=>card(w)).join(""));
+  }else{
+   animeWorks=[];
+   render("animePopularRail","");
+   render("animeTrendingRail","");
   }
-  const trMap=new Map();
-  for(const t of translations){if(!trMap.has(t.work_id)||t.language_code===lang())trMap.set(t.work_id,t);}
-  const fMap=new Map(franchises.map(x=>[x.id,x]));
-  animeWorks=(works||[]).map(w=>({...w,franchise:fMap.get(w.franchise_id)||{},translation:trMap.get(w.id)||null}));
-  const series=animeWorks.filter(w=>String(w.external_ids?.format||"").toUpperCase()!=="MOVIE");
-  const movies=animeWorks.filter(w=>String(w.external_ids?.format||"").toUpperCase()==="MOVIE");
-  const render=(id,rows)=>{const el=$(id);if(!el)return;el.innerHTML=rows.length?rows.map(card).join(""):'<div class="anime-loading">Энэ ангилалд нийтлэгдсэн бүтээл алга. <a href="archive/" style="color:#9ceaff">Нэгдсэн архив ↗</a></div>';};
-  render("animePopularRail",series);
-  render("animeMovieRail",movies);
-  render("animeTrendingRail",animeWorks.slice(0,24));
-  if(status)status.textContent="Эх сурвалж: LOREVERSE Нэгдсэн Lore Archive · "+animeWorks.length+" нийтлэгдсэн анимэ бүтээл.";
  }catch(error){
-  const message=error?.message||String(error)||"Тодорхойгүй алдаа";
-  ["animePopularRail","animeMovieRail","animeTrendingRail"].forEach(id=>showEmpty(id,"Нэгдсэн архивын мэдээлэл ачаалж чадсангүй: "+message));
-  if(status)status.textContent="Нэгдсэн архивын холболтын алдаа: "+message;
-  console.error("LOREVERSE unified anime archive:",error);
+  console.error("LOREVERSE series archive:",error);
+  render("animePopularRail","");
+  render("animeTrendingRail","");
+ }
+ // AniList-ийн киноны каталог: дотоод архивт гараар кино бүртгээгүй байсан ч киноны хэсэг хоосон үлдэхгүй.
+ try{
+  const query='query { Page(page:1, perPage:24) { media(type:ANIME, format:MOVIE, sort:POPULARITY_DESC) { id siteUrl description status startDate { year } title { romaji english userPreferred } coverImage { medium large } averageScore duration } } }';
+  const response=await window.LOREVERSE_DATA_HUB.fetchJSON("https://graphql.anilist.co",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({query})});
+  if(!response.ok)throw new Error("AniList хүсэлт амжилтгүй ("+response.status+").");
+  const payload=await response.json();
+  if(payload.errors?.length)throw new Error(payload.errors[0].message||"AniList каталогийн алдаа.");
+  const movies=payload.data?.Page?.media||[];
+  const html=movies.map(m=>{
+   const title=m.title?.userPreferred||m.title?.english||m.title?.romaji||"Нэргүй анимэ кино";
+   const desc=String(m.description||"Тайлбар одоогоор байхгүй.").replace(/<br\\s*\\/?\\s*>/gi," ").replace(/<[^>]*>/g," ").replace(/\\s+/g," ").trim();
+   const cover=m.coverImage?.large||m.coverImage?.medium||"";
+   const url=m.siteUrl||"https://anilist.co/anime/"+m.id;
+   const meta=[m.startDate?.year||"Он тодорхойгүй",m.duration?m.duration+" мин":null,m.averageScore?m.averageScore+"/100":null].filter(Boolean).join(" · ");
+   return '<a class="anime-poster" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+(cover?'<img loading="lazy" src="'+esc(cover)+'" alt="'+esc(title)+'" onerror="this.hidden=true">':'<div class="anime-poster no-image"><span>ANIME MOVIE</span></div>')+'<div class="anime-poster-info"><small>ANIME MOVIE · '+esc(meta)+'</small><strong>'+esc(title)+'</strong><span>'+esc(desc.slice(0,150))+'</span></div></a>';
+  }).join("");
+  render("animeMovieRail",html);
+  if(status)status.textContent="Анимэ цуврал: LOREVERSE-ийн редакцын архив · Анимэ кино: AniList-ийн алдартай киноны каталог ("+movies.length+" бүтээл).";
+ }catch(error){
+  console.error("LOREVERSE anime movie catalog:",error);
+  render("animeMovieRail","");
+  if(status)status.textContent="Анимэ киноны каталогийг ачаалж чадсангүй: "+(error?.message||String(error));
  }
 }
 async function openArchiveAnime(id){
