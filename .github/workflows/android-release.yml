@@ -127,6 +127,23 @@ jobs:
             KEY_B64="$(printf '%s' "$ANDROID_DEBUG_KEYSTORE_BASE64" | tr -d '[:space:]')"
             if printf '%s' "$KEY_B64" | base64 --decode > "$KEYSTORE" 2>/dev/null && [ -s "$KEYSTORE" ]; then
               echo "Persistent keystore decoded ($(wc -c < "$KEYSTORE" | tr -d ' ') bytes)."
+              # Handle a secret that was accidentally Base64-encoded twice.
+              python3 - "$KEYSTORE" <<'PY'
+          import base64, pathlib, sys
+          path = pathlib.Path(sys.argv[1])
+          data = path.read_bytes()
+          for _ in range(2):
+              try:
+                  compact = b"".join(data.split())
+                  decoded = base64.b64decode(compact, validate=True)
+              except Exception:
+                  break
+              if len(decoded) < 256 or decoded == data:
+                  break
+              data = decoded
+          path.write_bytes(data)
+          print(f"Normalized keystore payload ({len(data)} bytes); no key material printed.")
+          PY
               if KEY_LIST="$(keytool -list -v -keystore "$KEYSTORE" -storepass "$ANDROID_DEBUG_KEYSTORE_PASSWORD" 2>&1)"; then
                 DEBUG_ALIAS="$(printf '%s\n' "$KEY_LIST" | awk -v expected="$EXPECTED" '
                   /^Alias name: / { current=substr($0, index($0, ": ") + 2) }
