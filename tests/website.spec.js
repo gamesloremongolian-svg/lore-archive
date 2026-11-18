@@ -148,20 +148,37 @@ test.describe('LOREVERSE website health', () => {
     );
   });
 
-  test('admin user-management Edge Function allows the production Pages origins', async ({ request }) => {
-    const endpoint = 'https://nfacspfctvunwbxtvvyi.supabase.co/functions/v1/admin-user-management';
-    for (const origin of ['https://e-archive.pages.dev', 'https://lore-archive.pages.dev']) {
-      const response = await request.fetch(endpoint, {
-        method: 'OPTIONS',
-        headers: {
-          Origin: origin,
-          'Access-Control-Request-Method': 'POST',
-          'Access-Control-Request-Headers': 'authorization,apikey,content-type'
+  test('browser-facing Supabase Edge Functions allow both production Pages origins', async ({ request }) => {
+    const functions = [
+      'admin-user-management',
+      'delete-my-account',
+      'translate-to-english',
+      'translate-to-mongolian',
+      'qpay-payment',
+      'lore-ai',
+      'editorial-ai-draft'
+    ];
+    const origins = ['https://e-archive.pages.dev', 'https://lore-archive.pages.dev'];
+    for (const name of functions) {
+      for (const origin of origins) {
+        const response = await request.fetch(
+          'https://nfacspfctvunwbxtvvyi.supabase.co/functions/v1/' + name,
+          {
+            method: 'OPTIONS',
+            headers: {
+              Origin: origin,
+              'Access-Control-Request-Method': 'POST',
+              'Access-Control-Request-Headers': 'authorization,apikey,content-type,x-client-info'
+            }
+          }
+        );
+        expect(response.status(), name + ' CORS preflight for ' + origin).toBe(200);
+        expect(response.headers()['access-control-allow-origin']).toBe(origin);
+        const allowedHeaders = response.headers()['access-control-allow-headers'] || '';
+        for (const header of ['authorization', 'apikey', 'content-type', 'x-client-info']) {
+          expect(allowedHeaders.toLowerCase()).toContain(header);
         }
-      });
-      expect(response.status(), 'CORS preflight should succeed for ' + origin).toBe(200);
-      expect(response.headers()['access-control-allow-origin']).toBe(origin);
+      }
     }
   });
-
 });
