@@ -100,8 +100,12 @@ jobs:
                   }
               }
           '''
-          s = s.replace(marker, signing + "\\n" + marker, 1)
-          s = s.replace("release {", "release { signingConfig signingConfigs.release", 1)
+          s = s.replace(marker, signing + "\n" + marker, 1)
+          import re
+          pattern = r'(buildTypes\\s*\\{[\\s\\S]*?\\n\\s*release\\s*\\{)'
+          s, count = re.subn(pattern, r'\\1\\n            signingConfig signingConfigs.release', s, count=1)
+          if count != 1:
+            raise SystemExit("Could not safely configure release signing")
           p.write_text(s)
           PY
           echo "KEYSTORE_PATH=$KEYSTORE" >> "$GITHUB_ENV"
