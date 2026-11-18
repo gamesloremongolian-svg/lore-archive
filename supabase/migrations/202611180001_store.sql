@@ -1,6 +1,8 @@
 -- Extend the existing LORE COIN economy; do not create a second wallet.
 alter table public.lore_coin_items add column if not exists icon text not null default '✦';
 alter table public.lore_coin_items add column if not exists sort_order integer not null default 100;
+alter table public.lore_coin_items drop constraint if exists lore_coin_items_item_type_check;
+alter table public.lore_coin_items add constraint lore_coin_items_item_type_check check (item_type in ('profile_frame','badge','premium_discount','avatar','profile_background','sticker_pack'));
 
 create table if not exists public.store_equipped (
   user_id uuid not null references auth.users(id) on delete cascade,
