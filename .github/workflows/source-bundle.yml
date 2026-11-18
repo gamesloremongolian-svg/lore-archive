@@ -1,0 +1,56 @@
+name: Package LOREVERSE Web and Android Source
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/source-bundle.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Install web and Capacitor dependencies
+        run: npm ci
+
+      - name: Prepare web assets
+        run: npm run build
+
+      - name: Generate native Android project
+        run: npx cap add android
+
+      - name: Sync Android project
+        run: npx cap sync android
+
+      - name: Package complete source
+        run: |
+          mkdir -p dist
+          zip -r dist/LOREVERSE-Web-Android-Source.zip . \
+            -x ".git/*" "node_modules/*" "android/.gradle/*" \
+               "android/build/*" "android/app/build/*" "dist/*"
+
+      - name: Upload source ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: LOREVERSE-Web-Android-Source
+          path: dist/LOREVERSE-Web-Android-Source.zip
+          if-no-files-found: error
