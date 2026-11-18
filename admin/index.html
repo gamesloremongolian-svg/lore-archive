@@ -256,10 +256,30 @@ async function loadPlans(){if(!can('premium'))return;
 
 const userFunctionUrl='https://nfacspfctvunwbxtvvyi.supabase.co/functions/v1/admin-user-management';
 async function callUserAdmin(payload){
- const {data:{session}}=await supabase.auth.getSession();
- if(!session?.access_token)throw new Error('Дахин нэвтэрнэ үү.');
+ let session=null;
+ try{
+  const {data,error}=await supabase.auth.getSession();
+  if(error)throw error;
+  session=data?.session||null;
+  // A persisted session may have an expired access token. Refresh only when
+  // Supabase still has a refresh token; never call refreshSession() without one.
+  if(session?.refresh_token&&session.expires_at&&session.expires_at*1000<Date.now()+30000){
+   const refreshed=await supabase.auth.refreshSession({refresh_token:session.refresh_token});
+   if(refreshed.error)throw refreshed.error;
+   session=refreshed.data?.session||null;
+  }
+ }catch(error){
+  const message=String(error?.message||error);
+  if(/auth session missing|refresh token not found|invalid refresh token/i.test(message))
+   throw new Error('Таны админ нэвтрэх сесс дууссан эсвэл энэ домэйнд хадгалагдаагүй байна. lore-archive.pages.dev/admin/ хуудсанд дахин нэвтэрч, урилгыг дахин илгээнэ үү.');
+  throw new Error('Нэвтрэх сесс шалгахад алдаа гарлаа: '+message);
+ }
+ if(!session?.access_token)
+  throw new Error('Админ нэвтрэх сесс олдсонгүй. lore-archive.pages.dev/admin/ хуудсанд дахин нэвтэрч, урилгыг дахин илгээнэ үү.');
  const res=await fetch(userFunctionUrl,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':'sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1'},body:JSON.stringify(payload)});
  const out=await res.json().catch(()=>({error:'Серверийн хариу уншигдсангүй.'}));
+ if(res.status===401)throw new Error('Supabase нэвтрэх сесс хүчингүй эсвэл хугацаа дууссан байна. Админд дахин нэвтэрнэ үү.');
+ if(res.status===403)throw new Error(out.error||'Энэ үйлдэлд Owner/Admin эрх шаардлагатай.');
  if(!res.ok)throw new Error(out.error||'Хүсэлт амжилтгүй.');
  return out;
 }
