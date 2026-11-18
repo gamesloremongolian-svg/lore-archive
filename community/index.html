@@ -26,6 +26,37 @@
   body{padding-bottom:0}
 }
 .home-bottom{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(12,9,22,.97);border-top:1px solid #674879;backdrop-filter:blur(12px);display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:7px}.home-bottom a,.home-bottom button{display:flex;align-items:center;justify-content:center;gap:5px;min-width:0;min-height:44px;border:1px solid #80538e;border-radius:11px;background:linear-gradient(110deg,#382044,#251936);color:#fff;font-weight:850;font-size:12px;padding:6px 4px}.home-bottom button:active,.home-bottom a:active{background:#54305f}.home-bottom .nav-chat{border-color:#b45caa;background:linear-gradient(110deg,#71366c,#45306f)}@media(min-width:701px){.home-bottom{display:none}body{padding-bottom:0}}body{padding-bottom:68px}
+
+/* LOREVERSE original Community identity — familiar server navigation, unique visual language */
+:root{--bg:#090d1c;--panel:#11182b;--panel2:#18233a;--line:#34415f;--text:#f4f7ff;--muted:#a9b8d1;--pink:#b59aff;--cyan:#72e5ef}
+body{background:radial-gradient(ellipse at 12% 0%,#5b42a333,transparent 34%),radial-gradient(ellipse at 92% 12%,#1b9aa022,transparent 30%),var(--bg)}
+.top{background:rgba(9,13,28,.88);backdrop-filter:blur(16px);border-bottom-color:#9a8bff30}
+.brand{letter-spacing:.16em}.brand span{background:linear-gradient(90deg,#b59aff,#72e5ef);background-clip:text;-webkit-background-clip:text;color:transparent}
+.layout{grid-template-columns:72px 276px minmax(0,1fr);gap:0}
+.servers{background:#080c18;border-right-color:#34415f;padding-top:14px}
+.server-icon{border-radius:17px;background:linear-gradient(145deg,#1b2944,#111a2d);border-color:#3d5275;box-shadow:0 5px 16px #0003}
+.server-icon.active{border-radius:17px 17px 17px 7px;background:linear-gradient(145deg,#7058b9,#287f99);border-color:#9eebf2;box-shadow:0 0 0 2px #72e5ef20,0 8px 24px #0005}
+.side{background:linear-gradient(180deg,#121b30,#101729);border-right-color:#34415f;padding:16px 13px}
+.side-head{padding:14px;border:1px solid #3b5273;border-radius:17px;background:linear-gradient(130deg,#28375a,#182a43 58%,#173c4b);box-shadow:inset 0 1px #ffffff18,0 10px 24px #0003;margin-bottom:17px}
+.side-head h2{font-size:16px;letter-spacing:.01em}.side-head .muted{color:#b9d5e6}
+.label{display:flex;align-items:center;gap:8px;color:#a9c5e4;letter-spacing:.13em;margin:19px 8px 8px}.label:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,#607da855,transparent)}
+.channel{border:1px solid transparent;border-radius:11px;padding:10px 11px;margin:3px 0;color:#c5d2e7;transition:background .18s,border-color .18s,transform .18s}
+.channel:before{content:"#";color:#79dce8;font-weight:900;font-size:15px;margin-right:2px}
+.channel[data-kind="voice"]:before{content:"◖";color:#b59aff}
+.channel.active,.channel:hover{background:linear-gradient(100deg,#34456b,#253d53);border-color:#6583aa;color:#fff;transform:translateX(2px)}
+.main{background:radial-gradient(ellipse at 80% 0%,#4e65a01c,transparent 40%),#0e1526}
+.head{background:#101a2b;border-bottom-color:#34415f;padding:15px 22px}
+.head h1{font-size:18px;letter-spacing:.01em}.messages{padding:22px;gap:15px}
+.bubble{background:linear-gradient(145deg,#1b2941,#172238);border-color:#3b5273;border-radius:5px 15px 15px 15px;padding:11px 14px}
+.avatar{background:linear-gradient(140deg,#a88cff,#48c7d5);color:#09101f}
+.compose{background:#101a2b;border-top-color:#34415f;padding:13px 18px}
+.field{background:#0b1221;border-color:#405574;border-radius:13px}.field:focus{border-color:#72e5ef;box-shadow:0 0 0 3px #72e5ef18}
+.btn{border-color:#536c91;background:linear-gradient(130deg,#253754,#1a2b43);border-radius:12px}.primary{background:linear-gradient(110deg,#7760c4,#328ea3 75%,#39a9ad)}
+.sticker-btn{background:#1a2942;border-color:#536c91;border-radius:13px}
+.sticker-panel,.dialog,.auth{background:#121c30;border-color:#536c91;box-shadow:0 20px 60px #0008}
+.home-bottom{background:rgba(8,12,24,.96);border-top-color:#435b80}.home-bottom a,.home-bottom button{border-color:#4b6389;background:linear-gradient(110deg,#1d2b47,#17283d)}.home-bottom .nav-chat{background:linear-gradient(110deg,#6652ad,#286f89);border-color:#8cdce8}
+@media(max-width:1100px){.layout{grid-template-columns:54px minmax(0,1fr)}.side{padding:13px}.side-head{border-radius:14px;padding:12px}.main{background:#0e1526}}
+@media(min-width:1101px){.layout{grid-template-columns:76px 292px minmax(0,1fr)}}
 </style></head><body>
 <header class="top"><a class="brand" href="../">✦ LOREVERSE <span>COMMUNITY</span></a><div style="display:flex;gap:8px;align-items:center"><a class="btn" href="../chat/">Хувийн чат</a><button class="btn" id="logout" type="button">Гарах</button></div></header>
 <section class="auth" id="auth"><h1>Бүртгүүлэх</h1><p class="muted">LOREVERSE аккаунт үүсгээд Community-д нэгдээрэй.</p><form id="register"><label>Имэйл</label><input class="field" id="regEmail" type="email" autocomplete="email" required><label>Нууц үг (дор хаяж 6 тэмдэгт)</label><input class="field" id="regPassword" type="password" minlength="6" autocomplete="new-password" required><button class="btn primary" type="submit">Бүртгүүлэх</button><p class="muted" id="registerNote"></p></form><hr style="border:0;border-top:1px solid #49345f;margin:22px 0"><h2 style="font-size:17px;margin:0">Аль хэдийн бүртгэлтэй юу?</h2><form id="login"><label>Имэйл</label><input class="field" id="email" type="email" autocomplete="email" required><label>Нууц үг</label><input class="field" id="password" type="password" autocomplete="current-password" required><button class="btn" type="submit">Нэвтрэх</button><p class="muted" id="authNote"></p></form></section>
@@ -58,10 +89,11 @@ function renderServers(){
 }
 async function selectServer(id){
  activeServer=servers.find(s=>s.id===id);if(!activeServer)return;activeChannel=null;
- $("serverName").textContent=activeServer.name;$("serverMeta").textContent=activeServer.role.toUpperCase();$("app").classList.add("show-chat");
+ $("serverName").textContent=activeServer.name;$("serverMeta").textContent=activeServer.role.toUpperCase();$("app").classList.remove("show-chat");
  const {data,error}=await supabase.from("community_channels").select("id,name,description,channel_type,is_private").eq("server_id",id).order("position");
  if(error){toast(error.message);return}channels=data||[];
- $("channels").innerHTML=channels.map(c=>'<button class="channel '+(activeChannel?.id===c.id?'active':'')+'" data-channel="'+c.id+'"># '+esc(c.name)+'</button>').join("")||'<p class="muted">Суваг алга.</p>';
+ const channelGroups=[{key:"text",title:"ТЕКСТЭН СУВГУУД",items:channels.filter(ch=>ch.channel_type!=="voice")},{key:"voice",title:"ДУУТ СУВГУУД",items:channels.filter(ch=>ch.channel_type==="voice")}].filter(g=>g.items.length);
+ $("channels").innerHTML=channelGroups.map(g=>'<div class="channel-group"><div class="label">'+g.title+'</div>'+g.items.map(ch=>'<button class="channel" data-kind="'+g.key+'" data-channel="'+ch.id+'">'+esc(ch.name)+'</button>').join("")+'</div>').join("")||'<p class="muted">Одоогоор суваг алга.</p>';
  $("channels").querySelectorAll("[data-channel]").forEach(b=>b.onclick=()=>selectChannel(b.dataset.channel));
  const {data:mem}=await supabase.from("community_server_members").select("user_id,role").eq("server_id",id);
  $("members").textContent=(mem||[]).length+" гишүүн";
@@ -69,7 +101,7 @@ async function selectServer(id){
  if(channels.length)await selectChannel(channels[0].id);else{$("messages").innerHTML='<div class="empty">Энэ серверт суваг алга.</div>';$("message").disabled=true;$("sendBtn").disabled=true;}
 }
 async function selectChannel(id){
- activeChannel=channels.find(c=>c.id===id);if(!activeChannel)return;
+ activeChannel=channels.find(c=>c.id===id);if(!activeChannel)return;\n $("app").classList.add("show-chat");
  $("channelName").textContent="# "+activeChannel.name;$("channelDesc").textContent=activeChannel.description||"LOREVERSE COMMUNITY";
  $("channels").querySelectorAll("[data-channel]").forEach(b=>b.classList.toggle("active",b.dataset.channel===id));
  $("message").disabled=false;$("sendBtn").disabled=false;await loadMessages();
