@@ -9,9 +9,6 @@ permissions:
 jobs:
   build-android:
     runs-on: ubuntu-latest
-    env:
-      ANDROID_DEBUG_KEYSTORE_BASE64: ${{ secrets.ANDROID_DEBUG_KEYSTORE_BASE64 }}
-      ANDROID_DEBUG_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_DEBUG_KEYSTORE_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -65,46 +62,22 @@ jobs:
           EOF
           cp "$RES/mipmap-anydpi-v26/ic_launcher.xml" "$RES/mipmap-anydpi-v26/ic_launcher_round.xml"
 
-      - name: Configure persistent debug APK signing
+      - name: Configure isolated test APK identity
         run: |
           set -euo pipefail
-          test -n "$ANDROID_DEBUG_KEYSTORE_BASE64" || { echo "::error::Missing ANDROID_DEBUG_KEYSTORE_BASE64 repository secret."; exit 1; }
-          test -n "$ANDROID_DEBUG_KEYSTORE_PASSWORD" || { echo "::error::Missing ANDROID_DEBUG_KEYSTORE_PASSWORD repository secret."; exit 1; }
-          mkdir -p "$HOME/.android"
-          printf '%s' "$ANDROID_DEBUG_KEYSTORE_BASE64" | base64 --decode > "$HOME/.android/loreverse-debug.keystore"
-          chmod 600 "$HOME/.android/loreverse-debug.keystore"
-          echo "Checking keystore file and alias (password is never printed)."
-          test -s "$HOME/.android/loreverse-debug.keystore" || { echo "::error::Decoded keystore file is empty."; exit 1; }
-          keytool -list -keystore "$HOME/.android/loreverse-debug.keystore" -storepass "$ANDROID_DEBUG_KEYSTORE_PASSWORD" -alias loreverse
           python3 - <<'PY'
           from pathlib import Path
           p = Path("android/app/build.gradle")
           s = p.read_text()
-          if "loreverse-debug.keystore" in s:
-              raise SystemExit("Persistent signing configuration already exists; refusing duplicate patch.")
+          if 'applicationIdSuffix ".test"' in s:
+              raise SystemExit("Test-only application ID suffix already configured; refusing duplicate patch.")
           marker = "    buildTypes {"
-          if marker not in s:
-              raise SystemExit("Could not find Android buildTypes block.")
-          insert_lines = [
-              "    signingConfigs {",
-              "        debug {",
-              '            storeFile file(System.getProperty("user.home") + "/.android/loreverse-debug.keystore")',
-              '            storePassword System.getenv("ANDROID_DEBUG_KEYSTORE_PASSWORD")',
-              '            keyAlias "loreverse"',
-              '            keyPassword System.getenv("ANDROID_DEBUG_KEYSTORE_PASSWORD")',
-              "        }",
-              "    }",
-          ]
-          insert = chr(10).join(insert_lines)
-          s = s.replace(marker, insert + chr(10) + marker + chr(10) + "        debug { signingConfig signingConfigs.debug }", 1)
+          if s.count(marker) != 1:
+              raise SystemExit("Could not safely locate the Android buildTypes block.")
+          s = s.replace(marker, marker + '\\n        debug { applicationIdSuffix ".test" }', 1)
           p.write_text(s)
-          print("Inserted Android signing configuration using explicit newline-joined lines.")
-      - name: Verify persistent debug signing secrets
-        run: |
-          set -euo pipefail
-          test -n "$ANDROID_DEBUG_KEYSTORE_BASE64" || { echo "::error::Missing ANDROID_DEBUG_KEYSTORE_BASE64 repository secret."; exit 1; }
-          test -n "$ANDROID_DEBUG_KEYSTORE_PASSWORD" || { echo "::error::Missing ANDROID_DEBUG_KEYSTORE_PASSWORD repository secret."; exit 1; }
-
+          print("Configured a separate .test package. Existing app identity and signing key are untouched.")
+          PY
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug
@@ -115,4 +88,4 @@ jobs:
           name: LOREVERSE-Android-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
-# Re-run build after persistent Android signing secrets were configured.
+# Test APK uses Gradle's temporary debug signing and a separate .test application ID.
