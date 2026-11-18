@@ -5,4 +5,4 @@ Disallow: /lore-archive/chat/
 Disallow: /lore-archive/editorial/
 Disallow: /lore-archive/tools/
 
-Sitemap: https://loreverse-ctrl.github.io/lore-archive/sitemap.xml
+Sitemap: https://lore-archive.pages.dev/sitemap.xml
