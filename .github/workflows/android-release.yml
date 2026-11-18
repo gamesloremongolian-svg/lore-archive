@@ -18,6 +18,7 @@ jobs:
     env:
       ANDROID_DEBUG_KEYSTORE_BASE64: ${{ secrets.ANDROID_DEBUG_KEYSTORE_BASE64 }}
       ANDROID_DEBUG_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_DEBUG_KEYSTORE_PASSWORD }}
+      ANDROID_DEBUG_KEY_PASSWORD: ${{ secrets.ANDROID_DEBUG_KEY_PASSWORD }}
       ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
@@ -124,12 +125,24 @@ jobs:
           valid=""
           if [ -n "$ANDROID_DEBUG_KEYSTORE_BASE64" ] && [ -n "$ANDROID_DEBUG_KEYSTORE_PASSWORD" ]; then
             printf '%s' "$ANDROID_DEBUG_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE" 2>/dev/null || true
-            if [ -s "$KEYSTORE" ] && keytool -list -keystore "$KEYSTORE" -storepass "$ANDROID_DEBUG_KEYSTORE_PASSWORD" -alias loreverse >/dev/null 2>&1; then
-              echo "Candidate persistent debug key opened."
-              ALIAS="loreverse"
-              STORE_PASS="$ANDROID_DEBUG_KEYSTORE_PASSWORD"
-              KEY_PASS="$ANDROID_DEBUG_KEYSTORE_PASSWORD"
-              valid="yes"
+            if [ -s "$KEYSTORE" ]; then
+              KEY_LIST="$(keytool -list -v -keystore "$KEYSTORE" -storepass "$ANDROID_DEBUG_KEYSTORE_PASSWORD" 2>/dev/null || true)"
+              DEBUG_ALIAS="$(printf '%s\n' "$KEY_LIST" | awk -v expected="$EXPECTED" '
+                /^Alias name: / { current=substr($0, index($0, ": ") + 2) }
+                /SHA256: / {
+                  fingerprint=$NF
+                  gsub(":", "", fingerprint)
+                  if (tolower(fingerprint) == tolower(expected)) { print current; exit }
+                }
+              ')"
+              if [ -n "$DEBUG_ALIAS" ]; then
+                echo "Original signing certificate found in persistent debug keystore (alias verified)."
+                ALIAS="$DEBUG_ALIAS"
+                STORE_PASS="$ANDROID_DEBUG_KEYSTORE_PASSWORD"
+                KEY_PASS="$ANDROID_DEBUG_KEYSTORE_PASSWORD"
+                if [ -n "$ANDROID_DEBUG_KEY_PASSWORD" ]; then KEY_PASS="$ANDROID_DEBUG_KEY_PASSWORD"; fi
+                valid="yes"
+              fi
             fi
           fi
           if [ -z "$valid" ] && [ -n "$ANDROID_KEYSTORE_BASE64" ] && [ -n "$ANDROID_KEYSTORE_PASSWORD" ] && [ -n "$ANDROID_KEY_ALIAS" ] && [ -n "$ANDROID_KEY_PASSWORD" ]; then
