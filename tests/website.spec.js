@@ -131,4 +131,21 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('#loreAiPanel')).not.toHaveClass(/open/);
   });
 
+  test('homepage exposes the shared Supabase client to account handlers', async ({ page }) => {
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(
+      () => typeof window.supabase?.auth?.getUser === 'function',
+      null,
+      { timeout: 25000 }
+    );
+  });
+
+  test('manga catalogue leaves its loading state after a slow or failed API request', async ({ page }) => {
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#mangaRailStatus')).not.toContainText(
+      'Манганы каталогоос мэдээлэл ачаалж байна…',
+      { timeout: 25000 }
+    );
+  });
+
 });
