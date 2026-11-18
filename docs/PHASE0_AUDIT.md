@@ -72,3 +72,47 @@ Reviewed:
 5. Only then proceed with Community 2.0 implementation.
 
 No production database, user data, installed APK, or release artifact was modified during this static review.
+
+
+## Live Supabase audit — 2026-11-18
+
+Project inspected: `LOREVERSE` (active/healthy). The separate `LOREVERSE-COMMUNITY` project is inactive and was not modified.
+
+### Confirmed controls
+- All 56 tables in the `public` schema have RLS enabled; no public-schema table without RLS was found.
+- Four public Storage buckets exist: `community-media` (15 MiB), `lore-archive-media` (10 MiB), `loreverse-media` (10 MiB), and `member-avatars` (2 MiB). All allow image MIME types only. Public reads are configured, so uploaded objects in these buckets must be treated as public assets, not private user files.
+- Three RLS-enabled tables have no direct policies: `lore_ai_usage`, `loreverse_referral_codes`, and `loreverse_referrals`. This blocks direct API access and is consistent with access through narrowly scoped SECURITY DEFINER RPCs; retain only if that is the intended access model.
+- Sensitive reward/moderation SECURITY DEFINER functions inspected include server-side staff checks. Public read-only RPCs (site aggregate stats, leaderboard, membership predicate) are intentionally callable without login.
+
+### Remediations applied
+- Fixed a literal escaped newline in `community/index.html` that caused the inline JavaScript syntax checker to fail.
+- Aligned `tests/website.spec.js`, `robots.txt`, `sitemap.xml`, and `scripts/check_site.py` to the canonical host `https://lore-archive.pages.dev/`.
+- Added and applied migration `20261118100000_harden_anonymous_user_rpcs` to require non-anonymous authenticated accounts for:
+  - `community_create_server`
+  - `community_join_with_invite`
+  - `consume_lore_ai_quota`
+  - `get_my_loreverse_referrals`
+- Post-migration SQL inspection confirmed all four function bodies now reject `is_anonymous=true`; grants were preserved.
+
+### Remaining security findings
+- Supabase Security Advisor reports leaked-password protection is disabled. Enable the Auth password security / leaked password protection setting in the Supabase Dashboard before production growth. The available connected Supabase actions do not expose this Auth setting.
+- Five SECURITY DEFINER RPCs remain executable by `anon`: `community_is_member`, `get_loreverse_site_stats`, `lore_leaderboard`, `touch_loreverse_presence`, and `track_loreverse_visit`. The first three are read-only predicates/aggregates; the last two write presence/visit analytics and need abuse/rate-limit review.
+- SECURITY DEFINER RPCs remain callable by `authenticated` as required by the app. Each must be reviewed by function behavior and server-side authorization, not blindly revoked.
+- Supabase Advisor emits anonymous-access warnings for policies granted to `authenticated`/ `public`. Many inspected policies constrain access to `auth.uid()` or `is_staff()`, and direct messages explicitly reject anonymous sessions. Continue table-by-table testing; do not bulk-drop policies.
+- Four Storage buckets are public. Confirm no private or sensitive files are uploaded there.
+- Leaked-password protection is a configuration action, not a SQL migration.
+
+### CI status and repository fixes
+- The new `check:web` CI step exposed a real syntax error in `community/index.html`; fixed.
+- The canonical-host mismatch was present in both crawler validation and static site checks; fixed in `scripts/check_site.py`.
+- Workflow runs triggered by the latest commits were still in progress at the time this audit snapshot was updated. Do not treat them as passing until GitHub Actions reports success.
+
+### Not verified
+- Real production browser behavior and all authenticated/anonymous test cases.
+- Supabase Auth leaked-password protection setting (requires Dashboard action).
+- Rate limits and abuse resistance for public analytics RPCs.
+- Android installed APK certificate comparison and in-place update compatibility.
+- Backup/restore drill and production rollback rehearsal.
+- QPay server-side callback, reconciliation, and refund handling.
+
+No user rows were changed. The applied migration only replaces four RPC function bodies with additional anonymous-session guards.
