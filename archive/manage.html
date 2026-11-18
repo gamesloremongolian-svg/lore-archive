@@ -72,4 +72,5 @@ $("mediaForm").onsubmit=async e=>{e.preventDefault();const file=e.target.file.fi
 $("refresh").onclick=async()=>{try{await loadOptions();await refreshRecords()}catch(e){$("records").textContent=e.message}};
 async function enter(){try{const {data:{user:u},error}=await supabase.auth.getUser();if(error)throw error;if(!u){$("authStatus").textContent="Нэвтрэлт байхгүй. Эхлээд Админ самбарт нэвтэрнэ үү.";return;}const {data:staff,error:se}=await supabase.from("staff_members").select("role,active").eq("user_id",u.id).maybeSingle();if(se)throw se;if(!staff?.active||!["owner","admin","editor"].includes(staff.role)){$("authStatus").textContent="Архив оруулах идэвхтэй эрх шаардлагатай.";return;}user=u;role=staff.role;if(role==="editor")document.querySelectorAll(".statusChoice").forEach(s=>{const p=s.querySelector('option[value="published"]');if(p)p.disabled=true});$("authStatus").textContent=u.email+" · "+role.toUpperCase()+" эрхээр холбогдлоо."; $("workspace").classList.remove("hidden");await loadOptions();await refreshRecords()}catch(e){$("authStatus").textContent="Алдаа: "+e.message}}
 supabase.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_IN"&&session?.user&&!user)enter()});enter();
-</script></body></html>
+</script><script src="../assets/js/mongolian-spellcheck.js?v=1" defer></script>
+</body></html>
