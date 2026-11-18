@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#090817"><title>Bug Hunter · LOREVERSE</title>
+<style>
+:root{color-scheme:dark;--bg:#090817;--panel:#17132b;--line:#493762;--muted:#b7abc9;--text:#fffaff;--violet:#bd75ff;--cyan:#64eaff;--gold:#ffd36e}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 10% 0%,#7934a744,transparent 38%),radial-gradient(ellipse at 95% 25%,#167ed033,transparent 34%),var(--bg);color:var(--text);font:15px/1.65 system-ui,sans-serif}.wrap{width:min(900px,calc(100% - 28px));margin:26px auto 90px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.brand{font-weight:950;letter-spacing:.12em}.brand span{color:var(--violet)}a{color:var(--cyan);text-decoration:none}.panel{margin-top:18px;padding:22px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#241638ee,#11182df2);box-shadow:0 18px 65px #0006}.eyebrow{font-size:10px;letter-spacing:.2em;color:var(--cyan);font-weight:900}.title{font-size:clamp(27px,5vw,42px);line-height:1.1;margin:8px 0 12px}.muted{color:var(--muted);font-size:13px}label{display:block;color:var(--muted);font-size:12px;margin:12px 0 5px}input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#0b0a1b;color:var(--text);font:inherit}textarea{min-height:92px;resize:vertical}button,.btn{border:0;border-radius:11px;padding:12px 17px;background:linear-gradient(110deg,#e65eb7,#9558ef 55%,#347fd1);color:white;font-weight:800;cursor:pointer;display:inline-block}button:disabled{opacity:.5}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{padding:14px;border:1px solid var(--line);border-radius:12px;background:#0c1020}.stat b{display:block;font-size:25px;color:var(--gold)}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:180px}.status{margin-top:12px;padding:11px;border:1px solid var(--line);border-radius:10px;color:var(--muted);font-size:13px}.item{padding:13px 0;border-bottom:1px solid #ffffff18}.tag{display:inline-block;padding:3px 9px;border-radius:20px;background:#35214d;color:#e8d5ff;font-size:11px}.hidden{display:none!important}@media(max-width:560px){.panel{padding:16px}.grid{grid-template-columns:1fr 1fr}.wrap{margin-top:14px}}
+</style></head><body><main class="wrap">
+<header class="top"><a class="brand" href="../index.html">✦ LORE<span>VERSE</span></a><a href="../index.html">← Нүүр хуудас</a></header>
+<section class="panel"><div class="eyebrow">LOREVERSE COMMUNITY QUALITY PROGRAM</div><h1 class="title">BUG HUNTER</h1><p>Алдаа олж мэдээлээд LORE Coins цуглуул. Оноо зөвхөн баг шалгаж, мэдээллийг баталгаажуулсны дараа олгогдоно.</p><div class="grid"><div class="stat"><b>+10</b><span class="muted">Энгийн алдаа</span></div><div class="stat"><b>+30</b><span class="muted">Дунд зэргийн алдаа</span></div><div class="stat"><b>+100</b><span class="muted">Ноцтой алдаа</span></div></div><p class="muted">Давхардсан болон батлагдаагүй мэдээлэлд шагнал олгохгүй. Шагналыг LORE Coins хэлбэрээр дансанд нэмнэ.</p></section>
+<section class="panel" id="authPanel"><h2>Нэвтрэх шаардлагатай</h2><p class="muted">Алдаа илгээх, өөрийн хүсэлт болон шагналаа харахын тулд LOREVERSE бүртгэлээрээ нэвтэрнэ.</p><a class="btn" href="../index.html#login">Нүүр хуудас руу очих</a><div id="authMsg" class="status">Бүртгэлийг шалгаж байна…</div></section>
+<section class="panel hidden" id="appPanel"><div class="eyebrow">YOUR BUG HUNTER PROFILE</div><h2>Миний үзүүлэлт</h2><div class="grid"><div class="stat"><b id="coinBalance">—</b><span class="muted">LORE Coins</span></div><div class="stat"><b id="reportCount">—</b><span class="muted">Илгээсэн мэдээлэл</span></div><div class="stat"><b id="approvedCount">—</b><span class="muted">Батлагдсан алдаа</span></div></div></section>
+<section class="panel hidden" id="formPanel"><div class="eyebrow">REPORT A BUG</div><h2>Алдаа мэдээлэх</h2><form id="bugForm">
+<label for="bugTitle">Алдааны гарчиг *</label><input id="bugTitle" maxlength="160" minlength="5" required placeholder="Жишээ: Нэвтрэх товч ажиллахгүй байна">
+<label for="bugDescription">Юу болсон бэ? *</label><textarea id="bugDescription" minlength="15" maxlength="5000" required placeholder="Алдааг хаана, ямар дарааллаар гарсныг тайлбарлана уу."></textarea>
+<label for="bugPage">Алдаа гарсан хуудасны холбоос</label><input id="bugPage" type="url" maxlength="500" placeholder="https://e-archive.pages.dev/...">
+<div class="row"><div><label for="bugSeverity">Алдааны нөлөө</label><select id="bugSeverity"><option value="minor">Энгийн · +10 Coins</option><option value="major">Дунд · +30 Coins</option><option value="critical">Ноцтой · +100 Coins</option></select></div><div><label for="bugDevice">Төхөөрөмж / хөтөч</label><input id="bugDevice" maxlength="300" placeholder="Android 15 · Chrome"></div></div>
+<label for="bugExpected">Ямар байх ёстой байсан бэ?</label><textarea id="bugExpected" maxlength="1500" placeholder="Хүлээж байсан үр дүн"></textarea>
+<label for="bugActual">Бодитоор юу болсон бэ?</label><textarea id="bugActual" maxlength="1500" placeholder="Гарсан үр дүн"></textarea>
+<button id="submitBug" type="submit">Алдаа илгээх</button><div id="submitStatus" class="status" aria-live="polite"></div></form></section>
+<section class="panel hidden" id="historyPanel"><h2>Миний мэдээллүүд</h2><div id="myReports" class="muted">Ачаалж байна…</div></section>
+</main>
+<script type="module">
+import {createClient} from "https://esm.sh/@supabase/supabase-js@2.119.0";
+const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
+const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const labels={open:"Хүлээгдэж байна",reviewing:"Шалгаж байна",resolved:"Батлагдсан",rejected:"Татгалзсан"};
+async function init(){
+ const {data:{user},error}=await supabase.auth.getUser();
+ if(error||!user){$("authMsg").textContent="Энэ функцийг ашиглахын тулд эхлээд LOREVERSE-д нэвтэрнэ үү.";return;}
+ $("authPanel").classList.add("hidden");["appPanel","formPanel","historyPanel"].forEach(id=>$(id).classList.remove("hidden"));
+ const [{data:profile},{data:reports,error:reportError}]=await Promise.all([
+  supabase.from("profiles").select("lore_coins").eq("id",user.id).maybeSingle(),
+  supabase.from("bug_reports").select("id,title,severity,status,reward_points,review_note,created_at").eq("user_id",user.id).order("created_at",{ascending:false}).limit(50)
+ ]);
+ if(reportError){$("myReports").textContent="Алдаа ачааллахад асуудал гарлаа: "+reportError.message;return;}
+ $("coinBalance").textContent=profile?.lore_coins??0;
+ $("reportCount").textContent=(reports||[]).length;
+ $("approvedCount").textContent=(reports||[]).filter(x=>x.status==="resolved").length;
+ $("myReports").innerHTML=(reports||[]).map(x=>'<article class="item"><b>'+esc(x.title)+'</b><p class="muted">'+new Date(x.created_at).toLocaleString("mn-MN")+' · '+esc(labels[x.status]||x.status)+' · '+esc(x.severity)+'</p>'+(x.reward_points?'<span class="tag">+'+x.reward_points+' LORE Coins</span>':'')+(x.review_note?'<p class="muted">Тайлбар: '+esc(x.review_note)+'</p>':'')+'</article>').join("")||"Одоогоор алдаа мэдээлээгүй байна.";
+}
+$("bugForm").addEventListener("submit",async e=>{
+ e.preventDefault();const b=$("submitBug");b.disabled=true;$("submitStatus").textContent="Илгээж байна…";
+ try{
+  const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Нэвтрэх шаардлагатай.");
+  const page=$("bugPage").value.trim();if(page&&!/^https:\/\//i.test(page))throw new Error("Хуудасны холбоос HTTPS байх ёстой.");
+  const {error}=await supabase.from("bug_reports").insert({user_id:user.id,title:$("bugTitle").value.trim(),description:$("bugDescription").value.trim(),page_url:page||null,severity:$("bugSeverity").value,device_info:$("bugDevice").value.trim()||null,expected_result:$("bugExpected").value.trim()||null,actual_result:$("bugActual").value.trim()||null});
+  if(error)throw error;$("bugForm").reset();$("submitStatus").textContent="Амжилттай илгээлээ. Баг шалгасны дараа батлагдсан тохиолдолд LORE Coins автоматаар нэмэгдэнэ.";await init();
+ }catch(err){$("submitStatus").textContent="Алдаа: "+err.message;}finally{b.disabled=false;}
+});
+supabase.auth.onAuthStateChange(()=>init());init();
+</script></body></html>
