@@ -149,7 +149,7 @@ jobs:
                 fi
               else
                 echo "::warning::Keystore bytes were decoded, but keytool could not open it with ANDROID_DEBUG_KEYSTORE_PASSWORD."
-                printf '%s\n' "$KEY_LIST" | tail -n 3
+                printf '%s\n' "$KEY_LIST" | head -n 3
               fi
             else
               echo "::warning::ANDROID_DEBUG_KEYSTORE_BASE64 is not valid base64 or decoded to an empty file."
