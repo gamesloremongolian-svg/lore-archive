@@ -46,4 +46,5 @@ $("bugForm").addEventListener("submit",async e=>{
  }catch(err){$("submitStatus").textContent="Алдаа: "+err.message;}finally{b.disabled=false;}
 });
 supabase.auth.onAuthStateChange(()=>init());init();
-</script></body></html>
+</script><script src="../assets/js/mongolian-spellcheck.js?v=1" defer></script>
+</body></html>
