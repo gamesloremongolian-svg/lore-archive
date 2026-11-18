@@ -82,7 +82,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
 const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
 const $=id=>document.getElementById(id);
 const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let currentUser=null,myDisplayName="Member",myAvatarUrl=null,authMode="login",activeConversation=null,activePartner=null,messageChannel=null,refreshPresenceTimer=null,memberCache=[];
+let currentUser=null,myDisplayName="Member",myAvatarUrl=null,authMode="login",activeConversation=null,activePartner=null,messageChannel=null,conversationChannel=null,refreshPresenceTimer=null,memberCache=[];
 function initials(name){return String(name||"L").trim().split(/\s+/).slice(0,2).map(x=>x[0]||"").join("").toUpperCase()||"L";}
 function renderAvatar(el,name,url){el.innerHTML=url?`<img src="${safe(url)}" alt="${safe(name)}">`:safe(initials(name));}
 function note(s){$("authNote").textContent=s;}
@@ -116,7 +116,7 @@ async function enterChat(){
  await ensureProfile(currentUser);
  $("authWrap").classList.add("hidden");$("appShell").classList.remove("hidden");$("appShell").classList.add("hide-sidebar");
  $("myName").textContent=myDisplayName;renderAvatar($("myAvatar"),myDisplayName,myAvatarUrl);
- await updatePresence();await loadMembers();await loadConversations();
+ await updatePresence();await loadMembers();await loadConversations();subscribeToConversationUpdates();
  if(refreshPresenceTimer)clearInterval(refreshPresenceTimer);
  refreshPresenceTimer=setInterval(updatePresence,45000);
 }
@@ -124,6 +124,13 @@ async function updatePresence(){
  if(!currentUser)return;
  const {error}=await supabase.from("chat_presence").upsert({user_id:currentUser.id,display_name:myDisplayName,channel_id:"direct-messages",last_seen:new Date().toISOString()},{onConflict:"user_id"});
  if(error)console.warn("Presence update:",error.message);
+}
+async function subscribeToConversationUpdates(){
+ if(!currentUser)return;
+ if(conversationChannel)await supabase.removeChannel(conversationChannel);
+ conversationChannel=supabase.channel("direct-conversations-"+currentUser.id)
+  .on("postgres_changes",{event:"*",schema:"public",table:"direct_conversations"},async()=>{await loadConversations();})
+  .subscribe((status,error)=>{if(status==="SUBSCRIBED")loadConversations();else if(status==="CHANNEL_ERROR"||status==="TIMED_OUT")console.warn("Conversation realtime:",status,error?.message||"");});
 }
 async function loadMembers(query=""){
  const term=query.trim();let request=supabase.from("chat_public_profiles").select("id,display_name,avatar_url,total_xp").neq("id",currentUser.id).order("display_name").limit(50);
@@ -214,7 +221,7 @@ $("messageInput").addEventListener("keydown",e=>{
 });
 $("refreshButton").onclick=async()=>{await loadMembers($("memberSearch").value);await loadConversations();if(activeConversation)await loadMessages();};
 $("mobileBack").onclick=()=>$("appShell").classList.add("hide-sidebar");
-$("logoutButton").onclick=async()=>{if(refreshPresenceTimer)clearInterval(refreshPresenceTimer);if(messageChannel)await supabase.removeChannel(messageChannel);await supabase.auth.signOut({scope:"local"});currentUser=null;activeConversation=null;$("messageInput").disabled=false;$("sendButton").disabled=true;$("messageInput").value="";$("messageInput").placeholder="Мессежээ бичнэ үү… (илгээхийн тулд эхлээд гишүүн сонгоно)";$("appShell").classList.add("hidden");$("authWrap").classList.remove("hidden");setAuthMode("login");};
+$("logoutButton").onclick=async()=>{if(refreshPresenceTimer)clearInterval(refreshPresenceTimer);if(messageChannel)await supabase.removeChannel(messageChannel);if(conversationChannel)await supabase.removeChannel(conversationChannel);messageChannel=null;conversationChannel=null;await supabase.auth.signOut({scope:"local"});currentUser=null;activeConversation=null;$("messageInput").disabled=false;$("sendButton").disabled=true;$("messageInput").value="";$("messageInput").placeholder="Мессежээ бичнэ үү… (илгээхийн тулд эхлээд гишүүн сонгоно)";$("appShell").classList.add("hidden");$("authWrap").classList.remove("hidden");setAuthMode("login");};
 
 const stickerSets={
  "Бүгд":[["👋","Сайн уу"],["🥰","Хайртай"],["😂","Инээд"],["😭","Уйлж байна"],["😡","Ууртай"],["😳","Гайхсан"],["😴","Нойрмог"],["🤔","Бодож байна"],["👍","Гоё"],["👏","Алга таших"],["🔥","Гал"],["✨","Гялалзах"],["💜","Нил ягаан зүрх"],["🎮","Тоглоом"],["📚","Унших"],["🐉","Луу"]],
