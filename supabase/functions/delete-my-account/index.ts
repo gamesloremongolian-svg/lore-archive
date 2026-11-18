@@ -61,13 +61,13 @@ Deno.serve(async (req: Request) => {
     });
 
     // Remove files owned by this account before deleting its Auth identity.
-    for (let offset = 0; ; offset += 500) {
+    for (;;) {
       const { data: objects, error: listError } = await admin
         .schema("storage")
         .from("objects")
         .select("bucket_id,name")
         .eq("owner_id", user.id)
-        .range(offset, offset + 499);
+        .range(0, 499);
       if (listError) throw new Error("Хэрэглэгчийн файлуудыг шалгаж чадсангүй.");
       if (!objects?.length) break;
 
