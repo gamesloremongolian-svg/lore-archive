@@ -148,4 +148,20 @@ test.describe('LOREVERSE website health', () => {
     );
   });
 
+  test('admin user-management Edge Function allows the production Pages origins', async ({ request }) => {
+    const endpoint = 'https://nfacspfctvunwbxtvvyi.supabase.co/functions/v1/admin-user-management';
+    for (const origin of ['https://e-archive.pages.dev', 'https://lore-archive.pages.dev']) {
+      const response = await request.fetch(endpoint, {
+        method: 'OPTIONS',
+        headers: {
+          Origin: origin,
+          'Access-Control-Request-Method': 'POST',
+          'Access-Control-Request-Headers': 'authorization,apikey,content-type'
+        }
+      });
+      expect(response.status(), 'CORS preflight should succeed for ' + origin).toBe(200);
+      expect(response.headers()['access-control-allow-origin']).toBe(origin);
+    }
+  });
+
 });
