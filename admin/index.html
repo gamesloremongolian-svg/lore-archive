@@ -67,6 +67,41 @@ body{min-width:320px;overflow-x:hidden}
 #dash button:focus-visible,#dash a:focus-visible{outline:3px solid #8deaff;outline-offset:3px}
 @media(max-width:700px){#dash .tabs{grid-template-columns:repeat(2,minmax(0,1fr));max-height:none;overflow:visible;position:relative;top:auto}#dash .statgrid{grid-template-columns:repeat(2,minmax(0,1fr))}#dash .statgrid .stat:last-child{grid-column:1/-1}}
 @media(max-width:360px){#dash .tabs{grid-template-columns:1fr}#dash .statgrid{grid-template-columns:1fr}#dash .statgrid .stat:last-child{grid-column:auto}}
+
+/* Unified LOREVERSE palette — Admin */
+:root{
+ color-scheme:dark;
+ --bg:#101827;--panel:#192437;--line:#34465e;
+ --muted:#aab8c8;--text:#edf2f7;--violet:#7f91b5;
+ --cyan:#35b6a4;--pink:#7e9dba;--gold:#e5b96b;
+}
+body{
+ background:radial-gradient(ellipse at 12% 0%,#35b6a412,transparent 36%),
+            radial-gradient(ellipse at 92% 10%,#6688a810,transparent 32%),#101827;
+ color:var(--text);
+}
+.brand{text-shadow:none}
+.brand span,.title{
+ background:linear-gradient(100deg,#edf2f7,#75cfc0 65%,#e5b96b);
+ background-clip:text;color:transparent;
+}
+.panel{background:#192437;border-color:#34465e;box-shadow:0 14px 40px #0005}
+.eyebrow{color:#55c8b6;text-shadow:none}
+input,select,textarea{background:#121e2e;border-color:#34465e;color:#edf2f7}
+input:focus,select:focus,textarea:focus{outline:2px solid #35b6a4;border-color:#35b6a4}
+button,.btn{background:linear-gradient(110deg,#35b6a4,#65c6b5);color:#10202a;box-shadow:none}
+button:hover,.btn:hover{filter:brightness(1.07);transform:translateY(-1px)}
+.tabs{background:#121e2e;border-color:#34465e}
+.tabs button{background:#22324a;border-color:#34465e;color:#edf2f7;box-shadow:none}
+.tabs button:hover,.tabs button:focus-visible{border-color:#55c8b6;background:#294458}
+.tabs button[data-tab="corrections"]{border-color:#e5b96b;color:#e5b96b}
+.status,.stat,.list{background:#192437;border-color:#34465e;color:#aab8c8}
+.stat{background:linear-gradient(145deg,#22324a,#192437)}
+.stat b{background:linear-gradient(90deg,#55c8b6,#e5b96b);background-clip:text;color:transparent}
+.list{border-color:#34465e}
+a{color:#55c8b6}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #55c8b6;outline-offset:2px}
+
 </style></head><body><main class="wrap"><p style="display:flex;justify-content:flex-end;align-items:center;gap:8px"><label for="lang">Interface language</label><select id="lang" style="width:auto;margin:0"><option value="mn">Монгол</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option></select></p>
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><a href="../index.html" class="brand">✦ LORE<span>VERSE</span></a><a class="btn" href="../index.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:7px">← Нүүр хуудас руу буцах</a></div>
 <section class="panel" id="authPanel"><div class="eyebrow">SECURE EDITORIAL WORKSPACE</div><h1 class="title">Админ нэвтрэх</h1><p class="muted">Бүртгэл үүсгэх эсвэл багийн бүртгэлээр нэвтэрнэ. Админ эрхийг эзэмшигч баталгаажуулсны дараа нээнэ.</p>
