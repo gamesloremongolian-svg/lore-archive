@@ -1255,7 +1255,7 @@ html.winter-effects-off .winter-snow{display:none}
 @media(max-width:700px){#loreverse-updates .update-grid{grid-template-columns:1fr}}
 </style>
 <section class="section" id="loreverse-updates">
- <div class="section-head"><div><div class="eyebrow">WHAT'S NEW · RELEASES & EDITORIAL</div><h2>Шинэ хувилбар ба шинэ мэдээлэл</h2><p>LOREVERSE-ийн аппын шинэ build болон редакцын хамгийн сүүлийн нийтлэлүүд.</p></div><button class="btn" id="updatesRefresh" type="button">↻ Шинэчлэх</button></div>
+ <div class="section-head"><div><div class="eyebrow">WHAT'S NEW · RELEASES & EDITORIAL</div><h2>Шинэ хувилбар ба шинэ мэдээлэл</h2><p>LOREVERSE-ийн аппын шинэ build болон редакцын хамгийн сүүлийн нийтлэлүүд.</p></div></div>
  <div class="update-grid">
   <section class="update-panel" id="app-update" aria-labelledby="appReleaseTitle"><div class="eyebrow">ANDROID · APP UPDATE</div><h3 id="appReleaseTitle">LOREVERSE апп шинэчлэх</h3><p class="update-desc">Шинэ хувилбар байгаа эсэхийг шалгаад APK-г татаж аваарай. Татсан APK файлыг нээж Android-ийн суулгах зааврыг дагана.</p><div id="appUpdateStatus" class="update-empty" aria-live="polite">Аппын хувилбарыг шалгаж байна…</div><div class="portal-actions" style="margin:12px 0"><button class="btn primary" id="checkAppUpdate" type="button">Шинэчлэлт шалгах ↻</button><button class="btn" id="downloadAppUpdate" type="button" hidden>Шинэ APK татах ↓</button></div><div id="appReleaseList" aria-live="polite"><div class="update-empty">Хувилбарын мэдээлэл ачаалж байна…</div></div><a class="update-link" href="https://github.com/loreverse-ctrl/lore-archive/releases" target="_blank" rel="noopener noreferrer">Бүх хувилбар харах ↗</a></section>
   <section class="update-panel" aria-labelledby="editorialUpdateTitle"><div class="eyebrow">LATEST EDITORIAL</div><h3 id="editorialUpdateTitle">Шинээр нэмэгдсэн мэдээлэл</h3><div id="editorialUpdateList" aria-live="polite"><div class="update-empty">Шинэ мэдээлэл ачаалж байна…</div></div><a class="update-link" href="editorial/">Редакцын архив нээх ↗</a></section>
@@ -1684,7 +1684,7 @@ $("checkAppUpdate")?.addEventListener("click",()=>checkAppUpdate().catch(error=>
 $("downloadAppUpdate")?.addEventListener("click",()=>openAppApk(latestAppAsset?.browser_download_url).catch(error=>{$("appUpdateStatus").textContent="APK нээж чадсангүй: "+error.message;}));
 $("appUpdateQuickOpen")?.addEventListener("click",()=>{const panel=$("app-update");if(panel)setTimeout(()=>panel.scrollIntoView({behavior:"smooth",block:"start"}),80);});
 $("appVersionNavLink")?.addEventListener("click",()=>{const panel=$("app-update");if(panel)setTimeout(()=>panel.scrollIntoView({behavior:"smooth",block:"start"}),80);});
-$("updatesRefresh")?.addEventListener("click",()=>refreshLoreverseUpdates());
+
 refreshLoreverseUpdates();
 
 const adMascotSpeak=$("adMascotSpeak");
