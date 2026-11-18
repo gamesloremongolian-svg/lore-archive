@@ -2794,7 +2794,7 @@ async function loadArchive(){
   const movies=payload.data?.Page?.media||[];
   const html=movies.map(m=>{
    const title=m.title?.userPreferred||m.title?.english||m.title?.romaji||"Нэргүй анимэ кино";
-   const desc=String(m.description||"Тайлбар одоогоор байхгүй.").replace(/<br\\s*\\/?\\s*>/gi," ").replace(/<[^>]*>/g," ").replace(/\\s+/g," ").trim();
+   const desc=String(m.description||"Тайлбар одоогоор байхгүй.").replace(/<br\s*\/?\s*>/gi," ").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
    const cover=m.coverImage?.large||m.coverImage?.medium||"";
    const url=m.siteUrl||"https://anilist.co/anime/"+m.id;
    const meta=[m.startDate?.year||"Он тодорхойгүй",m.duration?m.duration+" мин":null,m.averageScore?m.averageScore+"/100":null].filter(Boolean).join(" · ");
