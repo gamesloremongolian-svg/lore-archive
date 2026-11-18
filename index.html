@@ -2502,7 +2502,7 @@ document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBank
  };
 })(); 
 
-/* Unified Manga Archive — published Supabase records + AniList cover artwork */
+/* Unified Manga Catalog — AniList-backed discovery with LOREVERSE editorial archive fallback */
 (()=>{
  const rail=document.getElementById("mangaPopularRail"),viewport=document.getElementById("mangaRailViewport"),status=document.getElementById("mangaRailStatus");
  const input=document.getElementById("mangaSearch"),button=document.getElementById("mangaSearchBtn"),more=document.getElementById("mangaMore"),out=document.getElementById("mangaResults"),searchStatus=document.getElementById("mangaStatus");
@@ -2510,67 +2510,65 @@ document.addEventListener("click",async e=>{if(e.target&&e.target.id==="copyBank
  if(!rail||!viewport)return;
  const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  const clean=v=>String(v||"").replace(/<br\s*\/?\s*>/gi," ").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
- let records=[];
- async function coverFor(title){
-  const query='query($search:String){Page(page:1,perPage:1){media(search:$search,type:MANGA,isAdult:false){siteUrl coverImage{large medium} title{userPreferred english romaji} format}}}';
-  const response=await window.LOREVERSE_DATA_HUB.fetchJSON("https://graphql.anilist.co",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({query,variables:{search:title}})});
-  if(!response.ok)throw new Error("AniList HTTP "+response.status);
-  const payload=await response.json();if(payload.errors?.length)throw new Error(payload.errors[0].message||"AniList error");
-  return payload.data?.Page?.media?.[0]||null;
+ const query='query($page:Int,$perPage:Int,$search:String,$sort:[MediaSort]){Page(page:$page,perPage:$perPage){pageInfo{hasNextPage}media(type:MANGA,isAdult:false,search:$search,sort:$sort){id siteUrl format status description startDate{year}title{userPreferred english romaji}coverImage{large medium}}}}';
+ let page=1,lastQuery="",busy=false,hasNext=false;
+ async function fetchManga(search,pageNo,sort){
+  const response=await window.LOREVERSE_DATA_HUB.fetchJSON("https://graphql.anilist.co",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({query,variables:{page:pageNo,perPage:12,search:search||null,sort:sort||["POPULARITY_DESC"]}})});
+  if(!response.ok)throw new Error("AniList хүсэлт амжилтгүй ("+response.status+").");
+  const payload=await response.json();if(payload.errors?.length)throw new Error(payload.errors[0].message||"AniList каталогийн алдаа.");
+  return payload.data?.Page||{pageInfo:{hasNextPage:false},media:[]};
  }
- function renderCard(item){
-  const title=item.translation?.title||item.work?.canonical_title||item.franchise.name;
-  const cover=item.art?.coverImage?.large||item.art?.coverImage?.medium||item.franchise.cover_image_url||"";
-  const synopsis=item.translation?.synopsis||item.franchise.description||"Товч танилцуулга хараахан оруулаагүй.";
-  const link=item.art?.siteUrl||"https://anilist.co/search/manga?search="+encodeURIComponent(title);
-  const art=cover?'<img loading="lazy" src="'+esc(cover)+'" alt="'+esc(title)+'" onerror="this.hidden=true">':'<div class="catalog-art-fallback"><span>MANGA ARCHIVE</span><b>'+esc(title)+'</b></div>';
-  return '<article class="article catalog-card">'+art+'<div class="catalog-info"><div class="tag">LOREVERSE MANGA ARCHIVE</div><h3>'+esc(title)+'</h3><p class="catalog-desc">'+esc(clean(synopsis))+'</p><div class="row" style="justify-content:space-between;align-items:center"><span class="catalog-meta">'+esc(item.work?.release_year||"")+'</span><a href="'+esc(link)+'" target="_blank" rel="noopener noreferrer">Дэлгэрэнгүй ↗</a></div></div></article>';
+ function card(m){
+  const title=m.title?.userPreferred||m.title?.english||m.title?.romaji||"Нэргүй манга";
+  const cover=m.coverImage?.large||m.coverImage?.medium||"";
+  const desc=clean(m.description||"Товч танилцуулга одоогоор байхгүй.");
+  const image=cover?'<img loading="lazy" src="'+esc(cover)+'" alt="'+esc(title)+'" onerror="this.hidden=true">':'<div class="catalog-art-fallback"><span>MANGA</span><b>'+esc(title)+'</b></div>';
+  return '<article class="article catalog-card">'+image+'<div class="catalog-info"><div class="tag">MANGA · '+esc(String(m.format||"Манга").replaceAll("_"," "))+'</div><h3>'+esc(title)+'</h3><p class="catalog-desc">'+esc(desc)+'</p><div class="row" style="justify-content:space-between;align-items:center"><span class="catalog-meta">'+esc(m.startDate?.year||"Он тодорхойгүй")+' · '+esc(m.status||"")+'</span><a href="'+esc(m.siteUrl||("https://anilist.co/anime/"+m.id))+'" target="_blank" rel="noopener noreferrer">Дэлгэрэнгүй ↗</a></div></div></article>';
  }
- function render(){
-  const q=(input?.value||"").trim().toLocaleLowerCase();
-  const rows=records.filter(x=>!q||[x.franchise.name,x.work?.canonical_title,x.translation?.title,x.translation?.synopsis].some(v=>String(v||"").toLocaleLowerCase().includes(q)));
-  if(out)out.innerHTML=rows.length?rows.map(renderCard).join(""):'<p class="portal-note">Тохирох манга олдсонгүй.</p>';
-  if(searchStatus)searchStatus.textContent="LOREVERSE Нэгдсэн Lore Archive · "+rows.length+" / "+records.length+" бүтээл";
-  if(more)more.hidden=true;
- }
- async function load(){
+ async function loadFeatured(){
   try{
-   if(status)status.textContent="LOREVERSE архивын манга болон нүүр зургуудыг ачаалж байна…";
-   if(searchStatus)searchStatus.textContent="Нэгдсэн архивын бүртгэл ачаалж байна…";
-   const {data:franchises,error:fe}=await supabase.from("archive_franchises").select("id,name,description,cover_image_url").eq("category","manga").eq("status","published").order("name").limit(100);
-   if(fe)throw fe;
-   const ids=(franchises||[]).map(x=>x.id);
-   if(!ids.length){rail.innerHTML='<div class="media-card"><strong>Нийтлэгдсэн манга одоогоор алга.</strong></div>';if(status)status.textContent="Нэгдсэн архивт нийтлэгдсэн манга олдсонгүй.";return;}
-   const {data:works,error:we}=await supabase.from("archive_works").select("id,franchise_id,canonical_title,release_year").in("franchise_id",ids).eq("work_type","manga").eq("status","published").limit(300);
-   if(we)throw we;
-   const workIds=(works||[]).map(x=>x.id);
-   const {data:translations,error:te}=workIds.length?await supabase.from("archive_work_translations").select("work_id,language_code,title,synopsis").in("work_id",workIds).eq("editorial_status","published").in("language_code",["mn","en"]).limit(500):{data:[],error:null};
-   if(te)throw te;
-   const trMap=new Map();for(const t of translations||[])if(!trMap.has(t.work_id)||t.language_code==="mn")trMap.set(t.work_id,t);
-   const fMap=new Map(franchises.map(f=>[f.id,f]));
-   records=(works||[]).map(w=>({work:w,franchise:fMap.get(w.franchise_id)||{},translation:trMap.get(w.id)||null,art:null}));
-   const artwork=await Promise.allSettled(records.map(async item=>{item.art=await coverFor(item.translation?.title||item.work.canonical_title||item.franchise.name);}));
-   const withCovers=artwork.filter(x=>x.status==="fulfilled").length;
-   const railCards=records.map(item=>{
-    const title=item.translation?.title||item.work.canonical_title||item.franchise.name;
-    const cover=item.art?.coverImage?.large||item.art?.coverImage?.medium||item.franchise.cover_image_url||"";
-    const link=item.art?.siteUrl||"https://anilist.co/search/manga?search="+encodeURIComponent(title);
-    return '<a class="media-card" href="'+esc(link)+'" target="_blank" rel="noopener noreferrer" style="'+(cover?'background-image:linear-gradient(0deg,#080817ed 0%,#08081730 72%),url(&quot;'+esc(cover)+'&quot;)':'')+'"><small>LOREVERSE MANGA</small><strong>'+esc(title)+'</strong><span>'+esc(item.work.release_year||"")+'</span></a>';
-   }).join("");
-   rail.innerHTML=railCards||'<div class="media-card"><strong>Манга бүртгэл олдсонгүй.</strong></div>';
-   if(status)status.textContent="LOREVERSE архиваас "+records.length+" манга · "+withCovers+" нүүр зураг холбогдлоо.";
-   render();
+   if(status)status.textContent="AniList-ийн манганы каталогоос тренд бүтээлүүдийг ачаалж байна…";
+   const data=await fetchManga(null,1,["POPULARITY_DESC"]);
+   const rows=data.media||[];
+   rail.innerHTML=rows.length?rows.map(m=>{
+    const title=m.title?.userPreferred||m.title?.english||m.title?.romaji||"Нэргүй манга";
+    const cover=m.coverImage?.large||m.coverImage?.medium||"";
+    const url=m.siteUrl||"https://anilist.co";
+    return '<a class="media-card" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" style="'+(cover?'background-image:linear-gradient(0deg,#080817ed 0%,#08081730 72%),url(&quot;'+esc(cover)+'&quot;)':'')+'"><small>POPULAR MANGA · '+esc(m.startDate?.year||"")+'</small><strong>'+esc(title)+'</strong><span>'+esc(String(m.format||"").replaceAll("_"," "))+'</span></a>';
+   }).join(""):'<div class="media-card"><strong>Манга олдсонгүй.</strong></div>';
+   if(status)status.textContent="AniList каталогоос "+rows.length+" алдартай манга ачааллаа.";
   }catch(error){
-   console.error("LOREVERSE manga archive:",error);
-   if(status)status.textContent="Манганы архив ачаалж чадсангүй: "+(error?.message||error);
-   if(searchStatus)searchStatus.textContent="Нэгдсэн архивын холболтыг шалгана уу.";
-   rail.innerHTML='<div class="media-card"><strong>Манганы мэдээлэл ачаалж чадсангүй.</strong><span>'+(error?.message||"Сүлжээний алдаа")+'</span></div>';
+   console.error("LOREVERSE manga catalog:",error);
+   if(status)status.textContent="Манганы каталог ачаалж чадсангүй: "+(error?.message||error);
+   rail.innerHTML='<div class="media-card"><strong>Манганы мэдээлэл ачаалж чадсангүй.</strong><span>Сүлжээгээ шалгаад дахин оролдоно уу.</span></div>';
   }
+ }
+ async function search(reset=true){
+  if(busy)return;
+  const q=(input?.value||"").trim();
+  if(!q){if(searchStatus)searchStatus.textContent="Манганы нэрээ бичээд хайна уу.";input?.focus();return;}
+  if(reset){page=1;lastQuery=q;if(out)out.innerHTML="";}
+  else if(q!==lastQuery){page=1;lastQuery=q;if(out)out.innerHTML="";}
+  busy=true;if(button)button.disabled=true;if(more)more.disabled=true;
+  if(searchStatus)searchStatus.textContent="AniList каталогоос манга хайж байна…";
+  try{
+   const data=await fetchManga(q,page,["SEARCH_MATCH"]);
+   const rows=data.media||[];hasNext=!!data.pageInfo?.hasNextPage;
+   if(out)out.insertAdjacentHTML("beforeend",rows.map(card).join(""));
+   if(searchStatus)searchStatus.textContent=rows.length?"AniList каталогоос "+rows.length+" үр дүн олдлоо.":"Тохирох манга олдсонгүй. Өөр нэрээр хайж үзнэ үү.";
+   if(more)more.hidden=!hasNext;
+   if(window.LOREVERSE_TRANSLATE_NODES&&out)window.LOREVERSE_TRANSLATE_NODES(out,".catalog-desc");
+  }catch(error){
+   if(searchStatus)searchStatus.textContent="Манга хайлт амжилтгүй: "+(error?.message||error);
+   if(more)more.hidden=true;
+  }finally{busy=false;if(button)button.disabled=false;if(more)more.disabled=false;}
  }
  const nudge=dir=>viewport.scrollBy({left:dir*Math.max(210,viewport.clientWidth*.72),behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
  prev?.addEventListener("click",()=>nudge(-1));next?.addEventListener("click",()=>nudge(1));
- button?.addEventListener("click",render);input?.addEventListener("input",render);input?.addEventListener("keydown",e=>{if(e.key==="Enter")render();});
- load();
+ button?.addEventListener("click",()=>search(true));input?.addEventListener("keydown",e=>{if(e.key==="Enter")search(true);});
+ more?.addEventListener("click",()=>{if(hasNext){page++;search(false);}});
+ if(more)more.hidden=true;
+ loadFeatured();
 })();
 
 /* Unified public catalog search: AniList for anime, manga and novels. */
