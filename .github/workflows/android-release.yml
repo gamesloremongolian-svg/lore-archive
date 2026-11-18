@@ -2,6 +2,11 @@ name: LOREVERSE Android APK and Play Release
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'capacitor.config.ts'
+      - '.github/workflows/android-release.yml'
 
 permissions:
   contents: write
@@ -75,15 +80,15 @@ jobs:
           import os, re
           path = Path("android/app/build.gradle")
           content = path.read_text()
-          version_code = int(os.environ["BUILD_NUMBER"])
+          version_code = 100000 + int(os.environ["BUILD_NUMBER"])
           content, count = re.subn(r'versionCode\s+\d+', f'versionCode {version_code}', content, count=1)
           if count != 1:
               raise SystemExit("Could not set Android versionCode.")
-          content, count = re.subn(r'versionName\s+"[^"]+"', f'versionName "1.0.{version_code}"', content, count=1)
+          content, count = re.subn(r'versionName\s+"[^"]+"', f'versionName "2.0.{os.environ["BUILD_NUMBER"]}"', content, count=1)
           if count != 1:
               raise SystemExit("Could not set Android versionName.")
           path.write_text(content)
-          print(f"Android versionName=1.0.{version_code}, versionCode={version_code}")
+          print(f"Android versionName=2.0.{os.environ['BUILD_NUMBER']}, versionCode={version_code}")
           PY
 
       - name: Set Google Play target API 36
@@ -137,6 +142,7 @@ jobs:
           s = s.replace(marker, block + "\n" + marker + '\n        debug { signingConfig signingConfigs.debug }', 1)
           p.write_text(s)
           PY
+
       - name: Verify persistent debug signing secrets
         run: |
           set -euo pipefail
@@ -147,11 +153,21 @@ jobs:
         working-directory: android
         run: ./gradlew bundleRelease assembleDebug
 
-      - name: Prepare direct-download APK
+      - name: Prepare and verify direct-download APK
         run: |
           set -euo pipefail
           APK="android/app/build/outputs/apk/debug/app-debug.apk"
           test -s "$APK"
+          AAPT="$(find "$ANDROID_HOME/build-tools" -name aapt -type f | sort -V | tail -1)"
+          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -1)"
+          test -n "$AAPT" && test -n "$APKSIGNER"
+          "$AAPT" dump badging "$APK" | head -1 | grep -F "package: name='mn.loreverse.app'"
+          CERT_OUTPUT="$("$APKSIGNER" verify --print-certs "$APK")"
+          printf '%s\n' "$CERT_OUTPUT"
+          printf '%s\n' "$CERT_OUTPUT" | tr -d ':' | grep -qi '1651193714a7e5610bbdc20fa228374db1728a955bc2e880b55e9def2f5ad343' || {
+            echo "::error::Signing certificate does not match the known installed LOREVERSE app. APK will NOT be published."
+            exit 1
+          }
           mkdir -p release-apk
           cp "$APK" release-apk/LOREVERSE.apk
 
@@ -189,7 +205,6 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-
       - name: Publish direct-download Android APK
         uses: softprops/action-gh-release@v2
         with:
@@ -197,11 +212,9 @@ jobs:
           name: LOREVERSE Android Build #${{ github.run_number }}
           body: |
             LOREVERSE Android APK beta build.
-            This is a directly installable debug-signed testing build, not the Google Play production release.
-            Install only if you trust this repository. Android may ask you to allow installation from this source.
+            Package ID and signing certificate are verified against the previously installed LOREVERSE app before publication.
           prerelease: true
           make_latest: false
           files: release-apk/LOREVERSE.apk
           overwrite_files: true
           fail_on_unmatched_files: true
-# Re-run build after persistent Android signing secrets were configured.
