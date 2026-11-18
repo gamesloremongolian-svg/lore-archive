@@ -101,7 +101,8 @@ async function selectServer(id){
  if(channels.length){if(!window.matchMedia("(max-width:1100px)").matches)await selectChannel(channels[0].id);}else{$("messages").innerHTML='<div class="empty">Энэ серверт суваг алга.</div>';$("message").disabled=true;$("sendBtn").disabled=true;}
 }
 async function selectChannel(id){
- activeChannel=channels.find(c=>c.id===id);if(!activeChannel)return;\n $("app").classList.add("show-chat");
+ activeChannel=channels.find(c=>c.id===id);if(!activeChannel)return;
+ $("app").classList.add("show-chat");
  $("channelName").textContent="# "+activeChannel.name;$("channelDesc").textContent=activeChannel.description||"LOREVERSE COMMUNITY";
  $("channels").querySelectorAll("[data-channel]").forEach(b=>b.classList.toggle("active",b.dataset.channel===id));
  $("message").disabled=false;$("sendBtn").disabled=false;await loadMessages();
