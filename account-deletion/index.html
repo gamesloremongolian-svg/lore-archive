@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#080914">
+<title>Бүртгэл устгах — LOREVERSE</title>
+<style>
+:root{color-scheme:dark;--bg:#080914;--panel:#15172b;--line:#343653;--text:#f4f3ff;--muted:#a5a6bd;--violet:#9b70ff;--danger:#ff7d8c}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at 50% 0%,#35205c,transparent 55%),var(--bg);color:var(--text);font:15px/1.65 system-ui,sans-serif}.panel{width:min(560px,100%);padding:28px;border:1px solid var(--line);border-radius:22px;background:#111326}.eyebrow{color:#67e4ef;font-size:11px;letter-spacing:.18em;font-weight:800}h1{font-size:28px;margin:8px 0}p,li{color:var(--muted)}label{display:block;margin:14px 0 6px}input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#090b17;color:var(--text);font:inherit}button{margin-top:16px;padding:12px 16px;border:0;border-radius:11px;background:linear-gradient(110deg,#874bfa,#5a6cf2);color:white;font-weight:800;font:inherit;cursor:pointer}button.danger{background:#9f3447}button:disabled{opacity:.55}#status{margin-top:14px;white-space:pre-wrap}.links{display:flex;gap:16px;flex-wrap:wrap;margin-top:18px}.links a{color:#c6aaff}
+</style>
+</head>
+<body><main class="panel">
+<div class="eyebrow">LOREVERSE · ACCOUNT CONTROL</div>
+<h1>Бүртгэл устгах хүсэлт</h1>
+<p>Энэ үйлдэл таны LOREVERSE хэрэглэгчийн бүртгэл болон түүнтэй холбогдсон профайл, нийтлэл/харилцааны хэрэглэгчийн өгөгдөл, хадгалсан файлуудыг устгана. Нийтэд нээлттэй, бусдын оруулсан мэдээлэл болон хууль ёсны бүртгэл хадгалалтын шаардлагад хамаарах мэдээлэлд тусгай нөхцөл үйлчилж болно.</p>
+<p><b>Устгах үйлдлийг буцаах боломжгүй.</b> Үргэлжлүүлэхийн тулд бүртгэлдээ имэйл, нууц үгээрээ дахин нэвтэрч, баталгаажуулна уу.</p>
+<form id="deleteForm">
+<label for="email">Бүртгэлтэй имэйл</label><input id="email" type="email" autocomplete="username" required>
+<label for="password">Нууц үг</label><input id="password" type="password" autocomplete="current-password" required>
+<label for="confirm">Баталгаажуулахын тулд DELETE гэж бичнэ үү</label><input id="confirm" autocomplete="off" required>
+<button class="danger" id="submit" type="submit">Миний бүртгэлийг бүрмөсөн устгах</button>
+</form>
+<div id="status" role="status" aria-live="polite"></div>
+<div class="links"><a href="../legal/#privacy">Нууцлалын бодлого</a><a href="../">LOREVERSE руу буцах</a></div>
+</main>
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
+const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
+const form=document.getElementById("deleteForm"),status=document.getElementById("status"),button=document.getElementById("submit");
+form.addEventListener("submit",async event=>{
+ event.preventDefault();
+ if(document.getElementById("confirm").value.trim()!=="DELETE"){status.textContent="Баталгаажуулах талбарт DELETE гэж яг бичнэ үү.";return;}
+ if(!confirm("Таны LOREVERSE бүртгэл болон холбогдох өгөгдлийг бүрмөсөн устгах уу? Энэ үйлдлийг буцаах боломжгүй."))return;
+ button.disabled=true;status.textContent="Нэвтрэлт болон устгах хүсэлтийг шалгаж байна…";
+ try{
+  const {data:login,error:loginError}=await supabase.auth.signInWithPassword({email:document.getElementById("email").value.trim(),password:document.getElementById("password").value});
+  if(loginError||!login.user)throw new Error("Имэйл эсвэл нууц үг буруу байна.");
+  const {data,error}=await supabase.functions.invoke("delete-my-account",{body:{confirm:"DELETE_MY_LOREVERSE_ACCOUNT"}});
+  if(error)throw new Error(data?.error||error.message||"Устгах хүсэлт амжилтгүй.");
+  if(data?.error)throw new Error(data.error);
+  await supabase.auth.signOut();
+  form.hidden=true;status.textContent=data?.message||"Бүртгэл устгагдлаа.";
+ }catch(error){status.textContent=error?.message||"Алдаа гарлаа. Дахин оролдоно уу.";}
+ finally{button.disabled=false;}
+});
+</script>
+</body></html>
