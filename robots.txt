@@ -1,8 +1,8 @@
 User-agent: *
 Allow: /
-Disallow: /lore-archive/admin/
-Disallow: /lore-archive/chat/
-Disallow: /lore-archive/editorial/
-Disallow: /lore-archive/tools/
+Disallow: /admin/
+Disallow: /chat/
+Disallow: /editorial/
+Disallow: /tools/
 
 Sitemap: https://lore-archive.pages.dev/sitemap.xml
