@@ -41,6 +41,20 @@ Deno.serve(async (req: Request) => {
       return json({ error: "Бүртгэлдээ нэвтэрнэ үү." }, 401, headers);
     }
     const token = authorization.slice(7);
+    const tokenParts = token.split(".");
+    if (tokenParts.length !== 3) return json({ error: "Нэвтрэлт хүчингүй байна." }, 401, headers);
+    let claims: Record<string, unknown>;
+    try {
+      const encoded = tokenParts[1].replace(/-/g, "+").replace(/_/g, "/");
+      claims = JSON.parse(atob(encoded.padEnd(Math.ceil(encoded.length / 4) * 4, "=")));
+    } catch {
+      return json({ error: "Нэвтрэлтийн мэдээлэл буруу байна." }, 401, headers);
+    }
+    const authTime = Number(claims.auth_time || 0);
+    const now = Math.floor(Date.now() / 1000);
+    if (!authTime || now - authTime > 600 || authTime > now + 60) {
+      return json({ error: "Аюулгүй байдлын үүднээс имэйл, нууц үгээрээ дахин нэвтэрч баталгаажуулна уу." }, 401, headers);
+    }
     const userClient = createClient(url, anonKey, {
       global: { headers: { Authorization: authorization } },
       auth: { persistSession: false, autoRefreshToken: false },
