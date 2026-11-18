@@ -1120,6 +1120,26 @@ html.winter-effects-off .winter-snow{display:none}
 @media(max-width:650px){#manga .manga-featured{padding:12px}#manga .carousel-track .media-card{flex-basis:195px;width:195px}}
 @media(prefers-reduced-motion:reduce){#manga .carousel-viewport{scroll-behavior:auto}}
 </style>
+<style id="loreverse-mobile-header-fix">
+@media(max-width:1024px){
+  html,body{max-width:100%;overflow-x:hidden}
+  .wrap{width:calc(100% - 24px);max-width:100%}
+  .topbar{height:auto!important;min-height:58px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;padding:8px 0!important}
+  .topbar>.brand{order:1;min-width:0;flex:1 1 auto;font-size:16px;white-space:nowrap}
+  .topbar>.mobile-nav-toggle{order:2;display:inline-flex!important;flex:0 0 44px;width:44px;height:42px;align-items:center;justify-content:center;margin:0 0 0 auto}
+  .topbar>.nav{display:none!important;order:4;flex:1 0 100%;width:100%;min-width:0;max-height:min(65vh,480px);overflow-y:auto;overflow-x:hidden;padding:8px!important;gap:6px!important;flex-direction:column!important;align-items:stretch!important;background:#100d20;border:1px solid var(--line);border-radius:14px}
+  .topbar>.nav.open{display:flex!important}
+  .topbar>.nav a{display:block;width:100%;white-space:normal;padding:10px 12px;border:1px solid #ffffff12;border-radius:9px;background:#171127;font-size:13px}
+  .topbar>.actions{order:3;display:flex;flex:0 1 auto;max-width:100%;gap:5px;align-items:center;justify-content:flex-end}
+  .topbar>.actions .ghost,.topbar>.actions .select{padding:7px 8px;font-size:10px;min-width:0}
+  .topbar>.actions #appUpdateQuickOpen{display:none}
+}
+@media(max-width:420px){
+  .topbar>.brand{font-size:14px;letter-spacing:.06em}
+  .topbar>.brand .mark{width:32px;height:32px}
+  .topbar>.actions .winter-toggle span{display:none}
+}
+</style>
 <style id="hide-community-feed-section">/* Community Feed-ийг нүүрнээс түр нуув; нийтлэл болон өгөгдөл устгаагүй. */#communityFeed{display:none!important}</style>
 </head>
 <body>
