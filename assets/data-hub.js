@@ -19,7 +19,9 @@
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),timeoutMs);
   try{
-   return await fetch(url,{...(options||{}),signal:controller.signal});
+   const response=await fetch(url,{...(options||{}),signal:controller.signal});
+   const payload=await response.json();
+   return{ok:response.ok,status:response.status,json:async()=>payload};
   }catch(error){
    if(error&&error.name==="AbortError")throw new Error("Хүсэлт 15 секундэд хариу ирүүлсэнгүй. Сүлжээ эсвэл API-г шалгана уу.");
    throw error;
