@@ -2,6 +2,27 @@ name: Build LOREVERSE Android APK
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/android-debug.yml'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'capacitor.config.ts'
+      - 'assets/**'
+      - 'admin/**'
+      - 'archive/**'
+      - 'chat/**'
+      - 'community/**'
+      - 'editorial/**'
+      - 'games/**'
+      - 'knowledge/**'
+      - 'legal/**'
+      - 'rank/**'
+      - 'status/**'
+      - 'uid-lookup/**'
+      - 'universe-hub/**'
 
 permissions:
   contents: read
@@ -25,7 +46,7 @@ jobs:
           java-version: '21'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build web assets
         run: npm run build
@@ -78,6 +99,7 @@ jobs:
           p.write_text(s)
           print("Configured a separate .test package. Existing app identity and signing key are untouched.")
           PY
+
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug
@@ -88,4 +110,5 @@ jobs:
           name: LOREVERSE-Android-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+
 # Test APK uses Gradle's temporary debug signing and a separate .test application ID.
