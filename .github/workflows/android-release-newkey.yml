@@ -114,6 +114,21 @@ jobs:
         working-directory: android
         run: ./gradlew assembleRelease bundleRelease
 
+      - name: Verify AAB signature and 64-bit coverage
+        run: |
+          set -euo pipefail
+          AAB="android/app/build/outputs/bundle/release/app-release.aab"
+          test -s "$AAB"
+          jarsigner -verify -verbose -certs "$AAB" >/dev/null
+          if unzip -l "$AAB" | grep -qE 'base/lib/[^/]+/'; then
+            unzip -l "$AAB" | grep -q 'base/lib/arm64-v8a/' || {
+              echo "::error::Native libraries are bundled but arm64-v8a is missing"
+              exit 1
+            }
+          else
+            echo "No native .so libraries found; 64-bit ABI coverage is not applicable to this pure-Java bundle."
+          fi
+
       - name: Verify APK package and signature
         run: |
           set -euo pipefail
