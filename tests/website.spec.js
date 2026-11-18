@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-const baseURL = process.env.BASE_URL || 'https://loreverse-ctrl.github.io/lore-archive/';
+const baseURL = process.env.BASE_URL || 'https://lore-archive.pages.dev/';
 
 test.describe('LOREVERSE website health', () => {
   test('homepage loads over HTTPS and exposes core sections', async ({ page }) => {
@@ -36,7 +36,7 @@ test.describe('LOREVERSE website health', () => {
     const robotsText = await robots.text();
     expect(sitemapText).toContain('<urlset');
     expect(sitemapText).toContain('/lore-archive/knowledge/');
-    expect(robotsText).toContain('Sitemap: https://loreverse-ctrl.github.io/lore-archive/sitemap.xml');
+    expect(robotsText).toContain('Sitemap: https://lore-archive.pages.dev/sitemap.xml');
     expect(robotsText).toContain('Disallow: /lore-archive/admin/');
     expect(robotsText).toContain('Disallow: /lore-archive/editorial/');
   });
