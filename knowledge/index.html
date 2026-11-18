@@ -15,7 +15,7 @@
 <div class="wrap">
 <header class="top"><a class="brand" href="../">LOREVERSE</a><a class="back" href="../">← Үндсэн сайт руу буцах</a></header>
 <section class="hero"><div class="eyebrow">LOREVERSE KNOWLEDGE BASE</div><h1>Ертөнцийн <span style="color:#bba2ff">мэдлэгийн сан</span></h1><p>Тоглоом, анимэний ертөнц, түүх, гол ойлголт болон нэр томьёог нэг дороос судлаарай. Энэ хэсэг нь gaming-knowledge-platform багцын Монгол хэл дээрх мэдээллийн бүтцийг LOREVERSE-д тохируулан нэгтгэсэн хувилбар юм.</p>
-<div class="tools"><input id="search" type="search" placeholder="Тоглоом, анимэ, нэр томьёогоор хайх…" aria-label="Мэдээлэл хайх"><select id="filter" aria-label="Ангилал"><option value="all">Бүх ангилал</option><option value="game">Тоглоом</option><option value="anime">Анимэ</option></select></div>
+<div class="tools"><input id="search" type="search" placeholder="Тоглоом, анимэ, нэр томьёогоор хайх…" aria-label="Мэдээлэл хайх"><select id="filter" aria-label="Ангилал"><option value="all">Бүх ангилал</option><option value="game">Тоглоом</option><option value="anime">Анимэ</option><option value="manga">Манга</option><option value="light_novel">Light Novel</option><option value="web_novel">Web Novel</option></select></div>
 </section>
 <section id="games"><div class="section-head"><h2>Тоглоомын ертөнц</h2><span class="count" id="gameCount"></span></div><div class="grid" id="gameGrid"></div></section>
 <section id="anime" class="anime"><div class="section-head"><h2>Анимэний ертөнц</h2><span class="count" id="animeCount"></span></div><div class="grid" id="animeGrid"></div></section>
@@ -23,31 +23,56 @@
 <footer class="foot">LOREVERSE · Ертөнцийн мэдлэг нэг дор · Мэдээлэл шинэчлэгдэх боломжтой</footer>
 </div>
 <script>
-const games = [
-{n:"Genshin Impact",d:"HoYoverse",tag:"Teyvat-ийн нууцууд",desc:"Teyvat тивд өрнөх нээлттэй ертөнцийн action RPG. Аялагч алга болсон ах эгчээ хайж, үндэстнүүдээр аялна. Үндэстэн бүр нэг элемент, нэг Archon-той холбоотой.",terms:[["Teyvat","Тоглоомын ертөнц болох тив."],["Archon","Үндэстэн бүрийг захирдаг бурхан."],["Vision","Элементийн хүчийг ашиглах боломж олгодог бэлгэдэл."],["Khaenri'ah","Түүхэнд сүйрсэн нууцлаг орон."]]},
-{n:"Wuthering Waves",d:"Kuro Games",tag:"Resonator-ийн ертөнц",desc:"Нээлттэй ертөнцийн action RPG. Санах ойгүй сэрсэн Resonator дэлхийг сүйтгэсэн гамшгийн нууцыг тайлахаар аялна.",terms:[["Resonator","Онцгой хүч (Resonance) агуулсан хүн."],["Lament","Ертөнцийг сүйрүүлсэн гамшиг."],["Tacet Discord","Дэлхий дээр аюул учруулдаг дайсагнагч оршнолууд."],["Rover","Үндсэн дүр, тоглогчийн дүр."]]},
-{n:"ANANTA",d:"Хөгжүүлэлтийн шатанд",tag:"Нууцлаг хотын амьдрал",desc:"Орчин үеийн хотын орчинд өрнөх, ер бусын үзэгдэл бүхий нээлттэй ертөнцийн тоглоом. Албан ёсны мэдээлэл өөрчлөгдөж магадгүй.",terms:[]},
-{n:"Honkai: Star Rail",d:"HoYoverse",tag:"Оддын аялал",desc:"Сансрын уран зөгнөлт, ээлжлэн тулалддаг RPG. Trailblazer Astral Express галт тэргээр ертөнцүүдээр аялж, Stellaron-той холбоотой нууцыг мөрдөнө.",terms:[["Astral Express","Орчлон ертөнцөөр аялдаг галт тэрэг."],["Trailblazer","Үндсэн дүр, зам нээгч."],["Stellaron","Ертөнцөд аюул авчирдаг нууцлаг үзэгдэл."],["Aeon","Нэг Зам (Path)-ыг төлөөлдөг бурхан шиг оршнол."]]},
-{n:"Zenless Zone Zero",d:"HoYoverse",tag:"New Eridu-ийн түүх",desc:"Хотын уран зөгнөлт action RPG. Гамшгийн дараа үлдсэн New Eridu хотод Proxy нар Hollow руу орох хүмүүсийг чиглүүлдэг.",terms:[["New Eridu","Тоглоомын гол хот."],["Hollow","Аюултай, орон зайн гажуудалтай бүс."],["Proxy","Hollow руу орох хүмүүсийг чиглүүлэгч."],["Ethereal","Hollow дахь дайсагнагч оршнолууд."]]},
-{n:"Arknights",d:"Hypergryph",tag:"Terra-ийн ертөнц",desc:"Стратегийн tower-defense RPG. Terra ертөнцөд Originium-ын гамшиг, Infected хүмүүсийн зовлон, Rhodes Island-ийн ажиллагааг дагана.",terms:[["Terra","Тоглоомын ертөнц."],["Originium","Эрчим хүчний эх үүсвэр болдог ч аюултай эрдэс."],["Oripathy","Originium-аас үүсэх өвчин."],["Rhodes Island","Тоглогчийн ажилладаг байгууллага."]]},
-{n:"Blue Archive",d:"Nexon",tag:"Kivotos-ийн архив",desc:"Сургуулийн сэдэвтэй RPG. Тоглогч Sensei болж, Kivotos дахь сурагчдад тусална.",terms:[["Kivotos","Олон академитай хот-улс."],["Schale","Sensei ажилладаг байгууллага."],["Sensei","Тоглогчийн дүр, багш."]]}
-];
-const anime = [
-{n:"Frieren: Beyond Journey's End",d:"Madhouse",y:2023},
-{n:"Attack on Titan",d:"Wit Studio / MAPPA",y:2013},
-{n:"Fullmetal Alchemist: Brotherhood",d:"Bones",y:2009},
-{n:"Cowboy Bebop",d:"Sunrise",y:1998},
-{n:"Steins;Gate",d:"White Fox",y:2011}
-];
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function render(){
- const q=document.getElementById("search").value.trim().toLowerCase(), f=document.getElementById("filter").value;
- const gs=games.filter(g=>(f==="all"||f==="game")&&[g.n,g.d,g.tag,g.desc,...g.terms.flat()].join(" ").toLowerCase().includes(q));
- const as=anime.filter(a=>(f==="all"||f==="anime")&&[a.n,a.d,a.y].join(" ").toLowerCase().includes(q));
- document.getElementById("gameGrid").innerHTML=gs.map(g=>'<article class="card"><span class="tag">ТОГЛООМ</span><h3>'+esc(g.n)+'</h3><div class="meta">'+esc(g.d)+' · '+esc(g.tag)+'</div><p>'+esc(g.desc)+'</p>'+(g.terms.length?'<details class="terms"><summary>Гол нэр томьёо ('+g.terms.length+')</summary><ul>'+g.terms.map(t=>'<li><b>'+esc(t[0])+'</b> — '+esc(t[1])+'</li>').join("")+'</ul></details>':'')+'</article>').join("");
- document.getElementById("animeGrid").innerHTML=as.map(a=>'<article class="card"><span class="tag">АНИМЭ</span><h3>'+esc(a.n)+'</h3><div class="meta">'+esc(a.d)+' · '+a.y+'</div></article>').join("");
- document.getElementById("gameCount").textContent=gs.length+" тоглоом";document.getElementById("animeCount").textContent=as.length+" анимэ";document.getElementById("games").style.display=(f==="anime"?"none":"block");document.getElementById("anime").style.display=(f==="game"?"none":"block");document.getElementById("empty").style.display=gs.length+as.length?"none":"block";
+const SUPABASE_URL="https://nfacspfctvunwbxtvvyi.supabase.co";
+const SUPABASE_KEY="sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1";
+const typeNames={game:"ТОГЛООМ",anime:"АНИМЭ",manga:"МАНГА",light_novel:"LIGHT NOVEL",web_novel:"WEB NOVEL",visual_novel:"VISUAL NOVEL",other:"БУСАД"};
+let works=[],entities=[],loadError="";
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const typeLabel=t=>typeNames[t]||"БҮТЭЭЛ";
+async function loadKnowledge(){
+ const gameGrid=document.getElementById("gameGrid"),animeGrid=document.getElementById("animeGrid");
+ gameGrid.innerHTML=animeGrid.innerHTML='<article class="card">Мэдээллийн сангаас ачаалж байна…</article>';
+ try{
+  const {createClient}=await import("https://esm.sh/@supabase/supabase-js@2.119.0");
+  const db=createClient(SUPABASE_URL,SUPABASE_KEY);
+  const [wr,er]=await Promise.all([
+   db.from("archive_works").select("id,slug,canonical_title,work_type,release_year,archive_franchises!inner(name,slug,category),archive_work_translations!inner(title,synopsis,language_code,editorial_status,canon_status,spoiler_level,sources)").eq("status","published").eq("archive_franchises.status","published").eq("archive_work_translations.language_code","mn").eq("archive_work_translations.editorial_status","published").order("canonical_title"),
+   db.from("archive_entities").select("id,work_id,franchise_id,entity_type,canonical_name,archive_entity_translations!inner(display_name,description,language_code,editorial_status)").eq("status","published").eq("archive_entity_translations.language_code","mn").eq("archive_entity_translations.editorial_status","published")
+  ]);
+  if(wr.error)throw wr.error;if(er.error)throw er.error;
+  works=(wr.data||[]).map(w=>({...w,translation:(w.archive_work_translations||[])[0]||{},franchise:w.archive_franchises||{}}));
+  entities=(er.data||[]).map(e=>({...e,translation:(e.archive_entity_translations||[])[0]||{}}));
+  render();
+ }catch(e){loadError=e.message||String(e);gameGrid.innerHTML='<article class="card">Мэдээлэл татахад алдаа гарлаа: '+esc(loadError)+'</article>';animeGrid.innerHTML="";}
 }
-document.getElementById("search").addEventListener("input",render);document.getElementById("filter").addEventListener("change",render);render();
+function render(){
+ const q=document.getElementById("search").value.trim().toLocaleLowerCase();
+ const f=document.getElementById("filter").value;
+ const matches=works.filter(w=>{
+  const t=w.translation||{},fr=w.franchise||{};
+  const text=[w.canonical_title,t.title,t.synopsis,fr.name,fr.slug,w.work_type,...entities.filter(e=>e.work_id===w.id||e.franchise_id===w.franchise_id).flatMap(e=>[e.canonical_name,e.translation.display_name,e.translation.description])].join(" ").toLocaleLowerCase();
+  return (f==="all"||w.work_type===f)&&text.includes(q);
+ });
+ const games=matches.filter(w=>["game"].includes(w.work_type));
+ const anime=matches.filter(w=>["anime","manga","light_novel","web_novel","visual_novel","other"].includes(w.work_type));
+ const card=w=>{
+  const t=w.translation||{},fr=w.franchise||{};
+  const related=entities.filter(e=>(e.work_id&&e.work_id===w.id)||(!e.work_id&&e.franchise_id===w.franchise_id));
+  const sources=Array.isArray(t.sources)?t.sources:[];
+  return '<article class="card"><span class="tag">'+typeLabel(w.work_type)+'</span><h3>'+esc(t.title||w.canonical_title)+'</h3><div class="meta">'+esc(fr.name||"LOREVERSE")+" · "+(w.release_year||"")+'</div><p>'+esc(t.synopsis||"Танилцуулга удахгүй нэмэгдэнэ.")+'</p>'+(related.length?'<details class="terms"><summary>Дүр, газар, ойлголт ('+related.length+')</summary><ul>'+related.map(e=>'<li><b>'+esc(e.translation.display_name||e.canonical_name)+'</b> — '+esc(e.translation.description||"")+'</li>').join("")+'</ul></details>':'')+(sources.length?'<div class="terms"><b>Эх сурвалж</b><ul>'+sources.map(s=>'<li><a class="back" target="_blank" rel="noopener noreferrer" href="'+esc(s.url||"#")+'">'+esc(s.label||"Эх сурвалж")+' ↗</a></li>').join("")+'</ul></div>':'')+'<div class="meta">Canon төлөв: '+esc(t.canon_status||"unknown")+' · Spoiler: '+esc(t.spoiler_level||"none")+'</div></article>';
+ };
+ document.getElementById("gameGrid").innerHTML=games.map(card).join("");
+ document.getElementById("animeGrid").innerHTML=anime.map(card).join("");
+ document.getElementById("gameCount").textContent=games.length+" бүтээл";
+ document.getElementById("animeCount").textContent=anime.length+" бүтээл";
+ document.getElementById("games").style.display=(f!=="all"&&f!=="game")?"none":"block";
+ document.getElementById("anime").style.display=(f==="game")?"none":"block";
+ document.getElementById("empty").style.display=matches.length?"none":"block";
+ document.getElementById("empty").textContent=q?"Таны хайлтад тохирох мэдээлэл олдсонгүй.":"Одоогоор нийтлэгдсэн мэдээлэл алга.";
+}
+document.getElementById("search").addEventListener("input",render);
+document.getElementById("filter").addEventListener("change",render);
+loadKnowledge();
+
 </script>
 </body></html>
