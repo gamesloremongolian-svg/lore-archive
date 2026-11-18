@@ -35,10 +35,10 @@ test.describe('LOREVERSE website health', () => {
     const sitemapText = await sitemap.text();
     const robotsText = await robots.text();
     expect(sitemapText).toContain('<urlset');
-    expect(sitemapText).toContain('/lore-archive/knowledge/');
+    expect(sitemapText).toContain('/knowledge/');
     expect(robotsText).toContain('Sitemap: https://lore-archive.pages.dev/sitemap.xml');
-    expect(robotsText).toContain('Disallow: /lore-archive/admin/');
-    expect(robotsText).toContain('Disallow: /lore-archive/editorial/');
+    expect(robotsText).toContain('Disallow: /admin/');
+    expect(robotsText).toContain('Disallow: /editorial/');
   });
 
   test('winter festival decorations can be toggled and respect reduced motion', async ({ page }) => {
