@@ -105,7 +105,7 @@ if(!window.supabase?.createClient){
 }
 const supabase=window.supabase.createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
 const $=id=>document.getElementById(id);
-let user=null,role=null,currentDraft=null,savedId=null;
+let user=null,role=null,currentDraft=null,savedId=null,savedArchiveId=null;
 const say=(id,msg)=>$(id).textContent=msg;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let entering=false;
@@ -183,27 +183,34 @@ $("importResponse").onclick=()=>{
   if(!title||!slug||!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)||body.length<100)throw new Error("Гарчиг, латин slug (a-z, 0-9, зураас) эсвэл 100-аас дээш тэмдэгттэй агуулгаа шалгана уу.");
   const canon=["canon","non_canon","theory","unknown"].includes(d.canon_status)?d.canon_status:"unknown";
   const sourceList=$("sources").value.split(/\n+/).map(x=>x.trim()).filter(Boolean);
-  currentDraft={title,slug,summary:String(d.summary||""),body,canon_status:canon,editorial_warnings:Array.isArray(d.editorial_warnings)?d.editorial_warnings:[],source_urls:sourceList,topic,universe:$("universe").value,content_type:$("type").value};savedId=null;
+  currentDraft={title,slug,summary:String(d.summary||""),body,canon_status:canon,editorial_warnings:Array.isArray(d.editorial_warnings)?d.editorial_warnings:[],source_urls:sourceList,topic,universe:$("universe").value,content_type:$("type").value};savedId=null;savedArchiveId=null;
   $("draftTitle").value=title;$("draftSlug").value=slug;$("draftSummary").value=currentDraft.summary;$("draftBody").value=body;$("canon").value=canon;
   $("warnings").textContent=currentDraft.editorial_warnings.join("\n")||"ChatGPT-ийн тусгай анхааруулга алга. Баримт, эх сурвалжийг редактор өөрөө шалгана.";
   $("editor").classList.remove("hidden");say("genState","Ноорог редакторт орлоо. Шалгаад хадгална уу.");$("editor").scrollIntoView({behavior:"smooth"});
  }catch(e){say("genState","JSON уншиж чадсангүй: "+e.message);}
 };
 
-$("discard").onclick=()=>{$("editor").classList.add("hidden");currentDraft=null;savedId=null;};
+$("discard").onclick=()=>{$("editor").classList.add("hidden");currentDraft=null;savedId=null;savedArchiveId=null;};
 async function saveDraft(){
  if(!currentDraft){say("saveMsg","Эхлээд AI ноорог үүсгэнэ үү.");return;}
  const row={topic:currentDraft.topic,universe:currentDraft.universe,content_type:currentDraft.content_type,title:$("draftTitle").value.trim(),slug:$("draftSlug").value.trim(),summary:$("draftSummary").value.trim(),body:$("draftBody").value,source_urls:currentDraft.source_urls,canon_status:$("canon").value,status:"draft",created_by:user.id};
  if(!row.title||!row.slug||row.body.length<100){say("saveMsg","Гарчиг, slug болон агуулгаа шалгана уу.");return;}
+ const archiveRow={content_type:row.content_type,title:row.title,slug:row.slug,summary:row.summary,body:{text:row.body,canon_status:row.canon_status,editorial_warnings:currentDraft.editorial_warnings||[]},language_code:"mn",status:"draft",author_id:user.id,game_title:row.universe||null,source_urls:row.source_urls||[],is_premium:false};
+ let archiveResult=savedArchiveId
+  ?await supabase.from("content_posts").update({...archiveRow,updated_at:new Date().toISOString()}).eq("id",savedArchiveId).select("id").single()
+  :await supabase.from("content_posts").insert(archiveRow).select("id").single();
+ if(archiveResult.error){say("saveMsg","Lore Archive-д хадгалж чадсангүй: "+archiveResult.error.message);return;}
+ savedArchiveId=archiveResult.data.id;
+ const aiRow={...row,archive_post_id:savedArchiveId};
  let result;
- if(savedId)result=await supabase.from("ai_editorial_drafts").update({...row,updated_at:new Date().toISOString()}).eq("id",savedId).select("id").single();
- else result=await supabase.from("ai_editorial_drafts").insert(row).select("id").single();
- if(result.error){say("saveMsg","Хадгалж чадсангүй: "+result.error.message);return;}
- savedId=result.data.id;currentDraft={...currentDraft,...row};say("saveMsg","Ноорог хадгалагдлаа · "+savedId);await loadDrafts();
+ if(savedId)result=await supabase.from("ai_editorial_drafts").update({...aiRow,updated_at:new Date().toISOString()}).eq("id",savedId).select("id").single();
+ else result=await supabase.from("ai_editorial_drafts").insert(aiRow).select("id").single();
+ if(result.error){say("saveMsg","Lore Archive-д хадгалсан боловч редакцын дараалалд бүртгэж чадсангүй: "+result.error.message);return;}
+ savedId=result.data.id;currentDraft={...currentDraft,...row};say("saveMsg","Lore Archive-д ноорог хадгаллаа · "+savedArchiveId);await loadDrafts();
 }
 $("saveDraft").onclick=saveDraft;
 async function loadDrafts(){
- const {data,error}=await supabase.from("ai_editorial_drafts").select("id,title,topic,universe,content_type,canon_status,status,source_urls,created_at,created_by,published_post_id").order("created_at",{ascending:false}).limit(50);
+ const {data,error}=await supabase.from("ai_editorial_drafts").select("id,title,topic,universe,content_type,canon_status,status,source_urls,created_at,created_by,published_post_id,archive_post_id").order("created_at",{ascending:false}).limit(50);
  if(error){say("draftList","Уншихад алдаа: "+error.message);return;}
  if(!data?.length){$("draftList").textContent="Одоогоор ноорог алга.";return;}
  $("draftList").innerHTML=data.map(d=>'<article class="draft"><h3>'+esc(d.title)+'</h3><span class="pill">'+esc(d.status)+'</span><span class="pill">'+esc(d.canon_status)+'</span><p class="muted">'+esc(d.topic)+' · '+esc(d.universe)+' · '+new Date(d.created_at).toLocaleString("mn-MN")+'</p><p class="muted">Эх сурвалж: '+(Array.isArray(d.source_urls)?d.source_urls.length:0)+'</p><div class="row"><button class="secondary" data-open="'+d.id+'">Нээх / засах</button>'+(d.status==="draft"?'<button data-review="'+d.id+'">Хяналтад илгээх</button>':"")+(["owner","admin"].includes(role)&&d.status==="review"&&!d.published_post_id?'<button data-publish="'+d.id+'">Шалгаж нийтлэх</button>':"")+'</div></article>').join("");
@@ -213,7 +220,7 @@ async function loadDrafts(){
 }
 async function openDraft(id){
  const {data,error}=await supabase.from("ai_editorial_drafts").select("*").eq("id",id).single();if(error){alert(error.message);return;}
- savedId=data.id;currentDraft={topic:data.topic,universe:data.universe,content_type:data.content_type,source_urls:data.source_urls||[]};
+ savedId=data.id;savedArchiveId=data.archive_post_id||null;currentDraft={topic:data.topic,universe:data.universe,content_type:data.content_type,source_urls:data.source_urls||[],editorial_warnings:[]};
  $("topic").value=data.topic;$("universe").value=data.universe;$("type").value=data.content_type;$("draftTitle").value=data.title;$("draftSlug").value=data.slug;$("draftSummary").value=data.summary;$("draftBody").value=data.body;$("canon").value=data.canon_status;$("editor").classList.remove("hidden");$("workspace").scrollIntoView({behavior:"smooth"});
 }
 async function markReview(id){
@@ -225,9 +232,13 @@ async function publishDraft(id){
  const {data:d,error}=await supabase.from("ai_editorial_drafts").select("*").eq("id",id).single();if(error){alert(error.message);return;}
  if(d.status!=="review"||d.published_post_id){alert("Зөвхөн хяналтад байгаа, өмнө нийтлэгдээгүй нооргийг нийтэлнэ.");return;}
  if(!confirm("Энэ нийтлэлийг LOREVERSE-д нийтлэх үү? Эх сурвалж, canon тэмдэглэгээг шалгасан байх ёстой."))return;
- const {data:post,error:postError}=await supabase.from("content_posts").insert({content_type:d.content_type,title:d.title,slug:d.slug,summary:d.summary,body:{text:d.body},language_code:"mn",status:"published",author_id:d.created_by,published_at:new Date().toISOString(),game_title:d.universe||null,source_urls:d.source_urls||[]}).select("id").single();
- if(postError){alert("Нийтэлж чадсангүй: "+postError.message);return;}
- const {error:updateError}=await supabase.from("ai_editorial_drafts").update({status:"approved",reviewed_by:user.id,published_post_id:post.id,updated_at:new Date().toISOString()}).eq("id",id);
+ const postPayload={status:"published",published_at:new Date().toISOString(),updated_at:new Date().toISOString()};
+ let postResult=d.archive_post_id
+  ?await supabase.from("content_posts").update(postPayload).eq("id",d.archive_post_id).select("id").single()
+  :await supabase.from("content_posts").insert({content_type:d.content_type,title:d.title,slug:d.slug,summary:d.summary,body:{text:d.body,canon_status:d.canon_status},language_code:"mn",status:"published",author_id:d.created_by,published_at:new Date().toISOString(),game_title:d.universe||null,source_urls:d.source_urls||[],is_premium:false}).select("id").single();
+ if(postResult.error){alert("Lore Archive-д нийтэлж чадсангүй: "+postResult.error.message);return;}
+ const post=postResult.data;
+ const {error:updateError}=await supabase.from("ai_editorial_drafts").update({status:"approved",reviewed_by:user.id,published_post_id:post.id,archive_post_id:post.id,updated_at:new Date().toISOString()}).eq("id",id);
  if(updateError){alert("Нийтлэл үүслээ, гэхдээ нооргийн төлөв шинэчлэгдсэнгүй. Admin-аар шалгуулна уу. Post ID: "+post.id);return;}
  alert("Нийтлэл амжилттай нийтлэгдлээ.");await loadDrafts();
 }
