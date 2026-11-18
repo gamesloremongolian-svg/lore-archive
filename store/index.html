@@ -19,12 +19,14 @@ const $=id=>document.getElementById(id);let user=null,tab="catalog",catalog=[],o
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function say(s){$("status").textContent=s}
 async function load(){const {data:{session}}=await supabase.auth.getSession();user=session?.user||null;$("authBtn").textContent=user?"Гарах":"Нэвтрэх";
-if(!user){$("balance").textContent="Нэвтэр";catalog=[];owned.clear();render();say("Худалдан авалт хийхийн тулд LOREVERSE аккаунтаараа нэвтэрнэ үү.");return}
-const [{data:bal,error:be},{data:items,error:ie},{data:inv,error:ve}]=await Promise.all([
-supabase.from("profiles").select("lore_coins").eq("id",user.id).single(),supabase.from("lore_coin_items").select("id,name,description,coin_cost,item_type,icon,sort_order").eq("enabled",true).order("sort_order"),
+const {data:items,error:ie}=await supabase.from("lore_coin_items").select("id,name,description,coin_cost,item_type,icon,sort_order").eq("enabled",true).order("sort_order");
+if(ie)throw ie;catalog=items||[];
+if(!user){$("balance").textContent="Нэвтэр";owned.clear();render();say("Каталог нээлттэй. Худалдан авалт хийхийн тулд LOREVERSE аккаунтаараа нэвтэрнэ үү.");return}
+const [{data:bal,error:be},{data:inv,error:ve}]=await Promise.all([
+supabase.from("profiles").select("lore_coins").eq("id",user.id).single(),
 supabase.from("user_reward_inventory").select("item_id").eq("status","active")
 ]);
-if(be)throw be;if(ie)throw ie;if(ve)throw ve;$("balance").textContent=Number(bal.lore_coins||0).toLocaleString("en-US");catalog=items||[];owned=new Set((inv||[]).map(x=>x.item_id));render()}
+if(be)throw be;if(ve)throw ve;$("balance").textContent=Number(bal.lore_coins||0).toLocaleString("en-US");owned=new Set((inv||[]).map(x=>x.item_id));render()}
 function render(){const list=tab==="catalog"?catalog:catalog.filter(x=>owned.has(x.id));$("heading").textContent=tab==="catalog"?"Онцлох бараанууд":"Миний цуглуулга";$("subheading").textContent=tab==="catalog"?"LORE COIN-оор худалдан авч, аккаунтаараа хадгална.":"Таны эзэмшдэг бүх гоёл чимэглэл.";
 if(!list.length){$("items").innerHTML='<div class="empty" style="grid-column:1/-1">'+(tab==="catalog"?"Одоогоор бараа алга.":"Одоогоор цуглуулсан зүйл алга. Дэлгүүрээс эхний бараагаа аваарай.")+'</div>';return}
 $("items").innerHTML=list.map(x=>{const has=owned.has(x.id);return '<article class="item"><div class="item-icon">'+esc(x.icon)+'</div><h3>'+esc(x.name)+'</h3><p>'+esc(x.description)+'</p><div class="itemfoot"><span class="price">'+(has?"Эзэмшдэг":Number(x.coin_cost).toLocaleString("en-US")+" ✦")+'</span>'+(tab==="catalog"?'<button class="btn primary" data-buy="'+x.id+'" '+(has?"disabled":"")+'>'+(has?"Авсан":"Худалдаж авах")+'</button>':(x.item_type==="sticker_pack"?'<span class="muted">Цуглуулгад нэмэгдсэн</span>':'<button class="btn" data-equip="'+x.id+'">Тоноглох</button>'))+'</div></article>'}).join("")}
