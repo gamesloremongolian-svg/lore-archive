@@ -18,6 +18,10 @@ jobs:
     env:
       ANDROID_DEBUG_KEYSTORE_BASE64: ${{ secrets.ANDROID_DEBUG_KEYSTORE_BASE64 }}
       ANDROID_DEBUG_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_DEBUG_KEYSTORE_PASSWORD }}
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -109,45 +113,69 @@ jobs:
           print("compileSdkVersion=36 and targetSdkVersion=36")
           PY
 
-      - name: Configure persistent debug APK signing
+      - name: Configure and verify original LOREVERSE signing key
+        id: signing
         run: |
           set -euo pipefail
-          test -n "$ANDROID_DEBUG_KEYSTORE_BASE64" || { echo "::error::Missing ANDROID_DEBUG_KEYSTORE_BASE64 repository secret."; exit 1; }
-          test -n "$ANDROID_DEBUG_KEYSTORE_PASSWORD" || { echo "::error::Missing ANDROID_DEBUG_KEYSTORE_PASSWORD repository secret."; exit 1; }
+          EXPECTED="1651193714a7e5610bbdc20fa228374db1728a955bc2e880b55e9def2f5ad343"
+          KEYSTORE="$HOME/.android/loreverse-original.keystore"
           mkdir -p "$HOME/.android"
-          printf '%s' "$ANDROID_DEBUG_KEYSTORE_BASE64" | base64 --decode > "$HOME/.android/loreverse-debug.keystore"
-          chmod 600 "$HOME/.android/loreverse-debug.keystore"
-          echo "Checking keystore file and alias (password is never printed)."
-          test -s "$HOME/.android/loreverse-debug.keystore" || { echo "::error::Decoded keystore file is empty."; exit 1; }
-          keytool -list -keystore "$HOME/.android/loreverse-debug.keystore" -storepass "$ANDROID_DEBUG_KEYSTORE_PASSWORD" -alias loreverse
+          chmod 700 "$HOME/.android"
+          valid=""
+          if [ -n "$ANDROID_DEBUG_KEYSTORE_BASE64" ] && [ -n "$ANDROID_DEBUG_KEYSTORE_PASSWORD" ]; then
+            printf '%s' "$ANDROID_DEBUG_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE" 2>/dev/null || true
+            if [ -s "$KEYSTORE" ] && keytool -list -keystore "$KEYSTORE" -storepass "$ANDROID_DEBUG_KEYSTORE_PASSWORD" -alias loreverse >/dev/null 2>&1; then
+              echo "Candidate persistent debug key opened."
+              ALIAS="loreverse"
+              STORE_PASS="$ANDROID_DEBUG_KEYSTORE_PASSWORD"
+              KEY_PASS="$ANDROID_DEBUG_KEYSTORE_PASSWORD"
+              valid="yes"
+            fi
+          fi
+          if [ -z "$valid" ] && [ -n "$ANDROID_KEYSTORE_BASE64" ] && [ -n "$ANDROID_KEYSTORE_PASSWORD" ] && [ -n "$ANDROID_KEY_ALIAS" ] && [ -n "$ANDROID_KEY_PASSWORD" ]; then
+            printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE" 2>/dev/null || true
+            if [ -s "$KEYSTORE" ] && keytool -list -keystore "$KEYSTORE" -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$ANDROID_KEY_ALIAS" >/dev/null 2>&1; then
+              echo "Candidate Android keystore opened."
+              ALIAS="$ANDROID_KEY_ALIAS"
+              STORE_PASS="$ANDROID_KEYSTORE_PASSWORD"
+              KEY_PASS="$ANDROID_KEY_PASSWORD"
+              valid="yes"
+            fi
+          fi
+          if [ -z "$valid" ]; then
+            echo "::error::No configured keystore could be opened. Check GitHub Actions secret names and keystore format."
+            exit 1
+          fi
+          CERT="$(keytool -list -v -keystore "$KEYSTORE" -storepass "$STORE_PASS" -alias "$ALIAS" | sed -n 's/.*SHA256: //p' | head -1 | tr -d ':')"
+          if [ -z "$CERT" ] || [ "${CERT,,}" != "$EXPECTED" ]; then
+            echo "::error::Keystore certificate does not match the installed LOREVERSE app. APK will not be built or published."
+            exit 1
+          fi
+          echo "Original LOREVERSE signing certificate verified."
+          echo "KEYSTORE_PATH=$KEYSTORE" >> "$GITHUB_ENV"
+          echo "KEYSTORE_ALIAS=$ALIAS" >> "$GITHUB_ENV"
+          echo "KEYSTORE_STORE_PASSWORD=$STORE_PASS" >> "$GITHUB_ENV"
+          echo "KEYSTORE_KEY_PASSWORD=$KEY_PASS" >> "$GITHUB_ENV"
           python3 - <<'PY'
           from pathlib import Path
           p = Path("android/app/build.gradle")
           s = p.read_text()
-          if "loreverse-debug.keystore" in s:
-              raise SystemExit("Persistent signing configuration already exists; refusing duplicate patch.")
           block = '''
               signingConfigs {
                   debug {
-                      storeFile file(System.getProperty("user.home") + "/.android/loreverse-debug.keystore")
-                      storePassword System.getenv("ANDROID_DEBUG_KEYSTORE_PASSWORD")
-                      keyAlias "loreverse"
-                      keyPassword System.getenv("ANDROID_DEBUG_KEYSTORE_PASSWORD")
+                      storeFile file(System.getenv("KEYSTORE_PATH"))
+                      storePassword System.getenv("KEYSTORE_STORE_PASSWORD")
+                      keyAlias System.getenv("KEYSTORE_ALIAS")
+                      keyPassword System.getenv("KEYSTORE_KEY_PASSWORD")
                   }
               }
           '''
           marker = "    buildTypes {"
           if marker not in s:
               raise SystemExit("Could not find Android buildTypes block.")
-          s = s.replace(marker, block + "\n" + marker + '\n        debug { signingConfig signingConfigs.debug }', 1)
+          s = s.replace(marker, block + "\\n" + marker + '\\n        debug { signingConfig signingConfigs.debug }', 1)
           p.write_text(s)
           PY
-
-      - name: Verify persistent debug signing secrets
-        run: |
-          set -euo pipefail
-          test -n "$ANDROID_DEBUG_KEYSTORE_BASE64" || { echo "::error::Missing ANDROID_DEBUG_KEYSTORE_BASE64 repository secret."; exit 1; }
-          test -n "$ANDROID_DEBUG_KEYSTORE_PASSWORD" || { echo "::error::Missing ANDROID_DEBUG_KEYSTORE_PASSWORD repository secret."; exit 1; }
 
       - name: Build release Android App Bundle and installable APK
         working-directory: android
