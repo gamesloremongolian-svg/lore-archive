@@ -1672,12 +1672,19 @@ async function checkAppUpdate(){
 }
 async function loadEditorialUpdates(){
  const host=$("editorialUpdateList");if(!host)return;
- const {data,error}=await cachedPublicData("editorial-updates:mn",()=>supabase.from("content_posts").select("id,title,slug,summary,content_type,language_code,published_at,updated_at,is_premium").eq("status","published").eq("is_premium",false).order("published_at",{ascending:false}).limit(6),120000);
- if(error){host.innerHTML='<div class="update-empty">Шинэ мэдээлэл татахад алдаа гарлаа. '+updateEsc(error.message)+'</div>';return;}
- const rows=(data||[]).filter(p=>p.language_code==="mn");
- if(!rows.length){host.innerHTML='<div class="update-empty">Одоогоор нийтлэгдсэн шинэ мэдээлэл алга. Админ хэсгээс нийтлэл нийтлэхэд энд автоматаар харагдана.</div>';return;}
- host.innerHTML=rows.slice(0,2).map(p=>'<article class="update-item"><div class="update-meta">'+updateEsc(String(p.content_type||"LORE").toUpperCase())+' · '+updateDate(p.published_at||p.updated_at)+'</div><strong>'+updateEsc(p.title)+'</strong>'+(p.summary?'<p class="update-desc">'+updateEsc(p.summary)+'</p>':'')+'<a class="update-link" href="#archive" data-open-lore-archive>Дэлгэрэнгүй ↗</a></article>').join("");
- host.querySelectorAll("[data-open-lore-archive]").forEach(link=>link.addEventListener("click",()=>{const archive=$("archive");if(archive)archive.hidden=false;}));
+ host.innerHTML='<div class="update-empty">Шинэ мэдээлэл ачаалж байна…</div>';
+ try{
+  const {data,error}=await supabase.from("content_posts")
+   .select("id,title,slug,summary,content_type,language_code,published_at,updated_at,is_premium")
+   .eq("status","published").eq("is_premium",false).eq("language_code","mn")
+   .order("published_at",{ascending:false}).limit(6);
+  if(error)throw error;
+  const rows=data||[];
+  if(!rows.length){host.innerHTML='<div class="update-empty">Одоогоор нийтлэгдсэн шинэ мэдээлэл алга. Админ хэсгээс нийтлэл нийтлэхэд энд автоматаар харагдана.</div>';return;}
+  host.innerHTML=rows.slice(0,2).map(p=>'<article class="update-item"><div class="update-meta">'+updateEsc(String(p.content_type||"LORE").toUpperCase())+' · '+updateDate(p.published_at||p.updated_at)+'</div><strong>'+updateEsc(p.title)+'</strong>'+(p.summary?'<p class="update-desc">'+updateEsc(p.summary)+'</p>':'')+'<a class="update-link" href="editorial/?slug='+encodeURIComponent(p.slug||"")+'">Дэлгэрэнгүй ↗</a></article>').join("");
+ }catch(error){
+  host.innerHTML='<div class="update-empty">Шинэ мэдээлэл татахад алдаа гарлаа: '+updateEsc(error.message||String(error))+'</div>';
+ }
 }
 async function refreshLoreverseUpdates(){await Promise.all([checkAppUpdate().catch(()=>{}),loadEditorialUpdates()]);}
 $("checkAppUpdate")?.addEventListener("click",()=>checkAppUpdate().catch(error=>{$("appUpdateStatus").textContent="Шалгалт амжилтгүй: "+error.message;}));
