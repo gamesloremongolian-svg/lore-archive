@@ -1595,6 +1595,8 @@ import { App } from "https://esm.sh/@capacitor/app@7.0.0";
 import { Browser } from "https://esm.sh/@capacitor/browser@7.0.0";
 import { Capacitor } from "https://esm.sh/@capacitor/core@7.0.0";
 const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
+// Legacy non-module account handlers use the same authenticated client.
+window.supabase=supabase;
 const $=id=>document.getElementById(id);
 async function cachedPublicData(key,query,ttl=300000){try{return{data:await window.LOREVERSE_DATA_HUB.remember("supabase:public:"+key,async()=>{const{data,error}=await query();if(error)throw error;return data||[];},ttl),error:null};}catch(error){return{data:null,error};}}
 /* Site activity is initialized by an isolated script below the activity section. */
