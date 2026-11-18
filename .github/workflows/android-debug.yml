@@ -74,7 +74,7 @@ jobs:
           marker = "    buildTypes {"
           if s.count(marker) != 1:
               raise SystemExit("Could not safely locate the Android buildTypes block.")
-          s = s.replace(marker, marker + '\\n        debug { applicationIdSuffix ".test" }', 1)
+          s = s.replace(marker, marker + '\n        debug { applicationIdSuffix ".test" }', 1)
           p.write_text(s)
           print("Configured a separate .test package. Existing app identity and signing key are untouched.")
           PY
