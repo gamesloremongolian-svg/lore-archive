@@ -124,25 +124,35 @@ jobs:
           chmod 700 "$HOME/.android"
           valid=""
           if [ -n "$ANDROID_DEBUG_KEYSTORE_BASE64" ] && [ -n "$ANDROID_DEBUG_KEYSTORE_PASSWORD" ]; then
-            printf '%s' "$ANDROID_DEBUG_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE" 2>/dev/null || true
-            if [ -s "$KEYSTORE" ]; then
-              KEY_LIST="$(keytool -list -v -keystore "$KEYSTORE" -storepass "$ANDROID_DEBUG_KEYSTORE_PASSWORD" 2>/dev/null || true)"
-              DEBUG_ALIAS="$(printf '%s\n' "$KEY_LIST" | awk -v expected="$EXPECTED" '
-                /^Alias name: / { current=substr($0, index($0, ": ") + 2) }
-                /SHA256: / {
-                  fingerprint=$NF
-                  gsub(":", "", fingerprint)
-                  if (tolower(fingerprint) == tolower(expected)) { print current; exit }
-                }
-              ')"
-              if [ -n "$DEBUG_ALIAS" ]; then
-                echo "Original signing certificate found in persistent debug keystore (alias verified)."
-                ALIAS="$DEBUG_ALIAS"
-                STORE_PASS="$ANDROID_DEBUG_KEYSTORE_PASSWORD"
-                KEY_PASS="$ANDROID_DEBUG_KEYSTORE_PASSWORD"
-                if [ -n "$ANDROID_DEBUG_KEY_PASSWORD" ]; then KEY_PASS="$ANDROID_DEBUG_KEY_PASSWORD"; fi
-                valid="yes"
+            KEY_B64="$(printf '%s' "$ANDROID_DEBUG_KEYSTORE_BASE64" | tr -d '[:space:]')"
+            if printf '%s' "$KEY_B64" | base64 --decode > "$KEYSTORE" 2>/dev/null && [ -s "$KEYSTORE" ]; then
+              echo "Persistent keystore decoded ($(wc -c < "$KEYSTORE" | tr -d ' ') bytes)."
+              if KEY_LIST="$(keytool -list -v -keystore "$KEYSTORE" -storepass "$ANDROID_DEBUG_KEYSTORE_PASSWORD" 2>&1)"; then
+                DEBUG_ALIAS="$(printf '%s\n' "$KEY_LIST" | awk -v expected="$EXPECTED" '
+                  /^Alias name: / { current=substr($0, index($0, ": ") + 2) }
+                  /SHA256: / {
+                    fingerprint=$NF
+                    gsub(":", "", fingerprint)
+                    if (tolower(fingerprint) == tolower(expected)) { print current; exit }
+                  }
+                ')"
+                if [ -n "$DEBUG_ALIAS" ]; then
+                  echo "Original signing certificate found in persistent keystore (alias verified)."
+                  ALIAS="$DEBUG_ALIAS"
+                  STORE_PASS="$ANDROID_DEBUG_KEYSTORE_PASSWORD"
+                  KEY_PASS="$ANDROID_DEBUG_KEYSTORE_PASSWORD"
+                  if [ -n "$ANDROID_DEBUG_KEY_PASSWORD" ]; then KEY_PASS="$ANDROID_DEBUG_KEY_PASSWORD"; fi
+                  valid="yes"
+                else
+                  echo "::warning::Keystore opened, but none of its aliases matched the installed LOREVERSE signing certificate."
+                  printf '%s\n' "$KEY_LIST" | awk '/^Alias name: / { alias=$0 } /SHA256: / { print alias " " $0 }'
+                fi
+              else
+                echo "::warning::Keystore bytes were decoded, but keytool could not open it with ANDROID_DEBUG_KEYSTORE_PASSWORD."
+                printf '%s\n' "$KEY_LIST" | tail -n 3
               fi
+            else
+              echo "::warning::ANDROID_DEBUG_KEYSTORE_BASE64 is not valid base64 or decoded to an empty file."
             fi
           fi
           if [ -z "$valid" ] && [ -n "$ANDROID_KEYSTORE_BASE64" ] && [ -n "$ANDROID_KEYSTORE_PASSWORD" ] && [ -n "$ANDROID_KEY_ALIAS" ] && [ -n "$ANDROID_KEY_PASSWORD" ]; then
