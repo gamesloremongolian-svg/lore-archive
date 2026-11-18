@@ -6,12 +6,13 @@ const allowedOrigins = new Set([
   "https://loreverse-ctrl.github.io",
   "capacitor://localhost",
   "https://localhost",
+  "https://e-archive.pages.dev",
 ]);
 
 function cors(req: Request) {
   const origin = req.headers.get("Origin") || "";
   const headers = new Headers({
-    "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-retry-count, traceparent, tracestate, baggage",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Max-Age": "86400",
     "Content-Type": "application/json; charset=utf-8",

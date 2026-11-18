@@ -131,4 +131,54 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('#loreAiPanel')).not.toHaveClass(/open/);
   });
 
+  test('homepage exposes the shared Supabase client to account handlers', async ({ page }) => {
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(
+      () => typeof window.supabase?.auth?.getUser === 'function',
+      null,
+      { timeout: 25000 }
+    );
+  });
+
+  test('manga catalogue leaves its loading state after a slow or failed API request', async ({ page }) => {
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#mangaRailStatus')).not.toContainText(
+      'Манганы каталогоос мэдээлэл ачаалж байна…',
+      { timeout: 25000 }
+    );
+  });
+
+  test('browser-facing Supabase Edge Functions allow both production Pages origins', async ({ request }) => {
+    const functions = [
+      'admin-user-management',
+      'delete-my-account',
+      'translate-to-english',
+      'translate-to-mongolian',
+      'qpay-payment',
+      'lore-ai',
+      'editorial-ai-draft'
+    ];
+    const origins = ['https://e-archive.pages.dev', 'https://lore-archive.pages.dev'];
+    for (const name of functions) {
+      for (const origin of origins) {
+        const response = await request.fetch(
+          'https://nfacspfctvunwbxtvvyi.supabase.co/functions/v1/' + name,
+          {
+            method: 'OPTIONS',
+            headers: {
+              Origin: origin,
+              'Access-Control-Request-Method': 'POST',
+              'Access-Control-Request-Headers': 'authorization,apikey,content-type,x-client-info'
+            }
+          }
+        );
+        expect(response.status(), name + ' CORS preflight for ' + origin).toBe(200);
+        expect(response.headers()['access-control-allow-origin']).toBe(origin);
+        const allowedHeaders = response.headers()['access-control-allow-headers'] || '';
+        for (const header of ['authorization', 'apikey', 'content-type', 'x-client-info']) {
+          expect(allowedHeaders.toLowerCase()).toContain(header);
+        }
+      }
+    }
+  });
 });

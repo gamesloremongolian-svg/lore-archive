@@ -57,12 +57,71 @@ body{background:radial-gradient(ellipse at 12% 0%,#5b42a333,transparent 34%),rad
 .home-bottom{background:rgba(8,12,24,.96);border-top-color:#435b80}.home-bottom a,.home-bottom button{border-color:#4b6389;background:linear-gradient(110deg,#1d2b47,#17283d)}.home-bottom .nav-chat{background:linear-gradient(110deg,#6652ad,#286f89);border-color:#8cdce8}
 @media(max-width:1100px){.layout{grid-template-columns:54px minmax(0,1fr)}.side{padding:13px}.side-head{border-radius:14px;padding:12px}.main{background:#0e1526}}
 @media(min-width:1101px){.layout{grid-template-columns:76px 292px minmax(0,1fr)}}
+
+@media(max-width:700px){.top{height:auto;min-height:88px;padding:9px 12px;display:grid;grid-template-columns:minmax(0,1fr);gap:7px;align-content:center}.brand{display:block;white-space:nowrap;font-size:14px;line-height:1.35;letter-spacing:.12em}.top>div{justify-content:flex-end!important;gap:7px!important}.top .btn{padding:7px 11px;font-size:12px;min-height:36px}.layout{height:calc(100dvh - 88px - 68px);min-height:240px;grid-template-columns:54px minmax(0,1fr);overflow:hidden}.side{min-width:0;width:100%;overflow-x:hidden;padding:12px 10px}.side-head{min-width:0;gap:7px;padding:11px}.side-head>div{min-width:0;overflow-wrap:anywhere}.side-head h2{font-size:15px}.side-head .btn{flex:0 0 42px;min-width:42px;min-height:42px;padding:6px}.label{margin:17px 4px 7px;font-size:10px}#channels,#members{min-width:0;overflow-wrap:anywhere}#members{line-height:1.7}#newChannelBtn{min-height:44px}#newChannelBtn:disabled,#inviteBtn:disabled{opacity:.42;cursor:not-allowed;filter:saturate(.45)}.home-bottom{grid-template-columns:1fr 1fr 1.1fr;gap:6px;padding:7px 9px calc(7px + env(safe-area-inset-bottom))}.home-bottom a,.home-bottom button{font-size:11px;min-height:42px;padding:5px 2px}}
+@media(min-width:701px) and (max-width:1100px){.top{min-height:64px;height:auto;gap:12px}.brand{white-space:nowrap}.layout{height:calc(100dvh - 64px - 68px)}}
+.empty-hint{padding:10px 11px;border:1px dashed #536b8c;border-radius:12px;background:#17243a;color:#b6c6dc;font-size:12px;line-height:1.55}
+/* Mobile-first premium finish */
+:root{--bg:#0b1222;--panel:#121d31;--panel2:#1b2a43;--line:#344a69;--text:#f3f7ff;--muted:#a9bad2;--pink:#a99aff;--cyan:#69dce5}
+html{min-height:100%;background:var(--bg);scrollbar-color:#405879 #0b1222}
+body{min-height:100dvh;padding-bottom:calc(76px + env(safe-area-inset-bottom));background:radial-gradient(ellipse at 12% 0%,#536ab52b,transparent 36%),radial-gradient(ellipse at 92% 10%,#22a6a51a,transparent 30%),#0b1222}
+button,a,input,textarea{-webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.top{height:auto;min-height:76px;padding:10px clamp(12px,3vw,24px);gap:12px;background:rgba(9,15,29,.96);border-bottom:1px solid #50678b66;position:relative;z-index:2}
+.brand{font-size:clamp(13px,2vw,17px);white-space:nowrap;line-height:1.4}
+.top>div{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.top .btn{min-height:42px;padding:9px 14px;border-radius:13px}
+.btn{min-height:42px;border:1px solid #526b90;background:linear-gradient(145deg,#263957,#1a2b43);box-shadow:inset 0 1px #ffffff12,0 5px 14px #0002;transition:transform .16s,border-color .16s,filter .16s}
+.btn:active,.server-icon:active,.channel:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(115deg,#7864c6,#397f9d 78%,#36a5a8);border:1px solid #8edce4}
+.layout{height:calc(100dvh - 76px - 76px - env(safe-area-inset-bottom));min-height:300px;grid-template-columns:76px 280px minmax(0,1fr);overflow:hidden}
+.servers{padding:15px 10px;gap:11px;background:#080e1b;border-right:1px solid #344a69}
+.server-icon{width:48px;height:48px;border-radius:16px;background:linear-gradient(145deg,#233754,#121f34);border:1px solid #526b90;box-shadow:0 6px 16px #0003;font-size:15px}
+.server-icon.active{background:linear-gradient(145deg,#6d60b9,#277f91);border-color:#8be0e6;box-shadow:0 0 0 3px #69dce51c,0 8px 20px #0005}
+.side{padding:16px 14px;background:linear-gradient(180deg,#121d31,#10192a);border-right:1px solid #344a69;overscroll-behavior:contain}
+.side-head{padding:14px;border-radius:17px;border:1px solid #496386;background:linear-gradient(130deg,#293b5c,#1c3049 60%,#17404b);box-shadow:inset 0 1px #ffffff16,0 10px 24px #0003}
+.side-head h2{font-size:17px;line-height:1.3}.side-head .muted{font-size:11px;color:#bfd3e7}
+.label{font-size:10px;letter-spacing:.14em;color:#abc4e2;margin:20px 5px 8px}
+.channel{min-height:42px;border-radius:11px;padding:9px 11px;font-size:13px}
+.channel.active{background:linear-gradient(100deg,#34496c,#24475a);border-color:#6688ad}
+.main{background:radial-gradient(ellipse at 82% 0%,#536ab51c,transparent 42%),#0e1728}
+.head{min-height:66px;padding:12px 20px;background:#111d30;border-bottom:1px solid #344a69}
+.head h1{font-size:17px}.messages{padding:20px;gap:15px;overscroll-behavior:contain}
+.msg{max-width:min(780px,96%)}.bubble{background:linear-gradient(145deg,#1d2c46,#17243a);border-color:#405879;box-shadow:0 4px 12px #0002}
+.compose{padding:12px 16px;background:#111d30;border-top:1px solid #344a69}
+.field{background:#0b1424;border-color:#405879}.field:focus{border-color:#69dce5;box-shadow:0 0 0 3px #69dce51b}
+.home-bottom{padding:9px 12px calc(9px + env(safe-area-inset-bottom));gap:8px;background:rgba(8,14,26,.97);border-top:1px solid #405879}
+.home-bottom a,.home-bottom button{min-height:48px;border-radius:14px;border:1px solid #526b90;background:linear-gradient(145deg,#233652,#17263d);font-size:12px;letter-spacing:.02em}
+.home-bottom .nav-chat{background:linear-gradient(115deg,#705db8,#287e96);border-color:#8be0e6}
+.empty-hint{padding:13px;border:1px dashed #526b90;border-radius:13px;background:#17263d;color:#b8c9df}
+#newChannelBtn:disabled,#inviteBtn:disabled{opacity:.4;cursor:not-allowed;filter:saturate(.45);box-shadow:none}
+.auth{background:linear-gradient(145deg,#17243b,#111b2e);border-color:#405879;box-shadow:0 18px 50px #0005}
+.dialog{background:#142139;border-color:#526b90}
+.toast{bottom:calc(88px + env(safe-area-inset-bottom));max-width:calc(100vw - 28px);text-align:center}
+@media(max-width:700px){
+ .top{min-height:88px;display:flex;flex-wrap:wrap;align-content:center;justify-content:space-between;padding:8px 12px;gap:5px 8px}
+ .brand{font-size:13px;letter-spacing:.1em}.top>div{gap:6px}
+ .top .btn{min-height:36px;padding:6px 10px;font-size:12px;border-radius:11px}
+ .layout{height:calc(100dvh - 88px - 76px - env(safe-area-inset-bottom));min-height:260px;grid-template-columns:54px minmax(0,1fr)}
+ .servers{padding:11px 5px;gap:9px}.server-icon{width:40px;height:40px;border-radius:14px;font-size:13px}
+ .side{padding:12px 10px;min-width:0;overflow-x:hidden}.side-head{padding:11px;gap:7px;margin-bottom:14px}
+ .side-head h2{font-size:15px}.side-head .btn{min-width:40px;min-height:40px;padding:5px}
+ .label{margin:17px 4px 7px;font-size:10px}.channel{padding:9px 8px;min-height:40px;font-size:12px}
+ .head{padding:10px 12px;min-height:58px}.head h1{font-size:15px}
+ .messages{padding:12px;gap:12px}.compose{padding:9px;gap:7px}
+ .sticker-btn{min-width:40px;min-height:42px}textarea.field{min-width:0;font-size:13px}
+ .compose .btn{min-height:42px;padding:8px 10px}.home-bottom{grid-template-columns:1fr 1fr 1.1fr;gap:6px;padding:7px 9px calc(8px + env(safe-area-inset-bottom))}
+ .home-bottom a,.home-bottom button{min-height:45px;padding:5px 2px;font-size:10px}.empty{padding:18px 12px}
+}
+@media(min-width:701px) and (max-width:1100px){.layout{height:calc(100dvh - 76px - 76px - env(safe-area-inset-bottom));grid-template-columns:64px 260px minmax(0,1fr)}.home-bottom{display:none}body{padding-bottom:0}}
+@media(min-width:1101px){.home-bottom{display:none}body{padding-bottom:0}.layout{height:calc(100dvh - 76px)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 </style></head><body>
 <header class="top"><a class="brand" href="../">✦ LOREVERSE <span>COMMUNITY</span></a><div style="display:flex;gap:8px;align-items:center"><a class="btn" href="../chat/">Хувийн чат</a><button class="btn" id="logout" type="button">Гарах</button></div></header>
 <section class="auth" id="auth"><h1>Бүртгүүлэх</h1><p class="muted">LOREVERSE аккаунт үүсгээд Community-д нэгдээрэй.</p><form id="register"><label>Имэйл</label><input class="field" id="regEmail" type="email" autocomplete="email" required><label>Нууц үг (дор хаяж 6 тэмдэгт)</label><input class="field" id="regPassword" type="password" minlength="6" autocomplete="new-password" required><button class="btn primary" type="submit">Бүртгүүлэх</button><p class="muted" id="registerNote"></p></form><hr style="border:0;border-top:1px solid #49345f;margin:22px 0"><h2 style="font-size:17px;margin:0">Аль хэдийн бүртгэлтэй юу?</h2><form id="login"><label>Имэйл</label><input class="field" id="email" type="email" autocomplete="email" required><label>Нууц үг</label><input class="field" id="password" type="password" autocomplete="current-password" required><button class="btn" type="submit">Нэвтрэх</button><p class="muted" id="authNote"></p></form></section>
 <div class="layout hidden" id="app">
 <aside class="servers"><button class="server-icon active" id="homeBtn" title="Серверүүд">✦</button><div id="serverIcons"></div><button class="server-icon" id="createServerBtn" title="Сервер үүсгэх">＋</button><button class="server-icon" id="joinServerBtn" title="Урилгаар нэгдэх">↗</button></aside>
-<aside class="side"><div class="side-head"><div><h2 id="serverName">Таны серверүүд</h2><div class="muted" id="serverMeta">LOREVERSE COMMUNITY</div></div><button class="btn" id="inviteBtn" title="Урилга үүсгэх">＋</button></div><div class="label">ЧАТ ӨРӨӨНҮҮД</div><div id="channels"><p class="muted">Сервер сонгоно уу.</p></div><div class="label">ГИШҮҮД</div><div id="members" class="muted">—</div><div style="margin-top:20px"><button class="btn" id="newChannelBtn" style="width:100%">＋ Өрөө нэмэх</button></div></aside>
+<aside class="side"><div class="side-head"><div><h2 id="serverName">Таны серверүүд</h2><div class="muted" id="serverMeta">LOREVERSE COMMUNITY</div></div><button class="btn" id="inviteBtn" title="Урилга үүсгэх" disabled>＋</button></div><div class="label">ЧАТ ӨРӨӨНҮҮД</div><div id="channels"><p class="muted">Сервер сонгоно уу.</p></div><div class="label">ГИШҮҮД</div><div id="members" class="empty-hint">Сервер сонгоход гишүүдийн мэдээлэл энд харагдана.</div><div style="margin-top:20px"><button class="btn" id="newChannelBtn" style="width:100%" disabled>＋ Өрөө нэмэх</button></div></aside>
 <main class="main"><div class="head"><div><h1 id="channelName">LOREVERSE COMMUNITY</h1><div class="muted" id="channelDesc">Сервер сонгоод харилцаагаа эхлүүлээрэй</div></div><button class="btn" id="mobileBack">←</button></div><div class="messages" id="messages"><div class="empty"><div style="font-size:40px;color:var(--pink)">✦</div><h2>Нийгэмлэгээ байгуул</h2><p>Өөрийн сервер үүсгэх эсвэл урилгын холбоосоор нэгдэж, сувагтаа чатлаарай.</p></div></div><form class="compose" id="sendForm"><div class="sticker-wrap"><button class="sticker-btn" id="stickerToggle" type="button" title="Стикэр сонгох">☺</button><div class="sticker-panel" id="stickerPanel"><div class="sticker-tabs" id="stickerTabs"></div><div class="sticker-grid" id="stickerGrid"></div></div></div><textarea class="field" id="message" maxlength="4000" placeholder="Мессеж бичих… (Enter — илгээх, Shift+Enter — мөр шилжүүлэх)" disabled></textarea><button class="btn primary" id="sendBtn" disabled>Илгээх</button></form></main></div>
 <nav class="home-bottom" aria-label="Community навигаци"><button type="button" id="navChannels" aria-label="Чат сувгууд">☷ СУВГУУД</button><button type="button" class="nav-chat" id="navChat" aria-label="Чат руу орох">✉ ЧАТ РУУ</button><a href="../" aria-label="LOREVERSE нүүр хуудас">⌂ НҮҮР</a></nav>
 <div class="modal" id="modal"><form class="dialog" id="modalForm"><h2 id="modalTitle">Сервер үүсгэх</h2><div id="modalFields"></div><div class="dialog-actions"><button class="btn" type="button" id="cancelModal">Болих</button><button class="btn primary" type="submit" id="modalSubmit">Үүсгэх</button></div></form></div><div class="toast" id="toast"></div>
@@ -83,6 +142,9 @@ async function loadServers(){
  if(e)throw e;servers=(data||[]).map(s=>({...s,role:members.find(m=>m.server_id===s.id)?.role||"member"}));renderServers();
 }
 function renderServers(){
+ $("newChannelBtn").disabled=!activeServer||!["owner","admin"].includes(activeServer.role);
+ $("inviteBtn").disabled=!activeServer||!["owner","admin","moderator"].includes(activeServer.role);
+ $("homeBtn").classList.toggle("active",!activeServer);
  $("serverIcons").innerHTML=servers.map(s=>'<button class="server-icon '+(activeServer?.id===s.id?'active':'')+'" data-server="'+s.id+'" title="'+esc(s.name)+'">'+esc(s.name.slice(0,2).toUpperCase())+'</button>').join("");
  $("serverIcons").querySelectorAll("[data-server]").forEach(b=>b.onclick=()=>selectServer(b.dataset.server));
  if(!servers.length){$("serverName").textContent="Таны серверүүд";$("serverMeta").textContent="Одоогоор сервер алга";$("channels").innerHTML='<p class="muted">＋ дарж сервер үүсгэнэ үү.</p>';}
@@ -126,7 +188,7 @@ $("joinServerBtn").onclick=()=>showModal("Урилгаар серверт нэг
 $("homeBtn").onclick=()=>{$("app").classList.remove("show-chat");activeServer=null;renderServers()};
 $("mobileBack").onclick=()=>$("app").classList.remove("show-chat");
 $("navChannels").onclick=()=>$("app").classList.remove("show-chat");
-$("navChat").onclick=()=>$("app").classList.add("show-chat");
+$("navChat").onclick=()=>{if(!activeChannel)return toast("Эхлээд сервер болон чат өрөө сонгоно уу");$("app").classList.add("show-chat")};
 $("logout").onclick=async()=>{if(rt)await supabase.removeChannel(rt);await supabase.auth.signOut({scope:"local"});location.reload()};
 $("modalForm").onsubmit=async e=>{e.preventDefault();try{await modalAction()}catch(err){toast(err.message||"Алдаа гарлаа")}};
 async function start(session){user=session?.user||null;if(!user||user.is_anonymous){$("auth").classList.remove("hidden");$("app").classList.add("hidden");return}$("auth").classList.add("hidden");$("app").classList.remove("hidden");await loadServers();const invite=new URLSearchParams(location.search).get("invite");if(invite){$("joinServerBtn").click();$("inviteInput").value=invite;}}

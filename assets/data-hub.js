@@ -15,14 +15,26 @@
   }).finally(()=>{if(inflight.get(key)===task)inflight.delete(key);});
   inflight.set(key,task);return task;
  }
+ async function fetchWithTimeout(url,options,timeoutMs=15000){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{
+   const response=await fetch(url,{...(options||{}),signal:controller.signal});
+   const payload=await response.json();
+   return{ok:response.ok,status:response.status,json:async()=>payload};
+  }catch(error){
+   if(error&&error.name==="AbortError")throw new Error("Хүсэлт 15 секундэд хариу ирүүлсэнгүй. Сүлжээ эсвэл API-г шалгана уу.");
+   throw error;
+  }finally{clearTimeout(timer);}
+ }
  async function fetchJSON(url,options,ttl){
   const opts=options||{},method=(opts.method||"GET").toUpperCase();
-  if(method!=="GET"&&method!=="POST")return fetch(url,opts).then(r=>{if(!r.ok)throw new Error("HTTP "+r.status);return r.json();});
+  if(method!=="GET"&&method!=="POST")return fetchWithTimeout(url,opts).then(r=>{if(!r.ok)throw new Error("HTTP "+r.status);return r.json();});
   const body=typeof opts.body==="string"?opts.body:"";
   const cacheable=method==="GET"||(/graphql\.anilist\.co/i.test(url)&&method==="POST"&&/query\s*\w*\s*\{/i.test(body));
-  if(!cacheable)return fetch(url,opts).then(r=>{if(!r.ok)throw new Error("HTTP "+r.status);return r.json();});
+  if(!cacheable)return fetchWithTimeout(url,opts).then(r=>{if(!r.ok)throw new Error("HTTP "+r.status);return r.json();});
   const key=method+":"+url+":"+body;
-  const json=await remember(key,async()=>{const response=await fetch(url,opts);if(!response.ok)throw new Error("HTTP "+response.status);const value=await response.json();if(value.errors&&value.errors.length)throw new Error(value.errors[0].message||"API error");return value;},ttl||DEFAULT_TTL);
+  const json=await remember(key,async()=>{const response=await fetchWithTimeout(url,opts);if(!response.ok)throw new Error("HTTP "+response.status);const value=await response.json();if(value.errors&&value.errors.length)throw new Error(value.errors[0].message||"API error");return value;},ttl||DEFAULT_TTL);
   return{ok:true,status:200,json:async()=>json};
  }
  function invalidate(key){

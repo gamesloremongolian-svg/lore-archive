@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'LOREVERSE',
   webDir: 'www',
   bundledWebRuntime: false,
-  backgroundColor: '#080808',
+  backgroundColor: '#101827',
   ios: {
     contentInset: 'automatic',
     preferredContentMode: 'mobile'
@@ -16,12 +16,12 @@ const config: CapacitorConfig = {
   plugins: {
     SplashScreen: {
       launchShowDuration: 1200,
-      backgroundColor: '#080808',
+      backgroundColor: '#101827',
       showSpinner: false
     },
     StatusBar: {
       style: 'LIGHT',
-      backgroundColor: '#080808'
+      backgroundColor: '#101827'
     },
     Keyboard: {
       resize: 'native',
