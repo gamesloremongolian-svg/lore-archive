@@ -62,15 +62,15 @@ jobs:
           import os, re
           p = Path("android/app/build.gradle")
           s = p.read_text()
-          s, n = re.subn(r'versionCode\\s+\\d+', f'versionCode {100000 + int(os.environ["BUILD_NUMBER"])}', s, count=1)
+          s, n = re.subn(r'versionCode\s+\d+', f'versionCode {100000 + int(os.environ["BUILD_NUMBER"])}', s, count=1)
           if n != 1: raise SystemExit("Could not set versionCode")
-          s, n = re.subn(r'versionName\\s+"[^"]+"', f'versionName "3.0.{os.environ["BUILD_NUMBER"]}"', s, count=1)
+          s, n = re.subn(r'versionName\s+"[^"]+"', f'versionName "3.0.{os.environ["BUILD_NUMBER"]}"', s, count=1)
           if n != 1: raise SystemExit("Could not set versionName")
           p.write_text(s)
           v = Path("android/variables.gradle")
           t = v.read_text()
           for k in ("compileSdkVersion", "targetSdkVersion"):
-            t, n = re.subn(rf'({k}\\s*=\\s*)\\d+', rf'\\g<1>36', t, count=1)
+            t, n = re.subn(rf'({k}\s*=\s*)\d+', rf'\g<1>36', t, count=1)
             if n != 1: raise SystemExit(f"Could not set {k}")
           v.write_text(t)
           PY
@@ -102,8 +102,8 @@ jobs:
           '''
           s = s.replace(marker, signing + "\n" + marker, 1)
           import re
-          pattern = r'(buildTypes\\s*\\{[\\s\\S]*?\\n\\s*release\\s*\\{)'
-          s, count = re.subn(pattern, r'\\1\\n            signingConfig signingConfigs.release', s, count=1)
+          pattern = r'(buildTypes\s*\{[\s\S]*?\n\s*release\s*\{)'
+          s, count = re.subn(pattern, r'\1\n            signingConfig signingConfigs.release', s, count=1)
           if count != 1:
             raise SystemExit("Could not safely configure release signing")
           p.write_text(s)
