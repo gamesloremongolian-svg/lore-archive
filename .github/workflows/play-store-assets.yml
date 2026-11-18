@@ -24,8 +24,8 @@ jobs:
           rsvg-convert -w 512 -h 512 assets/loreverse-app-icon.svg -o play-store-assets/app-icon-512.png
           rsvg-convert -w 1024 -h 500 store-assets/feature-graphic.svg -o play-store-assets/feature-graphic-1024x500.png
           file play-store-assets/*.png
-          identify play-store-assets/app-icon-512.png | grep -F '512x512'
-          identify play-store-assets/feature-graphic-1024x500.png | grep -F '1024x500'
+          file play-store-assets/app-icon-512.png | grep -F '512 x 512'
+          file play-store-assets/feature-graphic-1024x500.png | grep -F '1024 x 500'
       - uses: actions/upload-artifact@v4
         with:
           name: LOREVERSE-Play-Store-Graphics
