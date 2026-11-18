@@ -52,6 +52,21 @@ a{color:#7eeaff}
 }
 @media(max-width:420px){.statgrid{grid-template-columns:1fr 1fr}#dash>.tabs{grid-template-columns:1fr 1fr}}
 
+
+/* Admin hardening: prevent mobile overflow and make controls predictable */
+html{min-width:320px;overflow-x:hidden;scroll-behavior:smooth}
+body{min-width:320px;overflow-x:hidden}
+.wrap,.panel,#dash,.tabs,#dash>[id$="Tab"]{min-width:0;max-width:100%}
+#dash .tabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,145px),1fr));align-items:stretch;overflow:visible}
+#dash .tabs button{width:100%;min-width:0;white-space:normal;overflow-wrap:anywhere;line-height:1.35}
+#dash .row>*{min-width:0;max-width:100%}
+#dash input,#dash select,#dash textarea{max-width:100%;min-width:0}
+#dash .list{overflow-wrap:anywhere;word-break:break-word}
+#dash .list button{min-height:42px}
+#dash iframe{max-width:100%}
+#dash button:focus-visible,#dash a:focus-visible{outline:3px solid #8deaff;outline-offset:3px}
+@media(max-width:700px){#dash .tabs{grid-template-columns:repeat(2,minmax(0,1fr));max-height:none;overflow:visible;position:relative;top:auto}#dash .statgrid{grid-template-columns:repeat(2,minmax(0,1fr))}#dash .statgrid .stat:last-child{grid-column:1/-1}}
+@media(max-width:360px){#dash .tabs{grid-template-columns:1fr}#dash .statgrid{grid-template-columns:1fr}#dash .statgrid .stat:last-child{grid-column:auto}}
 </style></head><body><main class="wrap"><p style="display:flex;justify-content:flex-end;align-items:center;gap:8px"><label for="lang">Interface language</label><select id="lang" style="width:auto;margin:0"><option value="mn">Монгол</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option></select></p>
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><a href="../index.html" class="brand">✦ LORE<span>VERSE</span></a><a class="btn" href="../index.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:7px">← Нүүр хуудас руу буцах</a></div>
 <section class="panel" id="authPanel"><div class="eyebrow">SECURE EDITORIAL WORKSPACE</div><h1 class="title">Админ нэвтрэх</h1><p class="muted">Бүртгэл үүсгэх эсвэл багийн бүртгэлээр нэвтэрнэ. Админ эрхийг эзэмшигч баталгаажуулсны дараа нээнэ.</p>
@@ -205,7 +220,7 @@ async function loadUsers(){
  try{
   const {users}=await callUserAdmin({action:'list'});
   say('usersMsg','Нийт '+users.length+' хэрэглэгч · эхний 200 бүртгэл');
-  $('usersList').innerHTML=users.map(u=>'<div class="list"><b>'+esc(u.email||'(имэйлгүй)')+'</b><p class="muted">Бүртгэсэн: '+new Date(u.created_at).toLocaleString('mn-MN')+' · Сүүлд нэвтэрсэн: '+(u.last_sign_in_at?new Date(u.last_sign_in_at).toLocaleString('mn-MN'):'Одоогоор нэвтрээгүй')+' · '+(u.email_confirmed_at?'Имэйл баталгаажсан':'Имэйл баталгаажаагүй')+'</p><small class="muted">UUID: '+esc(u.id)+'</small><br>'+(u.is_current?'<span class="muted">Таны одоогийн админ бүртгэл · хамгаалагдсан</span>':'<button type="button" data-delete-user="'+esc(u.id)+'" data-user-email="'+esc(u.email)+'" style="background:linear-gradient(110deg,#a33b62,#702c49)">Бүртгэл устгах</button>')+'</div>').join('')||'Бүртгэл олдсонгүй.';
+  $('usersList').innerHTML=users.map(u=>'<div class="list"><b>'+esc(u.email||'(имэйлгүй)')+'</b><p class="muted">Бүртгэсэн: '+new Date(u.created_at).toLocaleString('mn-MN')+' · Сүүлд нэвтэрсэн: '+(u.last_sign_in_at?new Date(u.last_sign_in_at).toLocaleString('mn-MN'):'Одоогоор нэвтрээгүй')+' · '+(u.email_confirmed_at?'Имэйл баталгаажсан':'Имэйл баталгаажаагүй')+'</p><small class="muted">UUID: '+esc(u.id)+'</small><br>'+(u.is_current?'<span class="muted">Таны одоогийн админ бүртгэл · хамгаалагдсан</span>':(currentStaffRole==='owner'?'<button type="button" data-delete-user="'+esc(u.id)+'" data-user-email="'+esc(u.email)+'" style="background:linear-gradient(110deg,#a33b62,#702c49)">Бүртгэл устгах</button>':'<span class="muted">Зөвхөн харах эрх · устгах үйлдэл Owner-д нээлттэй</span>'))+'</div>').join('')||'Бүртгэл олдсонгүй.';
   $('usersList').querySelectorAll('[data-delete-user]').forEach(b=>b.onclick=async()=>{
    const email=b.dataset.userEmail;
    if(!confirm('Энэ хэрэглэгчийн Auth бүртгэлийг бүрмөсөн устгах гэж байна. Үйлдлийг буцаах боломжгүй. Үргэлжлүүлэх үү?'))return;
