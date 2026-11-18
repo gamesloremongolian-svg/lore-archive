@@ -1,0 +1,29 @@
+name: LOREVERSE Play Store Assets
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install SVG renderer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y librsvg2-bin
+      - name: Render Play Store PNG assets
+        run: |
+          set -euo pipefail
+          mkdir -p play-store-assets
+          rsvg-convert -w 512 -h 512 assets/loreverse-app-icon.svg -o play-store-assets/app-icon-512.png
+          rsvg-convert -w 1024 -h 500 store-assets/feature-graphic.svg -o play-store-assets/feature-graphic-1024x500.png
+          file play-store-assets/*.png
+          identify play-store-assets/app-icon-512.png | grep -F '512x512'
+          identify play-store-assets/feature-graphic-1024x500.png | grep -F '1024x500'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LOREVERSE-Play-Store-Graphics
+          path: play-store-assets/*.png
+          if-no-files-found: error
+          retention-days: 30
