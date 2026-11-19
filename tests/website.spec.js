@@ -308,6 +308,12 @@ test.describe('LOREVERSE website health', () => {
     expect(handler).toMatch(/invoice_creation_status: "unknown"/);
     expect(handler).toMatch(/QPay invoice outcome ambiguous/);
     expect(handler).toMatch(/invoice_response: responsePayload/);
+    expect(handler).toMatch(/settle_qpay_membership_payment/);
+    expect(handler).toMatch(/already_settled/);
+    expect(migration).toMatch(/pg_advisory_xact_lock/);
+    expect(migration).toMatch(/for update/i);
+    expect(migration).toMatch(/revoke all on function public\.settle_qpay_membership_payment/i);
+    expect(migration).toMatch(/grant execute on function public\.settle_qpay_membership_payment.*service_role/i);
     const homepage = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
     expect(homepage).toMatch(/crypto\.randomUUID\(\)/);
     expect(homepage).toMatch(/idempotency_key:currentInvoiceIdempotencyKey/);
