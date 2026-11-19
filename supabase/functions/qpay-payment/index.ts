@@ -208,10 +208,16 @@ Deno.serve(async (req: Request) => {
         }
         return reply(200, responsePayload);
       } catch (error) {
-        console.error("QPay invoice flow error", error);
-        await admin.from("payment_records").update({ status: "failed" }).eq("id", payment.id);
-        await admin.from("memberships").update({ status: "cancelled" }).eq("id", membership.id);
-        return reply(502, { error: error instanceof Error ? error.message : "QPay холболтын алдаа." });
+        // A network timeout can happen after QPay accepted the invoice request.
+        // Keep the attempt unknown and block automatic re-creation with this key.
+        console.error("QPay invoice flow outcome unknown", error);
+        await admin.from("payment_records")
+          .update({ invoice_creation_status: "unknown" }).eq("id", payment.id);
+        return reply(502, {
+          error: "QPay хүсэлтийн хариу тодорхойгүй байна. Давхар нэхэмжлэл үүсгэхгүйн тулд дахин invoice үүсгэхгүй; төлөвийг админаар шалгуулна уу.",
+          payment_id: payment.id,
+          retry_safe: false,
+        });
       }
     }
 
