@@ -131,4 +131,85 @@ test.describe('LOREVERSE website health', () => {
       }
     }
   });
+
+  test('critical public routes return valid HTML on desktop and mobile', async ({ page, request }) => {
+    const routes = [
+      ['archive/', /LOREVERSE/i],
+      ['knowledge/', /LOREVERSE/i],
+      ['games/', /LOREVERSE/i],
+      ['games/genshin-impact/', /Genshin/i],
+      ['games/genshin-impact/characters/', /Genshin|дүр/i],
+      ['community/', /LOREVERSE/i],
+      ['community/feed/', /LOREVERSE/i],
+      ['chat/', /LOREVERSE/i],
+      ['store/', /LOREVERSE/i],
+      ['marketplace/', /LOREVERSE/i],
+      ['profile/', /LOREVERSE/i],
+      ['rank/', /LOREVERSE/i],
+      ['bug-report/', /Bug Hunter|LOREVERSE/i],
+      ['ai/', /LOREVERSE/i],
+      ['legal/', /LOREVERSE/i],
+      ['status/', /LOREVERSE/i],
+      ['account-deletion/', /LOREVERSE/i]
+    ];
+
+    for (const [route, titlePattern] of routes) {
+      const url = new URL(route, baseURL).toString();
+      const response = await request.get(url);
+      expect(response.status(), route + ' should be available').toBe(200);
+      expect(response.headers()['content-type'] || '', route + ' should return HTML').toContain('text/html');
+
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(url, { waitUntil: 'domcontentloaded' });
+      await expect(page.locator('body')).toBeVisible();
+      await expect(page).toHaveTitle(titlePattern);
+    }
+  });
+
+  test('bug report page keeps submission behind authentication', async ({ page }) => {
+    const response = await page.goto(new URL('bug-report/', baseURL).toString(), { waitUntil: 'domcontentloaded' });
+    expect(response).not.toBeNull();
+    expect(response.status()).toBe(200);
+    await expect(page.locator('#authPanel')).toBeVisible();
+    await expect(page.locator('#appPanel')).toBeHidden();
+    await expect(page.locator('#formPanel')).toBeHidden();
+    await expect(page.locator('#bugForm')).toHaveCount(1);
+  });
+
+  test('mobile homepage navigation is keyboard accessible', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+    const toggle = page.locator('#menuBtn');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await toggle.focus();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#mainNav')).toHaveClass(/open/);
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#mainNav')).not.toHaveClass(/open/);
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('public staff-only pages are not indexed', async ({ request }) => {
+    for (const route of ['admin/', 'editorial/', 'archive/manage.html']) {
+      const response = await request.get(new URL(route, baseURL).toString());
+      expect(response.status(), route + ' should be reachable for its login gate').toBe(200);
+      const html = await response.text();
+      expect(html, route + ' should contain a noindex directive').toMatch(/<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex/i);
+    }
+  });
+
+  test('primary public pages have no uncaught JavaScript exceptions at startup', async ({ browser }) => {
+    const routes = ['/', 'bug-report/', 'store/', 'profile/', 'community/'];
+    for (const route of routes) {
+      const page = await browser.newPage();
+      const errors = [];
+      page.on('pageerror', error => errors.push(error.message));
+      await page.goto(new URL(route, baseURL).toString(), { waitUntil: 'domcontentloaded' });
+      await page.waitForTimeout(500);
+      expect(errors, route + ' should not throw uncaught JavaScript exceptions').toEqual([]);
+      await page.close();
+    }
+  });
+
 });
