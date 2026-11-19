@@ -334,7 +334,16 @@ function render(){
  $("heading").textContent=tab==="catalog"?"Онцлох бараанууд":tab==="profile"?"Профайлаа өөрийнхөөрөө чимэглэ":"Миний цуглуулга ("+list.length+")";
  $("subheading").textContent=tab==="catalog"?"Ангиллаа сонгоод барааг урьдчилан харж, LORE COIN-оор цуглуул.":tab==="profile"?"Аватар, хүрээ, фон, нэрийн хавтан болон эффектээ сонго. Авсан зүйлээ цуглуулгаасаа тоногло.":"Таны эзэмшдэг профайл, чат болон нэмэлт гоёлууд.";
  if(!list.length){$("items").innerHTML='<div class="empty" style="grid-column:1/-1">'+(tab==="catalog"?"Энэ ангилалд бараа алга.":"Одоогоор цуглуулсан зүйл алга. Дэлгүүрээс эхний бараагаа аваарай.")+'</div>';return}
- $("items").innerHTML=list.map(x=>{const has=owned.has(x.id);return '<article class="item"><button class="item-icon" type="button" data-preview="'+x.id+'" aria-label="'+esc(x.name)+' урьдчилан харах">'+esc(x.icon)+'</button>'+itemBadges(x)+'<h3>'+esc(x.name)+'</h3><p>'+esc(x.description)+'</p><div class="itemfoot"><span class="price">'+(has?"Эзэмшдэг":Number(x.coin_cost).toLocaleString("en-US")+" ✦")+'</span><div class="item-actions"><button class="btn preview-btn" type="button" data-preview="'+x.id+'">Preview</button>'+(tab==="catalog"||tab==="profile"?(has?'<button class="btn" data-equip="'+x.id+'">Тоноглох</button>':'<button class="btn primary" data-buy="'+x.id+'">Авах</button>):(["sticker_pack","emoji_pack","soundboard_pack"].includes(x.item_type)?'<span class="muted">Цуглуулгад нэмэгдсэн</span>':'<button class="btn" data-equip="'+x.id+'">Тоноглох</button>'))+'</div></div></article>'}).join("");
+ $("items").innerHTML=list.map(x=>{
+  const has=owned.has(x.id);
+  let action="";
+  if(tab==="catalog"||tab==="profile"){
+   action=has?'<button class="btn" data-equip="'+x.id+'">Тоноглох</button>':'<button class="btn primary" data-buy="'+x.id+'">Авах</button>';
+  }else{
+   action=["sticker_pack","emoji_pack","soundboard_pack"].includes(x.item_type)?'<span class="muted">Цуглуулгад нэмэгдсэн</span>':'<button class="btn" data-equip="'+x.id+'">Тоноглох</button>';
+  }
+  return '<article class="item"><button class="item-icon" type="button" data-preview="'+x.id+'" aria-label="'+esc(x.name)+' урьдчилан харах">'+esc(x.icon)+'</button>'+itemBadges(x)+'<h3>'+esc(x.name)+'</h3><p>'+esc(x.description)+'</p><div class="itemfoot"><span class="price">'+(has?"Эзэмшдэг":Number(x.coin_cost).toLocaleString("en-US")+" ✦")+'</span><div class="item-actions"><button class="btn preview-btn" type="button" data-preview="'+x.id+'">Preview</button>'+action+'</div></div></article>';
+ }).join("");
 }
 async function purchase(id){
  if(!user){say("Худалдан авахын тулд нэвтэрнэ үү.");closePreview();return}
