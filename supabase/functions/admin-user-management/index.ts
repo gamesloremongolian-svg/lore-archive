@@ -66,5 +66,5 @@ Deno.serve(async(req:Request)=>{
    return new Response(JSON.stringify({success:true,message:"Хүсэлтийг татгалзлаа."}),{headers:cors});
   }
   return new Response(JSON.stringify({error:"Үл мэдэгдэх үйлдэл."}),{status:400,headers:cors});
- }catch(e){return new Response(JSON.stringify({error:e?.message||"Серверийн алдаа."}),{status:500,headers:cors});}
+ }catch(e){console.error("admin-user-management unexpected error",e);return new Response(JSON.stringify({error:"Серверийн алдаа гарлаа. Дахин оролдоно уу."}),{status:500,headers:cors});}
 });
