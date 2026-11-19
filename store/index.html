@@ -5,6 +5,64 @@
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 12% 0%,#536ab52b,transparent 36%),radial-gradient(ellipse at 92% 10%,#22a6a51a,transparent 30%),var(--bg);color:var(--text);font:14px/1.6 Inter,system-ui,sans-serif}a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}.top{height:68px;padding:0 max(16px,calc((100% - 1120px)/2));display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#080e1beF;position:sticky;top:0;z-index:3}.brand{font-weight:950;letter-spacing:.14em}.brand b{color:var(--teal)}.toplinks{display:flex;gap:9px;align-items:center}.btn{min-height:42px;padding:9px 14px;border:1px solid #526b90;border-radius:12px;background:linear-gradient(145deg,#263957,#1a2b43);color:white;font-weight:800}.btn.primary{background:linear-gradient(115deg,#7864c6,#397f9d 78%,#36a5a8);border-color:#8edce4}.btn:disabled{opacity:.45;cursor:not-allowed}.wrap{width:min(1120px,calc(100% - 30px));margin:30px auto 70px}.hero{padding:27px 28px;border:1px solid #526b90;border-radius:22px;background:linear-gradient(115deg,#1e2e4b,#142a3e 65%,#20365a);display:flex;justify-content:space-between;align-items:center;gap:20px;box-shadow:0 18px 55px #0004}.eyebrow{font-size:10px;letter-spacing:.2em;color:var(--teal);font-weight:900}.hero h1{font-size:clamp(27px,5vw,42px);line-height:1.12;margin:8px 0}.hero p{margin:0;color:#c0d2e7;max-width:550px}.wallet{flex:0 0 auto;min-width:155px;padding:15px 18px;border:1px solid #8bdde766;border-radius:17px;background:#0c1b2dcc;text-align:center}.wallet small{display:block;color:#9fb9d4;font-size:10px;letter-spacing:.14em}.wallet strong{font-size:27px;color:var(--teal)}.tabs{display:flex;gap:8px;margin:24px 0 17px}.tab{border:1px solid var(--line);border-radius:999px;background:#121d31;color:#c4d2e6;padding:9px 16px;font-weight:800}.tab.active{background:#29415b;border-color:var(--teal);color:white}.sectionhead{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:20px 0 13px}.sectionhead h2{margin:0;font-size:20px}.sectionhead p{margin:3px 0 0;color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.item{border:1px solid var(--line);border-radius:17px;padding:16px;background:linear-gradient(145deg,#172640,#111c30);min-width:0;display:flex;flex-direction:column;min-height:215px;box-shadow:0 10px 30px #0002}.item-icon{height:82px;display:grid;place-items:center;border:1px solid #526b904d;border-radius:13px;background:radial-gradient(circle,#42638b55,transparent 70%),#101b2e;font-size:43px}.item h3{margin:12px 0 2px;font-size:15px}.item p{margin:0 0 12px;color:var(--muted);font-size:11px;flex:1}.itemfoot{display:flex;align-items:center;justify-content:space-between;gap:8px}.price{font-weight:900;color:#83e7eb;white-space:nowrap}.empty,.notice{padding:25px;text-align:center;border:1px dashed #526b90;border-radius:16px;color:var(--muted);background:#121d31}.status{margin:14px 0;color:var(--muted);font-size:12px;min-height:20px}.hint{font-size:11px;color:var(--muted);margin-top:20px}.hidden{display:none!important}
 @media(max-width:760px){.top{height:60px;padding:0 13px}.toplinks .btn:first-child{display:none}.wrap{margin:16px auto 45px;width:calc(100% - 24px)}.hero{padding:18px;align-items:flex-start;flex-direction:column}.wallet{width:100%;display:flex;align-items:center;justify-content:space-between;text-align:left;padding:10px 14px}.wallet strong{font-size:22px}.tabs{overflow:auto;padding-bottom:4px}.tab{white-space:nowrap}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.item{padding:10px;min-height:205px}.item-icon{height:72px;font-size:36px}.item h3{font-size:13px}.itemfoot{align-items:flex-start;flex-direction:column}.itemfoot .btn{width:100%}}
 @media(max-width:360px){.grid{grid-template-columns:1fr}}
+
+/* LOREVERSE Store — refined responsive visual system */
+:root{--bg:#080f1d;--panel:#111d31;--panel2:#192944;--line:#2b405f;--text:#f4f7ff;--muted:#aebdd2;--teal:#72e1e5;--violet:#a99aff}
+body{background:radial-gradient(ellipse at 8% -8%,#6e77c52b,transparent 34%),radial-gradient(ellipse at 100% 15%,#38c6c51b,transparent 30%),linear-gradient(180deg,#0b1425,#080f1d 58%);letter-spacing:.005em}
+.top{height:72px;padding-inline:max(20px,calc((100% - 1160px)/2));background:#080e1bf2;border-bottom:1px solid #30415d;box-shadow:0 8px 26px #0002}
+.brand{font-size:14px;letter-spacing:.17em}.brand b{color:#78e2e5}
+.toplinks{gap:10px}.toplinks .btn{min-height:40px;padding:8px 15px;border-radius:11px;font-size:12px}
+.wrap{width:min(1160px,calc(100% - 40px));margin:34px auto 80px}
+.hero{position:relative;isolation:isolate;overflow:hidden;padding:clamp(24px,4vw,42px);border:1px solid #536b91;border-radius:25px;background:linear-gradient(112deg,#1b2e4d 0%,#142a43 56%,#1c3851 100%);box-shadow:0 22px 65px #0005}
+.hero:after{content:"✦";position:absolute;z-index:-1;right:21%;top:-65px;font-size:260px;line-height:1;color:#a4d8ed0b;transform:rotate(14deg);pointer-events:none}
+.hero h1{font-size:clamp(32px,5vw,48px);letter-spacing:-.045em;margin:10px 0 12px}
+.hero p{font-size:14px;line-height:1.8;color:#c5d5e9}
+.eyebrow{font-size:10px;letter-spacing:.23em}
+.wallet{min-width:175px;padding:17px 20px;border-radius:18px;background:#091a2bd9;border-color:#70dce65c;box-shadow:inset 0 1px #ffffff12}
+.wallet strong{font-size:30px;letter-spacing:-.03em}
+.tabs{gap:10px;margin:27px 0 23px}
+.tab{padding:10px 19px;border-radius:12px;background:#111d31;border-color:#344967;transition:.18s}
+.tab.active{background:linear-gradient(120deg,#294b63,#263b5d);border-color:#75dfe4;box-shadow:0 0 0 2px #75dfe41a;color:#fff}
+.sectionhead{align-items:center;margin:24px 0 16px}
+.sectionhead h2{font-size:21px;letter-spacing:-.025em}
+.sectionhead p{font-size:12px;margin-top:5px}
+.sectionhead>.btn{background:#15243a;border-color:#405778}
+.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.item{position:relative;min-height:250px;padding:15px;border-radius:19px;background:linear-gradient(150deg,#172741,#101b2e 82%);border-color:#304563;box-shadow:0 10px 28px #0002;transition:transform .2s,border-color .2s,box-shadow .2s}
+.item:hover{transform:translateY(-4px);border-color:#6bcbd5;box-shadow:0 18px 38px #0004,0 0 0 1px #69dce51a}
+.item-icon{height:112px;border-radius:14px;border-color:#344b6c;background:radial-gradient(ellipse at 50% 40%,#496b9855,transparent 72%),linear-gradient(145deg,#101d32,#14243a);font-size:48px}
+.item h3{font-size:15px;line-height:1.35;margin:14px 0 4px}
+.item p{font-size:12px;line-height:1.55;margin-bottom:15px;color:#afc0d6}
+.itemfoot{padding-top:10px;border-top:1px solid #ffffff0d}
+.price{font-size:14px;color:#83e9eb}
+.itemfoot .btn{min-height:40px;padding:8px 13px;border-radius:11px;font-size:12px}
+.itemfoot .btn.primary{background:linear-gradient(115deg,#7565c6,#397f9d 80%,#35a6a7);box-shadow:0 5px 14px #286b8050}
+.empty,.notice{background:#111d31;border-color:#344967}
+.status{padding:9px 12px;border-radius:10px;background:#101c2e}
+.hint{margin-top:22px;padding:13px 15px;border:1px solid #263b57;border-radius:12px;background:#0e192a;line-height:1.7}
+@media(min-width:1100px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:760px){
+ .top{height:64px;padding:0 14px}.toplinks{gap:7px}.toplinks .btn{padding:7px 10px;font-size:11px;min-height:37px}.toplinks .btn:first-child{display:inline-flex}
+ .wrap{width:calc(100% - 28px);margin:20px auto 54px}
+ .hero{padding:21px;border-radius:20px;gap:17px}.hero h1{font-size:clamp(30px,7vw,40px)}
+ .wallet{width:100%;min-width:0;padding:11px 15px}
+ .tabs{margin:20px 0}.sectionhead h2{font-size:19px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+ .item{min-height:236px;padding:11px;border-radius:16px}
+ .item-icon{height:86px;font-size:39px}
+ .item h3{font-size:13px;margin:11px 0 4px}
+ .item p{font-size:11px;min-height:34px}
+ .itemfoot{align-items:center;flex-direction:row;gap:6px}
+ .itemfoot .btn{width:auto;flex:1;padding:8px 7px;font-size:11px}
+}
+@media(max-width:390px){
+ .toplinks .btn:first-child{display:none}
+ .grid{gap:8px}.item{padding:9px;min-height:226px}
+ .item-icon{height:76px}.itemfoot{align-items:stretch;flex-direction:column}
+ .itemfoot .btn{width:100%}
+}
+@media(prefers-reduced-motion:reduce){.item{transition:none}.item:hover{transform:none}}
+
 </style></head><body>
 <header class="top"><a class="brand" href="../">LOREVERSE <b>STORE</b></a><div class="toplinks"><a class="btn" href="../community/">Community</a><a class="btn" href="../">Нүүр</a><button class="btn" id="authBtn">Нэвтрэх</button></div></header>
 <main class="wrap"><section class="hero"><div><div class="eyebrow">YOUR WORLD. YOUR STYLE.</div><h1>LOREVERSE STORE</h1><p>Профайл, хүрээ, тэмдэг болон чатны гоёл чимэглэлээ цуглуул. Нэг аккаунт — бүх LOREVERSE.</p></div><div class="wallet"><small>ТАНЫ LORE COIN</small><strong id="balance">—</strong></div></section>
