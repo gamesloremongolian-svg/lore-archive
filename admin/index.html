@@ -191,10 +191,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 (function(){
   var status=document.getElementById('authMsg');
   if(status) status.textContent='JavaScript шалгалт ажиллалаа. Supabase модулийг эхлүүлж байна…';
-  window.addАрга хэмжээListener('error',function(e){
+  window.addEventListener('error',function(e){
     if(status) status.textContent='JavaScript алдаа: '+(e.message||'Тодорхойгүй алдаа')+' · '+(e.filename||'')+':'+(e.lineno||'');
   });
-  window.addАрга хэмжээListener('unhandledrejection',function(e){
+  window.addEventListener('unhandledrejection',function(e){
     var reason=e.reason;
     if(status) status.textContent='Асинхрон алдаа: '+(reason&&reason.message?reason.message:String(reason));
   });
@@ -276,7 +276,7 @@ async function loadMarketplace(){
  reports.innerHTML=re?esc(re.message):(rs?.length?rs.map(x=>'<div class="list"><b>Зарын мэдээлэл</b><p>'+esc(x.reason)+'</p><span class="muted">Listing: '+esc(x.listing_id)+' · '+new Date(x.created_at).toLocaleString('mn-MN')+'</span><br><button data-report-dismiss="'+x.id+'">Шалгасан гэж тэмдэглэх</button></div>').join():'Нээлттэй мэдээлэл алга');
  reports.querySelectorAll('[data-report-dismiss]').forEach(b=>b.onclick=async()=>{const {error}=await supabase.from('marketplace_reports').update({status:'reviewed'}).eq('id',b.dataset.reportDismiss);if(error)alert(error.message);await loadMarketplace();});
 }
-$('reloadMarketplace')?.addАрга хэмжээListener('click',loadMarketplace);
+$('reloadMarketplace')?.addEventListener('click',loadMarketplace);
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 $('forgotLink').onclick=async(e)=>{e.preventDefault();const email=$('email').value.trim();if(!email){say('authMsg','Эхлээд бүртгэлтэй имэйл хаягаа оруулна уу.');$('email').focus();return}const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});say('authMsg',error?'Сэргээх имэйл илгээхэд алдаа гарлаа: '+error.message:'Нууц үг сэргээх холбоосыг илгээх хүсэлт амжилттай. Имэйл болон Spam хавтсаа шалгана уу.')};
 $('savePassword').onclick=async()=>{const p=$('newPassword').value,cp=$('confirmPassword').value;if(p.length<8){say('recoveryMsg','Нууц үг дор хаяж 8 тэмдэгт байна.');return}if(p!==cp){say('recoveryMsg','Нууц үгнүүд хоорондоо таарахгүй байна.');return}const {error}=await supabase.auth.updateUser({password:p});say('recoveryMsg',error?'Нууц үг шинэчлэхэд алдаа гарлаа: '+error.message:'Нууц үг амжилттай шинэчлэгдлээ. Одоо нэвтэрч болно.');if(!error){await supabase.auth.signOut();$('recoveryPanel').classList.add('hidden');$('authPanel').classList.remove('hidden')}};
@@ -415,7 +415,7 @@ async function loadFeedReports(){
  box.querySelectorAll('[data-feed-report]').forEach(b=>b.onclick=async()=>{const {data:{user}}=await supabase.auth.getUser();const {error}=await supabase.from('community_post_reports').update({status:b.dataset.feedStatus,reviewed_by:user.id,reviewed_at:new Date().toISOString()}).eq('id',b.dataset.feedReport);if(error)alert(error.message);await loadFeedReports()});
  box.querySelectorAll('[data-feed-hide]').forEach(b=>b.onclick=async()=>{if(!confirm('Энэ нийтлэлийг олон нийтээс нуух уу?'))return;const {error}=await supabase.from('community_posts').update({status:'hidden'}).eq('id',b.dataset.feedHide);if(error)alert(error.message);else alert('Нийтлэл нууж, Feed-ээс хаслаа.');await loadFeedReports()});
 }
-$('reloadFeedReports')?.addАрга хэмжээListener('click',loadFeedReports);
+$('reloadFeedReports')?.addEventListener('click',loadFeedReports);
 
 $('reloadНийгэмлэг').onclick=loadНийгэмлэг;
 $('grantReward').onclick=async()=>{
