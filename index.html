@@ -1271,8 +1271,8 @@ html.capacitor-app #loreverseAppNav{position:fixed;z-index:1200;left:0;right:0;b
   const native=!!(cap&&(cap.isNativePlatform?.()||["android","ios"].includes(cap.getPlatform?.())));
   if(!native)return;
   document.documentElement.classList.add("capacitor-app");
-  const path=location.pathname.replace(/\\/+$/,"/");
-  const routes={home:/\\/$/,archive:/\\/archive\\//,community:/\\/community\\//,store:/\\/store\\//,profile:/\\/profile\\//};
+  const path=location.pathname.replace(/\/+$/,"/");
+  const routes={home:/\/$/,archive:/\/archive\//,community:/\/community\//,store:/\/store\//,profile:/\/profile\//};
   const key=Object.keys(routes).find(k=>routes[k].test(path))||"home";
   const active=document.querySelector('#loreverseAppNav [data-app-route="'+key+'"]');
   if(active)active.setAttribute("aria-current","page");
