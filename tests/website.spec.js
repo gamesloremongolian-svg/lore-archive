@@ -302,8 +302,11 @@ test.describe('LOREVERSE website health', () => {
     expect(migration).toMatch(/user_id, purpose, idempotency_key/i);
     expect(handler).toMatch(/body\.idempotency_key/);
     expect(handler).toMatch(/invoice_creation_status === "created"/);
+    expect(handler).toMatch(/existingMembership\.plan_code !== planCode/);
+    expect(handler).toMatch(/existingReadError/);
     expect(handler).toMatch(/retry_safe: false/);
     expect(handler).toMatch(/invoice_creation_status: "unknown"/);
+    expect(handler).toMatch(/QPay invoice outcome ambiguous/);
     expect(handler).toMatch(/invoice_response: responsePayload/);
     const homepage = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
     expect(homepage).toMatch(/crypto\.randomUUID\(\)/);
