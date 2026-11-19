@@ -333,6 +333,26 @@ header:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;
  body::before{animation:none}
  html{scroll-behavior:auto}
 }
+
+/* Day / night theme switch */
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex:0 0 auto;border:1px solid var(--line);border-radius:999px;padding:8px 11px;background:var(--panel);color:var(--text);font:700 12px system-ui;cursor:pointer}
+.theme-toggle span:first-child{font-size:16px;line-height:1}
+html[data-theme="dark"]{color-scheme:dark;--bg:#111813;--panel:#1b251e;--panel2:#243128;--line:#344338;--muted:#a6b3a6;--text:#e7eee7;--accent:#a2bd87;--accent-strong:#78985d;--green:#8da994}
+html[data-theme="dark"] body{background:radial-gradient(ellipse at 8% 2%,rgba(54,86,68,.25),transparent 32%),radial-gradient(ellipse at 92% 18%,rgba(52,64,88,.22),transparent 30%),var(--bg);color:var(--text)}
+html[data-theme="dark"] header{background:rgba(20,29,23,.94);border-bottom-color:var(--line)}
+html[data-theme="dark"] nav,html[data-theme="dark"] nav a{color:#c4d0c4}
+html[data-theme="dark"] .stat-card,html[data-theme="dark"] .access-card,html[data-theme="dark"] .result-card,html[data-theme="dark"] .category-strip .card{background:linear-gradient(145deg,#1b261f,#202d24);border-color:#344338;color:var(--text)}
+html[data-theme="dark"] .stat-total,html[data-theme="dark"] .premium-card{background:linear-gradient(145deg,#202f25,#26382b);border-color:#405743}
+html[data-theme="dark"] .feature,html[data-theme="dark"] .category-results,html[data-theme="dark"] .premium-account{background:linear-gradient(110deg,#1c2921,#202f25);border-color:#34483a}
+html[data-theme="dark"] .access-form input,html[data-theme="dark"] .access-form select,html[data-theme="dark"] .access-form textarea,html[data-theme="dark"] .auth-panel{background:#121b15;color:var(--text);border-color:#405044}
+html[data-theme="dark"] .plan-option,html[data-theme="dark"] .payment-box{background:#172219;border-color:#3b4c3e;color:var(--text)}
+html[data-theme="dark"] .access-card h3,html[data-theme="dark"] .stats-heading h2,html[data-theme="dark"] .category-label h2,html[data-theme="dark"] .feature h2,html[data-theme="dark"] .results-heading h2{color:var(--text)}
+html[data-theme="dark"] .access-card p,html[data-theme="dark"] .category-label p,html[data-theme="dark"] .feature p,html[data-theme="dark"] .stat-label,html[data-theme="dark"] .stats-note{color:#aab8ab}
+html[data-theme="dark"] footer{background:#121a15;color:#b7c4b8}
+html[data-theme="dark"] body::before{opacity:.17}
+@media(max-width:850px){.theme-toggle{padding:7px 9px;font-size:11px}}
+@media(max-width:600px){.theme-toggle{padding:6px 8px}.theme-toggle-label{display:none}}
+
 </style>
 </head>
 <body>
@@ -348,6 +368,7 @@ header:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;
 <button type="button" data-nav-category="game">Game Worlds</button>
 </div>
 </div><a href="./editorial/">Lore & Articles</a><a href="./archive/">Archive</a><a href="./games/">Games</a><a href="./community/">Community</a><a href="#access">Эрх авах</a><a class="nav-cta" href="./rank/">Нэвтрэх</a></nav>
+<button type="button" class="theme-toggle" id="themeToggle" aria-label="Шөнийн горим асаах" aria-pressed="false"><span aria-hidden="true">☾</span><span class="theme-toggle-label">Шөнө</span></button>
 <button class="menu" id="menuBtn" aria-label="Цэс нээх" aria-expanded="false">Цэс ☰</button>
 </div></header>
 
@@ -427,6 +448,28 @@ header:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;
 
 </main>
 <footer><div class="wrap foot"><span>© 2026 LOREVERSE. Бүх эрх хуулиар хамгаалагдсан.</span><span>Монгол хэл дээрх lore & universe archive</span></div></footer>
+
+<script>
+
+(()=>{
+ const root=document.documentElement,button=document.getElementById("themeToggle");
+ if(!button)return;
+ const saved=localStorage.getItem("loreverse-theme");
+ const initial=saved==="dark"?"dark":"light";
+ function applyTheme(theme){
+  root.dataset.theme=theme;
+  const dark=theme==="dark";
+  button.setAttribute("aria-pressed",String(dark));
+  button.setAttribute("aria-label",dark?"Өдрийн горим асаах":"Шөнийн горим асаах");
+  button.querySelector("span:first-child").textContent=dark?"☀":"☾";
+  const label=button.querySelector(".theme-toggle-label");if(label)label.textContent=dark?"Өдөр":"Шөнө";
+  localStorage.setItem("loreverse-theme",theme);
+ }
+ applyTheme(initial);
+ button.addEventListener("click",()=>applyTheme(root.dataset.theme==="dark"?"light":"dark"));
+})();
+
+</script>
 
 <script>
 (()=>{
