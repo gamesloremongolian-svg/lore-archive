@@ -57,7 +57,7 @@ test.describe('LOREVERSE website health', () => {
     await expect(nav).toBeVisible();
     await expect(menuButton).toBeHidden();
 
-    for (const href of ['./', './games/', './ai/', './community/', './store/', './marketplace/', './profile/', './bug-report/', './rank/']) {
+    for (const href of ['./', './games/', './ai/', './community/', './store/', './marketplace/', './profile/', './bug-report/', '#latest-updates', './rank/']) {
       await expect(nav.locator(`a[href="${href}"]`).first(), href + ' should be visible in desktop navigation').toBeVisible();
     }
 
