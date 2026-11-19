@@ -1,0 +1,45 @@
+name: "LOREVERSE AI Design & Bug Doctor"
+description: "Бүх сайт, админ, дэлгүүр, Community болон mobile UI-г AI-аар шалгуулах"
+title: "[AI Doctor] LOREVERSE бүрэн аудит"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Энэ хүсэлт Gemini төлөвлөгөөний workflow-г эхлүүлэхэд зориулагдсан. Эхлээд issue үүсгээд, дараа нь issue comment дээр `@gemini-cli` гэж бичнэ. AI төлөвлөгөөг гаргасны дараа Owner яг `@gemini-cli /approve` гэж бичиж байж засварын PR үүсгэнэ.
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Шалгах хүрээ
+      description: Анхдагч сонголтоор бүх үндсэн хэсгийг хамруулна.
+      options:
+        - Бүх сайт + админ + дэлгүүр + Community + mobile
+        - Загвар болон mobile responsive
+        - Кодын алдаа болон ажиллагаа
+    validations:
+      required: true
+  - type: textarea
+    id: target
+    attributes:
+      label: Шалгах URL / хуудас
+      description: Нэмэлт хуудас эсвэл урсгалыг зааж өгнө үү.
+      placeholder: |
+        Бүх гол route-уудыг шалга.
+        Админ, дэлгүүр, Community, профайл, Bug Hunter.
+    validations:
+      required: false
+  - type: textarea
+    id: observations
+    attributes:
+      label: Одоогоор мэдэгдэж буй асуудал
+      description: Алдаа, зураг, төхөөрөмжийн мэдээлэл, давтах алхмууд.
+    validations:
+      required: false
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Аюулгүй ажиллагаа
+      options:
+        - label: Үндсэн branch-д шууд commit/merge/deploy хийхгүй; зөвхөн тусдаа branch болон Pull Request бэлтгэнэ.
+          required: true
+        - label: Database schema, RLS, secrets болон production deployment тохиргоонд хүрэхгүй.
+          required: true

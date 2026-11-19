@@ -87,6 +87,8 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('#login')).toBeVisible();
     await expect(page.locator('#signup')).toHaveCount(0);
     await expect(page.locator('[data-tab="system"]')).toHaveCount(1);
+    await expect(page.locator('#aiDoctorNavTab')).toHaveCount(1);
+    await expect(page.locator('#aiDoctorTab')).toBeHidden();
     await expect(page.locator('#runSystemCheck')).toHaveCount(1);
   });
 
@@ -227,7 +229,7 @@ test.describe('LOREVERSE website health', () => {
         };
         export function createClient(){
           return {
-            auth:{getSession:async()=>({data:{session:{user}},error:null}),signOut:async()=>({error:null})},
+            auth:{getSession:async()=>({data:{session:{user}},error:null}),signOut:async()=>({error:null}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})},
             from:query,
             rpc:async(name,args)=>{if(name!=='redeem_lore_coins'||args.p_item_id!==item.id)return {data:null,error:{message:'Unexpected RPC'}};if(purchased)return {data:null,error:{message:'Already purchased'}};if(coins<item.coin_cost)return {data:null,error:{message:'Not enough LORE Coins'}};coins-=item.coin_cost;purchased=true;return {data:{success:true},error:null}}
           };
@@ -236,8 +238,10 @@ test.describe('LOREVERSE website health', () => {
     }));
     await page.goto(new URL('store/', baseURL).toString(), { waitUntil: 'domcontentloaded' });
     await expect(page.locator('#balance')).toContainText('100', { timeout: 10000 });
-    await expect(page.locator('#items [data-buy="test-frame"]')).toBeVisible({ timeout: 10000 });
-    await page.locator('#items [data-buy="test-frame"]').click();
+    await expect(page.locator('#items [data-preview="test-frame"]').first()).toBeVisible({ timeout: 10000 });
+    await page.locator('#items [data-preview="test-frame"]').first().click();
+    await expect(page.locator('#previewActions [data-modal-buy="test-frame"]')).toBeVisible();
+    await page.locator('#previewActions [data-modal-buy="test-frame"]').click();
     await expect(page.locator('#balance')).toContainText('60');
     await expect(page.locator('#ownedCount')).toContainText('1');
     await expect(page.locator('#status')).toContainText('Худалдан авалт амжилттай');
@@ -251,11 +255,14 @@ test.describe('LOREVERSE website health', () => {
         const user={id:'test-user',email:'test@loreverse.invalid'};
         const item={id:'test-frame',name:'Test Frame',description:'Test',coin_cost:400,item_type:'profile_frame',icon:'✦',sort_order:1,created_at:new Date().toISOString()};
         const q=table=>{const x={select(){return x},eq(){return x},order(){return x},single(){return Promise.resolve({data:{lore_coins:20},error:null})},then(a,b){return Promise.resolve({data:table==='lore_coin_items'?[item]:[],error:null}).then(a,b)}};return x};
-        export function createClient(){return {auth:{getSession:async()=>({data:{session:{user}},error:null})},from:q,rpc:async()=>({data:null,error:{message:'Not enough LORE Coins'}})}}
+        export function createClient(){return {auth:{getSession:async()=>({data:{session:{user}},error:null}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})},from:q,rpc:async()=>({data:null,error:{message:'Not enough LORE Coins'}})}}
       `
     }));
     await page.goto(new URL('store/', baseURL).toString(), { waitUntil: 'domcontentloaded' });
-    await page.locator('#items [data-buy="test-frame"]').click();
+    await expect(page.locator('#items [data-preview="test-frame"]').first()).toBeVisible({ timeout: 10000 });
+    await page.locator('#items [data-preview="test-frame"]').first().click();
+    await expect(page.locator('#previewActions [data-modal-buy="test-frame"]')).toBeVisible();
+    await page.locator('#previewActions [data-modal-buy="test-frame"]').click();
     await expect(page.locator('#status')).toContainText('Not enough LORE Coins');
     await expect(page.locator('#ownedCount')).toContainText('0');
   });
