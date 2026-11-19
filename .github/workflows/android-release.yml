@@ -7,6 +7,7 @@ on:
     paths:
       - 'capacitor.config.ts'
       - 'assets/loreverse-app-icon.svg'
+      - 'assets/loreverse-app-icon.jpg.base64'
       - 'scripts/set-android-icon.py'
       - '.github/workflows/android-release.yml'
 
