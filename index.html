@@ -353,6 +353,33 @@ html[data-theme="dark"] body::before{opacity:.17}
 @media(max-width:850px){.theme-toggle{padding:7px 9px;font-size:11px}}
 @media(max-width:600px){.theme-toggle{padding:6px 8px}.theme-toggle-label{display:none}}
 
+
+/* Holiday gifts calendar */
+.holiday-section{padding:30px 0 22px}
+.holiday-heading{max-width:760px;margin:0 auto 18px;text-align:center}
+.holiday-heading h2{font-size:clamp(24px,4vw,34px);line-height:1.15;letter-spacing:-.04em;margin:7px 0}
+.holiday-heading p{margin:0;color:var(--muted);font-size:13px}
+.holiday-calendar{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.holiday-day{min-width:0;min-height:105px;border:1px solid #dce7dd;border-radius:15px;background:linear-gradient(145deg,#fff,#f0f6f0);color:#314536;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px;cursor:pointer;box-shadow:0 5px 16px rgba(40,70,50,.05)}
+.holiday-day:disabled{cursor:default;opacity:.65}
+.holiday-day .gift-day{font-size:10px;letter-spacing:.12em;font-weight:850;color:#78915f}
+.holiday-day .gift-icon{font-size:25px;line-height:1.2}
+.holiday-day .gift-label{font-size:10px;font-weight:800;text-align:center}
+.holiday-day.is-open{background:linear-gradient(145deg,#eef5eb,#e1edde);border-color:#b8ceb5}
+.holiday-day.is-today{outline:2px solid #c6a96a;outline-offset:2px}
+.holiday-grand{display:flex;align-items:center;gap:18px;margin-top:18px;padding:20px 22px;border:1px solid #d9e5da;border-radius:18px;background:linear-gradient(110deg,#183d2b,#28543c);color:#fff}
+.holiday-grand-art{font-size:48px;flex:0 0 auto}
+.holiday-grand .eyebrow{color:#e2c98e}
+.holiday-grand h3{font-size:20px;margin:4px 0}
+.holiday-grand p{font-size:12px;color:#e0ebe2;margin:0 0 10px}
+.holiday-grand .btn{background:#d5b875;color:#243627;box-shadow:none}
+.holiday-grand .btn:disabled{opacity:.7}
+.holiday-note{text-align:center;color:var(--muted);font-size:11px;margin:12px 0 0}
+@media(max-width:600px){.holiday-section{padding:20px 0 16px}.holiday-calendar{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.holiday-day{min-height:88px;padding:8px}.holiday-grand{padding:15px;gap:12px}.holiday-grand-art{font-size:36px}.holiday-grand h3{font-size:17px}}
+html[data-theme="dark"] .holiday-day{background:linear-gradient(145deg,#1b2b20,#243629);color:#e5eee5;border-color:#405543}
+html[data-theme="dark"] .holiday-day.is-open{background:linear-gradient(145deg,#263b2b,#304a34);border-color:#627b5d}
+html[data-theme="dark"] .holiday-heading p,html[data-theme="dark"] .holiday-note{color:#aebdaf}
+
 </style>
 </head>
 <body>
@@ -377,6 +404,16 @@ html[data-theme="dark"] body::before{opacity:.17}
 <div><div class="eyebrow">MONGOLIAN LORE UNIVERSE</div><h1>Дуртай ертөнцөө <em>илүү гүнзгий</em> нээ.</h1><p class="lead">Anime, manga, тоглоомын ертөнцийн түүх, дүрүүд, нууц болон тайлбаруудыг нэг дороос. LOREVERSE — сонирхлоос мэдлэг рүү.</p></div>
 <div class="art"><img src="./assets/images/a_clean_high_resolution_anime_style_png_illustrat.png" alt="LOREVERSE-ийн мөнгөлөг үстэй, ногоон хувцаст fantasy анимэ дүр"></div>
 </section>
+
+<section class="wrap holiday-section" id="holiday-gifts" aria-labelledby="holidayTitle">
+ <div class="holiday-heading"><div class="eyebrow">SEASONAL EVENT · DECEMBER 2026</div><h2 id="holidayTitle">LOREVERSE Holiday Gifts</h2><p>Арванхоёрдугаар сарын бэлгүүдээ нээж, шинэ жилийн нууц бэлгээ хүлээж аваарай.</p></div>
+ <div class="holiday-calendar" id="holidayCalendar" aria-label="12 сарын бэлгийн календарь"></div>
+ <div class="holiday-grand" id="holidayGrand">
+  <div class="holiday-grand-art" aria-hidden="true">🎁</div><div><div class="eyebrow">NEW YEAR SPECIAL</div><h3>Шинэ жилийн нууц бэлэг</h3><p id="holidayGrandText">12-р сарын бэлгүүдээ нээгээд шинэ жилийн тусгай бэлгийг хүлээгээрэй.</p><button class="btn" type="button" id="holidayGrandButton" disabled>Удахгүй нээгдэнэ</button></div>
+ </div>
+ <p class="holiday-note" id="holidayNote" role="status">Бэлэг өдөр бүр тухайн өдөр нээгдэнэ. Өмнөх өдрийн бэлгийг нөхөж нээх боломжтой.</p>
+</section>
+
 <section class="wrap stats-section" aria-labelledby="archiveStatsTitle">
   <div class="stats-heading">
     <div class="eyebrow">LOREVERSE ARCHIVE</div>
@@ -467,6 +504,53 @@ html[data-theme="dark"] body::before{opacity:.17}
  }
  applyTheme(initial);
  button.addEventListener("click",()=>applyTheme(root.dataset.theme==="dark"?"light":"dark"));
+})();
+
+</script>
+
+<script>
+
+(()=>{
+ const grid=document.getElementById("holidayCalendar"),note=document.getElementById("holidayNote"),grand=document.getElementById("holidayGrandButton"),grandText=document.getElementById("holidayGrandText");
+ if(!grid)return;
+ const gifts=[
+  ["Lore нууц","📜","Өнөөдрийн нууц lore"],
+  ["Дүрийн баримт","🧩","Сонирхолтой дүрийн баримт"],
+  ["Өвлийн зураг","❄️","Өвлийн сэдэвт wallpaper"],
+  ["Quiz","🎯","Lore сорил"],
+  ["Нууц архив","📚","Архивын онцгой танилцуулга"],
+  ["Шинэ мэдлэг","🔮","Нууц тайлбар"],
+  ["Community","🤝","Community challenge"],
+  ["Дүрийн карт","🃏","Дүрийн танилцуулга"],
+  ["Lore quiz","✨","Нэмэлт сорил"],
+  ["Өвлийн мэнд","🌟","Баярын мэндчилгээ"],
+  ["Нууц бэлэг","🎀","Нууц бэлгийн мэндчилгээ"],
+  ["Том бэлэг","🎁","Шинэ жилийн бэлгийн урьдчилсан дохио"]
+ ];
+ const now=new Date(),year=2026,month=11,day=now.getFullYear()===year&&now.getMonth()===month?now.getDate():0;
+ const opened=JSON.parse(localStorage.getItem("loreverse-december-gifts-2026")||"[]");
+ function openGift(n){
+  if(day<n)return;
+  if(!opened.includes(n)){opened.push(n);localStorage.setItem("loreverse-december-gifts-2026",JSON.stringify(opened));}
+  const [name,icon,description]=gifts[n-1];
+  note.textContent="🎁 "+n+"-р өдрийн бэлэг: "+name+" — "+description+". Баярын мэнд!";
+  render();
+ }
+ function render(){
+  grid.innerHTML="";
+  gifts.forEach((gift,i)=>{
+   const n=i+1,available=day>=n,was=opened.includes(n),btn=document.createElement("button");
+   btn.type="button";btn.className="holiday-day"+(was?" is-open":"")+(day===n?" is-today":"");
+   btn.disabled=!available;btn.innerHTML='<span class="gift-day">DECEMBER</span><span class="gift-icon">'+(was?"🎉":available?gift[1]:"🔒")+'</span><span class="gift-label">'+(was?"Нээгдсэн":n+"-р өдөр")+'</span>';
+   btn.setAttribute("aria-label",n+"-р өдрийн "+(available?"бэлгийг нээх":"бэлэг хараахан нээгдээгүй"));
+   btn.addEventListener("click",()=>openGift(n));grid.appendChild(btn);
+  });
+  const all=opened.length>=12;
+  grand.disabled=!all;grand.textContent=all?"Шинэ жилийн бэлгийг нээх":"12 бэлгээ нээгээрэй";
+  grandText.textContent=all?"Бүх 12 бэлгээ нээлээ! Шинэ жилийн мэнд хүргэе.":"12-р сарын бүх бэлгээ нээгээд шинэ жилийн тусгай мэндчилгээг нээгээрэй.";
+ }
+ grand.addEventListener("click",()=>{if(opened.length>=12){note.textContent="🎄 LOREVERSE-ээс танд шинэ жилийн халуун мэнд хүргэе! Ирэх жил илүү олон ертөнц, шинэ lore-оор уулзацгаая.";grand.textContent="Бэлэг нээгдсэн ✓";grand.disabled=true;}});
+ render();
 })();
 
 </script>
