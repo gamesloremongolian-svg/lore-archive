@@ -5,6 +5,9 @@ alter table public.payment_records
   add column if not exists invoice_response jsonb;
 
 alter table public.payment_records
+  drop constraint if exists payment_records_invoice_creation_status_check;
+
+alter table public.payment_records
   add constraint payment_records_invoice_creation_status_check
   check (invoice_creation_status in ('not_started','creating','created','unknown','failed'));
 
