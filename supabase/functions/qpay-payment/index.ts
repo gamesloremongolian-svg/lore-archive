@@ -130,11 +130,20 @@ Deno.serve(async (req: Request) => {
       }
 
       // Reuse a previously created invoice for duplicate submissions.
-      const { data: existing } = await admin.from("payment_records")
-        .select("id,invoice_creation_status,invoice_response")
+      const { data: existing, error: existingReadError } = await admin.from("payment_records")
+        .select("id,related_id,invoice_creation_status,invoice_response")
         .eq("user_id", user.id).eq("purpose", "membership").eq("provider", "qpay")
         .eq("idempotency_key", idempotencyKey).maybeSingle();
+      if (existingReadError) {
+        console.error("Idempotency lookup failed", existingReadError);
+        return reply(503, { error: "Өмнөх төлбөрийн оролдлогыг шалгаж чадсангүй. Давхар нэхэмжлэл үүсгэхгүйн тулд түр зогсоолоо." });
+      }
       if (existing) {
+        const { data: existingMembership, error: existingMembershipError } = await admin.from("memberships")
+          .select("plan_code").eq("id", existing.related_id).eq("user_id", user.id).maybeSingle();
+        if (existingMembershipError || !existingMembership || existingMembership.plan_code !== planCode) {
+          return reply(409, { error: "Энэ idempotency key өөр Premium багцын оролдлогод ашиглагдсан байна. Тухайн оролдлогыг үргэлжлүүлэх эсвэл шинэ төлбөр эхлүүлнэ үү." });
+        }
         if (existing.invoice_creation_status === "created" && existing.invoice_response) {
           return reply(200, { ...existing.invoice_response, already_created: true });
         }
@@ -187,10 +196,16 @@ Deno.serve(async (req: Request) => {
         });
         const invoice = await invoiceResponse.json().catch(() => ({}));
         if (!invoiceResponse.ok || !invoice.invoice_id) {
-          console.error("QPay invoice creation failed", invoiceResponse.status, invoice.error || invoice.message || "no invoice id");
-          await admin.from("payment_records").update({ status: "failed", invoice_creation_status: "failed" }).eq("id", payment.id);
-          await admin.from("memberships").update({ status: "cancelled" }).eq("id", membership.id);
-          return reply(502, { error: "QPay нэхэмжлэл үүсгэсэнгүй. Invoice Code болон Merchant API эрхийг шалгана уу." });
+          // A non-success or malformed response does not prove that QPay rejected
+          // the request; the provider may have created an invoice before the response failed.
+          console.error("QPay invoice outcome ambiguous", invoiceResponse.status, invoice.error || invoice.message || "no invoice id");
+          await admin.from("payment_records")
+            .update({ invoice_creation_status: "unknown" }).eq("id", payment.id);
+          return reply(502, {
+            error: "QPay нэхэмжлэлийн хариу тодорхойгүй байна. Давхар нэхэмжлэлээс сэргийлж дахин үүсгэхгүй; админаар шалгуулна уу.",
+            payment_id: payment.id,
+            retry_safe: false,
+          });
         }
         const responsePayload = {
           ok: true, payment_id: payment.id, invoice_id: invoice.invoice_id,
