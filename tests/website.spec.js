@@ -48,6 +48,46 @@ test.describe('LOREVERSE website health', () => {
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   });
 
+  test('desktop navigation is visible, fits the header and does not show the mobile MENU button', async ({ page }) => {
+    await page.setViewportSize({ width: 1366, height: 900 });
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+
+    const nav = page.locator('#mainNav');
+    const menuButton = page.locator('#menuBtn');
+    await expect(nav).toBeVisible();
+    await expect(menuButton).toBeHidden();
+
+    for (const href of ['./', './games/', './ai/', './community/', './store/', './marketplace/', './profile/', './bug-report/', './rank/']) {
+      await expect(nav.locator(`a[href="${href}"]`).first(), href + ' should be visible in desktop navigation').toBeVisible();
+    }
+
+    const layout = await page.evaluate(() => {
+      const header = document.querySelector('header');
+      const nav = document.querySelector('#mainNav');
+      const brand = document.querySelector('.brand');
+      const toggle = document.querySelector('#themeToggle');
+      const rect = element => {
+        const r = element.getBoundingClientRect();
+        return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height};
+      };
+      return {
+        viewportWidth: document.documentElement.clientWidth,
+        documentWidth: document.documentElement.scrollWidth,
+        header: rect(header),
+        nav: rect(nav),
+        brand: rect(brand),
+        themeToggle: toggle ? rect(toggle) : null
+      };
+    });
+    expect(layout.documentWidth, 'Desktop header must not create horizontal page overflow').toBeLessThanOrEqual(layout.viewportWidth + 1);
+    expect(layout.nav.left).toBeGreaterThanOrEqual(layout.header.left);
+    expect(layout.nav.right).toBeLessThanOrEqual(layout.header.right + 1);
+
+    await page.setViewportSize({ width: 1024, height: 768 });
+    await expect(nav).toBeVisible();
+    await expect(menuButton).toBeHidden();
+  });
+
   test('public sitemap and crawler rules are published', async ({ request }) => {
     const sitemap = await request.get(new URL('sitemap.xml', baseURL).toString());
     const robots = await request.get(new URL('robots.txt', baseURL).toString());
