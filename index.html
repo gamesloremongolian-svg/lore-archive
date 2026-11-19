@@ -42,7 +42,7 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 .card[aria-pressed="true"]{transform:translateY(-2px)}
 @media(max-width:520px){.cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.card{min-height:58px;padding:7px 3px;gap:5px}.symbol{flex-basis:26px;width:26px;height:26px;font-size:14px}.card h3{font-size:clamp(9px,2.65vw,12px)}}
 
-.category-label{padding-top:10px}.category-label h2{font-size:17px;letter-spacing:-.03em;margin:2px 0 0}.category-strip{padding-top:7px;padding-bottom:4px}.category-strip .cards{margin:0}@media(max-width:850px){.category-strip{padding-top:8px}}
+.category-label{padding-top:10px}.category-label h2{font-size:17px;letter-spacing:-.03em;margin:2px 0 0}.category-strip{padding-top:7px;padding-bottom:4px}.category-strip .cards{margin:0}.category-strip .card{min-height:58px;padding:7px 3px;gap:5px;flex-direction:row;align-items:center;justify-content:center}.category-strip .symbol{flex:0 0 26px;width:26px;height:26px;margin:0;font-size:14px}.category-strip .card h3{margin:0;font-size:12px}.category-strip .card p,.category-strip .card .category-tag{display:none}@media(max-width:850px){.category-strip{padding-top:8px}}
 </style>
 </head>
 <body>
@@ -54,21 +54,20 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 </div></header>
 <div class="wrap category-label"><span class="eyebrow">DISCOVER</span><h2>Өөрийн ертөнцөө сонго</h2></div>
 <div class="wrap category-strip"><div class="cards">
-<button class="card" type="button" data-category="anime" aria-pressed="false"><div class="symbol">✦</div></div>
+<button class="card" type="button" data-category="anime" aria-pressed="false"><div class="symbol">✦</div><h3>Anime</h3></button>
+<button class="card" type="button" data-category="manga" aria-pressed="false"><div class="symbol">▤</div><h3>Manga</h3></button>
+<button class="card" type="button" data-category="game" aria-pressed="false"><div class="symbol">◈</div><h3>Game</h3></button>
+</div></div>
 
+<div class="wrap category-label"><span class="eyebrow">DISCOVER</span><h2>Өөрийн ертөнцөө сонго</h2></div>
 <main id="main-content" tabindex="-1">
 <section class="wrap hero">
 <div><div class="eyebrow">MONGOLIAN LORE UNIVERSE</div><h1>Дуртай ертөнцөө <em>илүү гүнзгий</em> нээ.</h1><p class="lead">Anime, manga, тоглоомын ертөнцийн түүх, дүрүүд, нууц болон тайлбаруудыг нэг дороос. LOREVERSE — сонирхлоос мэдлэг рүү.</p><div class="actions"><a class="btn" href="./universe-hub/">Ертөнцөөр аялах ↗</a><a class="btn secondary" href="./editorial/">Шинэ нийтлэлүүд</a></div></div>
 <div class="art"><img src="./assets/images/a_clean_high_resolution_anime_style_png_illustrat.png" alt="LOREVERSE-ийн мөнгөлөг үстэй, ногоон хувцаст fantasy анимэ дүр"></div>
 </section>
 <section class="wrap">
-
-<h3>Anime Universe</h3><p>Анимэгийн дүрүүд, ертөнцийн бүтэц, үйл явдал ба нууц.</p><span class="category-tag">ANIME · CHARACTERS</span></button>
-<button class="card" type="button" data-category="manga" aria-pressed="false"><div class="symbol">▤</div><h3>Manga & Novel</h3><p>Манга, вебтүүн, ранобэгийн бүлэг, зохиол ба унших сан.</p><span class="category-tag">MANGA · NOVEL</span></button>
-<button class="card" type="button" data-category="game" aria-pressed="false"><div class="symbol">◈</div><h3>Game Worlds</h3><p>Тоглоомын ертөнц, даалгавар, lore ба далд нууцууд.</p><span class="category-tag">GAMES · LORE</span></button>
-
-</div>
 <div class="category-results" id="categoryResults" aria-live="polite" hidden><div class="results-heading"><div><div class="eyebrow">SELECTED UNIVERSE</div><h2 id="categoryTitle">Мэдээлэл</h2></div><button type="button" class="close-results" id="closeCategoryResults">Хаах ✕</button></div><p class="results-status" id="categoryStatus" role="status">Нийтлэгдсэн мэдээлэл ачаалж байна...</p><div class="results-grid" id="categoryItems"></div></div>
+
 </section>
 <section class="wrap feature"><div><div class="eyebrow">JOIN THE COMMUNITY</div><h2>Сонирхлоо бусадтай хуваалц.</h2><p>LOREVERSE-ийн community-д нэгдэж, ертөнцүүдийн тухай ярилцаарай.</p></div><a class="btn" href="./community/">Community руу ↗</a></section>
 </main>
