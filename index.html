@@ -560,24 +560,26 @@ header:has(#mainNav) #mainNav a:hover,header:has(#mainNav) #mainNav a:focus-visi
 header:has(#mainNav) #mainNav .nav-cta{background:linear-gradient(110deg,#745bd2,#268eaa);color:#fff;border:0}
 header:has(#mainNav) .menu{border-color:#465b7c;background:#1b2941;color:#fff}
 @media(max-width:850px){header:has(#mainNav) #mainNav{top:calc(100% + 1px);left:0;right:0;width:100%;max-height:75vh;padding:12px 14px 16px;background:#0d1526;border:0;border-bottom:1px solid #40516d;border-radius:0 0 16px 16px;box-shadow:0 16px 28px #0007;gap:7px}header:has(#mainNav) #mainNav a{min-height:42px;background:#17243a;border-color:#2b3d59}header:has(#mainNav) #mainNav .nav-cta{justify-content:center}}
-</style></head>
+</style>
+<style id="loreverse-clean-navigation">
+@media(min-width:851px){header:has(#mainNav) #mainNav{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap}header:has(#mainNav) #mainNav a{font-size:12px;padding:8px 9px;white-space:nowrap}}
+@media(max-width:850px){header:has(#mainNav) #mainNav{display:none;position:absolute;top:100%;left:0;right:0;max-height:75dvh;overflow:auto;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:14px;background:#0d1526;border-bottom:1px solid #40516d;border-radius:0 0 16px 16px;box-shadow:0 16px 28px #0008}header:has(#mainNav) #mainNav.open{display:grid}header:has(#mainNav) #mainNav a{display:flex;align-items:center;min-height:44px;padding:10px 12px;background:#17243a;border:1px solid #354b6b;border-radius:10px;color:#f4f7ff;font-size:14px;font-weight:750}header:has(#mainNav) #mainNav .nav-cta{grid-column:1/-1;justify-content:center}}
+</style>
+</head>
 <body>
 <a class="skip-link" href="#main-content">Үндсэн агуулга руу алгасах</a>
 <header><div class="wrap head">
 <a class="brand" href="./"><img src="./assets/loreverse-mark.svg" alt=""><span>LORE</span>VERSE</a>
 <nav id="mainNav" aria-label="Үндсэн цэс">
 <a href="./">Нүүр</a>
-<a href="./editorial/">Lore ба нийтлэл</a>
-
-<a href="./ai/">✦ AI туслах</a>
-<a href="./games/">Тоглоомууд</a>
-<a href="./store/">✦ LOREVERSE STORE</a>
-<a href="./marketplace/">Тоглоомын арилжаа</a>
+<a href="./editorial/">Lore</a>
+<a href="./games/">Тоглоомын ертөнц</a>
+<a href="./ai/">AI туслах</a>
 <a href="./community/">Нийгэмлэг</a>
-<a href="./profile/">👤 Profile харах</a>
-<a href="#access">Premium эрх авах</a>
-<a href="#bugReportModal" id="bugReportNavLink">⚑ Алдаа мэдээлэх</a>
-<a class="nav-cta" href="./rank/">Нэвтрэх / Бүртгүүлэх</a>
+<a href="./store/">Дэлгүүр</a>
+<a href="./marketplace/">Арилжаа</a>
+<a href="./profile/">Профайл</a>
+<a class="nav-cta" href="./rank/">Нэвтрэх</a>
 </nav>
 <button type="button" class="theme-toggle" id="themeToggle" aria-label="Шөнийн горим асаах" aria-pressed="false"><span aria-hidden="true">☾</span><span class="theme-toggle-label">Шөнө</span></button>
 <button type="button" class="menu" id="menuBtn" aria-label="Цэс нээх" aria-expanded="false" aria-controls="mainNav">☰ <span>MENU</span></button>
