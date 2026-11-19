@@ -169,6 +169,7 @@ cards.forEach((x)=>x.addEventListener("click",()=>{showCategory(x.dataset.catego
 document.getElementById("closeCategoryResults").addEventListener("click",()=>{panel.hidden=true;active=null;cards.forEach(x=>x.setAttribute("aria-pressed","false"));});
 </script>
 
+<script>
 document.querySelectorAll("[data-jump-category]").forEach(button=>{
  button.addEventListener("click",()=>{
   const target=document.querySelector('[data-category="'+button.dataset.jumpCategory+'"]');
@@ -176,4 +177,5 @@ document.querySelectorAll("[data-jump-category]").forEach(button=>{
   else document.querySelector(".category-label")?.scrollIntoView({behavior:"smooth",block:"start"});
  });
 });
+</script>
 </body></html>
