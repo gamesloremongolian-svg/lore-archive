@@ -84,13 +84,38 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 @keyframes category-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(max-width:520px){.scrolling-categories{padding:14px 0 17px}.scrolling-title{width:calc(100% - 28px)}.scrolling-card{flex-basis:190px;width:190px;height:116px}.scrolling-group{gap:10px}}
 @media(prefers-reduced-motion:reduce){.scrolling-track{animation:none}}
+
+/* Vertical Universe Hub dropdown */
+.nav-dropdown{position:relative;display:flex;align-items:center}
+.nav-dropdown-toggle{display:inline-flex;align-items:center;gap:7px;padding:8px 0;border:0;background:transparent;color:inherit;font:inherit;cursor:pointer}
+.nav-dropdown-toggle span{font-size:15px;transition:transform .18s}
+.nav-dropdown.open .nav-dropdown-toggle span{transform:rotate(180deg)}
+.nav-dropdown-menu{position:absolute;top:calc(100% + 12px);left:-14px;z-index:50;min-width:165px;padding:7px;background:#fff;border:1px solid #e1e8df;border-radius:12px;box-shadow:0 14px 32px #1c2a1c1a;display:flex;flex-direction:column;gap:3px}
+.nav-dropdown-menu[hidden]{display:none}
+.nav-dropdown-menu button{width:100%;padding:10px 12px;text-align:left;border:0;border-radius:8px;background:transparent;color:#344034;font:700 13px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer}
+.nav-dropdown-menu button:hover,.nav-dropdown-menu button:focus-visible{background:#f0f4ed;color:#66864f}
+@media(max-width:850px){
+ nav .nav-dropdown{width:100%;display:block}
+ nav .nav-dropdown-toggle{width:100%;justify-content:space-between;padding:2px 0}
+ nav .nav-dropdown-menu{position:static;width:100%;margin-top:8px;box-shadow:none;background:#f8faf7}
+ nav .nav-dropdown-menu button{padding:11px 13px}
+}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Үндсэн агуулга руу алгасах</a>
 <header><div class="wrap head">
 <a class="brand" href="./"><img src="./assets/loreverse-mark.svg" alt=""><span>LORE</span>VERSE</a>
-<nav id="mainNav"><a href="./universe-hub/">Universe Hub</a><a href="./editorial/">Lore & Articles</a><a href="./archive/">Archive</a><a href="./games/">Games</a><a href="./community/">Community</a><a class="nav-cta" href="./rank/">Нэвтрэх</a></nav>
+<nav id="mainNav">
+<div class="nav-dropdown">
+<button class="nav-dropdown-toggle" id="universeMenuBtn" type="button" aria-expanded="false" aria-controls="universeSubmenu">Universe Hub <span aria-hidden="true">⌄</span></button>
+<div class="nav-dropdown-menu" id="universeSubmenu" hidden>
+<button type="button" data-nav-category="anime">✦ Анимэ</button>
+<button type="button" data-nav-category="manga">▤ Манга</button>
+<button type="button" data-nav-category="game">◈ Тоглоом</button>
+</div>
+</div>
+<a href="./editorial/">Lore & Articles</a><a href="./archive/">Archive</a><a href="./games/">Games</a><a href="./community/">Community</a><a class="nav-cta" href="./rank/">Нэвтрэх</a></nav>
 <button class="menu" id="menuBtn" aria-label="Цэс нээх" aria-expanded="false">Цэс ☰</button>
 </div></header>
 
@@ -107,21 +132,7 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 <button class="card" type="button" data-category="game" aria-pressed="false"><div class="symbol">◈</div><h3>Game Worlds</h3></button>
 </div></div>
 
-<section class="scrolling-categories" aria-label="Зурагтай урсдаг ертөнцийн цэс">
-  <div class="scrolling-title">Explore universes · Ертөнцөөр аялах</div>
-  <div class="scrolling-track">
-    <div class="scrolling-group">
-      <button class="scrolling-card" type="button" data-jump-category="anime"><img src="./assets/images/category-anime.svg" alt="Анимэ ертөнцийн зураг"><strong>Анимэ</strong></button>
-      <button class="scrolling-card" type="button" data-jump-category="manga"><img src="./assets/images/category-manga.svg" alt="Манга ертөнцийн зураг"><strong>Манга</strong></button>
-      <button class="scrolling-card" type="button" data-jump-category="game"><img src="./assets/images/category-game.svg" alt="Тоглоомын ертөнцийн зураг"><strong>Тоглоом</strong></button>
-    </div>
-    <div class="scrolling-group" aria-hidden="true">
-      <button class="scrolling-card" type="button" tabindex="-1" data-jump-category="anime"><img src="./assets/images/category-anime.svg" alt=""><strong>Анимэ</strong></button>
-      <button class="scrolling-card" type="button" tabindex="-1" data-jump-category="manga"><img src="./assets/images/category-manga.svg" alt=""><strong>Манга</strong></button>
-      <button class="scrolling-card" type="button" tabindex="-1" data-jump-category="game"><img src="./assets/images/category-game.svg" alt=""><strong>Тоглоом</strong></button>
-    </div>
-  </div>
-</section>
+
 
 <section class="wrap">
 <div class="category-results" id="categoryResults" aria-live="polite" hidden><div class="results-heading"><div><div class="eyebrow">SELECTED UNIVERSE</div><h2 id="categoryTitle">Мэдээлэл</h2></div><button type="button" class="close-results" id="closeCategoryResults">Хаах ✕</button></div><p class="results-status" id="categoryStatus" role="status">Нийтлэгдсэн мэдээлэл ачаалж байна...</p><div class="results-grid" id="categoryItems"></div></div>
@@ -178,12 +189,29 @@ document.getElementById("closeCategoryResults").addEventListener("click",()=>{pa
 </script>
 
 <script>
-document.querySelectorAll("[data-jump-category]").forEach(button=>{
- button.addEventListener("click",()=>{
-  const target=document.querySelector('[data-category="'+button.dataset.jumpCategory+'"]');
-  if(target)target.click();
-  else document.querySelector(".category-label")?.scrollIntoView({behavior:"smooth",block:"start"});
+(()=>{
+ const wrap=document.querySelector(".nav-dropdown");
+ const toggle=document.getElementById("universeMenuBtn");
+ const submenu=document.getElementById("universeSubmenu");
+ if(!wrap||!toggle||!submenu)return;
+ toggle.addEventListener("click",()=>{
+  const open=submenu.hidden;
+  submenu.hidden=!open;
+  toggle.setAttribute("aria-expanded",String(open));
+  wrap.classList.toggle("open",open);
  });
-});
+ document.querySelectorAll("[data-nav-category]").forEach(button=>{
+  button.addEventListener("click",()=>{
+   const target=document.querySelector('[data-category="'+button.dataset.navCategory+'"]');
+   if(target)target.click();
+   submenu.hidden=true;toggle.setAttribute("aria-expanded","false");wrap.classList.remove("open");
+   const nav=document.getElementById("mainNav"),menu=document.getElementById("menuBtn");
+   nav?.classList.remove("open");menu?.setAttribute("aria-expanded","false");
+  });
+ });
+ document.addEventListener("click",event=>{
+  if(!wrap.contains(event.target)){submenu.hidden=true;toggle.setAttribute("aria-expanded","false");wrap.classList.remove("open");}
+ });
+})();
 </script>
 </body></html>
