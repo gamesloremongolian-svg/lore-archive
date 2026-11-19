@@ -117,11 +117,31 @@ Deno.serve(async (req: Request) => {
       if (planCode !== "monthly" && planCode !== "yearly") {
         return reply(400, { error: "plan_code нь monthly эсвэл yearly байна." });
       }
+      // The client must reuse this UUID for every retry of the same checkout attempt.
+      const idempotencyKey = typeof body.idempotency_key === "string" ? body.idempotency_key.trim() : "";
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(idempotencyKey)) {
+        return reply(400, { error: "idempotency_key UUID шаардлагатай. Нэг төлбөрийн оролдлогын retry бүрт ижил утгыг ашиглана уу." });
+      }
       const { data: plan, error: planError } = await admin.from("membership_plans")
         .select("plan_code,name,duration_days,price_amount,currency,enabled")
         .eq("plan_code", planCode).eq("enabled", true).maybeSingle();
       if (planError || !plan || !plan.price_amount || plan.currency !== "MNT") {
         return reply(400, { error: "Сонгосон Premium багц идэвхгүй эсвэл үнийн тохиргоо буруу байна." });
+      }
+
+      // Reuse a previously created invoice for duplicate submissions.
+      const { data: existing } = await admin.from("payment_records")
+        .select("id,invoice_creation_status,invoice_response")
+        .eq("user_id", user.id).eq("purpose", "membership").eq("provider", "qpay")
+        .eq("idempotency_key", idempotencyKey).maybeSingle();
+      if (existing) {
+        if (existing.invoice_creation_status === "created" && existing.invoice_response) {
+          return reply(200, { ...existing.invoice_response, already_created: true });
+        }
+        if (existing.invoice_creation_status === "failed") {
+          return reply(409, { error: "Энэ төлбөрийн оролдлого амжилтгүй болсон. Шинэ оролдлого эхлүүлнэ үү.", payment_id: existing.id });
+        }
+        return reply(409, { error: "Энэ төлбөрийн хүсэлт боловсруулагдаж байгаа эсвэл QPay-ийн хариу тодорхойгүй байна. Давхар нэхэмжлэл үүсгэхгүй.", payment_id: existing.id, retry_safe: false });
       }
 
       const { data: membership, error: membershipError } = await admin.from("memberships")
@@ -136,9 +156,18 @@ Deno.serve(async (req: Request) => {
         .insert({
           user_id: user.id, purpose: "membership", related_id: membership.id,
           amount: Number(plan.price_amount), currency: "MNT", provider: "qpay", status: "pending",
+          idempotency_key: idempotencyKey, invoice_creation_status: "creating",
         }).select("id").single();
       if (paymentError || !payment) {
         await admin.from("memberships").delete().eq("id", membership.id).eq("user_id", user.id);
+        const { data: raced } = await admin.from("payment_records")
+          .select("id,invoice_creation_status,invoice_response")
+          .eq("user_id", user.id).eq("purpose", "membership").eq("provider", "qpay")
+          .eq("idempotency_key", idempotencyKey).maybeSingle();
+        if (raced?.invoice_creation_status === "created" && raced.invoice_response) {
+          return reply(200, { ...raced.invoice_response, already_created: true });
+        }
+        if (raced) return reply(409, { error: "Төлбөрийн хүсэлт аль хэдийн бүртгэгдсэн. Давхар нэхэмжлэл үүсгэхгүй.", payment_id: raced.id, retry_safe: false });
         console.error("Payment record insert failed", paymentError);
         return reply(500, { error: "Төлбөрийн бүртгэл үүсгэж чадсангүй." });
       }
@@ -159,23 +188,25 @@ Deno.serve(async (req: Request) => {
         const invoice = await invoiceResponse.json().catch(() => ({}));
         if (!invoiceResponse.ok || !invoice.invoice_id) {
           console.error("QPay invoice creation failed", invoiceResponse.status, invoice.error || invoice.message || "no invoice id");
-          await admin.from("payment_records").update({ status: "failed" }).eq("id", payment.id);
+          await admin.from("payment_records").update({ status: "failed", invoice_creation_status: "failed" }).eq("id", payment.id);
           await admin.from("memberships").update({ status: "cancelled" }).eq("id", membership.id);
           return reply(502, { error: "QPay нэхэмжлэл үүсгэсэнгүй. Invoice Code болон Merchant API эрхийг шалгана уу." });
         }
-        const { error: saveError } = await admin.from("payment_records")
-          .update({ provider_invoice_id: String(invoice.invoice_id) }).eq("id", payment.id);
-        if (saveError) {
-          console.error("Could not save QPay invoice id", saveError);
-          return reply(500, { error: "QPay нэхэмжлэл үүссэн боловч системд бүртгэж чадсангүй. Админтай холбогдоно уу." });
-        }
-        return reply(200, {
+        const responsePayload = {
           ok: true, payment_id: payment.id, invoice_id: invoice.invoice_id,
           amount: Number(plan.price_amount), currency: "MNT", plan_name: plan.name,
           qr_image: invoice.qr_image || null, qr_text: invoice.qr_text || null,
           qpay_short_url: invoice.qPay_shortUrl || invoice.qpay_short_url || null,
           urls: Array.isArray(invoice.urls) ? invoice.urls : [],
-        });
+        };
+        const { error: saveError } = await admin.from("payment_records")
+          .update({ provider_invoice_id: String(invoice.invoice_id), invoice_creation_status: "created", invoice_response: responsePayload })
+          .eq("id", payment.id);
+        if (saveError) {
+          console.error("Could not save QPay invoice id", saveError);
+          return reply(500, { error: "QPay нэхэмжлэл үүссэн боловч системд бүртгэж чадсангүй. Админтай холбогдоно уу." });
+        }
+        return reply(200, responsePayload);
       } catch (error) {
         console.error("QPay invoice flow error", error);
         await admin.from("payment_records").update({ status: "failed" }).eq("id", payment.id);
