@@ -184,6 +184,18 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 .member-roster{display:grid;gap:7px;margin-top:8px}.member-card{display:flex;align-items:center;gap:8px;min-width:0;padding:8px;border:1px solid #344a69;border-radius:12px;background:#142139}.member-card .avatar{width:31px;height:31px;flex:0 0 31px;font-size:11px}.member-copy{min-width:0;flex:1}.member-copy b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}.member-copy small{display:block;color:#9fb1ca;font-size:9px}.role-manage{border:1px solid #526b90;border-radius:8px;background:#1d2d47;color:#eaf4ff;padding:5px 7px;font-size:9px;font-weight:850}.member-card .member-name-owner{color:#ffd479}.member-card .member-name-admin{color:#c6a3ff}.member-card .member-name-moderator{color:#72e5ef}.member-card .member-name-member{color:#f3f7ff}
 .message-role{margin-left:5px}.server-role-note{font-size:10px;color:#9fb1ca;margin:6px 2px 0}
 
+/* LOREVERSE equipped chat cosmetics */
+.chat-cosmetic-avatar{position:relative;isolation:isolate;box-shadow:0 0 0 2px #243a5c,0 0 0 4px var(--cosmetic-frame,#5b83b8),0 0 16px color-mix(in srgb,var(--cosmetic-frame,#5b83b8) 50%,transparent)}
+.chat-cosmetic-avatar.effect-aurora{animation:lvAuroraPulse 3s ease-in-out infinite}
+.chat-cosmetic-avatar.effect-phoenix{box-shadow:0 0 0 2px #243a5c,0 0 0 4px #ff9c55,0 0 19px #ff6b3d}
+@keyframes lvAuroraPulse{0%,100%{filter:drop-shadow(0 0 2px #65f3db)}50%{filter:drop-shadow(0 0 9px #9c7dff)}}
+.chat-cosmetic-nameplate{display:inline-flex;align-items:center;padding:2px 7px;border-radius:7px;background:linear-gradient(100deg,#1c3657,#2d2454);border:1px solid #6383b4}
+.chat-cosmetic-nameplate.royal{background:linear-gradient(100deg,#49351a,#5b3977);border-color:#d5b36d}
+.chat-cosmetic-badge{display:inline-flex;margin-left:5px;padding:1px 5px;border-radius:7px;background:#1b2c46;border:1px solid #607da6;font-size:11px}
+.chat-cosmetic-effect{display:inline-block;margin-left:4px;font-size:11px;filter:drop-shadow(0 0 5px #8be8ff)}
+.bubble.chat-theme-midnight{background:linear-gradient(135deg,#101b38,#202b55);border:1px solid #6379bc;box-shadow:inset 0 0 18px #6578bd18}
+.bubble.chat-theme-sakura{background:linear-gradient(135deg,#39233d,#542e50);border:1px solid #d58bbd;box-shadow:inset 0 0 18px #ffb6df18}
+
 </style><style id="loreverse-global-navigation">
 .lv-global-header{position:sticky;top:0;z-index:999;background:rgba(10,15,29,.94);backdrop-filter:blur(18px);border-bottom:1px solid rgba(133,158,190,.25);box-shadow:0 8px 28px rgba(0,0,0,.22);color:#f4f7ff}
 .lv-global-inner{width:min(1200px,calc(100% - 28px));min-height:66px;margin:auto;display:flex;align-items:center;gap:20px}
@@ -380,19 +392,31 @@ async function loadMessages(){
  if(error){$("messages").innerHTML='<div class="empty">'+esc(error.message)+'</div>';return}
  if(!data?.length){$("messages").innerHTML='<div class="empty"><h2>Эхний мессежээ илгээгээрэй</h2><p>Энэ сувгийн яриа энд харагдана.</p></div>';return}
  const ids=[...new Set(data.map(m=>m.author_id))];const {data:profiles}=await supabase.from("chat_public_profiles").select("id,display_name,avatar_url").in("id",ids);const p=Object.fromEntries((profiles||[]).map(x=>[x.id,x]));
+ const {data:equippedRows}=await supabase.from("store_equipped").select("user_id,slot,item_id").in("user_id",ids);
+ const cosmeticIds=[...new Set((equippedRows||[]).map(x=>x.item_id))];
+ const {data:cosmeticItems}=cosmeticIds.length?await supabase.from("lore_coin_items").select("id,name,item_type,icon").in("id",cosmeticIds).eq("enabled",true):{data:[]};
+ const cosmeticById=Object.fromEntries((cosmeticItems||[]).map(x=>[x.id,x]));
+ const cosmeticsByUser={};
+ (equippedRows||[]).forEach(row=>{const item=cosmeticById[row.item_id];if(item){(cosmeticsByUser[row.user_id]||(cosmeticsByUser[row.user_id]={}))[row.slot]=item;}});
+ const cosmeticIcon=item=>item?(String(item.icon||"✦").startsWith("lv-")?({ "lv-crown":"♛","lv-sakura":"🌸","lv-nebula":"🌌","lv-phoenix":"🔥","lv-moon":"🌙","lv-comet":"☄️","lv-prism":"🔷","lv-dragon":"🐉","lv-butterfly":"🦋","lv-lotus":"🪷","lv-star":"⭐","lv-void":"🪐"}[item.icon]||"✦"):item.icon):"";
  const canModerate=["owner","admin","moderator"].includes(activeServer?.role);
  $("messages").innerHTML=data.map(m=>{
   const n=p[m.author_id]?.display_name||"LOREVERSE гишүүн";
   const role=serverMemberRoles[m.author_id]||"member",r=ROLE_META[role]||ROLE_META.member;
+  const deco=cosmeticsByUser[m.author_id]||{},frame=deco.frame,effect=deco.effect,badge=deco.badge,nameplate=deco.nameplate,theme=deco.chat_theme;
+  const frameColor=frame?.id?.includes("sakura")?"#f1a5cf":frame?.id?.includes("void")?"#9c83ff":frame?.id?.includes("moon")?"#9bd6ff":"#65e7d2";
+  const avatarClass="avatar"+(frame?" chat-cosmetic-avatar":"")+(effect?.id?.includes("phoenix")?" effect-phoenix":effect?" effect-aurora":"");
+  const avatarStyle=frame?' style="--cosmetic-frame:'+frameColor+'"':"";
   const st=m.body.match(/^\[\[STICKER\|([^|]+)\|([^\]]+)\]\]$/);
   const imageMatch=m.body.match(/(?:^|\n)\[\[IMAGE\|(https:\/\/[^\]]+)\]\]$/);
   let body;
-  if(st)body='<div class="bubble" style="font-size:42px;text-align:center;padding:12px 20px">'+esc(st[1])+'<div class="muted">'+esc(st[2])+'</div></div>';
-  else if(imageMatch){const textPart=m.body.replace(/(?:^|\n)\[\[IMAGE\|https:\/\/[^\]]+\]\]$/,'').trim();body='<div class="bubble">'+(textPart?esc(textPart):'')+'<img class="chat-image" src="'+esc(imageMatch[1])+'" alt="Хавсаргасан зураг" loading="lazy"></div>';}
-  else body='<div class="bubble">'+esc(m.body)+'</div>';
+  const bubbleTheme=theme?.id?.includes("sakura")?"sakura":theme?.id?.includes("midnight")?"midnight":"";
+  if(st)body='<div class="bubble '+(bubbleTheme?'chat-theme-'+bubbleTheme:'')+'" style="font-size:42px;text-align:center;padding:12px 20px">'+esc(st[1])+'<div class="muted">'+esc(st[2])+'</div></div>';
+  else if(imageMatch){const textPart=m.body.replace(/(?:^|\n)\[\[IMAGE\|https:\/\/[^\]]+\]\]$/,'').trim();body='<div class="bubble '+(bubbleTheme?'chat-theme-'+bubbleTheme:'')+'">'+(textPart?esc(textPart):'')+'<img class="chat-image" src="'+esc(imageMatch[1])+'" alt="Хавсаргасан зураг" loading="lazy"></div>';}
+  else body='<div class="bubble '+(bubbleTheme?'chat-theme-'+bubbleTheme:'')+'">'+esc(m.body)+'</div>';
   const owner=m.author_id===user.id;
   const tools=(owner||canModerate)?'<div class="msg-tools">'+(owner?'<button type="button" data-edit="'+m.id+'">Засах</button>':'')+'<button type="button" data-delete="'+m.id+'">Устгах</button></div>':'';
-  return '<article class="msg"><span class="avatar">'+esc(n.slice(0,1).toUpperCase())+'</span><div><div class="meta"><span class="member-name-'+r.className+'">'+esc(n)+'</span>'+roleBadge(role)+' '+(m.edited_at?'<span class="edited-label">засварласан</span>':'')+'</div>'+body+tools+'<div class="time">'+new Date(m.created_at).toLocaleString("mn-MN",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})+'</div></div></article>';
+  return '<article class="msg"><span class="'+avatarClass+'"'+avatarStyle+'>'+esc(n.slice(0,1).toUpperCase())+(effect?'<i class="chat-cosmetic-effect">'+(effect.id.includes("phoenix")?"🔥":"✨")+'</i>':'')+'</span><div><div class="meta">'+(nameplate?'<span class="chat-cosmetic-nameplate '+(nameplate.id.includes("royal")?"royal":"")+'">':'')+'<span class="member-name-'+r.className+'">'+esc(n)+'</span>'+(nameplate?'</span>':'')+(badge?'<span class="chat-cosmetic-badge" title="'+esc(badge.name)+'">'+esc(cosmeticIcon(badge))+'</span>':'')+roleBadge(role)+' '+(m.edited_at?'<span class="edited-label">засварласан</span>':'')+'</div>'+body+tools+'<div class="time">'+new Date(m.created_at).toLocaleString("mn-MN",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})+'</div></div></article>';
  }).join("");
  $("messages").querySelectorAll("[data-edit]").forEach(b=>b.onclick=async()=>{
   const row=data.find(x=>x.id===b.dataset.edit);if(!row||row.body.includes("\n[[IMAGE|"))return toast("Зурагтай мессежийг одоогоор засах боломжгүй");
