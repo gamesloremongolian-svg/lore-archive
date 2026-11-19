@@ -209,6 +209,24 @@ html,body{width:100%;max-width:100%;overflow-x:hidden}
  .loreverse-anime-banner img{height:125px}
 }
 
+
+.analytics-chart-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 22px}
+.analytics-chart-card{min-width:0;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.analytics-chart-card h4{margin:0 0 12px;font-size:14px}
+.analytics-bars{display:flex;align-items:flex-end;gap:7px;height:150px;padding:8px 2px 0;border-bottom:1px solid var(--line)}
+.analytics-bar{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;gap:5px}
+.analytics-bar i{display:block;width:min(100%,28px);min-height:2px;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,#75e7ff,#8065d9)}
+.analytics-bar b{font-size:10px;color:var(--text);font-weight:800}
+.analytics-bar small{font-size:9px;color:var(--muted);white-space:nowrap}
+.analytics-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:9px;color:var(--muted);font-size:11px}
+.analytics-row{display:flex;align-items:center;gap:10px;margin:10px 0}
+.analytics-row>span{width:90px;flex:none;font-size:12px;color:var(--muted)}
+.analytics-track{height:10px;flex:1;background:var(--bg);border-radius:99px;overflow:hidden}
+.analytics-track i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#8065d9,#75e7ff)}
+.analytics-row b{width:34px;text-align:right;font-size:12px}
+.analytics-note{color:var(--muted);font-size:12px;padding:10px 0}
+@media(max-width:650px){.analytics-chart-grid{grid-template-columns:1fr}.analytics-bars{height:130px}}
+
 </style></head><body><main class="wrap"><p style="display:flex;justify-content:flex-end;align-items:center;gap:8px"><label for="lang">Interface language</label><select id="lang" style="width:auto;margin:0"><option value="mn">Монгол</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option></select></p>
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><a href="../index.html" class="brand">✦ LORE<span>VERSE</span></a><a class="btn" href="../index.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:7px">← Нүүр хуудас руу буцах</a></div>
 <div class="loreverse-anime-banner" aria-label="LOREVERSE anime universe"><img src="../assets/images/loreverse-admin-anime.svg" alt="LOREVERSE fantasy anime illustration"><span class="loreverse-anime-caption">ANIME · MANGA · GAME LORE</span></div>
@@ -226,7 +244,17 @@ html,body{width:100%;max-width:100%;overflow-x:hidden}
 <div id="marketplaceTab" class="hidden"><h2>Тоглоомын арилжаа · Зар батлах</h2><p class="muted">Pending зарыг шалгаж зөвшөөрөх эсвэл татгалзана. Зар мэдээлсэн хүсэлтүүдийг доороос хянана.</p><button id="reloadMarketplace" type="button">Жагсаалт шинэчлэх</button><div id="marketplaceAdminList" class="status">Ачаалж байна…</div><h3>Мэдээлсэн зарууд</h3><div id="marketplaceReports" class="status">Ачаалж байна…</div></div>
 <div id="teamTab" class="hidden"><h2>Багийн эрх · Owner</h2><p class="muted">Зөвхөн Owner багийн эрх олгох болон өөрчлөх боломжтой.</p><p class="muted">Owner/Admin нь багийн гишүүдийг удирдана. Шинэ гишүүнийг эхлээд хэрэглэгчээр бүртгүүлсний дараа эрх олгоно.</p><label>Багийн гишүүний хэрэглэгчийн UUID</label><input id="staffId" placeholder="Auth user UUID"><label>Эрх</label><select id="staffRole"><option value="editor">Editor — нийтлэл</option><option value="ads_manager">Ads manager — зар</option><option value="admin">Admin — удирдлага</option></select><button id="addStaff">Эрх олгох</button><div id="teamMsg" class="status"></div><hr style="border:0;border-top:1px solid var(--line);margin:22px 0"><h3>Staff Center · Багийн бүртгэл</h3><p class="muted">Ажилтны эрх, идэвхтэй төлөвийг энд удирдана. Owner бүртгэлийг энэ жагсаалтаас өөрчлөхгүй. Хэрэглэгчийн имэйл харагдахгүй тул UUID-гаар танина.</p><button id="reloadStaff" type="button">Багийн жагсаалт шинэчлэх</button><div id="staffList" class="status">Багийн бүртгэл ачаалаагүй байна.</div></div><div id="premiumTab" class="hidden"><h2>Дээд эрх багцын үнэ</h2><p class="muted">Үнэ MNT-ээр тохируулна. QPay автомат нэхэмжлэл хараахан холбогдоогүй.</p><div id="planList">Багцуудыг ачаалж байна…</div><div id="planMsg" class="status"></div></div>
 </div><div id="hiringTab" class="hidden"><h2>Туслах ажилтан авах</h2><p class="muted">Ирсэн хүсэлтүүдийг шалгаж, зөвшөөрөхөд хэрэглэгчийн имэйлээр нь бүртгэлтэй эсэхийг шалган багт Editor эсвэл Ads manager эрхээр нэмнэ. Owner/Admin эрхийг энэ цэсээр олгохгүй.</p><button id="reloadApplications" type="button">Хүсэлт шинэчлэх</button><div id="applicationsMsg" class="status">Хүсэлтүүдийг ачаалж байна…</div><div id="applicationsList"></div></div><div id="usersTab" class="hidden"><h2>Хэрэглэгчийн бүртгэл</h2><p class="muted">Бүртгэлүүдийг харах болон шаардлагатай үед Auth бүртгэлийг устгах. Идэвхтэй багийн гишүүд болон өөрийн админ бүртгэлийг устгах боломжгүй. Устгал буцаах боломжгүй.</p><div class="row"><button id="reloadUsers" type="button">Жагсаалт шинэчлэх</button></div><div id="usersMsg" class="status">Хэрэглэгчдийн жагсаалтыг ачаална уу.</div><div id="usersList"></div></div>
-<div id="analyticsTab" class="hidden"><h2>LOREVERSE Аналитик</h2><p class="muted">Одоогийн өгөгдлийн сан дахь тоон үзүүлэлтүүд. Page view-ийн бодит бүртгэл тусдаа tracking шаарддаг.</p><button id="reloadAnalytics" type="button">Шинэчлэх</button><div class="statgrid" id="analyticsCards"></div><h3>Өдрийн статистик · сүүлийн 14 мөр</h3><div id="analyticsDaily" class="status"></div></div>
+<div id="analyticsTab" class="hidden">
+<h2>LOREVERSE · Нэгдсэн аналитик</h2>
+<p class="muted">Гишүүд, контент, Community болон сайтын бүртгэгдсэн үзүүлэлтүүдийг бодит өгөгдлийн сангаас нэг дор харуулна.</p>
+<div class="row"><button id="reloadAnalytics" type="button">↻ Бүх мэдээлэл шинэчлэх</button><span id="analyticsUpdated" class="muted">Шалгаагүй</span></div>
+<h3>Нийт платформ</h3><div class="statgrid" id="analyticsCards"></div>
+<h3>Контентын ангилал</h3><div id="analyticsContentChart" class="analytics-chart-grid"></div>
+<h3>Гишүүдийн өсөлт · сүүлийн 14 хоног</h3><div id="analyticsGrowthChart" class="analytics-chart-grid"></div>
+<h3>Сайтын үзэлт · сүүлийн 14 хоног</h3><div id="analyticsDaily" class="analytics-chart-grid"></div>
+<h3>Community сувгууд</h3><div id="analyticsCommunity" class="analytics-chart-grid"></div>
+<div class="notice" id="analyticsDiscordNote">Discord-ийн бодит сервер, сувгийн мэдээллийг харуулахын тулд Discord Bot/API-г тусад нь холбох шаардлагатай. Одоогийн Community сувгийн тоог Discord-ийн суваг гэж тооцохгүй.</div>
+</div>
 <div id="eventsTab" class="hidden"><h2>Нийгэмлэг Арга хэмжээ удирдлага</h2><label>Арга хэмжээний нэр</label><input id="eventTitle" maxlength="160" placeholder="Lore Quiz — Season 01"><label>Тайлбар</label><textarea id="eventDescription" maxlength="5000"></textarea><div class="row"><div><label>Төрөл</label><select id="eventType"><option value="quiz">Lore Quiz</option><option value="competition">Тэмцээн</option><option value="discussion">Хэлэлцүүлэг</option><option value="community">Нийгэмлэг</option></select></div><div><label>XP урамшуулал (0–5000)</label><input id="eventXp" type="number" min="0" max="5000" value="0"></div><div><label>Coin урамшуулал (0–5000)</label><input id="eventCoins" type="number" min="0" max="5000" value="0"></div></div><div class="row"><div><label>Эхлэх цаг</label><input id="eventStart" type="datetime-local"></div><div><label>Дуусах цаг</label><input id="eventEnd" type="datetime-local"></div></div><div class="row"><button id="saveEventDraft" type="button">Ноорог хадгалах</button><button id="publishEvent" type="button">Нийтлэх</button></div><div id="eventsMsg" class="status"></div><h3>Арга хэмжээнүүд</h3><button id="reloadEvents" type="button">Жагсаалт шинэчлэх</button><div id="eventsList"></div></div>
 <div id="feedbackTab" class="hidden"><h2>Редакцын санал хүсэлт</h2><button id="reloadFeedback" type="button">Шинэчлэх</button><div id="feedbackList" class="status"></div></div><div id="correctionsTab" class="hidden"><h2>Нийтлэлийн засварын хүсэлт</h2><p class="muted">Зөвхөн Owner эрхтэй хэрэглэгч энэ хэсгийг харна. Уншигчдын нийтлэл дээр илгээсэн засвар, алдаа, эх сурвалжийн залруулгыг энд хянаж шийдвэрлэнэ. Төлөв өөрчлөхөд таны Owner бүртгэл хянагчаар холбогдоно.</p><div class="row"><select id="correctionStatusFilter"><option value="all">Бүх төлөв</option><option value="open">Нээлттэй</option><option value="reviewing">Шалгаж байна</option><option value="resolved">Шийдвэрлэсэн</option><option value="rejected">Татгалзсан</option></select><button id="reloadCorrections" type="button">Шинэчлэх</button></div><div id="correctionsList" class="status">Засварын хүсэлтүүдийг ачаалж байна…</div></div>
 <div id="bugreportsTab" class="hidden"><h2>Алдаа мэдээлэх · Алдааны мэдээллүүд</h2><p class="muted">Баталгаажсан алдаанд л нэг удаа LORE Coins олгоно. Энгийн +10, дунд +30, ноцтой +100. Төлөвийг resolved болгоход шагнал автоматаар олгогдоно.</p><div class="row"><select id="bugReportFilter"><option value="all">Бүх төлөв</option><option value="open">Хүлээгдэж байна</option><option value="reviewing">Шалгаж байна</option><option value="resolved">Батлагдсан</option><option value="rejected">Татгалзсан</option></select><button id="reloadBugReports" type="button">Шинэчлэх</button></div><div id="bugReportsList" class="status">Мэдээллүүдийг ачаална уу.</div></div><div id="supportTab" class="hidden"><h2>Тусламжийн хүсэлт · Хэрэглэгчийн хүсэлтүүд</h2><p class="muted">Хүсэлтүүдийг ангиллаар шалгаж, хариу бичих, төлөв өөрчлөх боломжтой.</p><div class="row"><select id="supportStatusFilter"><option value="all">Бүх төлөв</option><option value="open">Нээлттэй</option><option value="in_progress">Шалгаж байна</option><option value="waiting_user">Хэрэглэгчийн хариу хүлээж байна</option><option value="resolved">Шийдвэрлэсэн</option><option value="closed">Хаасан</option></select><button id="reloadSupportTickets" type="button">Шинэчлэх</button></div><div id="adminTicketsList" class="status">Хүсэлтүүдийг ачаална уу.</div><div id="adminTicketThread" class="list" hidden></div></div><div id="notificationsTab" class="hidden"><h2>Хэрэглэгчид мэдэгдэл илгээх</h2><p class="muted">Нэг хэрэглэгчийн Auth UUID шаардлагатай. Бүх хэрэглэгч рүү бөөнөөр илгээх функцийг спамын эрсдэлээс шалтгаалан нэмж өгөөгүй.</p><label>Хэрэглэгчийн UUID</label><input id="noticeUserId" placeholder="Auth user UUID"><label>Гарчиг</label><input id="noticeTitle" maxlength="160"><label>Мэдэгдлийн төрөл</label><select id="noticeType"><option value="system">Систем</option><option value="content">Шинэ контент</option><option value="reward">Шагнал</option><option value="membership">Дээд эрх</option><option value="community">Нийгэмлэг</option><option value="event">Арга хэмжээ</option></select><label>Тайлбар</label><textarea id="noticeBody" maxlength="2000"></textarea><label>Холбоос (заавал биш)</label><input id="noticeUrl" placeholder="/#publishedLore"><button id="sendNotice" type="button">Мэдэгдэл илгээх</button><div id="noticeMsg" class="status"></div></div>
@@ -533,13 +561,60 @@ async function runSiteHealth(){
 }
 $('runSystemCheck').onclick=runSiteHealth;
 
-/* Admin analytics, events, feedback and notifications */
+/* Admin analytics: real database counts and lightweight responsive charts */
+const analyticsEsc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+function analyticsBars(title,rows,valueKey,labelKey){
+ const vals=rows.map(x=>Number(x[valueKey])||0),max=Math.max(1,...vals);
+ return '<div class="analytics-chart-card"><h4>'+analyticsEsc(title)+'</h4><div class="analytics-bars">'+rows.map(x=>{const v=Number(x[valueKey])||0;const h=Math.max(v?5:2,Math.round(v/max*100));return '<div class="analytics-bar" title="'+analyticsEsc(x[labelKey])+': '+v+'"><b>'+v+'</b><i style="height:'+h+'%"></i><small>'+analyticsEsc(x[labelKey])+'</small></div>';}).join('')+'</div></div>';
+}
+function analyticsBreakdown(title,rows){
+ const max=Math.max(1,...rows.map(x=>Number(x.count)||0));
+ return '<div class="analytics-chart-card"><h4>'+analyticsEsc(title)+'</h4>'+(rows.length?rows.map(x=>'<div class="analytics-row"><span>'+analyticsEsc(x.label)+'</span><div class="analytics-track"><i style="width:'+Math.round((Number(x.count)||0)/max*100)+'%"></i></div><b>'+Number(x.count||0)+'</b></div>').join(''):'<div class="analytics-note">Өгөгдөл алга.</div>')+'</div>';
+}
+async function analyticsCount(table,filter){
+ let q=supabase.from(table).select('id',{count:'exact',head:true});
+ if(filter)q=q.filter(filter[0],filter[1],filter[2]);
+ const {count,error}=await q;
+ if(error)throw new Error(table+': '+error.message);
+ return count||0;
+}
 async function loadAnalytics(){
- const specs=[['Нийтлэл','content_posts'],['Хэрэглэгч','profiles'],['Дээд эрх эрх','memberships'],['Нээлттэй санал','article_feedback'],['Арга хэмжээ','community_events'],['Ажилд орох хүсэлт','staff_applications']];
- const out=await Promise.all(specs.map(async([label,table])=>{const {count,error}=await supabase.from(table).select('*',{count:'exact',head:true});return {label,count,error};}));
- $('analyticsCards').innerHTML=out.map(x=>'<div class="stat"><span>'+esc(x.label)+'</span><b>'+ (x.error?'—':x.count??0)+'</b></div>').join('');
- const {data,error}=await supabase.from('site_daily_stats').select('stat_date,page_views,unique_visitors').order('stat_date',{ascending:false}).limit(14);
- $('analyticsDaily').innerHTML=error?esc(error.message):(data||[]).map(x=>'<div class="list">'+esc(x.stat_date)+' · Үзэлт: <b>'+x.page_views+'</b> · Зочин: <b>'+x.unique_visitors+'</b></div>').join('')||'Өдрийн статистик хараахан бүртгэгдээгүй байна.';
+ const cards=$('analyticsCards'),contentHost=$('analyticsContentChart'),growthHost=$('analyticsGrowthChart'),dailyHost=$('analyticsDaily'),communityHost=$('analyticsCommunity'),updated=$('analyticsUpdated');
+ $('reloadAnalytics').disabled=true;updated.textContent='Мэдээлэл татаж байна…';
+ try{
+  const specs=[
+   ['Нийт гишүүн','profiles'],['Нийт нийтлэл','content_posts'],['Нийтлэгдсэн','content_posts',['status','eq','published']],
+   ['Нийгэмлэг сервер','community_servers'],['Нийт гишүүнчлэл','community_server_members'],['Community суваг','community_channels'],
+   ['Чат мессеж','community_messages',['deleted_at','is','null']],['Feed нийтлэл','community_posts',['status','eq','published']]
+  ];
+  const counts=await Promise.all(specs.map(async s=>({label:s[0],count:await analyticsCount(s[1],s[2])})));
+  cards.innerHTML=counts.map(x=>'<div class="stat"><span class="muted">'+analyticsEsc(x.label)+'</span><b>'+x.count.toLocaleString('mn-MN')+'</b></div>').join('');
+  const [postsRes,profilesRes,dailyRes,channelsRes]=await Promise.all([
+   supabase.from('content_posts').select('content_type,status').limit(2000),
+   supabase.from('profiles').select('created_at').gte('created_at',new Date(Date.now()-13*86400000).toISOString()).limit(5000),
+   supabase.from('site_daily_stats').select('stat_date,page_views,unique_visitors').order('stat_date',{ascending:false}).limit(14),
+   supabase.from('community_channels').select('channel_type').limit(1000)
+  ]);
+  if(postsRes.error)throw postsRes.error;
+  const typeNames={anime:'Анимэ',manga:'Манга',game:'Тоглоом',lore:'Lore',news:'Мэдээ',guide:'Гарын авлага'};
+  const typeCounts={};
+  (postsRes.data||[]).filter(x=>x.status==='published').forEach(x=>{const k=x.content_type||'other';typeCounts[k]=(typeCounts[k]||0)+1;});
+  contentHost.innerHTML=analyticsBreakdown('Нийтлэгдсэн нийтлэл · төрлөөр',Object.entries(typeCounts).map(([k,count])=>({label:typeNames[k]||k,count})).sort((a,b)=>b.count-a.count));
+  if(profilesRes.error)throw profilesRes.error;
+  const growth={};for(let i=13;i>=0;i--){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);growth[d.toISOString().slice(0,10)]=0;}
+  (profilesRes.data||[]).forEach(x=>{const day=String(x.created_at).slice(0,10);if(day in growth)growth[day]++;});
+  growthHost.innerHTML=analyticsBars('Шинээр бүртгүүлсэн гишүүн · өдөр бүр',Object.entries(growth).map(([day,count])=>({day:day.slice(5),count})), 'count','day');
+  if(dailyRes.error)throw dailyRes.error;
+  const daily=(dailyRes.data||[]).slice().reverse();
+  dailyHost.innerHTML=daily.length?analyticsBars('Хуудасны үзэлт · өдөр бүр',daily.map(x=>({day:String(x.stat_date).slice(5),views:x.page_views||0})), 'views','day')+analyticsBars('Давтагдашгүй зочин · өдөр бүр',daily.map(x=>({day:String(x.stat_date).slice(5),visitors:x.unique_visitors||0})), 'visitors','day'):'<div class="analytics-chart-card analytics-note">Page view tracking-ийн өдөр тутмын өгөгдөл одоогоор бүртгэгдээгүй байна.</div>';
+  if(channelsRes.error)throw channelsRes.error;
+  const ch={};(channelsRes.data||[]).forEach(x=>{const k=x.channel_type||'other';ch[k]=(ch[k]||0)+1;});
+  communityHost.innerHTML=analyticsBreakdown('LOREVERSE Community · сувгийн төрөл',Object.entries(ch).map(([k,count])=>({label:k==='text'?'Текст суваг':k,count})))+'<div class="analytics-chart-card"><h4>Discord холболт</h4><div class="analytics-note">Discord Bot/API холбогдоогүй. Иймээс Discord серверийн гишүүн болон сувгийн тоог таамгаар харуулахгүй. Дээрх тоо нь LOREVERSE дотоод Community-ийн бодит өгөгдөл.</div></div>';
+  updated.textContent='Шинэчилсэн: '+new Date().toLocaleString('mn-MN');
+ }catch(e){
+  updated.textContent='Алдаа: '+(e.message||String(e));
+  cards.innerHTML='<div class="analytics-note">Статистик татахад алдаа гарлаа: '+analyticsEsc(e.message||e)+'</div>';
+ }finally{$('reloadAnalytics').disabled=false;}
 }
 $('reloadAnalytics').onclick=loadAnalytics;
 async function loadEvents(){
