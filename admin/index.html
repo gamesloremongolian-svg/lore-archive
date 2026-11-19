@@ -102,8 +102,17 @@ button:hover,.btn:hover{filter:brightness(1.07);transform:translateY(-1px)}
 a{color:#55c8b6}
 button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #55c8b6;outline-offset:2px}
 
+
+/* LOREVERSE anime art direction — original vector banner */
+.loreverse-anime-banner{position:relative;isolation:isolate;overflow:hidden;margin:18px 0 24px;border:1px solid #7655b8;border-radius:22px;background:#24114f;box-shadow:0 18px 55px #08051688}
+.loreverse-anime-banner img{display:block;width:100%;height:auto;min-height:150px;max-height:285px;object-fit:cover}
+.loreverse-anime-banner:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#140d2c22,transparent 65%);mix-blend-mode:screen}
+.loreverse-anime-caption{position:absolute;left:22px;bottom:15px;padding:7px 12px;border:1px solid #ffffff55;border-radius:999px;background:#100b2bbd;color:#fff;font-size:11px;letter-spacing:.13em;font-weight:800;backdrop-filter:blur(10px)}
+@media(max-width:560px){.loreverse-anime-banner{margin:12px 0 18px;border-radius:15px}.loreverse-anime-banner img{min-height:150px;max-height:190px;object-position:62% center}.loreverse-anime-caption{left:10px;bottom:9px;font-size:9px;padding:6px 9px}}
+
 </style></head><body><main class="wrap"><p style="display:flex;justify-content:flex-end;align-items:center;gap:8px"><label for="lang">Interface language</label><select id="lang" style="width:auto;margin:0"><option value="mn">Монгол</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option></select></p>
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><a href="../index.html" class="brand">✦ LORE<span>VERSE</span></a><a class="btn" href="../index.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:7px">← Нүүр хуудас руу буцах</a></div>
+<div class="loreverse-anime-banner" aria-label="LOREVERSE anime universe"><img src="../assets/images/loreverse-admin-anime.svg" alt="LOREVERSE fantasy anime illustration"><span class="loreverse-anime-caption">ANIME · MANGA · GAME LORE</span></div>
 <section class="panel" id="authPanel"><div class="eyebrow">SECURE EDITORIAL WORKSPACE</div><h1 class="title">Админ нэвтрэх</h1><p class="muted">Зөвхөн эзэмшигчийн урьдчилан баталгаажуулсан админ болон туслах ажилтны бүртгэлээр нэвтэрнэ.</p>
 <label>Имэйл</label><input id="email" type="email" autocomplete="email" placeholder="name@example.com">
 <label>Нууц үг</label><input id="password" type="password" autocomplete="current-password" placeholder="Нууц үг">
