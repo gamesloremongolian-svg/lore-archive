@@ -1246,4 +1246,38 @@ header:has(#mainNav) #menuBtn{z-index:1002;cursor:pointer;touch-action:manipulat
 }
 </style>
 
+
+<style id="loreverse-native-shell">
+html.capacitor-app body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+html.capacitor-app header{display:none!important}
+#loreverseAppNav{display:none}
+html.capacitor-app #loreverseAppNav{position:fixed;z-index:1200;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px;padding:8px 7px calc(8px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid #dce3da;box-shadow:0 -8px 24px #24302412}
+#loreverseAppNav a{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:5px 2px;border-radius:10px;color:#667166;font-size:10px;font-weight:750;line-height:1.2;text-align:center}
+#loreverseAppNav a[aria-current="page"]{background:#edf3e9;color:#587a45}
+#loreverseAppNav .app-nav-icon{font-size:19px;line-height:1.2}
+@media(prefers-reduced-motion:reduce){#loreverseAppNav a{transition:none!important}}
+</style>
+<nav id="loreverseAppNav" aria-label="Аппын үндсэн цэс">
+<a href="./" data-app-route="home"><span class="app-nav-icon" aria-hidden="true">⌂</span><span>Нүүр</span></a>
+<a href="./archive/" data-app-route="archive"><span class="app-nav-icon" aria-hidden="true">▤</span><span>Архив</span></a>
+<a href="./community/" data-app-route="community"><span class="app-nav-icon" aria-hidden="true">◎</span><span>Нийгэмлэг</span></a>
+<a href="./store/" data-app-route="store"><span class="app-nav-icon" aria-hidden="true">▣</span><span>Дэлгүүр</span></a>
+<a href="./profile/" data-app-route="profile"><span class="app-nav-icon" aria-hidden="true">♙</span><span>Профайл</span></a>
+</nav>
+<script>
+(()=> {
+ try {
+  const cap=window.Capacitor;
+  const native=!!(cap&&(cap.isNativePlatform?.()||["android","ios"].includes(cap.getPlatform?.())));
+  if(!native)return;
+  document.documentElement.classList.add("capacitor-app");
+  const path=location.pathname.replace(/\\/+$/,"/");
+  const routes={home:/\\/$/,archive:/\\/archive\\//,community:/\\/community\\//,store:/\\/store\\//,profile:/\\/profile\\//};
+  const key=Object.keys(routes).find(k=>routes[k].test(path))||"home";
+  const active=document.querySelector('#loreverseAppNav [data-app-route="'+key+'"]');
+  if(active)active.setAttribute("aria-current","page");
+ } catch(e) {}
+})();
+</script>
+
 </body></html>
