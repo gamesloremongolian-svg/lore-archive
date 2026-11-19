@@ -139,7 +139,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
   .home-bottom{z-index:20}
 }
 
-\n.attach-btn{display:grid;place-items:center;min-width:42px;min-height:42px;font-size:20px;padding:5px}.msg-tools{display:flex;gap:6px;margin-top:5px}.msg-tools button{border:1px solid #526b90;border-radius:8px;background:#18263e;color:#dce8fa;padding:4px 8px;font-size:10px}.chat-image{display:block;max-width:min(420px,100%);max-height:360px;object-fit:contain;border-radius:12px;margin-top:8px;border:1px solid #405879}.edited-label{font-size:9px;color:#9eacc2;margin-left:6px}\n</style><style id="loreverse-global-navigation">
+\n.attach-btn{display:grid;place-items:center;min-width:42px;min-height:42px;font-size:20px;padding:5px}.msg-tools{display:flex;gap:6px;margin-top:5px}.msg-tools button{border:1px solid #526b90;border-radius:8px;background:#18263e;color:#dce8fa;padding:4px 8px;font-size:10px}.chat-image{display:block;max-width:min(420px,100%);max-height:360px;object-fit:contain;border-radius:12px;margin-top:8px;border:1px solid #405879}.edited-label{font-size:9px;color:#9eacc2;margin-left:6px}\n
+.mods-panel{margin-top:12px;padding:11px;border:1px solid #3d5275;border-radius:14px;background:#0d1729}
+.mod-card{padding:11px;margin:8px 0;border:1px solid #344b6b;border-radius:12px;background:#17243a}
+.mod-card h3{font-size:13px;margin:0 0 4px}.mod-card p{font-size:10px;color:var(--muted);margin:0 0 9px}
+.mod-card .mod-actions{display:flex;gap:6px;flex-wrap:wrap}.mod-card .btn{font-size:10px;padding:6px 9px}
+.mod-on{color:#8cf0c4;font-size:10px;font-weight:900}.mod-off{color:#a9b8d1;font-size:10px}
+</style><style id="loreverse-global-navigation">
 .lv-global-header{position:sticky;top:0;z-index:999;background:rgba(10,15,29,.94);backdrop-filter:blur(18px);border-bottom:1px solid rgba(133,158,190,.25);box-shadow:0 8px 28px rgba(0,0,0,.22);color:#f4f7ff}
 .lv-global-inner{width:min(1200px,calc(100% - 28px));min-height:66px;margin:auto;display:flex;align-items:center;gap:20px}
 .lv-brand{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;color:#fff!important;text-decoration:none!important;font-weight:950;letter-spacing:.12em;font-size:16px}
@@ -161,7 +167,7 @@ body{scroll-padding-top:76px}
 <section class="auth" id="auth"><h1>LOREVERSE нийгэмлэгт нэвтрэх</h1><p class="muted">Бүртгэлтэй бүх гишүүн сервер үүсгэх, нээлттэй серверт нэгдэх, чатлах боломжтой.</p><form id="login"><label>Имэйл</label><input class="field" id="email" type="email" autocomplete="email" required><label>Нууц үг</label><input class="field" id="password" type="password" autocomplete="current-password" required><button class="btn" type="submit">Нэвтрэх</button><p class="muted" id="authNote"></p></form></section>
 <div class="layout hidden" id="app">
 <aside class="servers"><button class="server-icon active" id="homeBtn" title="Серверүүд">✦</button><div id="serverIcons"></div><button class="server-icon" id="createServerBtn" title="Сервер үүсгэх">＋</button><button class="server-icon" id="joinServerBtn" title="Урилгаар нэгдэх">↗</button></aside>
-<aside class="side"><div class="side-head"><div><h2 id="serverName">Таны серверүүд</h2><div class="muted" id="serverMeta">LOREVERSE НИЙГЭМЛЭГ</div></div><button class="btn" id="inviteBtn" title="Урилга үүсгэх" disabled>＋</button></div><div class="label">ЧАТ ӨРӨӨНҮҮД</div><div id="channels"><p class="muted">Сервер сонгоно уу.</p></div><div class="label">ГИШҮҮД</div><div id="members" class="empty-hint">Сервер сонгоход гишүүдийн мэдээлэл энд харагдана.</div><div style="margin-top:20px"><button class="btn" id="newChannelBtn" style="width:100%" disabled>＋ Өрөө нэмэх</button></div></aside>
+<aside class="side"><div class="side-head"><div><h2 id="serverName">Таны серверүүд</h2><div class="muted" id="serverMeta">LOREVERSE НИЙГЭМЛЭГ</div></div><button class="btn" id="inviteBtn" title="Урилга үүсгэх" disabled>＋</button></div><div class="label">ЧАТ ӨРӨӨНҮҮД</div><div id="channels"><p class="muted">Сервер сонгоно уу.</p></div><div class="label">ГИШҮҮД</div><div id="members" class="empty-hint">Сервер сонгоход гишүүдийн мэдээлэл энд харагдана.</div><div style="margin-top:20px"><button class="btn" id="newChannelBtn" style="width:100%" disabled>＋ Өрөө нэмэх</button></div><div style="margin-top:9px"><button class="btn" id="modsToggle" style="width:100%" disabled>🧩 MOD удирдлага</button></div><section id="modsPanel" class="mods-panel hidden"><div class="label">СЕРВЕРИЙН MOD ДЭЛГҮҮР</div><div id="modsList"><p class="muted">Сервер сонгоно уу.</p></div></section></aside>
 <main class="main"><div class="head"><div><h1 id="channelName">LOREVERSE НИЙГЭМЛЭГ</h1><div class="muted" id="channelDesc">Сервер сонгоод харилцаагаа эхлүүлээрэй</div></div><button class="btn" id="mobileBack">←</button></div><div class="messages" id="messages"><div class="empty"><div style="font-size:40px;color:var(--pink)">✦</div><h2>Нийгэмлэгээ байгуул</h2><p>Өөрийн сервер үүсгэх эсвэл урилгын холбоосоор нэгдэж, сувагтаа чатлаарай.</p></div></div><form class="compose" id="sendForm"><div class="sticker-wrap"><button class="sticker-btn" id="stickerToggle" type="button" title="Стикэр сонгох">☺</button><div class="sticker-panel" id="stickerPanel"><div class="sticker-tabs" id="stickerTabs"></div><div class="sticker-grid" id="stickerGrid"></div></div></div><label class="btn attach-btn" for="chatImage" title="Зураг хавсаргах">＋<input id="chatImage" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden></label><textarea class="field" id="message" maxlength="4000" placeholder="Мессеж бичих… (Enter — илгээх, Shift+Enter — мөр шилжүүлэх)" disabled></textarea><button class="btn primary" id="sendBtn" disabled>Илгээх</button></form></main></div>
 <nav class="home-bottom" aria-label="Нийгэмлэгийн навигаци"><button type="button" id="navChannels" aria-label="Чат сувгууд">☷ СУВГУУД</button><button type="button" class="nav-chat" id="navChat" aria-label="Чат руу орох">✉ ЧАТ РУУ</button><a href="../" aria-label="LOREVERSE нүүр хуудас">⌂ НҮҮР</a></nav>
 <div class="modal" id="modal"><form class="dialog" id="modalForm"><h2 id="modalTitle">Сервер үүсгэх</h2><div id="modalFields"></div><div class="dialog-actions"><button class="btn" type="button" id="cancelModal">Болих</button><button class="btn primary" type="submit" id="modalSubmit">Үүсгэх</button></div></form></div><div class="toast" id="toast"></div>
@@ -192,8 +198,52 @@ async function loadPublicServers(){
  $("channels").innerHTML='<div class="label">НЭЭЛТТЭЙ СЕРВЕРҮҮД</div>'+(available.length?available.map(s=>'<div class="empty-hint" style="margin:7px 0"><b>'+esc(s.name)+'</b><p class="muted">'+esc(s.description||"Тайлбар оруулаагүй")+'</p><button class="btn primary" type="button" data-public-server="'+s.id+'">Нэгдэх</button></div>').join(""):'<p class="muted">Одоогоор нээлттэй сервер алга. Та өөрөө сервер үүсгэж болно.</p>');
  $("channels").querySelectorAll("[data-public-server]").forEach(b=>b.onclick=async()=>{b.disabled=true;const {data,error}=await supabase.rpc("community_join_public_server",{p_server_id:b.dataset.publicServer});if(error){b.disabled=false;toast(error.message);return}await loadServers();await selectServer(data);toast("Серверт амжилттай нэгдлээ")});
 }
+
+const communityMods=[
+ {key:"welcome",name:"Welcome",icon:"👋",desc:"Шинэ гишүүн нэгдэхэд MOD event бүртгэнэ.",detail:"Шинэ гишүүн серверт орсон үйл явдлыг бүртгэнэ."},
+ {key:"anti_spam",name:"Anti-Spam",icon:"🛡️",desc:"Давхардсан болон хэт олон мессежийг зогсооно.",detail:"Анхдагч тохиргоо: 10 секундэд 5 хүртэл мессеж."},
+ {key:"leveling",name:"Level System",icon:"⭐",desc:"Чат идэвхээр XP, түвшин олгоно.",detail:"60 секунд тутамд XP олгоно. Эхний тохиргоо: 10 XP."}
+];
+async function loadMods(){
+ if(!activeServer)return;
+ const {data,error}=await supabase.from("community_mod_installs").select("mod_key,enabled,settings").eq("server_id",activeServer.id);
+ if(error){$("modsList").innerHTML='<p class="muted">'+esc(error.message)+'</p>';return}
+ const installed=Object.fromEntries((data||[]).map(x=>[x.mod_key,x]));
+ const canManage=["owner","admin"].includes(activeServer.role);
+ $("modsToggle").disabled=!canManage;
+ $("modsList").innerHTML=communityMods.map(m=>{
+  const row=installed[m.key],on=!!row?.enabled;
+  return '<article class="mod-card"><h3>'+m.icon+' '+m.name+'</h3><p>'+m.desc+'</p><div class="mod-actions"><span class="'+(on?'mod-on':'mod-off')+'">'+(on?'● ИДЭВХТЭЙ':row?'○ УНТРААСАН':'○ СУУЛГААГҮЙ')+'</span>'+(canManage?'<button class="btn '+(on?'':'primary')+'" type="button" data-mod-toggle="'+m.key+'">'+(row?(on?'Унтраах':'Идэвхжүүлэх'):'Суулгах')+'</button>':'')+(canManage&&row?'<button class="btn" type="button" data-mod-settings="'+m.key+'">Тохиргоо</button>':'')+'</div></article>';
+ }).join("");
+ $("modsList").querySelectorAll("[data-mod-toggle]").forEach(b=>b.onclick=async()=>{
+  const key=b.dataset.modToggle,row=installed[key];b.disabled=true;
+  let result;
+  if(!row)result=await supabase.from("community_mod_installs").insert({server_id:activeServer.id,mod_key:key,enabled:true,settings:key==="anti_spam"?{window_seconds:10,max_messages:5}:key==="leveling"?{xp_per_message:10}:{},installed_by:user.id});
+  else result=await supabase.from("community_mod_installs").update({enabled:!row.enabled,updated_at:new Date().toISOString()}).eq("server_id",activeServer.id).eq("mod_key",key);
+  if(result.error){toast(result.error.message);b.disabled=false;return}
+  toast(!row?"MOD суулгалаа":row.enabled?"MOD унтарлаа":"MOD идэвхжлээ");await loadMods();
+ });
+ $("modsList").querySelectorAll("[data-mod-settings]").forEach(b=>b.onclick=async()=>{
+  const key=b.dataset.modSettings,row=installed[key];let settings={...(row.settings||{})};
+  if(key==="anti_spam"){
+   const max=prompt("10 секундэд зөвшөөрөх мессежийн дээд тоо (2–20)",String(settings.max_messages||5));if(max===null)return;
+   const n=Number(max);if(!Number.isInteger(n)||n<2||n>20)return toast("2–20 хооронд бүхэл тоо оруулна уу");
+   settings={...settings,window_seconds:10,max_messages:n};
+  }else if(key==="leveling"){
+   const xp=prompt("Нэг удаагийн XP (1–100)",String(settings.xp_per_message||10));if(xp===null)return;
+   const n=Number(xp);if(!Number.isInteger(n)||n<1||n>100)return toast("1–100 хооронд бүхэл тоо оруулна уу");
+   settings={...settings,xp_per_message:n};
+  }else{
+   alert("Welcome MOD нь одоогоор гишүүн нэмэгдсэн үйл явдлыг бүртгэдэг. Нарийвчилсан мэндчилгээний сувгийн тохиргоо дараагийн хувилбарт нэмэгдэнэ.");return;
+  }
+  const {error}=await supabase.from("community_mod_installs").update({settings,updated_at:new Date().toISOString()}).eq("server_id",activeServer.id).eq("mod_key",key);
+  if(error)toast(error.message);else{toast("MOD тохиргоо хадгалагдлаа");await loadMods()}
+ });
+}
+$("modsToggle").onclick=()=>{$("modsPanel").classList.toggle("hidden");if(!$("modsPanel").classList.contains("hidden"))loadMods()};
+
 function renderServers(){
- $("newChannelBtn").disabled=!activeServer||!["owner","admin"].includes(activeServer.role);
+ $("newChannelBtn").disabled=!activeServer||!["owner","admin"].includes(activeServer.role);$("modsToggle").disabled=!activeServer||!["owner","admin"].includes(activeServer.role);if(!activeServer)$("modsPanel").classList.add("hidden");
  $("inviteBtn").disabled=!activeServer||!["owner","admin","moderator"].includes(activeServer.role);
  $("homeBtn").classList.toggle("active",!activeServer);
  $("serverIcons").innerHTML=servers.map(s=>'<button class="server-icon '+(activeServer?.id===s.id?'active':'')+'" data-server="'+s.id+'" title="'+esc(s.name)+'">'+esc(s.name.slice(0,2).toUpperCase())+'</button>').join("");
@@ -210,6 +260,7 @@ async function selectServer(id){
  $("channels").querySelectorAll("[data-channel]").forEach(b=>b.onclick=()=>selectChannel(b.dataset.channel));
  const {data:mem}=await supabase.from("community_server_members").select("user_id,role").eq("server_id",id);
  $("members").textContent=(mem||[]).length+" гишүүн";
+ await loadMods();
  renderServers();
  if(channels.length){if(!window.matchMedia("(max-width:1100px)").matches)await selectChannel(channels[0].id);}else{$("messages").innerHTML='<div class="empty">Энэ серверт суваг алга.</div>';$("message").disabled=true;$("sendBtn").disabled=true;}
 }
