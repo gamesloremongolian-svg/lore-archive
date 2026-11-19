@@ -1424,6 +1424,102 @@ body:before{opacity:.16;background-image:radial-gradient(1px 1px at 12% 20%,#fff
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
 </style>
+
+<style id="loreverse-yoru-home-redesign-v2">
+/* Structural YORU-inspired home redesign: original layout, mobile-first, existing app hooks retained. */
+.yoru-home{display:block!important;position:relative;isolation:isolate;width:min(1240px,calc(100% - 32px));min-height:0!important;margin:22px auto 0!important;padding:0!important;overflow:hidden;border:1px solid #594779!important;border-radius:28px!important;background:radial-gradient(ellipse at 78% 18%,#67428a55,transparent 38%),linear-gradient(135deg,#171328 0%,#101426 54%,#171126 100%)!important;box-shadow:0 24px 70px #0008}
+.yoru-home:before{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(1px 1px at 13% 22%,#fff 98%,transparent),radial-gradient(1px 1px at 83% 16%,#e7c8ff 98%,transparent),radial-gradient(1.5px 1.5px at 66% 78%,#9ceeff 98%,transparent);background-size:190px 180px,260px 230px,330px 290px;opacity:.38;pointer-events:none}
+.yoru-home:after{display:none!important}
+.yoru-home-inner{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.92fr);align-items:center;gap:clamp(24px,4vw,58px);padding:clamp(24px,5vw,64px)}
+.yoru-home-copy{padding:0!important;min-width:0;align-self:center}
+.yoru-kicker,.yoru-section-kicker{display:flex;align-items:center;gap:9px;color:#d5b4f5;font-size:10px;font-weight:900;letter-spacing:.22em}
+.yoru-kicker-line{width:25px;height:1px;background:#d5b4f5;box-shadow:0 0 12px #c79aff}
+.yoru-edition{margin-top:25px;color:#8d82a9;font-size:9px;font-weight:900;letter-spacing:.24em}
+.yoru-edition span{margin-left:10px;color:#c7a5ee}
+.yoru-home .hero-slogan{margin:13px 0 15px;color:#fbf7ff;font-size:clamp(34px,5.3vw,66px);font-weight:950;letter-spacing:-.055em;line-height:1.06;text-shadow:0 6px 32px #b18aff2b}
+.yoru-home .hero-slogan em{color:#c6a3fa;font-style:normal}
+.yoru-intro{max-width:510px;margin:0;color:#c2bad2;font-size:14px;line-height:1.85}
+.yoru-home .hero-brand-logo{display:block;width:min(260px,72%);max-height:72px;object-fit:contain;object-position:left center;margin:20px 0 0;filter:drop-shadow(0 0 18px #b98aff44)}
+.yoru-actions{display:flex;flex-wrap:wrap;gap:9px;margin:23px 0 0}
+.yoru-actions .btn{display:inline-flex;align-items:center;gap:9px;min-height:43px;padding:10px 14px;border:1px solid #65557e;border-radius:11px;background:#211b35;color:#eee8fa;font-size:11px;font-weight:850;text-decoration:none}
+.yoru-actions .btn.primary{border-color:transparent;background:linear-gradient(110deg,#a77af3,#d28bd5 60%,#76d5e5);color:#171126;box-shadow:0 7px 24px #a77af344}
+.yoru-actions .btn:hover{transform:translateY(-2px);border-color:#c3a0f4}
+.yoru-winter-banner{max-width:470px;margin-top:21px;border:1px solid #7d6597;border-radius:13px;background:linear-gradient(100deg,#2a203b,#18283a);box-shadow:0 10px 25px #0003}
+.yoru-countdown{max-width:470px;margin-top:10px;border:1px solid #5b4b7a;border-radius:15px;background:linear-gradient(120deg,#201a35,#172a3a);box-shadow:0 12px 28px #0003}
+.yoru-countdown .new-year-countdown-title{color:#e4c9f4}
+.yoru-countdown .new-year-time{border:1px solid #5a4c77;border-radius:9px;background:#100f20}
+.yoru-countdown .new-year-time strong{color:#fff}
+.yoru-home .hero-dots{margin-top:16px}
+.yoru-home .hero-dots span{background:#75658e}
+.yoru-home .hero-dots span:first-child{background:#d4a5ff;box-shadow:0 0 12px #d4a5ff}
+.yoru-feature{position:relative;isolation:isolate;display:block!important;min-height:500px!important;height:100%;max-height:650px;border:1px solid #75618e!important;border-radius:22px!important;overflow:hidden;background:radial-gradient(circle at 50% 42%,#6d55a866,transparent 30%),linear-gradient(150deg,#28203e,#101629 72%,#132a3b)!important;box-shadow:0 22px 55px #0007}
+.yoru-feature .hero-art-original{opacity:.9;background:radial-gradient(circle at 50% 40%,#c5a2ff66,transparent 24%),radial-gradient(circle at 50% 54%,#5ecce955,transparent 42%),linear-gradient(150deg,#211b38,#101629 68%,#12283a)}
+.yoru-feature-top{position:absolute;z-index:2;top:18px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:center;color:#cdb8e8;font-size:9px;font-weight:900;letter-spacing:.17em}
+.yoru-live-dot{padding:6px 9px;border:1px solid #8b70b6;border-radius:30px;background:#211934;color:#e8d5ff}
+.yoru-feature .hero-art-shade{background:linear-gradient(0deg,#0b0c19f2 0%,#0b0c1940 44%,transparent 78%)}
+.yoru-feature .hero-art-caption{left:25px;right:25px;bottom:50px;gap:9px}
+.yoru-feature .hero-art-caption small{color:#d8b3ff}
+.yoru-feature .hero-art-caption strong{font-size:clamp(24px,3vw,36px)}
+.yoru-feature .hero-art-caption span{color:#c9c2d8}
+.yoru-feature-index{position:absolute;right:22px;bottom:21px;color:#82769c;font-size:8px;font-weight:900;letter-spacing:.18em}
+.yoru-feature-orbit{position:absolute;inset:16% 10% 22%;display:grid;place-items:center;pointer-events:none}
+.yoru-orbit-core{display:grid;place-items:center;width:120px;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#d9c5ff55,#9b78d51c 55%,transparent 70%);color:#e5d4ff;font-size:75px;text-shadow:0 0 35px #caa4ff;animation:yoruPulse 5s ease-in-out infinite}
+.yoru-orbit-ring{position:absolute;width:min(74%,330px);aspect-ratio:1;border:1px solid #c7a5f255;border-radius:50%;box-shadow:0 0 40px #9b7ad322,inset 0 0 35px #9b7ad322;transform:scaleY(.72) rotate(-25deg)}
+.yoru-orbit-ring-two{width:min(58%,260px);transform:scaleX(.55) rotate(42deg);border-color:#80dbe977}
+@keyframes yoruPulse{50%{transform:scale(1.08);filter:brightness(1.2)}}
+.yoru-discover{width:min(1240px,calc(100% - 32px));margin:20px auto 28px;padding:25px;border:1px solid #413752;border-radius:21px;background:linear-gradient(135deg,#141224,#111827);box-shadow:0 16px 42px #0005}
+.yoru-discover-heading{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:17px}
+.yoru-discover-heading h2{margin:7px 0 0;color:#f7f1ff;font-size:clamp(17px,2vw,22px);letter-spacing:-.025em}
+.yoru-discover-aside{color:#807592;font-size:8px;font-weight:900;letter-spacing:.15em}
+.yoru-world-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}
+.yoru-world-card{position:relative;display:flex;min-height:145px;flex-direction:column;justify-content:flex-end;gap:6px;overflow:hidden;padding:16px;border:1px solid #443b59;border-radius:15px;background:radial-gradient(circle at 80% 12%,#a47bd42b,transparent 42%),linear-gradient(145deg,#211b34,#151a2b);color:#fff;text-decoration:none;transition:transform .2s,border-color .2s,background .2s}
+.yoru-world-card:before{content:"";position:absolute;inset:0;background-image:radial-gradient(#fff8 .7px,transparent .7px);background-size:19px 19px;opacity:.22;pointer-events:none}
+.yoru-world-card:hover{transform:translateY(-4px);border-color:#a88bd0;background-color:#28203c}
+.yoru-world-no{position:absolute;top:13px;left:15px;color:#857b9b;font-size:9px;font-weight:900;letter-spacing:.12em}
+.yoru-world-symbol{position:absolute;top:31px;left:15px;color:#c6a1f6;font-size:30px;text-shadow:0 0 20px #b58cff66}
+.yoru-world-title{font-size:14px;font-weight:950;letter-spacing:.12em}
+.yoru-world-desc{color:#a9a0b9;font-size:9px}
+.yoru-world-arrow{position:absolute;right:15px;bottom:17px;color:#d7b6ff;font-size:17px}
+.yoru-world-manga .yoru-world-symbol{color:#f1acd9}.yoru-world-games .yoru-world-symbol{color:#86dce9}.yoru-world-archive .yoru-world-symbol{color:#e7ce9b}
+@media(max-width:850px){
+ .yoru-home-inner{grid-template-columns:minmax(0,1fr);gap:24px;padding:clamp(20px,4vw,34px)}
+ .yoru-home .hero-slogan{font-size:clamp(34px,8vw,54px)}
+ .yoru-feature{min-height:300px!important;height:340px;max-height:none}
+ .yoru-feature-orbit{inset:8% 10% 16%}
+ .yoru-orbit-core{width:90px;font-size:58px}
+ .yoru-world-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:560px){
+ .yoru-home{width:calc(100% - 20px);margin-top:12px!important;border-radius:20px!important}
+ .yoru-home-inner{padding:21px 17px;gap:19px}
+ .yoru-edition{margin-top:18px}
+ .yoru-home .hero-slogan{font-size:clamp(31px,9vw,43px);line-height:1.08}
+ .yoru-intro{font-size:12px;line-height:1.75}
+ .yoru-home .hero-brand-logo{width:190px;max-height:56px;margin-top:15px}
+ .yoru-actions{gap:7px;margin-top:17px}
+ .yoru-actions .btn{min-height:40px;padding:9px 11px;font-size:10px}
+ .yoru-actions .yoru-app-link{display:none}
+ .yoru-winter-banner{margin-top:16px}
+ .yoru-countdown{padding:10px}
+ .yoru-countdown .new-year-countdown-title{font-size:8px}
+ .yoru-countdown .new-year-time{min-width:0;padding:8px 4px}
+ .yoru-countdown .new-year-time strong{font-size:20px}
+ .yoru-countdown .new-year-time span{font-size:7px}
+ .yoru-feature{height:260px;min-height:260px!important;border-radius:16px!important}
+ .yoru-feature .hero-art-caption{left:17px;bottom:37px}
+ .yoru-feature .hero-art-caption strong{font-size:24px}
+ .yoru-feature-index{right:15px;bottom:15px}
+ .yoru-discover{width:calc(100% - 20px);margin:13px auto 22px;padding:17px 14px;border-radius:17px}
+ .yoru-discover-heading{align-items:start;flex-direction:column;gap:5px}
+ .yoru-discover-heading h2{font-size:17px}
+ .yoru-world-grid{gap:8px}
+ .yoru-world-card{min-height:125px;padding:12px;border-radius:12px}
+ .yoru-world-symbol{top:27px;left:12px;font-size:26px}
+ .yoru-world-title{font-size:12px}
+ .yoru-world-desc{font-size:8px}
+}
+@media(prefers-reduced-motion:reduce){.yoru-orbit-core,.yoru-world-card{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Үндсэн агуулга руу очих</a>
@@ -1445,31 +1541,51 @@ body:before{opacity:.16;background-image:radial-gradient(1px 1px at 12% 20%,#fff
 <main class="wrap" id="main-content" tabindex="-1">
 
 
-<section class="hero hero-streaming" id="home">
- <div class="hero-copy">
-  <div class="eyebrow">ANIME · GAMES · MANGA · STORIES</div>
-  <div class="hero-slogan">БҮХ ЕРТӨНЦИЙН МЭДЛЭГ НЭГ ДОР.</div>
-  <img class="hero-brand-logo" src="./assets/loreverse-logo.svg" alt="LOREVERSE">
-  <p>Дуртай анимэ, тоглоом, манга ертөнцийнхөө түүх, дүрүүд, нууц, онолыг нэг дороос нээ.</p>
-  <div class="hero-buttons"><a class="btn primary" href="#anime">Анимэ үзэх ↗</a><a class="btn" href="#all-categories">Бүх ангилал</a><a class="btn" href="#invite">Найзаа урих ↗</a><a class="btn" href="#app-update" aria-label="Аппын шинэчлэлт шалгах">Апп шинэчлэх ↻</a></div>
-  <div class="winter-banner" role="note"><span class="winter-banner-icon" aria-hidden="true">🎄</span><div><strong>WINTER FESTIVAL · 2027</strong><span>Шинэ он хүртэл хамтдаа шинэ ертөнц нээцгээе</span></div><span class="winter-star" aria-hidden="true">✦</span></div>
-  <div class="new-year-countdown" id="newYearCountdown" role="timer" aria-live="off" aria-label="2027 оны шинэ он хүртэлх хугацаа">
-   <div class="new-year-countdown-title"><span>✦</span> 2027 ОНЫ ШИНЭ ОН ХҮРТЭЛ <span>✦</span></div>
-   <div class="new-year-countdown-grid">
-    <div class="new-year-time"><strong id="nyDays">00</strong><span>ӨДӨР</span></div>
-    <div class="new-year-time"><strong id="nyHours">00</strong><span>ЦАГ</span></div>
-    <div class="new-year-time"><strong id="nyMinutes">00</strong><span>МИНУТ</span></div>
-    <div class="new-year-time"><strong id="nySeconds">00</strong><span>СЕКУНД</span></div>
+<section class="hero hero-streaming yoru-home" id="home" aria-labelledby="yoruHomeTitle">
+ <div class="yoru-home-inner">
+  <div class="hero-copy yoru-home-copy">
+   <div class="yoru-kicker"><span class="yoru-kicker-line"></span> ANIME · GAMES · MANGA · STORIES</div>
+   <div class="yoru-edition">THE MULTIVERSE ARCHIVE <span>VOL. 01</span></div>
+   <h1 class="hero-slogan" id="yoruHomeTitle">БҮХ ЕРТӨНЦИЙН<br><em>МЭДЛЭГ</em> НЭГ ДОР.</h1>
+   <p class="yoru-intro">Анимэ, манга, тоглоомын ертөнцөөр аял. Дүрүүдийн түүх, далд нууц, онол болон мэдлэгийг нэг архиваас нээ.</p>
+   <img class="hero-brand-logo" src="./assets/loreverse-logo.svg" alt="LOREVERSE">
+   <div class="hero-buttons yoru-actions">
+    <a class="btn primary" href="#anime">Анимэ судлах <span>↗</span></a>
+    <a class="btn" href="#all-categories">Бүх ертөнц <span>⌕</span></a>
+    <a class="btn" href="#invite">Найзаа урих <span>↗</span></a>
+    <a class="btn yoru-app-link" href="#app-update" aria-label="Аппын шинэчлэлт шалгах">Апп шинэчлэх <span>↓</span></a>
    </div>
-   <div class="new-year-countdown-note" id="nyCountdownNote">Шинэ он хүртэл хамтдаа тоолъё!</div>
+   <div class="winter-banner yoru-winter-banner" role="note"><span class="winter-banner-icon" aria-hidden="true">✦</span><div><strong>WINTER FESTIVAL · 2027</strong><span>Шинэ он хүртэл хамтдаа шинэ ертөнц нээцгээе</span></div><span class="winter-star" aria-hidden="true">✧</span></div>
+   <div class="new-year-countdown yoru-countdown" id="newYearCountdown" role="timer" aria-live="off" aria-label="2027 оны шинэ он хүртэлх хугацаа">
+    <div class="new-year-countdown-title"><span>✦</span> 2027 ОНЫ ШИНЭ ОН ХҮРТЭЛ <span>✦</span></div>
+    <div class="new-year-countdown-grid">
+     <div class="new-year-time"><strong id="nyDays">00</strong><span>ӨДӨР</span></div>
+     <div class="new-year-time"><strong id="nyHours">00</strong><span>ЦАГ</span></div>
+     <div class="new-year-time"><strong id="nyMinutes">00</strong><span>МИНУТ</span></div>
+     <div class="new-year-time"><strong id="nySeconds">00</strong><span>СЕКУНД</span></div>
+    </div>
+    <div class="new-year-countdown-note" id="nyCountdownNote">Шинэ он хүртэл хамтдаа тоолъё!</div>
+   </div>
+   <div class="hero-dots" id="heroAnimeDots"><span></span><span></span><span></span></div>
   </div>
-  <div class="hero-dots" id="heroAnimeDots"><span></span><span></span><span></span></div>
+  <a class="hero-art yoru-feature" id="heroAnimeVisual" href="#anime" aria-label="Онцлох анимэ">
+   <div class="hero-art-original" role="img" aria-label="LOREVERSE-ийн анимэ архивын оддын дүрслэл"></div>
+   <div class="yoru-feature-top"><span>LOREVERSE ORIGINAL</span><span class="yoru-live-dot">FEATURED</span></div>
+   <div class="yoru-feature-orbit" aria-hidden="true"><span class="yoru-orbit-core">✦</span><span class="yoru-orbit-ring"></span><span class="yoru-orbit-ring yoru-orbit-ring-two"></span></div>
+   <div class="hero-art-shade"></div>
+   <div class="hero-art-caption"><small id="heroAnimeMeta">FEATURED ANIME</small><strong id="heroAnimeTitle">Онцлох анимэ</strong><span id="heroAnimeDescription">Анимэ ертөнцтэй танилцаарай</span></div>
+   <span class="yoru-feature-index">01 / DISCOVER</span>
+  </a>
  </div>
- <a class="hero-art" id="heroAnimeVisual" href="#anime" aria-label="Онцлох анимэ">
-  <div class="hero-art-original" role="img" aria-label="LOREVERSE-ийн өөрийн хийсэн анимэ архивын дүрслэл"></div>
-  <div class="hero-art-shade"></div>
-  <div class="hero-art-caption"><small id="heroAnimeMeta">FEATURED ANIME</small><strong id="heroAnimeTitle">Онцлох анимэ</strong><span id="heroAnimeDescription">Анимэ ертөнцтэй танилцаарай</span></div>
- </a>
+</section>
+<section class="yoru-discover" aria-label="LOREVERSE ертөнцүүд">
+ <div class="yoru-discover-heading"><div><span class="yoru-section-kicker">CHOOSE YOUR WORLD</span><h2>ЮУ НЭЭЖ ҮЗМЭЭР БАЙНА?</h2></div><span class="yoru-discover-aside">НЭГ АРХИВ · ОЛОН ЕРТӨНЦ</span></div>
+ <div class="yoru-world-grid">
+  <a class="yoru-world-card yoru-world-anime" href="#anime"><span class="yoru-world-no">01</span><span class="yoru-world-symbol">◈</span><span class="yoru-world-title">АНИМЭ</span><span class="yoru-world-desc">Дүрүүд · Түүх · Нууц</span><span class="yoru-world-arrow">↗</span></a>
+  <a class="yoru-world-card yoru-world-manga" href="#manga"><span class="yoru-world-no">02</span><span class="yoru-world-symbol">▤</span><span class="yoru-world-title">МАНГА</span><span class="yoru-world-desc">Бүлэг · Зохиол · Судалгаа</span><span class="yoru-world-arrow">↗</span></a>
+  <a class="yoru-world-card yoru-world-games" href="#games"><span class="yoru-world-no">03</span><span class="yoru-world-symbol">⌘</span><span class="yoru-world-title">ТОГЛООМ</span><span class="yoru-world-desc">Lore · Universe · Guide</span><span class="yoru-world-arrow">↗</span></a>
+  <a class="yoru-world-card yoru-world-archive" href="#archive"><span class="yoru-world-no">04</span><span class="yoru-world-symbol">⌗</span><span class="yoru-world-title">ДОМГИЙН САН</span><span class="yoru-world-desc">Нийтлэл · Онол · Архив</span><span class="yoru-world-arrow">↗</span></a>
+ </div>
 </section>
 
 <section class="section winter-calendar-section" id="winter-calendar" aria-labelledby="winterCalendarTitle">
