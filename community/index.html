@@ -391,6 +391,9 @@ async function loadMessages(){
  const {data,error}=await supabase.from("community_messages").select("id,author_id,body,created_at,edited_at").eq("channel_id",activeChannel.id).is("deleted_at",null).order("created_at",{ascending:true}).limit(150);
  if(error){$("messages").innerHTML='<div class="empty">'+esc(error.message)+'</div>';return}
  if(!data?.length){$("messages").innerHTML='<div class="empty"><h2>Эхний мессежээ илгээгээрэй</h2><p>Энэ сувгийн яриа энд харагдана.</p></div>';return}
+ const imagePaths=data.map(m=>{const hit=m.body.match(/(?:^|\n)\[\[IMAGE\|([^\]]+)\]\]$/);return hit&&!hit[1].startsWith("https://")?hit[1]:null}).filter(Boolean);
+ const signedByPath={};
+ if(imagePaths.length){const {data:signed,error:signedError}=await supabase.storage.from("community-chat-private-media").createSignedUrls(imagePaths,3600);if(signedError){console.warn("Private chat image signing failed",signedError)}else (signed||[]).forEach(x=>{if(x.path&&x.signedUrl)signedByPath[x.path]=x.signedUrl})}
  const ids=[...new Set(data.map(m=>m.author_id))];const {data:profiles}=await supabase.from("chat_public_profiles").select("id,display_name,avatar_url").in("id",ids);const p=Object.fromEntries((profiles||[]).map(x=>[x.id,x]));
  const {data:equippedRows}=await supabase.from("store_equipped").select("user_id,slot,item_id").in("user_id",ids);
  const cosmeticIds=[...new Set((equippedRows||[]).map(x=>x.item_id))];
@@ -408,11 +411,11 @@ async function loadMessages(){
   const avatarClass="avatar"+(frame?" chat-cosmetic-avatar":"")+(effect?.id?.includes("phoenix")?" effect-phoenix":effect?" effect-aurora":"");
   const avatarStyle=frame?' style="--cosmetic-frame:'+frameColor+'"':"";
   const st=m.body.match(/^\[\[STICKER\|([^|]+)\|([^\]]+)\]\]$/);
-  const imageMatch=m.body.match(/(?:^|\n)\[\[IMAGE\|(https:\/\/[^\]]+)\]\]$/);
+  const imageMatch=m.body.match(/(?:^|\n)\[\[IMAGE\|([^\]]+)\]\]$/);
   let body;
   const bubbleTheme=theme?.id?.includes("sakura")?"sakura":theme?.id?.includes("midnight")?"midnight":"";
   if(st)body='<div class="bubble '+(bubbleTheme?'chat-theme-'+bubbleTheme:'')+'" style="font-size:42px;text-align:center;padding:12px 20px">'+esc(st[1])+'<div class="muted">'+esc(st[2])+'</div></div>';
-  else if(imageMatch){const textPart=m.body.replace(/(?:^|\n)\[\[IMAGE\|https:\/\/[^\]]+\]\]$/,'').trim();body='<div class="bubble '+(bubbleTheme?'chat-theme-'+bubbleTheme:'')+'">'+(textPart?esc(textPart):'')+'<img class="chat-image" src="'+esc(imageMatch[1])+'" alt="Хавсаргасан зураг" loading="lazy"></div>';}
+  else if(imageMatch){const textPart=m.body.replace(/(?:^|\n)\[\[IMAGE\|[^\]]+\]\]$/,'').trim();const imageUrl=imageMatch[1].startsWith("https://")?imageMatch[1]:signedByPath[imageMatch[1]];body='<div class="bubble '+(bubbleTheme?'chat-theme-'+bubbleTheme:'')+'">'+(textPart?esc(textPart):'')+(imageUrl?'<img class="chat-image" src="'+esc(imageUrl)+'" alt="Хавсаргасан зураг" loading="lazy">':'<span class="muted">Зурагт хандах эрхгүй эсвэл холбоосын хугацаа дууссан.</span>')+'</div>';}
   else body='<div class="bubble '+(bubbleTheme?'chat-theme-'+bubbleTheme:'')+'">'+esc(m.body)+'</div>';
   const owner=m.author_id===user.id;
   const tools=(owner||canModerate)?'<div class="msg-tools">'+(owner?'<button type="button" data-edit="'+m.id+'">Засах</button>':'')+'<button type="button" data-delete="'+m.id+'">Устгах</button></div>':'';
@@ -444,10 +447,10 @@ $("sendForm").onsubmit=async e=>{
    if(!["image/jpeg","image/png","image/webp","image/gif"].includes(file.type)||file.size>10*1024*1024)throw new Error("JPG, PNG, WEBP, GIF зураг 10 МБ хүртэл зөвшөөрнө");
    const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_").slice(-80)||"image";
    const path=user.id+"/"+activeServer.id+"/"+activeChannel.id+"/"+crypto.randomUUID()+"-"+safeName;
-   const {error:uploadError}=await supabase.storage.from("community-chat-media").upload(path,file,{contentType:file.type,upsert:false});
+   const {error:uploadError}=await supabase.storage.from("community-chat-private-media").upload(path,file,{contentType:file.type,upsert:false});
    if(uploadError)throw uploadError;
-   const {data:urlData}=supabase.storage.from("community-chat-media").getPublicUrl(path);
-   body=(body?body+"\n":"")+"[[IMAGE|"+urlData.publicUrl+"]]";
+   
+   body=(body?body+"\n":"")+"[[IMAGE|"+path+"]]";
   }
   const {error}=await supabase.from("community_messages").insert({channel_id:activeChannel.id,author_id:user.id,body});
   if(error)throw error;
