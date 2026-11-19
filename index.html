@@ -572,7 +572,7 @@ header:has(#mainNav) .menu{border-color:#465b7c;background:#1b2941;color:#fff}
 <a class="brand" href="./"><img src="./assets/loreverse-mark.svg" alt=""><span>LORE</span>VERSE</a>
 <nav id="mainNav" aria-label="Үндсэн цэс">
 <a href="./">Нүүр</a>
-<a href="./editorial/">Lore</a>
+<a href="./knowledge/">Lore</a>
 <a href="./games/">Тоглоомын ертөнц</a>
 <a href="./ai/">AI туслах</a>
 <a href="./community/">Нийгэмлэг</a>
@@ -600,7 +600,7 @@ header:has(#mainNav) .menu{border-color:#465b7c;background:#1b2941;color:#fff}
    <div class="eyebrow" id="featuredCharacterWork">ӨНӨӨДРИЙН ОНЦЛОХ ДҮР</div>
    <h2 id="featuredCharacterTitle">Өдрийн онцлох дүр</h2>
    <p id="featuredCharacterDescription"></p>
-   <a id="featuredCharacterLink" href="./editorial/" class="featured-link">Дэлгэрэнгүй lore унших <span aria-hidden="true">↗</span></a>
+   <a id="featuredCharacterLink" href="./knowledge/" class="featured-link">Дэлгэрэнгүй lore унших <span aria-hidden="true">↗</span></a>
   </div>
  </div>
 </section>
@@ -628,7 +628,7 @@ header:has(#mainNav) .menu{border-color:#465b7c;background:#1b2941;color:#fff}
    <p>LOREVERSE бол анимэ, манга, тоглоомын ертөнцийн түүх, дүрүүд, нууц болон далд холбоосыг Монгол хэлээр судалж, хуваалцах бие даасан платформ юм. Сонирхлыг мэдлэг болгон, эх сурвалжтай мэдээллийг нэг дороос хүргэхийг зорьдог.</p>
   </div>
   <div class="about-loreverse-grid">
-   <article class="about-loreverse-item"><span class="about-icon" aria-hidden="true">✧</span><h3>Lore ба судалгаа</h3><p>Ертөнцийн түүх, дүрийн намтар, үйл явдал, онол болон тайлбаруудыг уншаарай.</p><a href="./editorial/">Нийтлэл унших ↗</a></article>
+   <article class="about-loreverse-item"><span class="about-icon" aria-hidden="true">✧</span><h3>Lore ба судалгаа</h3><p>Ертөнцийн түүх, дүрийн намтар, үйл явдал, онол болон тайлбаруудыг уншаарай.</p><a href="./knowledge/">Нийтлэл унших ↗</a></article>
    <article class="about-loreverse-item"><span class="about-icon" aria-hidden="true">◈</span><h3>Ертөнцүүдийн архив</h3><p>Anime, manga, game ангиллаар сонирхдог цуврал, тоглоомын мэдээллээ олоорой.</p><a href="./games/">Ертөнц сонгох ↗</a></article>
    <article class="about-loreverse-item"><span class="about-icon" aria-hidden="true">⌘</span><h3>Community ба Market</h3><p>Бусад сонирхогчтой ярилцаж, платформын үйлчилгээ болон зарын талбартай танилцаарай.</p><a href="./community/">Нийгэмлэгт нэгдэх ↗</a> <a href="./marketplace/">Market үзэх ↗</a></article>
   </div>
@@ -1015,7 +1015,7 @@ async function loadLatestPosts(){
   if(error)throw error;
   if(!data?.length){box.innerHTML='<p class="updates-empty">Одоогоор нийтлэгдсэн шинэ мэдээлэл алга.</p>';return;}
   const labels={anime:"Anime",manga:"Manga",game:"Game",lore:"Lore",news:"Мэдээ",guide:"Гарын авлага"};
-  box.innerHTML=data.map(p=>'<a class="update-item" href="./editorial/?post='+encodeURIComponent(p.slug||p.id)+'"><span class="update-mark">✧</span><span><h4>'+safe(p.title)+'</h4><p>'+safe(p.summary||"Шинэ нийтлэл унших")+'</p><span class="update-meta">'+safe(labels[p.content_type]||"Нийтлэл")+' · '+safe(date(p.published_at))+'</span></span></a>').join("");
+  box.innerHTML=data.map(p=>'<a class="update-item" href="./knowledge/?post='+encodeURIComponent(p.slug||p.id)+'"><span class="update-mark">✧</span><span><h4>'+safe(p.title)+'</h4><p>'+safe(p.summary||"Шинэ нийтлэл унших")+'</p><span class="update-meta">'+safe(labels[p.content_type]||"Нийтлэл")+' · '+safe(date(p.published_at))+'</span></span></a>').join("");
   el("latestPostStatus").textContent="Хамгийн сүүлд нийтлэгдсэн 5 нээлттэй нийтлэл.";
  }catch(e){box.innerHTML='<p class="updates-empty">Шинэ мэдээллийг одоогоор ачаалж чадсангүй.</p>';el("latestPostStatus").textContent="Дахин оролдоно уу.";}
 }
