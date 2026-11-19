@@ -111,6 +111,20 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
   .feature{margin-top:-10px;margin-bottom:16px;padding:17px 16px}
 }
 
+
+/* Final spacing pass: tighten section rhythm without resizing or cropping the hero artwork. */
+@media (min-width:601px) and (max-width:850px){
+  .hero{margin-bottom:-12px}
+  .feature{margin-bottom:10px}
+  .category-label{padding-top:12px}
+}
+@media (max-width:600px){
+  .hero{margin-bottom:-18px}
+  .feature{margin-top:-8px;margin-bottom:8px}
+  .category-label{padding-top:12px}
+  .category-strip{padding-top:10px;padding-bottom:4px}
+}
+
 /* LOREVERSE responsive refinement: preserve the original artwork asset and its proportions. */
 @media (min-width:601px) and (max-width:850px){
   header{height:52px}
