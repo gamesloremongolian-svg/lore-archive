@@ -39,15 +39,15 @@
 <section class="auth-wrap" id="authWrap">
  <div class="auth-card">
   <div class="eyebrow" style="font-size:10px;letter-spacing:.2em;color:#83eaff;font-weight:900">LOREVERSE DIRECT MESSAGES</div>
-  <h1 id="authTitle">Хувийн чат руу нэвтрэх</h1>
-  <p id="authDescription">Бусад гишүүдтэй хувийн мессежээр харилцахын тулд бүртгэлтэй аккаунтаараа нэвтэрнэ үү.</p>
+  <h1 id="authTitle">Админ нэвтрэх</h1>
+  <p id="authDescription">Хувийн чатад зөвхөн идэвхтэй админ болон туслах админ нэвтэрнэ.</p>
   <form id="authForm">
    <div id="nameField" class="hidden"><label for="displayName">Харагдах нэр</label><input class="field" id="displayName" maxlength="32" autocomplete="nickname" placeholder="Таны нэр"></div>
    <label for="email">Имэйл</label><input class="field" id="email" type="email" required autocomplete="email" placeholder="name@example.com">
    <label for="password">Нууц үг</label><input class="field" id="password" type="password" required minlength="6" autocomplete="current-password" placeholder="Нууц үг">
    <button class="btn primary" id="authSubmit" type="submit">Нэвтрэх</button>
   </form>
-  <button class="toggle" id="authToggle" type="button">Шинэ аккаунт үүсгэх</button>
+  
   <div class="auth-note" id="authNote" aria-live="polite"></div>
   <p class="hint">Хувийн зурвасыг зөвхөн тухайн ярианд оролцож буй хоёр хэрэглэгч уншина. Зочин / anonymous аккаунтаар хувийн чат ашиглах боломжгүй.</p>
  </div>
@@ -82,12 +82,10 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
 const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
 const $=id=>document.getElementById(id);
 const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let currentUser=null,myDisplayName="Member",myAvatarUrl=null,authMode="login",activeConversation=null,activePartner=null,messageChannel=null,conversationChannel=null,refreshPresenceTimer=null,memberCache=[];
+let currentUser=null,myDisplayName="Member",myAvatarUrl=null,activeConversation=null,activePartner=null,messageChannel=null,conversationChannel=null,refreshPresenceTimer=null,memberCache=[];
 function initials(name){return String(name||"L").trim().split(/\s+/).slice(0,2).map(x=>x[0]||"").join("").toUpperCase()||"L";}
 function renderAvatar(el,name,url){el.innerHTML=url?`<img src="${safe(url)}" alt="${safe(name)}">`:safe(initials(name));}
 function note(s){$("authNote").textContent=s;}
-function setAuthMode(mode){authMode=mode;const signup=mode==="signup";$("authTitle").textContent=signup?"Шинэ аккаунт үүсгэх":"Хувийн чат руу нэвтрэх";$("authDescription").textContent=signup?"LOREVERSE-д бүртгүүлээд бусад гишүүнтэй шууд чатлаарай.":"Бусад гишүүдтэй хувийн мессежээр харилцахын тулд бүртгэлтэй аккаунтаараа нэвтэрнэ үү.";$("nameField").classList.toggle("hidden",!signup);$("displayName").required=signup;$("authSubmit").textContent=signup?"Бүртгүүлэх":"Нэвтрэх";$("authToggle").textContent=signup?"Нэвтрэх":"Шинэ аккаунт үүсгэх";$("password").autocomplete=signup?"new-password":"current-password";note("");}
-$("authToggle").onclick=()=>setAuthMode(authMode==="login"?"signup":"login");
 async function ensureProfile(user){
  let {data,error}=await supabase.from("profiles").select("id,display_name,avatar_url").eq("id",user.id).maybeSingle();
  if(error)throw error;
@@ -95,18 +93,15 @@ async function ensureProfile(user){
  myDisplayName=data.display_name||user.user_metadata?.display_name||user.email?.split("@")[0]||"Member";myAvatarUrl=data.avatar_url||null;
 }
 $("authForm").addEventListener("submit",async e=>{
- e.preventDefault();$("authSubmit").disabled=true;note(authMode==="signup"?"Аккаунт үүсгэж байна…":"Нэвтэрч байна…");
+ e.preventDefault();$("authSubmit").disabled=true;note("Админаар нэвтэрч байна…");
  try{
   const email=$("email").value.trim(),password=$("password").value;
-  if(authMode==="signup"){
-   const displayName=$("displayName").value.trim();if(!displayName)throw new Error("Харагдах нэрээ оруулна уу.");
-   const {data,error}=await supabase.auth.signUp({email,password,options:{data:{display_name:displayName}}});if(error)throw error;
-   if(!data.session){note("Бүртгэл үүслээ. Имэйлээ баталгаажуулаад нэвтэрнэ үү.");setAuthMode("login");return;}
-   currentUser=data.user;
-  }else{
-   const {data,error}=await supabase.auth.signInWithPassword({email,password});if(error)throw error;currentUser=data.user;
-  }
-  if(!currentUser||currentUser.is_anonymous)throw new Error("Хувийн чатад имэйлээр бүртгүүлсэн аккаунт шаардлагатай.");
+  const {data,error}=await supabase.auth.signInWithPassword({email,password});if(error)throw error;
+  currentUser=data.user;
+  if(!currentUser||currentUser.is_anonymous)throw new Error("Зөвхөн имэйлээр нэвтэрсэн ажилтан ашиглах боломжтой.");
+  const {data:staff,error:staffError}=await supabase.from("staff_members").select("role,active").eq("user_id",currentUser.id).maybeSingle();
+  if(staffError)throw staffError;
+  if(!staff||staff.active!==true){await supabase.auth.signOut({scope:"local"});currentUser=null;throw new Error("Зөвхөн идэвхтэй админ болон туслах админ нэвтрэх боломжтой.");}
   await enterChat();
  }catch(err){note(err.message||"Нэвтрэхэд алдаа гарлаа.");}
  finally{$("authSubmit").disabled=false;}
