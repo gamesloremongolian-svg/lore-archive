@@ -119,10 +119,7 @@ async function showCategory(cat,shouldScroll=true){
  items.innerHTML=fr.map(f=>{const fw=works.filter(w=>w.franchise_id===f.id),fe=ents.filter(e=>e.franchise_id===f.id),cover=coverMap.get(f.id);return '<article class="result-card">'+(cover?.url?'<img class="cover" src="'+esc(cover.url)+'" alt="'+esc(f.name)+' зураг" loading="lazy"><small class="cover-source">'+(cover.source==="LOREVERSE"?'LOREVERSE cover':'Зургийн эх сурвалж: Wikipedia')+'</small>':'<div class="cover-placeholder">LOREVERSE</div>')+'<h3>'+esc(f.name)+'</h3>'+(f.description?'<p>'+esc(f.description)+'</p>':'')+(fe.length?'<p><strong>Дүрүүд:</strong> '+fe.slice(0,8).map(e=>esc(em.get(e.id)?.display_name||e.canonical_name)).join(" · ")+'</p>':'')+fw.map(w=>{const t=tm.get(w.id);return '<div class="result-work"><strong>'+esc(t?.title||w.canonical_title)+'</strong><small>'+esc(w.work_type.replaceAll("_"," "))+'</small>'+(t?.synopsis?'<p>'+esc(t.synopsis)+'</p>':'')+'</div>';}).join("")+'</article>';}).join("");
  status.textContent=fr.length+" ертөнц · "+works.length+" бүтээл · Монгол хэл дээр нийтлэгдсэн мэдээлэл";
 }
-let autoIndex=0,autoTimer=null;
-function startAuto(){if(autoTimer)clearInterval(autoTimer);autoTimer=setInterval(()=>{autoIndex=(autoIndex+1)%cards.length;showCategory(cards[autoIndex].dataset.category,false);},6000);}
-cards.forEach((x,i)=>x.addEventListener("click",()=>{autoIndex=i;showCategory(x.dataset.category,true);startAuto();}));
-startAuto();
+cards.forEach((x)=>x.addEventListener("click",()=>{showCategory(x.dataset.category,true);}));
 document.getElementById("closeCategoryResults").addEventListener("click",()=>{panel.hidden=true;active=null;cards.forEach(x=>x.setAttribute("aria-pressed","false"));});
 </script>
 </body></html>
