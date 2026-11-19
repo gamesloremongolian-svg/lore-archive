@@ -1245,6 +1245,38 @@ img,svg,video,canvas{max-width:100%}
 }
 </style>
 
+
+<style id="loreverse-mobile-profile-modal-fix">
+/* Keep account/profile dialogs above the mobile dock and fully scrollable */
+#profileModal,#notificationsModal,.modal{z-index:10010}
+#profileModal{align-items:center;justify-items:center;overflow-y:auto;overscroll-behavior:contain;padding: max(12px,env(safe-area-inset-top,0px)) 12px max(12px,env(safe-area-inset-bottom,0px))}
+#profileModal .dialog{width:min(620px,100%);max-width:100%;max-height:calc(100dvh - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding:clamp(15px,3vw,25px);scrollbar-gutter:stable}
+#profileModal .dialog>*{min-width:0;max-width:100%}
+#profileModal .dialogtop{position:sticky;top:-1px;z-index:2;align-items:center;padding:4px 0 10px;background:linear-gradient(180deg,#15172c 82%,#15172c00)}
+#profileModal .dialogtop h2{font-size:clamp(20px,5vw,28px);line-height:1.2}
+#profileModal .portal-panel{min-width:0;max-width:100%;padding:14px!important}
+#profileModal .form-field{display:block;width:100%;min-width:0;max-width:100%;min-height:48px;margin:7px 0 13px;padding:12px 14px!important;font-size:16px!important}
+#profileModal label{display:block;line-height:1.45;margin-top:8px}
+#profileModal .row{display:flex;flex-wrap:wrap;gap:8px;min-width:0}
+#profileModal .row .btn{flex:1 1 105px;min-width:0;min-height:46px;padding:10px 12px;font-size:13px;white-space:normal}
+#profileModal #profileSave{min-height:48px;max-width:100%;white-space:normal}
+#profileModal .dialog>div[style*="border-top"]{padding-bottom:8px}
+@media(max-width:760px){
+ #profileModal{align-items:flex-start;padding:calc(8px + env(safe-area-inset-top,0px)) 9px calc(10px + env(safe-area-inset-bottom,0px))}
+ #profileModal .dialog{width:100%;max-height:calc(100dvh - 16px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));border-radius:17px;padding:15px 13px}
+ #profileModal .dialogtop{margin-bottom:4px}
+ #profileModal .dialog>p{font-size:13px;line-height:1.5}
+ #profileModal .row .btn{flex:1 1 30%;font-size:12px}
+ #profileModal #profileSave{width:100%}
+ #loreverseMobileNav{z-index:9997}
+ #loreAiLauncher{z-index:9996!important}
+}
+@media(max-width:380px){
+ #profileModal .dialog{padding:13px 10px}
+ #profileModal .row .btn{flex:1 1 100%;min-height:43px}
+}
+</style>
+
 </head>
 <body>
 <a class="skip-link" href="#main-content">Үндсэн агуулга руу очих</a>
