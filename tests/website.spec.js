@@ -238,8 +238,8 @@ test.describe('LOREVERSE website health', () => {
     }));
     await page.goto(new URL('store/', baseURL).toString(), { waitUntil: 'domcontentloaded' });
     await expect(page.locator('#balance')).toContainText('100', { timeout: 10000 });
-    await expect(page.locator('#items [data-preview="test-frame"]')).toBeVisible({ timeout: 10000 });
-    await page.locator('#items [data-preview="test-frame"]').click();
+    await expect(page.locator('#items [data-preview="test-frame"]').first()).toBeVisible({ timeout: 10000 });
+    await page.locator('#items [data-preview="test-frame"]').first().click();
     await expect(page.locator('#previewActions [data-modal-buy="test-frame"]')).toBeVisible();
     await page.locator('#previewActions [data-modal-buy="test-frame"]').click();
     await expect(page.locator('#balance')).toContainText('60');
@@ -259,8 +259,8 @@ test.describe('LOREVERSE website health', () => {
       `
     }));
     await page.goto(new URL('store/', baseURL).toString(), { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('#items [data-preview="test-frame"]')).toBeVisible({ timeout: 10000 });
-    await page.locator('#items [data-preview="test-frame"]').click();
+    await expect(page.locator('#items [data-preview="test-frame"]').first()).toBeVisible({ timeout: 10000 });
+    await page.locator('#items [data-preview="test-frame"]').first().click();
     await expect(page.locator('#previewActions [data-modal-buy="test-frame"]')).toBeVisible();
     await page.locator('#previewActions [data-modal-buy="test-frame"]').click();
     await expect(page.locator('#status')).toContainText('Not enough LORE Coins');
