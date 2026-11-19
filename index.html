@@ -45,6 +45,38 @@
 
 
 
+<style id="loreverse-total-home-rebuild">
+.lv2026-home{width:min(1240px,calc(100% - 44px));margin:26px auto 0;color:#f4f5f1}
+.lv2026-hero{min-height:590px;display:grid;grid-template-columns:1fr .92fr;border:1px solid #34413b;border-radius:28px;overflow:hidden;background:linear-gradient(120deg,#101914,#17221e 54%,#1d2928);box-shadow:0 28px 90px #0007}
+.lv2026-hero-copy{padding:clamp(30px,5.5vw,76px);align-self:center;position:relative;z-index:2}
+.lv2026-kicker,.lv2026-overline{font-size:10px;font-weight:900;letter-spacing:.2em;color:#b6e58b}
+.lv2026-kicker span{display:inline-block;width:25px;height:2px;background:#b6e58b;vertical-align:middle;margin-right:8px}
+.lv2026-logo{display:block;width:220px;max-height:64px;object-fit:contain;object-position:left;margin:30px 0 24px;filter:drop-shadow(0 0 18px #b6e58b33)}
+.lv2026-hero h1{font-size:clamp(42px,5.7vw,72px);line-height:1.04;letter-spacing:-.06em;margin:0;font-weight:950}
+.lv2026-hero h1 em,.lv2026-bottom h2 em{font-style:normal;color:#b6e58b}
+.lv2026-hero-copy>p{max-width:470px;color:#bac7bf;font-size:15px;line-height:1.9;margin:22px 0}
+.lv2026-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}
+.lv2026-actions a{display:inline-flex;align-items:center;gap:20px;min-height:48px;padding:0 18px;border-radius:12px;font-size:12px;font-weight:850}
+.lv2026-primary{background:#b6e58b;color:#172014}.lv2026-secondary{border:1px solid #52645a;background:#ffffff08;color:#f4f5f1}
+.lv2026-trust{display:flex;align-items:center;gap:11px;margin-top:34px;color:#82948a;font-size:9px;letter-spacing:.13em}.lv2026-trust span{color:#d2e7c0;font-weight:900}.lv2026-trust i{height:1px;width:28px;background:#596b5e}
+.lv2026-hero-art{min-height:590px;position:relative;overflow:hidden;background:url("./assets/images/loreverse-home-anime.svg") center 28%/cover no-repeat,linear-gradient(145deg,#344b45,#172a2c)}
+.lv2026-hero-art:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#17221e66,transparent 42%),linear-gradient(0deg,#0e1715 0%,transparent 57%)}
+.lv2026-art-glow{position:absolute;width:260px;height:260px;border:1px solid #d5f3b677;border-radius:50%;top:22%;left:50%;transform:translateX(-50%);box-shadow:0 0 90px #b6e58b2a,inset 0 0 60px #b6e58b15}
+.lv2026-art-glow:before,.lv2026-art-glow:after{content:"";position:absolute;inset:25px;border:1px solid #c4e9cf88;border-radius:50%;transform:scaleX(.5) rotate(35deg)}.lv2026-art-glow:after{transform:scaleX(.5) rotate(-35deg);border-color:#b6e58b88}
+.lv2026-art-label{position:absolute;top:24px;left:25px;right:25px;display:flex;justify-content:space-between;font-size:9px;letter-spacing:.16em;color:#f1f5e9}.lv2026-art-label b{color:#c5e8a1}
+.lv2026-art-bottom{position:absolute;left:28px;right:25px;bottom:34px;display:grid;gap:9px}.lv2026-art-bottom span{font-size:9px;letter-spacing:.2em;color:#b6e58b}.lv2026-art-bottom strong{font-size:clamp(25px,3.4vw,40px);line-height:1.12}
+.lv2026-explore{padding:52px 0 0}.lv2026-section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:18px}.lv2026-section-head h2{font-size:clamp(21px,3vw,29px);margin:7px 0 0;letter-spacing:-.04em}.lv2026-section-head p{color:#8f9f96;font-size:11px}.lv2026-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.lv2026-tile{min-height:190px;padding:19px;border:1px solid #35443b;border-radius:17px;display:flex;flex-direction:column;justify-content:end;position:relative;overflow:hidden;transition:transform .2s,border-color .2s}
+.lv2026-tile:before{content:"";position:absolute;width:170px;height:170px;border-radius:50%;right:-75px;top:-75px;background:#ffffff0c;filter:blur(1px)}
+.lv2026-tile:hover{transform:translateY(-4px);border-color:#b6e58b}
+.lv2026-tile span{font-size:9px;letter-spacing:.13em;color:#d0d8d0}.lv2026-tile strong{font-size:23px;margin-top:24px}.lv2026-tile small{font-size:10px;color:#d1d8d2}.lv2026-tile b{position:absolute;right:17px;bottom:19px;font-size:17px}
+.lv2026-anime{background:linear-gradient(145deg,#4b3542,#222a2b)}.lv2026-manga{background:linear-gradient(145deg,#3d3c55,#232a30)}.lv2026-games{background:linear-gradient(145deg,#24504a,#202d31)}.lv2026-lore{background:linear-gradient(145deg,#514a34,#2a2d2a)}
+.lv2026-bottom{margin:54px 0 70px;padding:30px;border:1px solid #35443b;border-radius:20px;background:#111a17;display:flex;justify-content:space-between;align-items:center;gap:25px}
+.lv2026-bottom h2{font-size:clamp(23px,3vw,34px);line-height:1.2;margin:10px 0 0;letter-spacing:-.04em}.lv2026-bottom-links{display:grid;gap:10px;min-width:210px}.lv2026-bottom-links a{font-size:12px;color:#c7d5cb}.lv2026-bottom-links a:hover{color:#b6e58b}
+@media(max-width:900px){.lv2026-hero{grid-template-columns:1fr .8fr;min-height:510px}.lv2026-hero-art{min-height:510px}.lv2026-grid{grid-template-columns:repeat(2,1fr)}.lv2026-hero h1{font-size:clamp(38px,6vw,58px)}}
+@media(max-width:650px){.lv2026-home{width:calc(100% - 20px);margin-top:13px}.lv2026-hero{grid-template-columns:1fr;border-radius:19px;min-height:0}.lv2026-hero-copy{padding:25px 20px 22px}.lv2026-kicker{font-size:8px}.lv2026-logo{width:175px;margin:22px 0}.lv2026-hero h1{font-size:clamp(38px,10vw,50px)}.lv2026-hero-copy>p{font-size:13px;margin:16px 0}.lv2026-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.lv2026-actions a{justify-content:space-between;min-height:43px;padding:0 12px;font-size:10px}.lv2026-trust{margin-top:22px;font-size:8px}.lv2026-hero-art{min-height:300px}.lv2026-art-glow{width:180px;height:180px;top:13%}.lv2026-art-bottom{left:18px;bottom:24px}.lv2026-art-bottom strong{font-size:27px}.lv2026-explore{padding-top:35px}.lv2026-section-head{display:block}.lv2026-section-head p{margin:7px 0 0}.lv2026-grid{gap:8px}.lv2026-tile{min-height:145px;padding:13px;border-radius:13px}.lv2026-tile strong{font-size:17px;margin-top:17px}.lv2026-tile small{font-size:9px}.lv2026-bottom{display:block;margin:35px 0 45px;padding:20px}.lv2026-bottom-links{margin-top:20px;min-width:0}}
+@media(max-width:370px){.lv2026-grid{grid-template-columns:1fr}.lv2026-tile{min-height:125px}}
+</style>
 </head>
 <style id="loreverse-clean-design">
 :root{color-scheme:dark;--bg:#090b12;--surface:#111622;--surface2:#171f2d;--line:#273448;--text:#f5f7fb;--muted:#a8b3c4;--accent:#a8e36b;--accent2:#78d9d2;--pink:#e8a2cf;--gold:#e8c98a;--radius:22px;--content:1180px}
@@ -68,7 +100,7 @@ a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}b
 </style>
 <body>
 <a class="skip-link" href="#main-content">Үндсэн агуулга руу очих</a>
-<header class="wrap topbar"><a class="brand" href="#"><img class="mark mark-image" src="./assets/loreverse-mark.svg" alt=""> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх" onclick="(function(b){var n=document.getElementById('mainNav');if(!n)return;var o=n.classList.toggle('open');b.setAttribute('aria-expanded',String(o));b.textContent=o?'✕':'☰';})(this)">☰</button><nav class="nav" id="mainNav" onclick="if(event.target.closest('a')){this.classList.remove('open');var b=document.getElementById('navToggle');if(b){b.setAttribute('aria-expanded','false');b.textContent='☰';}}"><a href="#all-categories">Бүх ертөнцийн мэдлэг</a><a href="#anime">Анимэ</a><a href="#games">Тоглоом</a><a href="#manga">Манга</a><a href="archive/">Novel</a><a href="#archive">Lore Archive</a><a href="#loreverse-updates">Шинэчлэл</a><a href="/chat/index.html" data-auth-required hidden>Хувийн чат</a><a href="community/" data-auth-required hidden>Community</a><a class="admin-nav-link" data-auth-required hidden href="./admin/index.html" aria-label="Админ болон туслах ажилтны самбар">Админ / Туслах ↗</a><a href="knowledge/">Ертөнцийн сан</a><a href="universe-hub/">Anime &amp; Gaming Hub</a><a href="/uid-lookup/index.html">UID Lookup</a></nav><div class="actions"><button class="ghost winter-toggle" id="winterToggle" type="button" aria-pressed="true" aria-label="Цасны эффект унтраах">❄️ <span>Цас</span></button><a class="ghost" id="appUpdateQuickOpen" href="#app-update" style="font-size:11px;font-weight:850;color:#ffb6e5;white-space:nowrap">APK шинэчлэх ↻</a><button class="ghost" id="notificationsOpen" type="button" aria-label="Мэдэгдэл">🔔 <span id="notificationCount">0</span></button><select class="select" id="lang" aria-label="Language" data-no-translate="true" translate="no"><option value="mn" data-no-translate="true">Монгол</option><option value="en" data-no-translate="true">English</option><option value="ja" data-no-translate="true">日本語</option><option value="ko" data-no-translate="true">한국어</option></select></div></header>
+<header class="wrap topbar"><a class="brand" href="#"><img class="mark mark-image" src="./assets/loreverse-mark.svg" alt=""> LOREVERSE</a><button class="mobile-nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Цэс нээх" onclick="(function(b){var n=document.getElementById('mainNav');if(!n)return;var o=n.classList.toggle('open');b.setAttribute('aria-expanded',String(o));b.textContent=o?'✕':'☰';})(this)">☰</button><nav class="nav" id="mainNav"><a href="editorial/">Lore архив</a><a href="universe-hub/">Ертөнцүүд</a><a href="games/">Тоглоом</a><a href="community/">Community</a><a href="knowledge/">Мэдлэгийн сан</a><a class="admin-nav-link" data-auth-required hidden href="./admin/index.html">Админ ↗</a></nav><div class="actions"><button class="ghost winter-toggle" id="winterToggle" type="button" aria-pressed="true" aria-label="Цасны эффект унтраах">❄️ <span>Цас</span></button><a class="ghost" id="appUpdateQuickOpen" href="#app-update" style="font-size:11px;font-weight:850;color:#ffb6e5;white-space:nowrap">APK шинэчлэх ↻</a><button class="ghost" id="notificationsOpen" type="button" aria-label="Мэдэгдэл">🔔 <span id="notificationCount">0</span></button><select class="select" id="lang" aria-label="Language" data-no-translate="true" translate="no"><option value="mn" data-no-translate="true">Монгол</option><option value="en" data-no-translate="true">English</option><option value="ja" data-no-translate="true">日本語</option><option value="ko" data-no-translate="true">한국어</option></select></div></header>
 <div class="wrap" id="accountTools" hidden>
  <section class="portal-panel" style="margin-top:14px">
   <div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><div><div class="eyebrow">NOTIFICATION CENTER</div><h3 style="margin:4px 0">Мэдэгдэл</h3></div><button class="btn" id="notificationsClose" type="button">Хаах</button></div>
@@ -83,57 +115,40 @@ a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}b
  <label for="profileAvatar">Avatar зурагны HTTPS холбоос</label><input class="form-field" id="profileAvatar" type="url" placeholder="https://...">
  <button class="btn primary" id="profileSave" type="button">Профайл хадгалах</button><div class="portal-note" id="profileStatus"></div><div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--line)"><a class="btn" href="./account-deletion/" style="border-color:#8b4052;color:#ffb7c1">Бүртгэл устгах</a><p class="portal-note">Бүртгэл болон холбогдох мэдээллээ устгах хүсэлт гаргах.</p></div>
  </div></div>
-<main class="wrap" id="main-content" tabindex="-1">
-
-
-<section class="hero hero-streaming yoru-home" id="home" aria-labelledby="yoruHomeTitle">
- <div class="yoru-home-inner">
-  <div class="hero-copy yoru-home-copy">
-   <div class="yoru-kicker"><span class="yoru-kicker-line"></span> MONGOLIAN ANIME &amp; GAME KNOWLEDGE</div>
-   <div class="yoru-edition">LOREVERSE DIGITAL ARCHIVE <span>EST. 2026</span></div>
-   <h1 class="hero-slogan" id="yoruHomeTitle">ӨӨР ЕРТӨНЦИЙГ<br><em>ТАНИН МЭД.</em></h1>
-   <p class="yoru-intro">Анимэ, манга, тоглоомын ертөнцийн түүх, дүрүүд, нууц болон гүнзгий судалгааг Монгол хэлээр нэг дороос нээ.</p>
-   <img class="hero-brand-logo" src="./assets/loreverse-logo.svg" alt="LOREVERSE">
-   <div class="hero-buttons yoru-actions">
-    <a class="btn primary" href="#anime">Анимэ үзэх <span>↗</span></a>
-    <a class="btn" href="#archive">Lore унших <span>↗</span></a>
-    <a class="btn" href="#catalog">Каталог хайх <span>⌕</span></a>
-    <a class="btn" href="#all-categories">Бүх ертөнц <span>↓</span></a>
+<main class="lv2026-home" id="main-content" tabindex="-1">
+ <section class="lv2026-hero" id="home">
+  <div class="lv2026-hero-copy">
+   <div class="lv2026-kicker"><span></span> MONGOLIAN POP-CULTURE KNOWLEDGE</div>
+   <img class="lv2026-logo" src="./assets/loreverse-logo.svg" alt="LOREVERSE">
+   <h1>Дуртай ертөнцөө<br><em>илүү гүнзгий нээ.</em></h1>
+   <p>Анимэ, манга, тоглоомын дүрүүд, түүх, нууц болон судалгааг Монгол хэлээр нэг дороос.</p>
+   <div class="lv2026-actions">
+    <a class="lv2026-primary" href="editorial/">Lore унших <span>↗</span></a>
+    <a class="lv2026-secondary" href="universe-hub/">Ертөнцүүд үзэх <span>↗</span></a>
    </div>
-   <div class="winter-banner yoru-winter-banner" role="note"><span class="winter-banner-icon" aria-hidden="true">✦</span><div><strong>LOREVERSE COMMUNITY</strong><span>Сонирхлоо хуваалцаж, шинэ ертөнц нээгээрэй.</span></div><span class="winter-star" aria-hidden="true">✧</span></div>
-   <div class="new-year-countdown yoru-countdown" id="newYearCountdown" role="timer" aria-live="off" aria-label="2027 оны шинэ он хүртэлх хугацаа">
-    <div class="new-year-countdown-title">2027 ОНЫ ШИНЭ ОН ХҮРТЭЛ</div>
-    <div class="new-year-countdown-grid">
-     <div class="new-year-time"><strong id="nyDays">00</strong><span>ӨДӨР</span></div>
-     <div class="new-year-time"><strong id="nyHours">00</strong><span>ЦАГ</span></div>
-     <div class="new-year-time"><strong id="nyMinutes">00</strong><span>МИНУТ</span></div>
-     <div class="new-year-time"><strong id="nySeconds">00</strong><span>СЕКУНД</span></div>
-    </div>
-    <div class="new-year-countdown-note" id="nyCountdownNote">Шинэ он хүртэл хамтдаа тоолъё!</div>
-   </div>
-   <div class="hero-dots" id="heroAnimeDots" aria-hidden="true"><span></span><span></span><span></span></div>
+   <div class="lv2026-trust"><span>01</span> НЭГ АРХИВ <i></i><span>∞</span> ОЛОН ЕРТӨНЦ</div>
   </div>
-  <a class="hero-art yoru-feature" id="heroAnimeVisual" href="#anime" aria-label="Онцлох анимэ">
-   <div class="hero-art-original" role="img" aria-label="LOREVERSE-ийн оригинал анимэ дүрслэл"></div>
-   <div class="yoru-feature-top"><span>EDITOR'S PICK</span><span class="yoru-live-dot">DISCOVER</span></div>
-   <div class="yoru-feature-orbit" aria-hidden="true"><span class="yoru-orbit-core">✦</span><span class="yoru-orbit-ring"></span><span class="yoru-orbit-ring yoru-orbit-ring-two"></span></div>
-   <div class="hero-art-shade"></div>
-   <div class="hero-art-caption"><small id="heroAnimeMeta">FEATURED UNIVERSE</small><strong id="heroAnimeTitle">Түүх бүрийн цаана нэг ертөнц бий.</strong><span id="heroAnimeDescription">Онцлох анимэ болон шинэ судалгааг эндээс нээнэ.</span></div>
-   <span class="yoru-feature-index">LOREVERSE / 001</span>
-  </a>
- </div>
-</section>
-<section class="yoru-discover" aria-label="LOREVERSE ертөнцүүд">
- <div class="yoru-discover-heading"><div><span class="yoru-section-kicker">EXPLORE THE ARCHIVE</span><h2>ӨӨРИЙН ЕРТӨНЦӨӨ СОНГО</h2></div><span class="yoru-discover-aside">ANIME · MANGA · GAMES · LORE</span></div>
- <div class="yoru-world-grid">
-  <a class="yoru-world-card yoru-world-anime" href="#anime"><span class="yoru-world-no">01</span><span class="yoru-world-symbol">◈</span><span class="yoru-world-title">АНИМЭ</span><span class="yoru-world-desc">Цуврал · Кино · Дүрүүд</span><span class="yoru-world-arrow">↗</span></a>
-  <a class="yoru-world-card yoru-world-manga" href="#manga"><span class="yoru-world-no">02</span><span class="yoru-world-symbol">▤</span><span class="yoru-world-title">МАНГА</span><span class="yoru-world-desc">Бүлэг · Зохиол · Манхва</span><span class="yoru-world-arrow">↗</span></a>
-  <a class="yoru-world-card yoru-world-games" href="#games"><span class="yoru-world-no">03</span><span class="yoru-world-symbol">⌘</span><span class="yoru-world-title">ТОГЛООМ</span><span class="yoru-world-desc">Lore · Universe · Guide</span><span class="yoru-world-arrow">↗</span></a>
-  <a class="yoru-world-card yoru-world-archive" href="#archive"><span class="yoru-world-no">04</span><span class="yoru-world-symbol">⌗</span><span class="yoru-world-title">LORE ARCHIVE</span><span class="yoru-world-desc">Судалгаа · Онол · Нууц</span><span class="yoru-world-arrow">↗</span></a>
- </div>
-</section>
-
-<section class="section winter-calendar-section" id="winter-calendar" aria-labelledby="winterCalendarTitle">
+  <div class="lv2026-hero-art" role="img" aria-label="LOREVERSE-ийн оригинал анимэ дүрслэл">
+   <div class="lv2026-art-glow"></div>
+   <div class="lv2026-art-label">DISCOVER THE UNKNOWN <b>LV / 001</b></div>
+   <div class="lv2026-art-bottom"><span>THE MULTIVERSE ARCHIVE</span><strong>Түүх бүрийн цаана<br>нэг ертөнц бий.</strong></div>
+  </div>
+ </section>
+ <section class="lv2026-explore" aria-labelledby="lv2026ExploreTitle">
+  <div class="lv2026-section-head"><div><span class="lv2026-overline">EXPLORE LOREVERSE</span><h2 id="lv2026ExploreTitle">ЮУ НЭЭЖ ҮЗМЭЭР БАЙНА?</h2></div><p>Сонирхсон ертөнцөө сонгоод аяллаа эхлүүл.</p></div>
+  <div class="lv2026-grid">
+   <a class="lv2026-tile lv2026-anime" href="anime/"><span>01 / ANIME</span><strong>Анимэ</strong><small>Цуврал, кино, дүрүүд</small><b>↗</b></a>
+   <a class="lv2026-tile lv2026-manga" href="archive/"><span>02 / MANGA &amp; NOVEL</span><strong>Манга &amp; Novel</strong><small>Бүлэг, зохиол, ертөнц</small><b>↗</b></a>
+   <a class="lv2026-tile lv2026-games" href="games/"><span>03 / GAMES</span><strong>Тоглоом</strong><small>Lore, universe, guide</small><b>↗</b></a>
+   <a class="lv2026-tile lv2026-lore" href="editorial/"><span>04 / LORE ARCHIVE</span><strong>Судалгааны сан</strong><small>Онол, тайлбар, эх сурвалж</small><b>↗</b></a>
+  </div>
+ </section>
+ <section class="lv2026-bottom">
+  <div><span class="lv2026-overline">BUILT FOR MONGOLIAN FANS</span><h2>Зүгээр нэг мэдээлэл биш.<br><em>Ертөнцийн цаадах түүх.</em></h2></div>
+  <div class="lv2026-bottom-links"><a href="knowledge/">Мэдлэгийн сан ↗</a><a href="community/">Нийгэмлэгт нэгдэх ↗</a><a href="universe-hub/">Anime &amp; Gaming Hub ↗</a></div>
+ </section>
+</main>
+<div id="legacyAppModules" hidden style="display:none!important" aria-hidden="true"><section class="section winter-calendar-section" id="winter-calendar" aria-labelledby="winterCalendarTitle">
  <div class="winter-calendar-heading">
   <div><div class="eyebrow">LOREVERSE · HOLIDAY EVENT</div><h2 id="winterCalendarTitle">24 ӨДРИЙН НУУЦ БЭЛЭГ</h2><p>12-р сарын 1-нээс 24 хүртэл өдөр бүр нэг цонх нээгдэнэ. Өдөр бүрийн жижиг даалгавар, нууцыг нээгээрэй.</p></div>
   <div class="winter-calendar-count" id="winterCalendarCount" aria-live="polite">0 / 24 нээгдсэн</div>
@@ -536,8 +551,7 @@ const fmt=n=>Number(n||0).toLocaleString("mn-MN");
  <div class="portal-panel"><div class="eyebrow">EDITORIAL WORKSPACE</div><h2>Админ нийтлэх хэсэг</h2><p>Редактор, админ эрхтэй багийн гишүүд нийтлэл үүсгэх, засварлах, хянах, нийтлэх ажлаа удирдана.</p><div class="portal-actions"><a class="btn primary" href="./admin/index.html">Админ хэсэг ↗</a><a class="btn" href="editorial/">Lore архивын редактор ↗</a></div></div>
 </section>
 
-<section class="section feature-row" id="about"><div class="feature"><div class="eyebrow">OUR MISSION</div><h3>Нэг платформ. Олон ертөнц.</h3><p>Тоглоом, анимэ сонирхогчдод зориулсан lore, дүр, түүх, судалгааны нэгдсэн сан бүтээнэ.</p></div><div class="feature"><div class="eyebrow">EDITORIAL STANDARD</div><h3>Баримт ба таамгийг ялгана.</h3><p>Албан ёсны өгүүлэмж, тоглоом доторх эшлэл, баталгаажаагүй онолыг тусад нь тэмдэглэж, эх сурвалжийг ил тод дурдана.</p></div></section>
-</main><footer class="wrap footer"><div><b>© 2026 LOREVERSE</b><div>Фэнүүдийн бүтээсэн, албан бус мэдлэгийн платформ.</div><div class="portal-note">Гуравдагч этгээдийн нэр, дүр, бүтээл нь эрх эзэмшигчдийн өмч. AniList-ийн API ашиглалт нь тэдний нөхцөлд захирагдана. LOREVERSE нь AniList болон дурдсан франчайзтай албан ёсны холбоогүй.</div></div><nav class="footer-nav" aria-label="Туслах цэс"><a href="#reportError">Алдаа мэдээлэх</a><a href="#support">Туслах цэс</a><a href="#events">Event</a><a href="#invite">Найзаа урих</a><a href="#premium">Premium</a><a href="#payment">Төлбөр</a><a href="#app-update">Апп шинэчлэх</a><a href="#admin">Админ</a><a href="#about">Төслийн тухай</a><a href="legal/">Үйлчилгээний нөхцөл</a><a href="legal/#privacy">Нууцлалын бодлого</a><a href="rank/">Rank & Bonus</a><a href="status/">Server Status ●</a></nav></footer>
+<section class="section feature-row" id="about"><div class="feature"><div class="eyebrow">OUR MISSION</div><h3>Нэг платформ. Олон ертөнц.</h3><p>Тоглоом, анимэ сонирхогчдод зориулсан lore, дүр, түүх, судалгааны нэгдсэн сан бүтээнэ.</p></div><div class="feature"><div class="eyebrow">EDITORIAL STANDARD</div><h3>Баримт ба таамгийг ялгана.</h3><p>Албан ёсны өгүүлэмж, тоглоом доторх эшлэл, баталгаажаагүй онолыг тусад нь тэмдэглэж, эх сурвалжийг ил тод дурдана.</p></div></section></div><footer class="wrap footer"><div><b>© 2026 LOREVERSE</b><div>Фэнүүдийн бүтээсэн, албан бус мэдлэгийн платформ.</div><div class="portal-note">Гуравдагч этгээдийн нэр, дүр, бүтээл нь эрх эзэмшигчдийн өмч. AniList-ийн API ашиглалт нь тэдний нөхцөлд захирагдана. LOREVERSE нь AniList болон дурдсан франчайзтай албан ёсны холбоогүй.</div></div><nav class="footer-nav" aria-label="Туслах цэс"><a href="#reportError">Алдаа мэдээлэх</a><a href="#support">Туслах цэс</a><a href="#events">Event</a><a href="#invite">Найзаа урих</a><a href="#premium">Premium</a><a href="#payment">Төлбөр</a><a href="#app-update">Апп шинэчлэх</a><a href="#admin">Админ</a><a href="#about">Төслийн тухай</a><a href="legal/">Үйлчилгээний нөхцөл</a><a href="legal/#privacy">Нууцлалын бодлого</a><a href="rank/">Rank & Bonus</a><a href="status/">Server Status ●</a></nav></footer>
 <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="dialog"><div class="dialogtop"><div><div class="eyebrow" id="modalGame"></div><h2 id="modalTitle"></h2></div><button class="close" id="close" aria-label="Close">✕</button></div><p id="modalBody"></p><div class="note">Эх сурвалжийг нийтлэхийн өмнө редакцаар нягтална.</div></div></div>
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
