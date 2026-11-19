@@ -42,10 +42,7 @@ def main():
     errors = []
     total_ids = 0
     total_scripts = 0
-    required = {
-        "all-categories", "publishedSearch", "catalogGo", "catalogStatus",
-        "catalogResults", "catalogMore", "publishedPosts", "loreAiLauncher",
-    }
+    required = {"mainNav", "menuBtn", "main-content"}
 
     for path in pages:
         parser = SiteParser()
