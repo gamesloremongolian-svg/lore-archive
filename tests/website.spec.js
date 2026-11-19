@@ -309,6 +309,8 @@ test.describe('LOREVERSE website health', () => {
     expect(homepage).toMatch(/crypto\.randomUUID\(\)/);
     expect(homepage).toMatch(/idempotency_key:currentInvoiceIdempotencyKey/);
     expect(homepage).toMatch(/currentInvoiceIdempotencyKey=null/);
+    expect(homepage).toMatch(/sessionStorage\.setItem\("loreverse_qpay_idempotency_key"/);
+    expect(homepage).toMatch(/sessionStorage\.getItem\("loreverse_qpay_idempotency_key"/);
   });
 
 
