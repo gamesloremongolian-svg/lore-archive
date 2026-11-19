@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'LOREVERSE',
   webDir: 'www',
   bundledWebRuntime: false,
-  backgroundColor: '#101827',
+  backgroundColor: '#ffffff',
   ios: {
     contentInset: 'automatic',
     preferredContentMode: 'mobile'
@@ -20,12 +20,12 @@ const config: CapacitorConfig = {
       showSpinner: false
     },
     StatusBar: {
-      style: 'LIGHT',
+      style: 'DARK',
       backgroundColor: '#101827'
     },
     Keyboard: {
       resize: 'native',
-      style: 'dark'
+      style: 'light'
     }
   }
 };
