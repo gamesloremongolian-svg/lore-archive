@@ -736,7 +736,7 @@ header:has(#mainNav) .menu{border-color:#465b7c;background:#1b2941;color:#fff}
  <div class="updates-head"><div class="eyebrow">LOREVERSE-Д ШИНЭЭР НЭМЭГДСЭН НЬ</div><h2 id="latestUpdatesTitle">Шинэ мэдээлэл &amp; шинэ APK</h2><p>Сайт дээр шинээр нийтлэгдсэн мэдээлэл болон LOREVERSE аппын хамгийн сүүлийн албан ёсны хувилбар.</p></div>
  <div class="updates-grid">
   <article class="updates-panel"><h3>✦ Шинээр нэмэгдсэн мэдээлэл</h3><div class="update-list" id="latestPostList"><p class="updates-loading">Шинэ нийтлэлүүдийг ачаалж байна...</p></div><p class="update-meta" id="latestPostStatus" role="status"></p></article>
-  <article class="updates-panel apk-panel"><div class="eyebrow">АНДРОЙД АПП</div><h3>LOREVERSE APK</h3><div class="apk-version" id="latestApkVersion">Шалгаж байна...</div><p class="apk-detail" id="latestApkDate">Хамгийн сүүлийн албан ёсны хувилбар</p><p class="apk-detail" id="latestApkNotes">APK мэдээлэл ачаалж байна...</p><div class="apk-actions"><a id="latestApkDownload" href="https://github.com/loreverse-ctrl/lore-archive/releases/latest" target="_blank" rel="noopener noreferrer">APK татах</a><a class="secondary" id="latestApkRelease" href="https://github.com/loreverse-ctrl/lore-archive/releases" target="_blank" rel="noopener noreferrer">Release тэмдэглэл</a></div><p class="apk-warning" id="latestApkWarning">Албан ёсны GitHub Release-ээс татна уу. Шинэ signing key ашигласан хувилбар бол хуучин түлхүүрээр гарын үсэг зурсан аппыг устгах шаардлагатай байж болно.</p></article>
+  <article class="updates-panel apk-panel"><div class="eyebrow">АНДРОЙД АПП</div><h3>LOREVERSE APK</h3><div class="apk-version" id="latestApkVersion">Шалгаж байна...</div><p class="apk-detail" id="latestApkDate">Хамгийн сүүлийн албан ёсны хувилбар</p><p class="apk-detail" id="latestApkNotes">APK мэдээлэл ачаалж байна...</p><div class="apk-actions"><a id="latestApkDownload" href="https://github.com/loreverse-ctrl/lore-archive/releases/latest" target="_blank" rel="noopener noreferrer">APK татах</a><a class="secondary" id="latestApkRelease" href="https://github.com/loreverse-ctrl/lore-archive/releases" target="_blank" rel="noopener noreferrer">Release тэмдэглэл</a></div></article>
  </div>
 </section>
 
@@ -1145,7 +1145,7 @@ async function loadLatestApk(){
   if(apk){el("latestApkDownload").href=apk.browser_download_url;el("latestApkDownload").textContent="APK татах · "+(apk.size/1048576).toFixed(1)+" MB";}
   else{el("latestApkDownload").href=release.html_url;el("latestApkDownload").textContent="Release нээх";}
   el("latestApkRelease").href=release.html_url;
-  el("latestApkWarning").textContent="Шинэчлэхдээ өмнөх LOREVERSE аппыг устгах шаардлагагүй. APK-ийн signing certificate нь өмнөх суулгасан хувилбартай таарч байгаа тул шууд update хийж суулгана уу.";
+
  }catch(e){el("latestApkVersion").textContent="Одоогоор ачаалж чадсангүй";el("latestApkNotes").textContent="Хамгийн сүүлийн хувилбарыг GitHub Releases хэсгээс шалгана уу.";el("latestApkDownload").href="https://github.com/loreverse-ctrl/lore-archive/releases/latest";}
 }
 loadLatestPosts();loadLatestApk();
