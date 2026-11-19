@@ -8,18 +8,24 @@ const migration = fs.readFileSync(
   'utf8'
 );
 
+function extractRoleArray(source, marker) {
+  const start = source.indexOf(marker);
+  expect(start, 'role marker exists: ' + marker).toBeGreaterThanOrEqual(0);
+  const open = source.indexOf('[', start);
+  const close = source.indexOf(']', open);
+  expect(open).toBeGreaterThanOrEqual(0);
+  expect(close).toBeGreaterThan(open);
+  return [...source.slice(open + 1, close).matchAll(/'([^']+)'/g)].map(x => x[1]);
+}
+
 function roleTabs(role) {
-  const match = admin.match(new RegExp(role + ':\\[([^\\]]*)\\]'));
-  if (!match) throw new Error('Missing roleTabs entry: ' + role);
-  return [...match[1].matchAll(/'([^']+)'/g)].map(item => item[1]);
+  return extractRoleArray(admin, role + ':');
 }
 
 function permissionMap(role) {
-  const match = admin.match(/function can\\(action\\)\\{const map=\\{([\\s\\S]*?)\\};return/);
-  if (!match) throw new Error('Could not locate can() permission map');
-  const roleMatch = match[1].match(new RegExp(role + ':\\[([^\\]]*)\\]'));
-  if (!roleMatch) return [];
-  return [...roleMatch[1].matchAll(/'([^']+)'/g)].map(item => item[1]);
+  const start = admin.indexOf('function can(action)');
+  expect(start, 'can() function exists').toBeGreaterThanOrEqual(0);
+  return extractRoleArray(admin.slice(start), role + ':');
 }
 
 test.describe('LOREVERSE community/support role contract', () => {
@@ -36,17 +42,19 @@ test.describe('LOREVERSE community/support role contract', () => {
     expect(permissionMap('editor')).not.toContain('support');
   });
 
-  test('All privileged community/support handlers enforce the same role gate', () => {
-    const guardedHandlers = [
-      /async function loadCommunity\\(\\)\\{\\s*if\\(!can\\('community'\\)\\)return;/,
-      /if\\(!can\\('community'\\)\\)return;[^\\n]*supabase\\.from\\('chat_messages'\\)\\.update/,
-      /if\\(!can\\('community'\\)\\)return;[^\\n]*supabase\\.from\\('chat_moderation'\\)\\.insert/,
-      /async function loadAdminTickets\\(\\)\\{\\s*if\\(!can\\('support'\\)\\)return;/,
-      /async function openAdminTicket\\(id\\)\\{\\s*if\\(!can\\('support'\\)\\)return;/,
-      /saveAdminTicketStatus'\\]\\.onclick=async\\(\\)=>\\{if\\(!can\\('support'\\)\\)return;/,
-      /sendAdminTicketReply'\\]\\.onclick=async\\(\\)=>\\{if\\(!can\\('support'\\)\\)return;/
+  test('Privileged community/support loaders and mutation handlers enforce role gates', () => {
+    const requiredGuards = [
+      "async function loadCommunity(){\n if(!can('community'))return;",
+      "if(!can('community'))return;const {error}=await supabase.rpc('set_chat_message_pin'",
+      "if(!can('community'))return;const {error}=await supabase.from('chat_reports').update",
+      "if(!can('community'))return;const {error}=await supabase.from('chat_messages').update",
+      "if(!can('community')||!b.dataset.muteUser)return;",
+      "async function loadAdminTickets(){\n if(!can('support'))return;",
+      "async function openAdminTicket(id){\n if(!can('support'))return;",
+      "saveAdminTicketStatus').onclick=async()=>{if(!can('support'))return;",
+      "sendAdminTicketReply').onclick=async()=>{if(!can('support'))return;"
     ];
-    for (const pattern of guardedHandlers) expect(admin).toMatch(pattern);
+    for (const guard of requiredGuards) expect(admin).toContain(guard);
   });
 
   test('Migration restricts every staff moderation/support policy to Owner/Admin', () => {
@@ -71,8 +79,8 @@ test.describe('LOREVERSE community/support role contract', () => {
   });
 
   test('Migration preserves reporter and ticket-owner self access', () => {
-    expect(migration).toMatch(/reporter_id = \\(select auth\\.uid\\(\\)\\) or public\\.is_staff/);
-    expect(migration).toMatch(/user_id = \\(select auth\\.uid\\(\\)\\) or public\\.is_staff/);
-    expect(migration).toMatch(/t\\.user_id = \\(select auth\\.uid\\(\\)\\)/);
+    expect(migration).toContain('reporter_id = (select auth.uid()) or public.is_staff');
+    expect(migration).toContain('user_id = (select auth.uid()) or public.is_staff');
+    expect(migration).toContain('t.user_id = (select auth.uid())');
   });
 });
