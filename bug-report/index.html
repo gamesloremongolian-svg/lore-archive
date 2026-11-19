@@ -23,6 +23,8 @@ const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publi
 const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const labels={open:"Хүлээгдэж байна",reviewing:"Шалгаж байна",resolved:"Батлагдсан",rejected:"Татгалзсан"};
 async function init(){
+ if(!$("bugPage").value) $("bugPage").value=location.href;
+ if(!$("bugDevice").value) $("bugDevice").value=[navigator.userAgentData?.platform||navigator.platform||"Төхөөрөмж тодорхойгүй",navigator.userAgent].filter(Boolean).join(" · ").slice(0,300);
  const {data:{user},error}=await supabase.auth.getUser();
  if(error||!user){$("authMsg").textContent="Энэ функцийг ашиглахын тулд эхлээд LOREVERSE-д нэвтэрнэ үү.";return;}
  $("authPanel").classList.add("hidden");["appPanel","formPanel","historyPanel"].forEach(id=>$(id).classList.remove("hidden"));
