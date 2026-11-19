@@ -34,13 +34,13 @@
 </style>
 </head>
 <body>
-<header class="top"><a class="brand" href="../"><span class="mark">✦</span> LOREVERSE <span style="font-size:10px;color:#bca8d2;letter-spacing:.12em">ЧАТ</span></a><div class="top-actions"><a class="btn" href="../#community">Нийтийн чат</a><a class="btn" href="../community/">LOREVERSE сервер</a><a class="btn" href="../">Сайт руу буцах</a><select id="lang" aria-label="Хэл" style="width:auto;max-width:112px;padding:8px 7px;background:#17132a;color:#fff;border:1px solid #49345f;border-radius:10px"><option value="mn">Монгол</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div></header>
+<header class="top"><a class="brand" href="../"><span class="mark">✦</span> LOREVERSE <span style="font-size:10px;color:#bca8d2;letter-spacing:.12em">ЧАТ</span></a><div class="top-actions"><a class="btn" href="../#community">Нийтийн чат</a><a class="btn" href="../community/">LOREVERSE сервер</a><a class="btn" href="../profile/">Профайл</a><a class="btn" href="../">Сайт руу буцах</a><select id="lang" aria-label="Хэл" style="width:auto;max-width:112px;padding:8px 7px;background:#17132a;color:#fff;border:1px solid #49345f;border-radius:10px"><option value="mn">Монгол</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option></select></div></header>
 
 <section class="auth-wrap" id="authWrap">
  <div class="auth-card">
-  <div class="eyebrow" style="font-size:10px;letter-spacing:.2em;color:#83eaff;font-weight:900">LOREVERSE DIRECT MESSAGES</div>
-  <h1 id="authTitle">Админы эрхээр нэвтрэх</h1>
-  <p id="authDescription">Хувийн чатад зөвхөн идэвхтэй админ болон туслах админ нэвтэрнэ.</p>
+  <div class="eyebrow" style="font-size:10px;letter-spacing:.2em;color:#83eaff;font-weight:900">LOREVERSE MEMBER MESSAGES</div>
+  <h1 id="authTitle">Гишүүний эрхээр нэвтрэх</h1>
+  <p id="authDescription">LOREVERSE-д бүртгэлтэй бүх гишүүн хувийн чат ашиглах боломжтой.</p>
   <form id="authForm">
    <div id="nameField" class="hidden"><label for="displayName">Харагдах нэр</label><input class="field" id="displayName" maxlength="32" autocomplete="nickname" placeholder="Таны нэр"></div>
    <label for="email">Имэйл</label><input class="field" id="email" type="email" required autocomplete="email" placeholder="name@example.com">
@@ -49,7 +49,7 @@
   </form>
   
   <div class="auth-note" id="authNote" aria-live="polite"></div>
-  <p class="hint">Хувийн зурвасыг зөвхөн тухайн ярианд оролцож буй хоёр хэрэглэгч уншина. Зочин / anonymous аккаунтаар хувийн чат ашиглах боломжгүй.</p>
+  <p class="hint">Хувийн зурвасыг зөвхөн тухайн ярианд оролцож буй хоёр гишүүн уншина. Зочин / anonymous аккаунтаар хувийн чат ашиглах боломжгүй.</p>
  </div>
 </section>
 
@@ -61,7 +61,7 @@
   <div class="members" id="memberResults"><p class="hint">Гишүүд ачаалж байна…</p></div>
   <div class="section-label">ТАНЫ ЯРИАНУУД</div>
   <div class="conversation-list" id="conversationList"><p class="hint">Одоогоор чат алга.</p></div>
-  <div class="sidebar-foot"><div class="me"><div class="avatar" id="myAvatar">L</div><div class="me-copy"><b id="myName">Гишүүн</b><small>LOREVERSE MEMBER</small></div><button class="btn" id="logoutButton" type="button" style="margin-left:auto;padding:7px 9px;font-size:10px">Гарах</button></div><button class="profile-edit-btn" id="openProfileEditor" type="button">✎ Профайл засах</button></div>
+  <div class="sidebar-foot"><div class="me"><div class="avatar" id="myAvatar">L</div><div class="me-copy"><b id="myName">Гишүүн</b><small>LOREVERSE ГИШҮҮН</small></div><button class="btn" id="logoutButton" type="button" style="margin-left:auto;padding:7px 9px;font-size:10px">Гарах</button></div><button class="profile-edit-btn" id="openProfileEditor" type="button">✎ Профайл засах</button></div>
  </aside>
  <main class="main">
   <div class="chat-head"><div style="display:flex;align-items:center;gap:10px"><button class="btn mobile-back" id="mobileBack" type="button">←</button><div><h2 id="chatTitle">Хувийн чат</h2><p id="chatSubtitle">Харилцах гишүүнээ сонгоно уу</p></div></div><span class="status" id="onlineStatus">● ХУВИЙН</span></div>
@@ -93,15 +93,12 @@ async function ensureProfile(user){
  myDisplayName=data.display_name||user.user_metadata?.display_name||user.email?.split("@")[0]||"Member";myAvatarUrl=data.avatar_url||null;
 }
 $("authForm").addEventListener("submit",async e=>{
- e.preventDefault();$("authSubmit").disabled=true;note("Админы эрхийг шалгаж байна…");
+ e.preventDefault();$("authSubmit").disabled=true;note("Нэвтэрч байна…");
  try{
   const email=$("email").value.trim(),password=$("password").value;
   const {data,error}=await supabase.auth.signInWithPassword({email,password});if(error)throw error;
   currentUser=data.user;
-  if(!currentUser||currentUser.is_anonymous)throw new Error("Зөвхөн имэйлээр нэвтэрсэн ажилтан ашиглах боломжтой.");
-  const {data:staff,error:staffError}=await supabase.from("staff_members").select("role,active").eq("user_id",currentUser.id).maybeSingle();
-  if(staffError)throw staffError;
-  if(!staff||staff.active!==true){await supabase.auth.signOut({scope:"local"});currentUser=null;throw new Error("Зөвхөн идэвхтэй админ болон туслах админ нэвтрэх боломжтой.");}
+  if(!currentUser||currentUser.is_anonymous)throw new Error("Хувийн чат ашиглахын тулд бүртгэлтэй аккаунтаар нэвтэрнэ үү.");
   await enterChat();
  }catch(err){note(err.message||"Нэвтрэхэд алдаа гарлаа.");}
  finally{$("authSubmit").disabled=false;}
