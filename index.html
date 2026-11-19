@@ -863,7 +863,7 @@ loadArchiveStats();
 
 /* Premium membership */
 const authPanel=document.getElementById("premiumAuthPanel"),userPanel=document.getElementById("premiumUserPanel"),userEmail=document.getElementById("premiumUserEmail"),plansPanel=document.getElementById("premiumPlans"),paymentBox=document.getElementById("premiumPaymentBox"),paymentStatus=document.getElementById("paymentStatus");
-let currentPaymentId=null,currentPremiumUser=null;
+let currentPaymentId=null,currentPremiumUser=null,currentInvoiceIdempotencyKey=null,currentInvoicePlanCode=null,invoiceRequestInFlight=false;
 const premiumAuthStatus=document.getElementById("premiumAuthStatus");
 function setPremiumUser(user){
  currentPremiumUser=user||null;
@@ -922,14 +922,36 @@ document.getElementById("forgotPremiumPassword")?.addEventListener("click",async
 document.getElementById("premiumSignOut")?.addEventListener("click",async()=>{await supabase.auth.signOut();paymentBox.hidden=true;currentPaymentId=null;paymentStatus.textContent="";});
 async function createPremiumInvoice(planCode){
  if(!currentPremiumUser){premiumAuthStatus.textContent="Premium авахын тулд эхлээд нэвтэрнэ үү.";return;}
- paymentBox.hidden=false;paymentStatus.textContent="QPay нэхэмжлэл үүсгэж байна...";currentPaymentId=null;
- const {data,error}=await supabase.functions.invoke("qpay-payment",{body:{action:"create_invoice",plan_code:planCode}});
- if(error||!data?.ok){paymentStatus.textContent=data?.error||error?.message||"Нэхэмжлэл үүсгэж чадсангүй.";return;}
- currentPaymentId=data.payment_id;document.getElementById("paymentTitle").textContent=data.plan_name+" · "+new Intl.NumberFormat("mn-MN").format(data.amount)+" ₮";
- document.getElementById("paymentInstructions").textContent="QPay апп-аар QR код уншуулж төлбөрөө хийнэ үү. Төлсний дараа доорх товчоор шалгана.";
- const qr=document.getElementById("paymentQr");if(data.qr_image){qr.src=data.qr_image.startsWith("data:")?data.qr_image:"data:image/png;base64,"+data.qr_image;qr.hidden=false;}else qr.hidden=true;
- const link=document.getElementById("paymentShortLink");if(data.qpay_short_url){link.href=data.qpay_short_url;link.hidden=false;}else link.hidden=true;
- paymentStatus.textContent="Нэхэмжлэл бэлэн боллоо. Төлбөрөө хийсний дараа шалгана уу.";
+ if(invoiceRequestInFlight)return;
+ // Reuse the same key for retries of the same selected plan; only a new plan/checkout gets a new key.
+ if(!currentInvoiceIdempotencyKey||currentInvoicePlanCode!==planCode){
+  currentInvoiceIdempotencyKey=crypto.randomUUID();
+  currentInvoicePlanCode=planCode;
+  currentPaymentId=null;
+ }
+ invoiceRequestInFlight=true;
+ const planButtons=[...plansPanel.querySelectorAll("button[data-plan-code]")];
+ planButtons.forEach(b=>b.disabled=true);
+ paymentBox.hidden=false;
+ paymentStatus.textContent="QPay нэхэмжлэл үүсгэж байна...";
+ try{
+  const {data,error}=await supabase.functions.invoke("qpay-payment",{body:{action:"create_invoice",plan_code:planCode,idempotency_key:currentInvoiceIdempotencyKey}});
+  if(error||!data?.ok){
+   paymentStatus.textContent=data?.error||error?.message||"Нэхэмжлэл үүсгэж чадсангүй. Дахин оролдохдоо ижил хүсэлтийн түлхүүр ашиглана.";
+   return;
+  }
+  currentPaymentId=data.payment_id;
+  document.getElementById("paymentTitle").textContent=data.plan_name+" · "+new Intl.NumberFormat("mn-MN").format(data.amount)+" ₮";
+  document.getElementById("paymentInstructions").textContent="QPay апп-аар QR код уншуулж төлбөрөө хийнэ үү. Төлсний дараа доорх товчоор шалгана.";
+  const qr=document.getElementById("paymentQr");if(data.qr_image){qr.src=data.qr_image.startsWith("data:")?data.qr_image:"data:image/png;base64,"+data.qr_image;qr.hidden=false;}else qr.hidden=true;
+  const link=document.getElementById("paymentShortLink");if(data.qpay_short_url){link.href=data.qpay_short_url;link.hidden=false;}else link.hidden=true;
+  paymentStatus.textContent="Нэхэмжлэл бэлэн боллоо. Төлбөрөө хийсний дараа шалгана уу.";
+ }catch(err){
+  paymentStatus.textContent="Холболтын хариу тодорхойгүй байна. Давхар нэхэмжлэл үүсгэхгүйн тулд дахин оролдохдоо ижил төлбөрийн хүсэлтийг үргэлжлүүлнэ.";
+ }finally{
+  invoiceRequestInFlight=false;
+  planButtons.forEach(b=>b.disabled=!currentPremiumUser);
+ }
 }
 document.getElementById("checkPremiumPayment")?.addEventListener("click",async()=>{
  if(!currentPaymentId){paymentStatus.textContent="Эхлээд багцаа сонгож нэхэмжлэл үүсгэнэ үү.";return;}
