@@ -513,7 +513,18 @@ html[data-theme="dark"] .premium-card .premium-user h4{color:#edf5ed}
 #bugReportModal .bug-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}#bugReportModal button{border:0;border-radius:10px;padding:11px 16px;font-weight:800;cursor:pointer}#bugReportModal .bug-submit{background:#78985d;color:white}#bugReportModal .bug-cancel{background:#edf1eb;color:#344034}#bugReportStatus{margin-top:10px;min-height:20px;font-size:13px;color:#53634d}
 @media(max-width:520px){#bugReportLauncher{right:12px;bottom:calc(12px + env(safe-area-inset-bottom));padding:13px 16px;font-size:13px}#bugReportModal{padding:10px}#bugReportModal .bug-card{padding:17px;max-height:calc(100dvh - 20px)}}
 </style>
-</head>
+<style id="loreverse-navigation-unified">
+header:has(#mainNav){position:sticky;top:0;z-index:999;background:rgba(10,15,29,.94);backdrop-filter:blur(18px);border-bottom:1px solid #34445f;box-shadow:0 8px 28px #0002}
+header:has(#mainNav) .head{min-height:66px}
+header:has(#mainNav) .brand{color:#fff}
+header:has(#mainNav) .brand span{color:#8bd8d6}
+header:has(#mainNav) nav#mainNav{gap:5px;color:#c9d5e8;font-size:12px}
+header:has(#mainNav) #mainNav a{min-height:38px;padding:8px 10px;border:1px solid transparent;border-radius:10px;color:#c9d5e8}
+header:has(#mainNav) #mainNav a:hover,header:has(#mainNav) #mainNav a:focus-visible{background:#24314b;border-color:#465b7c;color:#fff}
+header:has(#mainNav) #mainNav .nav-cta{background:linear-gradient(110deg,#745bd2,#268eaa);color:#fff;border:0}
+header:has(#mainNav) .menu{border-color:#465b7c;background:#1b2941;color:#fff}
+@media(max-width:850px){header:has(#mainNav) #mainNav{top:calc(100% + 1px);left:0;right:0;width:100%;max-height:75vh;padding:12px 14px 16px;background:#0d1526;border:0;border-bottom:1px solid #40516d;border-radius:0 0 16px 16px;box-shadow:0 16px 28px #0007;gap:7px}header:has(#mainNav) #mainNav a{min-height:42px;background:#17243a;border-color:#2b3d59}header:has(#mainNav) #mainNav .nav-cta{justify-content:center}}
+</style></head>
 <body>
 <a class="skip-link" href="#main-content">Үндсэн агуулга руу алгасах</a>
 <header><div class="wrap head">
