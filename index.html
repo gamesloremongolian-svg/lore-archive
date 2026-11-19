@@ -142,6 +142,48 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 @media(max-width:850px){.stats-section{padding:18px 0 6px}.stats-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.stat-card{min-height:92px;padding:11px 10px}.stats-heading h2{font-size:22px}}
 @media(max-width:600px){.stats-section{padding:16px 0 4px}.stats-heading{margin-bottom:10px}.stats-heading h2{font-size:21px}.stats-heading p{font-size:12px}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.stat-card{min-height:86px;padding:10px;border-radius:12px}.stat-number{font-size:28px}.stat-label{font-size:10px}.stat-total{grid-column:span 2;min-height:76px}.stats-note{font-size:9px}}
 
+
+/* Membership and contributor access */
+.access-section{padding:28px 0 24px}
+.access-heading{max-width:720px;margin-bottom:17px}
+.access-heading h2{font-size:clamp(22px,3vw,30px);line-height:1.2;letter-spacing:-.04em;margin:6px 0}
+.access-heading p{color:var(--muted);font-size:13px;margin:0}
+.access-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.access-card{border:1px solid #e1e8df;border-radius:18px;padding:20px;background:linear-gradient(145deg,#fff,#f8faf7);min-width:0}
+.premium-card{background:linear-gradient(145deg,#f7faf5,#edf3e9);border-color:#dce7d6}
+.access-kicker{font-size:9px;letter-spacing:.18em;font-weight:850;color:#78915f}
+.access-icon{font-size:23px;color:#78985d;margin-top:8px}
+.access-card h3{font-size:20px;margin:3px 0 6px;letter-spacing:-.03em}
+.access-card>p{font-size:12px;color:var(--muted);margin:0 0 12px}
+.access-card ul{padding-left:18px;margin:10px 0 15px;color:#596658;font-size:12px}
+.access-form{display:grid;gap:10px}
+.access-form label{display:grid;gap:5px;font-size:11px;font-weight:750;color:#4f5b4c}
+.access-form input,.access-form select,.access-form textarea{width:100%;min-width:0;border:1px solid #dce4d9;border-radius:10px;padding:10px 11px;background:#fff;color:#263126;font:inherit;font-size:13px;outline:none}
+.access-form input:focus,.access-form select:focus,.access-form textarea:focus{border-color:#89a875;box-shadow:0 0 0 3px #89a87522}
+.access-form textarea{resize:vertical}
+.access-submit,.auth-actions .btn,.payment-box .btn{border:0;border-radius:10px;background:#78985d;color:#fff;padding:11px 14px;font-weight:800;font-size:12px;cursor:pointer;text-align:center}
+.access-status{font-size:11px;line-height:1.5;color:#58734a;min-height:16px;margin:2px 0 0}
+.auth-panel,.premium-user{padding:13px;border:1px solid #dfe8d9;background:#ffffffb8;border-radius:13px;margin:14px 0}
+.auth-panel h4,.payment-box h4{font-size:14px;margin:0 0 5px}
+.auth-hint{font-size:11px;color:#687466;margin:0 0 10px}
+.auth-actions{display:flex;gap:8px;flex-wrap:wrap}
+.auth-actions .btn{flex:1}
+.btn-secondary{background:#fff!important;color:#4f6842!important;border:1px solid #d5e1cf!important}
+.text-action{border:0;background:transparent;color:#65834e;text-decoration:underline;font-size:11px;padding:5px 0;cursor:pointer}
+.plan-list{display:grid;gap:9px;margin-top:13px}
+.plan-option{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border:1px solid #dce6d6;border-radius:12px;background:#fff}
+.plan-option strong{display:block;font-size:13px}
+.plan-option small{display:block;color:#71806d;font-size:10px}
+.plan-price{font-size:15px;font-weight:900;white-space:nowrap;color:#35472f}
+.plan-option button{display:block;margin-top:5px;border:0;border-radius:8px;padding:7px 10px;background:#78985d;color:white;font-size:10px;font-weight:800;cursor:pointer}
+.payment-box{margin-top:13px;padding:14px;border:1px dashed #a9bd9b;border-radius:13px;background:#fff;text-align:center}
+.payment-box img{display:block;width:min(220px,100%);height:auto;margin:12px auto;border-radius:8px}
+.payment-box .btn{display:inline-block;margin:5px}
+.access-footnote{font-size:10px!important;color:#71806d!important;margin-top:12px!important}
+[hidden]{display:none!important}
+@media(max-width:850px){.access-section{padding:20px 0}.access-grid{gap:10px}.access-card{padding:15px}}
+@media(max-width:600px){.access-section{padding:18px 0}.access-grid{grid-template-columns:1fr;gap:10px}.access-card{padding:16px;border-radius:15px}.access-card h3{font-size:19px}.access-form{gap:9px}.plan-option{padding:10px}.access-heading p{font-size:12px}}
+
 /* LOREVERSE responsive refinement: preserve the original artwork asset and its proportions. */
 @media (min-width:601px) and (max-width:850px){
   header{height:52px}
@@ -191,7 +233,7 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 <button type="button" data-nav-category="manga">Manga &amp; Novel</button>
 <button type="button" data-nav-category="game">Game Worlds</button>
 </div>
-</div><a href="./editorial/">Lore & Articles</a><a href="./archive/">Archive</a><a href="./games/">Games</a><a href="./community/">Community</a><a class="nav-cta" href="./rank/">Нэвтрэх</a></nav>
+</div><a href="./editorial/">Lore & Articles</a><a href="./archive/">Archive</a><a href="./games/">Games</a><a href="./community/">Community</a><a href="#access">Эрх авах</a><a class="nav-cta" href="./rank/">Нэвтрэх</a></nav>
 <button class="menu" id="menuBtn" aria-label="Цэс нээх" aria-expanded="false">Цэс ☰</button>
 </div></header>
 
@@ -214,6 +256,53 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
     <article class="stat-card stat-lore"><span class="stat-icon">⌘</span><span class="stat-number" data-stat="lore">—</span><span class="stat-label">Нээлттэй lore нийтлэл</span></article>
   </div>
   <p class="stats-note" id="archiveStatsStatus" role="status">Архивын тоог ачаалж байна...</p>
+</section>
+<section class="wrap access-section" id="access" aria-labelledby="accessTitle">
+ <div class="access-heading"><div class="eyebrow">GROW WITH LOREVERSE</div><h2 id="accessTitle">LOREVERSE-д өөрийн эрхээ аваарай</h2><p>Багт нэгдэж мэдлэг бүтээх эсвэл Premium гишүүнээр илүү гүнзгий судлаарай.</p></div>
+ <div class="access-grid">
+  <article class="access-card team-card">
+   <div class="access-kicker">CONTRIBUTE</div><div class="access-icon">✎</div><h3>Бүтээлч багт нэгдэх</h3>
+   <p>Орчуулга, lore судалгаа, нийтлэл болон архивын ажилд оролцоорой.</p>
+   <ul><li>Lore редактор</li><li>Орчуулагч, судлаач</li><li>Зар сурталчилгаа хариуцагч</li></ul>
+   <form id="staffApplicationForm" class="access-form">
+    <label>Нэр<input name="full_name" minlength="2" maxlength="120" required placeholder="Таны нэр"></label>
+    <label>Имэйл<input name="email" type="email" required placeholder="name@example.com"></label>
+    <label>Сонирхож буй чиглэл<select name="desired_role" required><option value="editor">Lore редактор / Нийтлэл</option><option value="ads_manager">Зар сурталчилгаа хариуцагч</option></select></label>
+    <label>Туршлага<textarea name="experience" rows="3" maxlength="3000" placeholder="Өмнө хийж байсан ажил, сонирхол, чадвар..."></textarea></label>
+    <label>Бүтээлийн холбоос<input name="portfolio_url" type="url" placeholder="https://..."></label>
+    <label>Нэмэлт тайлбар<textarea name="message" rows="3" maxlength="3000" placeholder="Яагаад LOREVERSE-д нэгдэхийг хүсэж байна вэ?"></textarea></label>
+    <button class="btn access-submit" type="submit">Багт элсэх хүсэлт илгээх</button>
+    <p class="access-status" id="staffApplicationStatus" role="status"></p>
+   </form>
+  </article>
+  <article class="access-card premium-card">
+   <div class="access-kicker">MEMBERSHIP</div><div class="access-icon">✦</div><h3>Premium гишүүнчлэл</h3>
+   <p>Тусгай lore нийтлэл болон Premium архивт нэвтрэх эрх аваарай.</p>
+   <div class="premium-benefits"><span>✓ Premium нийтлэл</span><span>✓ Тусгай архивын агуулга</span><span>✓ Идэвхтэй хугацаанд нэвтрэх эрх</span></div>
+   <div class="auth-panel" id="premiumAuthPanel">
+    <h4>Нэвтрэх эсвэл бүртгүүлэх</h4>
+    <p class="auth-hint">Premium авахын тулд имэйлээр бүртгэлтэй байх шаардлагатай.</p>
+    <form id="premiumAuthForm" class="access-form">
+     <label>Имэйл<input name="email" type="email" autocomplete="email" required placeholder="name@example.com"></label>
+     <label>Нууц үг<input name="password" type="password" minlength="8" autocomplete="current-password" required placeholder="8-аас дээш тэмдэгт"></label>
+     <div class="auth-actions"><button class="btn" type="submit" data-auth-mode="signin">Нэвтрэх</button><button class="btn btn-secondary" type="button" id="createPremiumAccount">Бүртгүүлэх</button></div>
+     <button type="button" class="text-action" id="forgotPremiumPassword">Нууц үг мартсан?</button>
+    </form>
+   </div>
+   <div class="premium-user" id="premiumUserPanel" hidden>
+    <p id="premiumUserEmail"></p><button type="button" class="text-action" id="premiumSignOut">Гарах</button>
+   </div>
+   <div class="plan-list" id="premiumPlans"><p class="auth-hint">Гишүүнчлэлийн багц ачаалж байна...</p></div>
+   <div class="payment-box" id="premiumPaymentBox" hidden>
+    <h4 id="paymentTitle">QPay төлбөр</h4><p id="paymentInstructions">QR код уншуулж төлбөрөө хийнэ үү.</p>
+    <img id="paymentQr" alt="QPay төлбөрийн QR код" hidden>
+    <a id="paymentShortLink" class="btn" target="_blank" rel="noopener noreferrer" hidden>QPay нээх</a>
+    <button type="button" class="btn btn-secondary" id="checkPremiumPayment">Төлбөр шалгах</button>
+    <p id="paymentStatus" class="access-status" role="status"></p>
+   </div>
+   <p class="access-footnote">Төлбөр QPay-аар баталгаажсаны дараа Premium эрх автоматаар идэвхжинэ.</p>
+  </article>
+ </div>
 </section>
 <section class="wrap feature"><div><div class="eyebrow">JOIN THE COMMUNITY</div><h2>Сонирхлоо бусадтай хуваалц.</h2><p>LOREVERSE-ийн community-д нэгдэж, ертөнцүүдийн тухай ярилцаарай.</p></div><a class="btn" href="./community/">Community руу ↗</a></section>
 <div class="wrap category-label"><h2>Өөрийн ертөнцөө сонго</h2><p>Сонирхсон чиглэлээрээ судалж, шинэ зүйл нээ.</p></div>
@@ -274,7 +363,77 @@ async function loadArchiveStats(){
   Object.values(statTargets).forEach(node=>{if(node)node.textContent="—";});
  }
 }
+
 loadArchiveStats();
+
+/* Contributor applications and Premium membership */
+const staffForm=document.getElementById("staffApplicationForm");
+const staffStatus=document.getElementById("staffApplicationStatus");
+staffForm?.addEventListener("submit",async(event)=>{
+ event.preventDefault();staffStatus.textContent="Хүсэлт илгээж байна...";
+ const form=new FormData(staffForm),values=Object.fromEntries(form.entries());
+ const {data:{session}}=await supabase.auth.getSession();
+ const payload={full_name:String(values.full_name||"").trim(),email:String(values.email||"").trim().toLowerCase(),desired_role:String(values.desired_role||"editor"),experience:String(values.experience||"").trim()||null,portfolio_url:String(values.portfolio_url||"").trim()||null,message:String(values.message||"").trim()||null,status:"pending",applicant_user_id:session?.user?.id||null};
+ const {error}=await supabase.from("staff_applications").insert(payload);
+ if(error){staffStatus.textContent=error.code==="23505"?"Энэ хүсэлт өмнө нь бүртгэгдсэн байна.":"Хүсэлт илгээж чадсангүй: "+error.message;return;}
+ staffForm.reset();staffStatus.textContent="Хүсэлт амжилттай илгээгдлээ. Админ баг шалгасны дараа таны имэйлээр холбогдоно.";
+});
+const authPanel=document.getElementById("premiumAuthPanel"),userPanel=document.getElementById("premiumUserPanel"),userEmail=document.getElementById("premiumUserEmail"),plansPanel=document.getElementById("premiumPlans"),paymentBox=document.getElementById("premiumPaymentBox"),paymentStatus=document.getElementById("paymentStatus");
+let currentPaymentId=null;
+function setPremiumUser(user){
+ const signedIn=!!user;authPanel.hidden=signedIn;userPanel.hidden=!signedIn;
+ userEmail.textContent=signedIn?"Нэвтэрсэн: "+(user.email||""): "";
+ plansPanel.querySelectorAll("button[data-plan-code]").forEach(b=>b.disabled=!signedIn);
+}
+async function refreshPremiumSession(){const {data:{session}}=await supabase.auth.getSession();setPremiumUser(session?.user||null);}
+supabase.auth.onAuthStateChange((_event,session)=>{setPremiumUser(session?.user||null);});
+refreshPremiumSession();
+async function loadPremiumPlans(){
+ const {data,error}=await supabase.from("membership_plans").select("plan_code,name,description,duration_days,price_amount,currency,enabled").eq("enabled",true).order("duration_days");
+ if(error||!data?.length){plansPanel.innerHTML='<p class="auth-hint">Багцын мэдээлэл ачаалж чадсангүй.</p>';return;}
+ plansPanel.innerHTML=data.map(p=>'<div class="plan-option"><div><strong>'+esc(p.name)+'</strong><small>'+esc(p.description||"Premium архивын эрх")+'</small><button type="button" data-plan-code="'+esc(p.plan_code)+'">Эрх авах</button></div><div class="plan-price">'+new Intl.NumberFormat("mn-MN").format(Number(p.price_amount))+' ₮</div></div>').join("");
+ plansPanel.querySelectorAll("button[data-plan-code]").forEach(btn=>btn.addEventListener("click",()=>createPremiumInvoice(btn.dataset.planCode)));
+}
+loadPremiumPlans();
+const authForm=document.getElementById("premiumAuthForm");
+async function authWithPassword(mode){
+ const fd=new FormData(authForm),email=String(fd.get("email")||"").trim().toLowerCase(),password=String(fd.get("password")||"");
+ if(!email||password.length<8){paymentStatus.textContent="Имэйл болон 8-аас дээш тэмдэгттэй нууц үг оруулна уу.";return;}
+ paymentStatus.textContent=mode==="signup"?"Бүртгэл үүсгэж байна...":"Нэвтэрч байна...";
+ const result=mode==="signup"?await supabase.auth.signUp({email,password}):await supabase.auth.signInWithPassword({email,password});
+ if(result.error){paymentStatus.textContent=result.error.message;return;}
+ if(mode==="signup"&&!result.data.session){paymentStatus.textContent="Бүртгэл үүслээ. Имэйлдээ ирсэн баталгаажуулах холбоосоор баталгаажуулаад нэвтэрнэ үү.";return;}
+ paymentStatus.textContent=mode==="signup"?"Бүртгэл амжилттай.":"Амжилттай нэвтэрлээ.";
+ setPremiumUser(result.data.user||result.data.session?.user||null);
+}
+authForm?.addEventListener("submit",e=>{e.preventDefault();authWithPassword("signin");});
+document.getElementById("createPremiumAccount")?.addEventListener("click",()=>authWithPassword("signup"));
+document.getElementById("forgotPremiumPassword")?.addEventListener("click",async()=>{
+ const email=String(new FormData(authForm).get("email")||"").trim().toLowerCase();
+ if(!email){paymentStatus.textContent="Эхлээд имэйл хаягаа оруулна уу.";return;}
+ const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+ paymentStatus.textContent=error?error.message:"Нууц үг шинэчлэх холбоос имэйлээр илгээгдлээ.";
+});
+document.getElementById("premiumSignOut")?.addEventListener("click",async()=>{await supabase.auth.signOut();paymentBox.hidden=true;currentPaymentId=null;paymentStatus.textContent="";});
+async function createPremiumInvoice(planCode){
+ paymentBox.hidden=false;paymentStatus.textContent="QPay нэхэмжлэл үүсгэж байна...";currentPaymentId=null;
+ const {data,error}=await supabase.functions.invoke("qpay-payment",{body:{action:"create_invoice",plan_code:planCode}});
+ if(error||!data?.ok){paymentStatus.textContent=data?.error||error?.message||"Нэхэмжлэл үүсгэж чадсангүй.";return;}
+ currentPaymentId=data.payment_id;document.getElementById("paymentTitle").textContent=data.plan_name+" · "+new Intl.NumberFormat("mn-MN").format(data.amount)+" ₮";
+ document.getElementById("paymentInstructions").textContent="QPay апп-аар QR код уншуулж төлбөрөө хийнэ үү. Төлсний дараа доорх товчоор шалгана.";
+ const qr=document.getElementById("paymentQr");if(data.qr_image){qr.src=data.qr_image.startsWith("data:")?data.qr_image:"data:image/png;base64,"+data.qr_image;qr.hidden=false;}else qr.hidden=true;
+ const link=document.getElementById("paymentShortLink");if(data.qpay_short_url){link.href=data.qpay_short_url;link.hidden=false;}else link.hidden=true;
+ paymentStatus.textContent="Нэхэмжлэл бэлэн боллоо. Төлбөрөө хийсний дараа шалгана уу.";
+}
+document.getElementById("checkPremiumPayment")?.addEventListener("click",async()=>{
+ if(!currentPaymentId){paymentStatus.textContent="Эхлээд багцаа сонгож нэхэмжлэл үүсгэнэ үү.";return;}
+ paymentStatus.textContent="Төлбөрийн төлөв шалгаж байна...";
+ const {data,error}=await supabase.functions.invoke("qpay-payment",{body:{action:"check_payment",payment_id:currentPaymentId}});
+ if(error||!data?.ok){paymentStatus.textContent=data?.error||error?.message||"Төлөв шалгаж чадсангүй.";return;}
+ if(data.paid){paymentStatus.textContent="Төлбөр баталгаажлаа. Premium эрх идэвхжлээ.";await loadPremiumPlans();}
+ else paymentStatus.textContent="Төлбөр хараахан баталгаажаагүй байна. QPay-аар төлсний дараа дахин шалгана уу.";
+});
+
 
 const cards=[...document.querySelectorAll("[data-category]")],panel=document.getElementById("categoryResults"),title=document.getElementById("categoryTitle"),status=document.getElementById("categoryStatus"),items=document.getElementById("categoryItems");
 let active=null;
