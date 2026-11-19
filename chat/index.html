@@ -196,12 +196,12 @@ async function loadConversations(){
  const ids=rows.map(x=>x.user_one===currentUser.id?x.user_two:x.user_one);
  const [profilesRes,messagesRes]=await Promise.all([
   supabase.from("chat_public_profiles").select("id,display_name,avatar_url").in("id",ids),
-  supabase.from("direct_messages").select("conversation_id,body,created_at").in("conversation_id",rows.map(x=>x.id)).order("created_at",{ascending:false}).limit(200)
+  supabase.from("direct_messages").select("conversation_id,body,created_at,sender_id,read_at").in("conversation_id",rows.map(x=>x.id)).order("created_at",{ascending:false}).limit(500)
  ]);
  const profiles=Object.fromEntries((profilesRes.data||[]).map(x=>[x.id,x]));
- const last={};(messagesRes.data||[]).forEach(m=>{if(!last[m.conversation_id])last[m.conversation_id]=m;});
- const decorated=rows.map(c=>{const partnerId=c.user_one===currentUser.id?c.user_two:c.user_one;return {...c,partner:profiles[partnerId]||{id:partnerId,display_name:"Гишүүн"},last:last[c.id]||null};}).sort((x,y)=>new Date(y.last?.created_at||y.created_at)-new Date(x.last?.created_at||x.created_at));
- $("conversationList").innerHTML=decorated.map(c=>'<button type="button" class="conversation '+(activeConversation?.id===c.id?'active':'')+'" data-conversation="'+safe(c.id)+'" data-partner="'+safe(c.partner.id)+'"><span class="avatar small">'+(c.partner.avatar_url?'<img src="'+safe(c.partner.avatar_url)+'" alt="">':safe(initials(c.partner.display_name)))+'</span><span style="min-width:0"><span class="conv-name">'+safe(c.partner.display_name)+'</span><span class="conv-preview">'+safe(c.last?.body||"Яриа эхэлсэн")+'</span></span></button>').join("");
+ const last={},unread={};(messagesRes.data||[]).forEach(m=>{if(!last[m.conversation_id])last[m.conversation_id]=m;if(m.sender_id!==currentUser.id&&!m.read_at)unread[m.conversation_id]=(unread[m.conversation_id]||0)+1;});
+ const decorated=rows.map(c=>{const partnerId=c.user_one===currentUser.id?c.user_two:c.user_one;return {...c,partner:profiles[partnerId]||{id:partnerId,display_name:"Гишүүн"},last:last[c.id]||null,unread:unread[c.id]||0};}).sort((x,y)=>new Date(y.last?.created_at||y.created_at)-new Date(x.last?.created_at||x.created_at));
+ $("conversationList").innerHTML=decorated.map(c=>'<button type="button" class="conversation '+(activeConversation?.id===c.id?'active':'')+'" data-conversation="'+safe(c.id)+'" data-partner="'+safe(c.partner.id)+'"><span class="avatar small">'+(c.partner.avatar_url?'<img src="'+safe(c.partner.avatar_url)+'" alt="">':safe(initials(c.partner.display_name)))+'</span><span style="min-width:0"><span class="conv-name">'+safe(c.partner.display_name)+'</span><span class="conv-preview">'+safe(c.last?.body||"Яриа эхэлсэн")+'</span></span>'+(c.unread?'<span class="unread-dot">'+c.unread+'</span>':'')+'</button>').join("");
  $("conversationList").querySelectorAll("[data-conversation]").forEach(btn=>btn.onclick=()=>{const c=decorated.find(x=>x.id===btn.dataset.conversation);if(c)openConversation(c,c.partner);});
 }
 async function openConversation(conversation,partner){
@@ -221,12 +221,14 @@ async function checkPartnerOnline(){
 }
 async function loadMessages(){
  if(!activeConversation)return;
- const {data,error}=await supabase.from("direct_messages").select("id,sender_id,body,created_at").eq("conversation_id",activeConversation.id).order("created_at",{ascending:true}).limit(150);
+ const {data,error}=await supabase.from("direct_messages").select("id,sender_id,body,created_at,read_at").eq("conversation_id",activeConversation.id).order("created_at",{ascending:true}).limit(150);
  if(error){$("messageList").innerHTML='<div class="empty">'+safe(error.message)+'</div>';return;}
  const rows=data||[];
  if(!rows.length){$("messageList").innerHTML='<div class="empty"><div class="symbol">✦</div><h2>Яриагаа эхлүүлээрэй</h2><p>Эхний мессежээ илгээнэ үү. Энэ яриаг зөвхөн та хоёр уншина.</p></div>';return;}
  $("messageList").innerHTML=rows.map(m=>{const mine=m.sender_id===currentUser.id;const sticker=m.body.match(/^\[\[LOREVERSE_STICKER\|([^|]+)\|([^\]]+)\]\]$/);const content=sticker?'<div class="bubble sticker-bubble" aria-label="'+safe(sticker[2])+'">'+safe(sticker[1])+'</div>':'<div class="bubble">'+safe(m.body)+'</div>';return '<article class="message '+(mine?'mine':'')+'"><span class="avatar small">'+((mine?myAvatarUrl:activePartner.avatar_url)?'<img src="'+safe(mine?myAvatarUrl:activePartner.avatar_url)+'" alt="">':safe(initials(mine?myDisplayName:activePartner.display_name)))+'</span><div class="bubble-wrap"><div class="message-name">'+safe(mine?"Та":activePartner.display_name)+'</div>'+content+'<div class="time">'+new Date(m.created_at).toLocaleString("mn-MN",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})+'</div></div></article>';}).join("");
  $("messageList").scrollTop=$("messageList").scrollHeight;
+ const {error:readError}=await supabase.from("direct_messages").update({read_at:new Date().toISOString()}).eq("conversation_id",activeConversation.id).neq("sender_id",currentUser.id).is("read_at",null);
+ if(readError)console.warn("Read receipt:",readError.message);await loadConversations();
 }
 let sendingMessage=false;
 async function sendDirectMessage(){
@@ -253,7 +255,7 @@ $("messageInput").addEventListener("keydown",e=>{
 });
 $("refreshButton").onclick=async()=>{await loadMembers($("memberSearch").value);await loadConversations();if(activeConversation)await loadMessages();};
 $("mobileBack").onclick=()=>$("appShell").classList.remove("hide-sidebar");
-$("logoutButton").onclick=async()=>{if(refreshPresenceTimer)clearInterval(refreshPresenceTimer);if(messageChannel)await supabase.removeChannel(messageChannel);if(conversationChannel)await supabase.removeChannel(conversationChannel);messageChannel=null;conversationChannel=null;await supabase.auth.signOut({scope:"local"});currentUser=null;activeConversation=null;$("messageInput").disabled=false;$("sendButton").disabled=true;$("messageInput").value="";$("messageInput").placeholder="Мессежээ бичнэ үү… (илгээхийн тулд эхлээд гишүүн сонгоно)";$("appShell").classList.add("hidden");$("authWrap").classList.remove("hidden");};
+$("logoutButton").onclick=async()=>{if(refreshPresenceTimer)clearInterval(refreshPresenceTimer);if(messageChannel)await supabase.removeChannel(messageChannel);if(conversationChannel)await supabase.removeChannel(conversationChannel);if(notificationChannel)await supabase.removeChannel(notificationChannel);if(friendChannel)await supabase.removeChannel(friendChannel);messageChannel=null;conversationChannel=null;notificationChannel=null;friendChannel=null;await supabase.auth.signOut({scope:"local"});currentUser=null;activeConversation=null;$("messageInput").disabled=false;$("sendButton").disabled=true;$("messageInput").value="";$("messageInput").placeholder="Мессежээ бичнэ үү… (илгээхийн тулд эхлээд гишүүн сонгоно)";$("appShell").classList.add("hidden");$("authWrap").classList.remove("hidden");};
 
 const stickerSets={
  "Бүгд":[["👋","Сайн уу"],["🥰","Хайртай"],["😂","Инээд"],["😭","Уйлж байна"],["😡","Ууртай"],["😳","Гайхсан"],["😴","Нойрмог"],["🤔","Бодож байна"],["👍","Гоё"],["👏","Алга таших"],["🔥","Гал"],["✨","Гялалзах"],["💜","Нил ягаан зүрх"],["🎮","Тоглоом"],["📚","Унших"],["🐉","Луу"]],
