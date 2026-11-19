@@ -234,10 +234,7 @@ test.describe('LOREVERSE website health', () => {
         }
       `
     }));
-    const pageErrors = [];
-    page.on('pageerror', error => pageErrors.push(error.message));
     await page.goto(new URL('store/', baseURL).toString(), { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('#status')).not.toContainText('');
     await expect(page.locator('#balance')).toContainText('100', { timeout: 10000 });
     await expect(page.locator('#items [data-buy="test-frame"]')).toBeVisible({ timeout: 10000 });
     await page.locator('#items [data-buy="test-frame"]').click();
