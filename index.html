@@ -3695,6 +3695,145 @@ hr,.divider{border-color:#59466f}
  .section-head h2{font-size:23px}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* LOREVERSE colorful anime portal refresh v3 — mobile-first */
+:root{
+ --bg:#100b20;--panel:#1b1530;--panel2:#24183b;--line:#57406f;
+ --text:#fff9ff;--muted:#d0c0df;--violet:#a36bff;--cyan:#55ddf2;
+ --pink:#ff70b9;--gold:#ffbf72;--radius:22px
+}
+html{background:#100b20}
+body{
+ background:
+ radial-gradient(ellipse at 8% 8%,#ff62b522,transparent 30%),
+ radial-gradient(ellipse at 92% 18%,#35d9f322,transparent 28%),
+ radial-gradient(ellipse at 52% 70%,#8958ff16,transparent 42%),
+ linear-gradient(155deg,#100b20 0%,#17102b 48%,#0b172b 100%);
+ color:var(--text)
+}
+.topbar{border-bottom:1px solid #ff9bd82b;background:linear-gradient(90deg,#160e27ee,#10182bee);box-shadow:0 8px 28px #08051455}
+.brand{letter-spacing:.13em;text-shadow:0 0 24px #b86dff66}
+.mark-image{box-shadow:0 0 18px #ff70b966,0 0 34px #55ddf244}
+.nav a:hover{color:#ff8fc9;text-shadow:0 0 14px #ff70b966}
+.mobile-nav-toggle{border-color:#8b5ab9;background:linear-gradient(135deg,#392052,#1c2948)}
+.hero-streaming.yoru-home{
+ position:relative;isolation:isolate;overflow:hidden;margin-top:20px!important;
+ border:1px solid #a66bff77;border-radius:30px;
+ background:linear-gradient(115deg,#25143c 0%,#25163f 43%,#122c45 100%);
+ box-shadow:0 25px 80px #0008,0 0 55px #a34fff20
+}
+.hero-streaming.yoru-home:before{
+ content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+ background:radial-gradient(circle at 8% 10%,#ff70b933,transparent 25%),radial-gradient(circle at 92% 85%,#39dff033,transparent 30%);
+}
+.yoru-home-inner{gap:clamp(24px,4vw,54px);padding:clamp(24px,4vw,52px)}
+.yoru-kicker{color:#7cecff;letter-spacing:.2em}
+.yoru-kicker-line{background:linear-gradient(90deg,#ff70b9,#55ddf2)}
+.yoru-edition{color:#ffd1eb;letter-spacing:.22em}
+.yoru-home .hero-slogan{font-size:clamp(38px,5.2vw,68px);line-height:1.06;letter-spacing:-.045em;text-shadow:0 8px 35px #0005}
+.yoru-home .hero-slogan em{font-style:normal;background:linear-gradient(95deg,#ff8ac8,#b18aff 52%,#69eaff);background-clip:text;color:transparent}
+.yoru-intro{color:#e1d4ee;max-width:560px;font-size:clamp(14px,1.3vw,17px)}
+.yoru-home .hero-brand-logo{max-width:300px;filter:drop-shadow(0 0 24px #d77cff66)}
+.yoru-actions .btn{border:1px solid #a879d255;background:linear-gradient(145deg,#39234f,#1b2944);color:#fff;box-shadow:0 8px 24px #08051455;transition:transform .2s,border-color .2s,filter .2s}
+.yoru-actions .btn.primary{background:linear-gradient(110deg,#ff6eb8,#a46bff 55%,#38cce9);border:0;color:#170d2b;box-shadow:0 12px 30px #bb58d955}
+.yoru-actions .btn:hover{transform:translateY(-3px);border-color:#ff9bd8;filter:brightness(1.08)}
+.yoru-winter-banner{border:1px solid #ffbf7277;background:linear-gradient(100deg,#63334c88,#30204eaa,#173b4a99);border-radius:15px}
+.yoru-countdown{border-color:#55ddf255;background:linear-gradient(145deg,#1d2341dd,#281739dd)}
+.yoru-countdown .new-year-time strong{color:#ff9bd3;text-shadow:0 0 18px #ff70b955}
+.yoru-countdown .new-year-countdown-title{color:#8cecff}
+.hero-art.yoru-feature{
+ min-height:450px;border:1px solid #ffb2e877;border-radius:27px;
+ background:linear-gradient(145deg,#47204f,#182d50);
+ box-shadow:0 24px 65px #05030d88,0 0 42px #d85dff2b;
+}
+.hero-art-original{
+ background:
+ radial-gradient(circle at 72% 24%,#fff8 0 1px,transparent 2px),
+ radial-gradient(circle at 25% 18%,#fff9 0 1px,transparent 2px),
+ url("./assets/images/loreverse-home-anime.svg") center 32%/cover no-repeat,
+ linear-gradient(145deg,#49215d,#183a5d)!important;
+ transform:scale(1.005)
+}
+.hero-art-shade{background:linear-gradient(180deg,#120a2400 20%,#10091d18 45%,#10091df2 100%)}
+.yoru-feature-top{color:#fff;background:#140d2ca8;border:1px solid #ffffff40;border-radius:999px;padding:9px 13px;backdrop-filter:blur(12px)}
+.yoru-live-dot{color:#8ff4e9}
+.yoru-feature-orbit{opacity:.75;filter:drop-shadow(0 0 22px #8feaff88)}
+.yoru-orbit-core{color:#fff0ff;text-shadow:0 0 30px #ff8ad6,0 0 50px #65eaff}
+.yoru-orbit-ring{border-color:#ff9bd9aa;box-shadow:0 0 28px #ff70b944}
+.yoru-orbit-ring-two{border-color:#65eaffaa}
+.hero-art-caption small{color:#8cecff;letter-spacing:.2em}
+.hero-art-caption strong{color:#fff;font-size:clamp(24px,3vw,36px);text-shadow:0 3px 20px #000}
+.hero-art-caption span{color:#f1dff5}
+.yoru-feature-index{color:#ffd2eb}
+.yoru-discover{
+ width:min(1180px,calc(100% - 40px));margin:22px auto 35px;padding:clamp(20px,3vw,32px);
+ border:1px solid #8e61ba88;border-radius:26px;
+ background:linear-gradient(130deg,#241535ee,#14233bee 75%,#1e1835ee);
+ box-shadow:0 18px 55px #0005
+}
+.yoru-section-kicker{color:#7cecff;letter-spacing:.22em}
+.yoru-discover-heading h2{color:#fff;font-size:clamp(21px,3vw,30px);letter-spacing:-.025em}
+.yoru-discover-aside{color:#e4b8df}
+.yoru-world-grid{gap:13px}
+.yoru-world-card{
+ min-height:175px;border-radius:19px;padding:20px;
+ border:1px solid #ffffff30;box-shadow:0 12px 28px #08051455;
+ background:linear-gradient(145deg,#34204b,#171b39)!important;
+ transition:transform .22s,border-color .22s,box-shadow .22s
+}
+.yoru-world-anime{background:radial-gradient(circle at 88% 12%,#ff75bc88,transparent 45%),linear-gradient(145deg,#51234d,#211b3e)!important}
+.yoru-world-manga{background:radial-gradient(circle at 88% 12%,#9d79ff88,transparent 45%),linear-gradient(145deg,#3d2a69,#1c1c42)!important}
+.yoru-world-games{background:radial-gradient(circle at 88% 12%,#4bd8ed88,transparent 45%),linear-gradient(145deg,#174b61,#17203e)!important}
+.yoru-world-archive{background:radial-gradient(circle at 88% 12%,#ffc06b88,transparent 45%),linear-gradient(145deg,#65402e,#28203b)!important}
+.yoru-world-card:hover{transform:translateY(-5px);border-color:#ff9bd8;box-shadow:0 18px 38px #a94fe044}
+.yoru-world-no{color:#ffffffa8}
+.yoru-world-symbol{color:#fff;text-shadow:0 0 22px #fff8}
+.yoru-world-title{color:#fff;text-shadow:0 2px 12px #0008}
+.yoru-world-desc{color:#f5e9ff}
+.yoru-world-arrow{color:#fff}
+.section-head h2{color:#fff}
+.eyebrow,.tag{color:#75e7ff}
+.archive,.portal-panel,.feature,.feed-panel,.feed-side,.community-side,.community-main,.rank-card,.update-panel{
+ border-color:#604776;background:linear-gradient(145deg,#211633ed,#121d32ed);box-shadow:0 15px 42px #0004
+}
+.search,.form-field,.feed-composer,.chat-feed{background:#100d20;border-color:#59416e;color:#fff}
+.chip.active,.chip:hover{border-color:#ff85c5;background:#ff70b922;color:#fff}
+.article,.catalog-card{border-color:#604776;background:linear-gradient(145deg,#2c1b42,#142036)}
+.article:hover,.catalog-card:hover{border-color:#ff8fc9;box-shadow:0 14px 32px #a94fe033}
+.article button{color:#ff9bd3}
+.footer{border-top-color:#ff9bd833}
+#loreAiLauncher{background:linear-gradient(110deg,#ff70b9,#a36bff,#55ddf2);color:#160d29;box-shadow:0 10px 30px #a34fff55}
+#loreAiHead{background:linear-gradient(110deg,#6d327c,#304e8b)}
+@media(max-width:850px){
+ .hero-streaming.yoru-home{width:calc(100% - 24px);margin-top:12px!important}
+ .yoru-home-inner{padding:23px;gap:22px}
+ .hero-art.yoru-feature{min-height:340px}
+ .yoru-discover{width:calc(100% - 24px)}
+}
+@media(max-width:560px){
+ .hero-streaming.yoru-home{width:calc(100% - 18px);border-radius:20px}
+ .yoru-home-inner{padding:17px 15px;gap:17px}
+ .yoru-home .hero-slogan{font-size:clamp(31px,9vw,42px)}
+ .yoru-intro{font-size:13px}
+ .yoru-home .hero-brand-logo{width:190px;max-height:62px}
+ .yoru-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ .yoru-actions .btn{min-height:43px;padding:9px 8px;font-size:10px}
+ .yoru-actions .yoru-app-link{display:flex}
+ .hero-art.yoru-feature{min-height:265px;border-radius:17px}
+ .yoru-feature-top{font-size:8px;top:10px;left:10px}
+ .hero-art-caption{left:14px;right:14px;bottom:25px}
+ .hero-art-caption strong{font-size:22px}
+ .yoru-discover{width:calc(100% - 18px);padding:16px 12px;border-radius:18px}
+ .yoru-world-grid{grid-template-columns:1fr 1fr;gap:8px}
+ .yoru-world-card{min-height:135px;padding:12px;border-radius:13px}
+ .yoru-world-symbol{top:26px;left:12px;font-size:25px}
+ .yoru-world-title{font-size:12px}
+ .yoru-world-desc{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+ .yoru-world-card,.yoru-actions .btn{transition:none!important}
+}
+
 </style>
 
 </body>
