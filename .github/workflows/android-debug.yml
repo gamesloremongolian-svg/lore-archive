@@ -59,16 +59,29 @@ jobs:
       - name: Generate LOREVERSE launcher icons
         run: |
           set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y librsvg2-bin
           RES="android/app/src/main/res"
           mkdir -p "$RES/drawable-nodpi" "$RES/mipmap-anydpi-v26" "$RES/values"
-          rsvg-convert -w 432 -h 432 assets/loreverse-adaptive-foreground.svg -o "$RES/drawable-nodpi/ic_launcher_foreground.png"
+          # Avoid apt.ubuntu.com network dependency: GitHub's Ubuntu runner includes ImageMagick.
+          render_svg() {
+            local input="$1" size="$2" output="$3"
+            if command -v rsvg-convert >/dev/null 2>&1; then
+              rsvg-convert -w "$size" -h "$size" "$input" -o "$output"
+            elif command -v magick >/dev/null 2>&1; then
+              magick -background none -density 384 "$input" -resize "${size}x${size}" "$output"
+            elif command -v convert >/dev/null 2>&1; then
+              convert -background none -density 384 "$input" -resize "${size}x${size}" "$output"
+            else
+              echo "::error::No SVG renderer is available on this runner."
+              exit 1
+            fi
+            test -s "$output"
+          }
+          render_svg assets/loreverse-adaptive-foreground.svg 432 "$RES/drawable-nodpi/ic_launcher_foreground.png"
           for item in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do
             density="${item%%:*}"
             size="${item##*:}"
             mkdir -p "$RES/mipmap-$density"
-            rsvg-convert -w "$size" -h "$size" assets/loreverse-app-icon.svg -o "$RES/mipmap-$density/ic_launcher.png"
+            render_svg assets/loreverse-app-icon.svg "$size" "$RES/mipmap-$density/ic_launcher.png"
             cp "$RES/mipmap-$density/ic_launcher.png" "$RES/mipmap-$density/ic_launcher_round.png"
           done
           cat > "$RES/values/loreverse_icon_colors.xml" <<'EOF'
