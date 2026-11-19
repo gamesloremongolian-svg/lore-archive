@@ -527,6 +527,18 @@ html[data-theme="dark"] .about-loreverse-item{background:#121b15;border-color:#3
 html.capacitor-app .apk-panel{display:none!important}
 html.capacitor-app .updates-grid{grid-template-columns:minmax(0,1fr)}
 
+
+/* Archive universe counters: fix dark-theme contrast and make values easy to scan */
+html[data-theme="dark"] .stats-section .stat-card{background:linear-gradient(145deg,#1c2a22,#24362a);border-color:#405844;box-shadow:0 8px 22px #0003}
+html[data-theme="dark"] .stats-section .stat-total{background:linear-gradient(145deg,#263d2c,#304a35);border-color:#5b795d}
+html[data-theme="dark"] .stats-section .stat-lore{background:linear-gradient(145deg,#29253b,#302b45);border-color:#51476b}
+html[data-theme="dark"] .stats-section .stat-number{color:#f0f7ed;text-shadow:0 1px 12px #9edcaa35;font-size:clamp(27px,3.2vw,36px)}
+html[data-theme="dark"] .stats-section .stat-label{color:#c1d1c1;font-size:11px}
+html[data-theme="dark"] .stats-section .stat-icon{color:#b7d99d}
+.stats-section .stat-card{transition:transform .18s ease,box-shadow .18s ease}
+.stats-section .stat-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px #0002}
+@media(max-width:600px){html[data-theme="dark"] .stats-section .stat-number{font-size:29px}html[data-theme="dark"] .stats-section .stat-label{font-size:10px}}
+
 </style>
 <style>
 #bugReportLauncher{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:9999;display:inline-flex;align-items:center;gap:9px;border:1px solid #d8e8ce;border-radius:999px;background:linear-gradient(135deg,#263d2c,#668d50);color:#fff;padding:14px 19px;font:800 14px/1.2 system-ui;box-shadow:0 10px 32px #10251555;cursor:pointer;isolation:isolate}#bugReportLauncher:hover{transform:translateY(-2px);box-shadow:0 14px 36px #10251566}#bugReportLauncher:focus-visible{outline:3px solid #f0c66e;outline-offset:3px}
