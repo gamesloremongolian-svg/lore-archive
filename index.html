@@ -43,6 +43,8 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 @media(max-width:520px){.cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.card{min-height:58px;padding:7px 3px;gap:5px}.symbol{flex-basis:26px;width:26px;height:26px;font-size:14px}.card h3{font-size:clamp(9px,2.65vw,12px)}}
 
 .category-label{padding-top:10px}.category-label h2{font-size:17px;letter-spacing:-.03em;margin:2px 0 0}.category-strip{padding-top:7px;padding-bottom:4px}.category-strip .cards{margin:0}.category-strip .card{min-height:58px;padding:7px 3px;gap:5px;flex-direction:row;align-items:center;justify-content:center}.category-strip .symbol{flex:0 0 26px;width:26px;height:26px;margin:0;font-size:14px}.category-strip .card h3{margin:0;font-size:12px}.category-strip .card p,.category-strip .card .category-tag{display:none}@media(max-width:850px){.category-strip{padding-top:8px}}
+
+.community-marquee{width:100%;overflow:hidden;white-space:nowrap;background:#f4f7f1;border-bottom:1px solid #e6ebdf;border-top:1px solid #e6ebdf;padding:9px 0;margin:0}.community-marquee-track{display:flex;align-items:center;gap:25px;width:max-content;animation:communityMarquee 24s linear infinite}.community-marquee-track span{font-size:11px;font-weight:800;letter-spacing:.16em;color:#596d4d}.community-marquee-track i{font-style:normal;font-size:10px;color:#91a27f}@keyframes communityMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}@media(prefers-reduced-motion:reduce){.community-marquee-track{animation:none}}
 </style>
 </head>
 <body>
@@ -52,6 +54,13 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 <nav id="mainNav"><a href="./universe-hub/">Universe Hub</a><a href="./editorial/">Lore & Articles</a><a href="./archive/">Archive</a><a href="./games/">Games</a><a href="./community/">Community</a><a class="nav-cta" href="./universe-hub/">Ертөнцүүдийг үзэх</a></nav>
 <button class="menu" id="menuBtn" aria-label="Цэс нээх" aria-expanded="false">Цэс ☰</button>
 </div></header>
+<div class="community-marquee" aria-label="Анимэ, Манга, Тоглоом">
+  <div class="community-marquee-track">
+    <span>АНИМЭ</span><i>✦</i><span>МАНГА</span><i>✦</i><span>ТОГЛООМ</span><i>✦</i>
+    <span>АНИМЭ</span><i>✦</i><span>МАНГА</span><i>✦</i><span>ТОГЛООМ</span><i>✦</i>
+  </div>
+</div>
+
 <div class="wrap category-label"><span class="eyebrow">DISCOVER</span><h2>Өөрийн ертөнцөө сонго</h2></div>
 <div class="wrap category-strip"><div class="cards">
 <button class="card" type="button" data-category="anime" aria-pressed="false"><div class="symbol">✦</div><h3>Anime</h3></button>
