@@ -177,6 +177,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
   .home-bottom a,.home-bottom button{min-height:45px;padding:5px 2px;font-size:10px}
 }
 
+
+/* Discord-style server roles: name colors, compact role insignias and roster controls */
+.role-badge{display:inline-flex;align-items:center;gap:4px;margin-left:6px;padding:2px 7px;border-radius:999px;border:1px solid currentColor;font-size:9px;line-height:1.4;font-weight:900;letter-spacing:.04em;vertical-align:middle;white-space:nowrap}
+.role-owner{color:#ffd479;background:#ffd47914}.role-admin{color:#c6a3ff;background:#c6a3ff14}.role-moderator{color:#72e5ef;background:#72e5ef14}.role-member{color:#a9bad2;background:#a9bad214}
+.member-roster{display:grid;gap:7px;margin-top:8px}.member-card{display:flex;align-items:center;gap:8px;min-width:0;padding:8px;border:1px solid #344a69;border-radius:12px;background:#142139}.member-card .avatar{width:31px;height:31px;flex:0 0 31px;font-size:11px}.member-copy{min-width:0;flex:1}.member-copy b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}.member-copy small{display:block;color:#9fb1ca;font-size:9px}.role-manage{border:1px solid #526b90;border-radius:8px;background:#1d2d47;color:#eaf4ff;padding:5px 7px;font-size:9px;font-weight:850}.member-card .member-name-owner{color:#ffd479}.member-card .member-name-admin{color:#c6a3ff}.member-card .member-name-moderator{color:#72e5ef}.member-card .member-name-member{color:#f3f7ff}
+.message-role{margin-left:5px}.server-role-note{font-size:10px;color:#9fb1ca;margin:6px 2px 0}
+
 </style><style id="loreverse-global-navigation">
 .lv-global-header{position:sticky;top:0;z-index:999;background:rgba(10,15,29,.94);backdrop-filter:blur(18px);border-bottom:1px solid rgba(133,158,190,.25);box-shadow:0 8px 28px rgba(0,0,0,.22);color:#f4f7ff}
 .lv-global-inner{width:min(1200px,calc(100% - 28px));min-height:66px;margin:auto;display:flex;align-items:center;gap:20px}
@@ -207,7 +214,9 @@ body{scroll-padding-top:76px}
 import {createClient} from "https://esm.sh/@supabase/supabase-js@2.119.0";
 const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
 const $=id=>document.getElementById(id);const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let user=null,servers=[],activeServer=null,channels=[],activeChannel=null,rt=null,modalAction=null;
+let user=null,servers=[],activeServer=null,channels=[],activeChannel=null,rt=null,modalAction=null,serverMemberRoles={};
+const ROLE_META={owner:{label:'ЭЗЭН',icon:'♛',className:'owner'},admin:{label:'АДМИН',icon:'◆',className:'admin'},moderator:{label:'МОД',icon:'✦',className:'moderator'},member:{label:'ГИШҮҮН',icon:'●',className:'member'}};
+function roleBadge(role){const r=ROLE_META[role]||ROLE_META.member;return '<span class="role-badge role-'+r.className+'">'+r.icon+' '+r.label+'</span>';}
 function toast(s){$("toast").textContent=s;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),2600)}
 function showModal(title,fields,submit,button="Хадгалах"){ $("modalTitle").textContent=title;$("modalFields").innerHTML=fields;$("modalSubmit").textContent=button;modalAction=submit;$("modal").classList.add("open");}
 $("cancelModal").onclick=()=> $("modal").classList.remove("open");
@@ -329,8 +338,28 @@ async function selectServer(id){
  const channelGroups=[{key:"text",title:"ТЕКСТЭН СУВГУУД",items:channels.filter(ch=>ch.channel_type==="text")},{key:"announcement",title:"ЗАРЛАЛЫН СУВГУУД",items:channels.filter(ch=>ch.channel_type==="announcement")}].filter(g=>g.items.length);
  $("channels").innerHTML=channelGroups.map(g=>'<div class="channel-group"><div class="label">'+g.title+'</div>'+g.items.map(ch=>'<button class="channel" data-kind="'+g.key+'" data-channel="'+ch.id+'">'+esc(ch.name)+'</button>').join("")+'</div>').join("")||'<p class="muted">Одоогоор суваг алга.</p>';
  $("channels").querySelectorAll("[data-channel]").forEach(b=>b.onclick=()=>selectChannel(b.dataset.channel));
- const {data:mem}=await supabase.from("community_server_members").select("user_id,role").eq("server_id",id);
- $("members").textContent=(mem||[]).length+" гишүүн";
+ const {data:mem,error:memError}=await supabase.from("community_server_members").select("user_id,role,joined_at").eq("server_id",id).order("joined_at",{ascending:true});
+ if(memError){$("members").textContent="Гишүүдийг ачаалж чадсангүй.";serverMemberRoles={};}
+ else{
+  const roster=mem||[];serverMemberRoles=Object.fromEntries(roster.map(x=>[x.user_id,x.role]));
+  const ids=roster.map(x=>x.user_id);
+  const {data:cards}=ids.length?await supabase.from("chat_public_profiles").select("id,display_name,avatar_url").in("id",ids):{data:[]};
+  const byId=Object.fromEntries((cards||[]).map(x=>[x.id,x]));
+  const canManageRoles=["owner","admin"].includes(activeServer.role);
+  $("members").innerHTML='<div class="server-role-note">'+roster.length+' гишүүн · Роль ба тэмдэг</div><div class="member-roster">'+roster.map(m=>{
+   const p=byId[m.user_id]||{},name=p.display_name||"LOREVERSE гишүүн",role=m.role||"member",r=ROLE_META[role]||ROLE_META.member;
+   const avatar=p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">':esc(name.slice(0,1).toUpperCase());
+   const action=canManageRoles&&m.role!=="owner"&&m.user_id!==user.id?'<button class="role-manage" type="button" data-role-user="'+m.user_id+'" data-next-role="'+(role==="moderator"?"member":"moderator")+'">'+(role==="moderator"?"МОД буулгах":"МОД болгох")+'</button>':'';
+   return '<div class="member-card"><span class="avatar">'+avatar+'</span><div class="member-copy"><b class="member-name-'+r.className+'">'+esc(name)+'</b>'+roleBadge(role)+'</div>'+action+'</div>';
+  }).join("")+'</div>';
+  $("members").querySelectorAll("[data-role-user]").forEach(btn=>btn.onclick=async()=>{
+   const target=btn.dataset.roleUser,nextRole=btn.dataset.nextRole;btn.disabled=true;
+   const {error}=await supabase.from("community_server_members").update({role:nextRole}).eq("server_id",id).eq("user_id",target);
+   if(error){btn.disabled=false;toast("Роль өөрчилж чадсангүй: "+error.message);return;}
+   toast(nextRole==="moderator"?"Модератор болголоо":"Модераторын эрхийг буцаалаа");
+   await selectServer(id);
+  });
+ }
  await loadMods();
  await loadModRequests();
  renderServers();
@@ -350,10 +379,11 @@ async function loadMessages(){
  const {data,error}=await supabase.from("community_messages").select("id,author_id,body,created_at,edited_at").eq("channel_id",activeChannel.id).is("deleted_at",null).order("created_at",{ascending:true}).limit(150);
  if(error){$("messages").innerHTML='<div class="empty">'+esc(error.message)+'</div>';return}
  if(!data?.length){$("messages").innerHTML='<div class="empty"><h2>Эхний мессежээ илгээгээрэй</h2><p>Энэ сувгийн яриа энд харагдана.</p></div>';return}
- const ids=[...new Set(data.map(m=>m.author_id))];const {data:profiles}=await supabase.from("profiles").select("id,display_name,avatar_url").in("id",ids);const p=Object.fromEntries((profiles||[]).map(x=>[x.id,x]));
+ const ids=[...new Set(data.map(m=>m.author_id))];const {data:profiles}=await supabase.from("chat_public_profiles").select("id,display_name,avatar_url").in("id",ids);const p=Object.fromEntries((profiles||[]).map(x=>[x.id,x]));
  const canModerate=["owner","admin","moderator"].includes(activeServer?.role);
  $("messages").innerHTML=data.map(m=>{
   const n=p[m.author_id]?.display_name||"LOREVERSE гишүүн";
+  const role=serverMemberRoles[m.author_id]||"member",r=ROLE_META[role]||ROLE_META.member;
   const st=m.body.match(/^\[\[STICKER\|([^|]+)\|([^\]]+)\]\]$/);
   const imageMatch=m.body.match(/(?:^|\n)\[\[IMAGE\|(https:\/\/[^\]]+)\]\]$/);
   let body;
@@ -362,7 +392,7 @@ async function loadMessages(){
   else body='<div class="bubble">'+esc(m.body)+'</div>';
   const owner=m.author_id===user.id;
   const tools=(owner||canModerate)?'<div class="msg-tools">'+(owner?'<button type="button" data-edit="'+m.id+'">Засах</button>':'')+'<button type="button" data-delete="'+m.id+'">Устгах</button></div>':'';
-  return '<article class="msg"><span class="avatar">'+esc(n.slice(0,1).toUpperCase())+'</span><div><div class="meta">'+esc(n)+(m.edited_at?'<span class="edited-label">засварласан</span>':'')+'</div>'+body+tools+'<div class="time">'+new Date(m.created_at).toLocaleString("mn-MN",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})+'</div></div></article>';
+  return '<article class="msg"><span class="avatar">'+esc(n.slice(0,1).toUpperCase())+'</span><div><div class="meta"><span class="member-name-'+r.className+'">'+esc(n)+'</span>'+roleBadge(role)+' '+(m.edited_at?'<span class="edited-label">засварласан</span>':'')+'</div>'+body+tools+'<div class="time">'+new Date(m.created_at).toLocaleString("mn-MN",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})+'</div></div></article>';
  }).join("");
  $("messages").querySelectorAll("[data-edit]").forEach(b=>b.onclick=async()=>{
   const row=data.find(x=>x.id===b.dataset.edit);if(!row||row.body.includes("\n[[IMAGE|"))return toast("Зурагтай мессежийг одоогоор засах боломжгүй");
