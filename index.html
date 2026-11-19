@@ -148,7 +148,7 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 .access-heading{max-width:720px;margin-bottom:17px}
 .access-heading h2{font-size:clamp(22px,3vw,30px);line-height:1.2;letter-spacing:-.04em;margin:6px 0}
 .access-heading p{color:var(--muted);font-size:13px;margin:0}
-.access-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.access-grid{display:grid;grid-template-columns:minmax(0,720px);justify-content:center;gap:14px;align-items:start}
 .access-card{border:1px solid #e1e8df;border-radius:18px;padding:20px;background:linear-gradient(145deg,#fff,#f8faf7);min-width:0}
 .premium-card{background:linear-gradient(145deg,#f7faf5,#edf3e9);border-color:#dce7d6}
 .access-kicker{font-size:9px;letter-spacing:.18em;font-weight:850;color:#78915f}
@@ -267,24 +267,8 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 <section class="wrap feature"><div><div class="eyebrow">JOIN THE COMMUNITY</div><h2>Сонирхлоо бусадтай хуваалц.</h2><p>LOREVERSE-ийн community-д нэгдэж, ертөнцүүдийн тухай ярилцаарай.</p></div><a class="btn" href="./community/">Community руу ↗</a></section>
 
 <section class="wrap access-section" id="access" aria-labelledby="accessTitle">
- <div class="access-heading"><div class="eyebrow">GROW WITH LOREVERSE</div><h2 id="accessTitle">LOREVERSE-д өөрийн эрхээ аваарай</h2><p>Багт нэгдэж мэдлэг бүтээх эсвэл Premium гишүүнээр илүү гүнзгий судлаарай.</p></div>
+ <div class="access-heading"><div class="eyebrow">GROW WITH LOREVERSE</div><h2 id="accessTitle">LOREVERSE-д өөрийн эрхээ аваарай</h2><p>Premium архив болон тусгай lore нийтлэлд нэвтрэх эрх аваарай.</p></div>
  <div class="access-grid">
-  <article class="access-card team-card">
-   <div class="access-kicker">CONTRIBUTE</div><div class="access-icon">✎</div><h3>Бүтээлч багт нэгдэх</h3>
-   <p>Орчуулга, lore судалгаа, нийтлэл болон архивын ажилд оролцоорой.</p>
-   <ul><li>Lore редактор</li><li>Орчуулагч, судлаач</li><li>Зар сурталчилгаа хариуцагч</li></ul>
-   <p class="auth-hint">Анхаарах нь: хүсэлтэд ашиглах имэйлээрээ LOREVERSE-д бүртгэл үүсгэсэн байх шаардлагатай. Админ зөвшөөрөхдөө энэ имэйлээр таны бүртгэлийг олж багийн эрх олгоно.</p>
-   <form id="staffApplicationForm" class="access-form">
-    <label>Нэр<input name="full_name" minlength="2" maxlength="120" required placeholder="Таны нэр"></label>
-    <label>Имэйл<input name="email" type="email" required placeholder="name@example.com"></label>
-    <label>Сонирхож буй чиглэл<select name="desired_role" required><option value="editor">Lore редактор / Нийтлэл</option><option value="ads_manager">Зар сурталчилгаа хариуцагч</option></select></label>
-    <label>Туршлага<textarea name="experience" rows="3" maxlength="3000" placeholder="Өмнө хийж байсан ажил, сонирхол, чадвар..."></textarea></label>
-    <label>Бүтээлийн холбоос<input name="portfolio_url" type="url" placeholder="https://..."></label>
-    <label>Нэмэлт тайлбар<textarea name="message" rows="3" maxlength="3000" placeholder="Яагаад LOREVERSE-д нэгдэхийг хүсэж байна вэ?"></textarea></label>
-    <button class="btn access-submit" type="submit">Багт элсэх хүсэлт илгээх</button>
-    <p class="access-status" id="staffApplicationStatus" role="status"></p>
-   </form>
-  </article>
   <article class="access-card premium-card">
    <div class="access-kicker">MEMBERSHIP</div><div class="access-icon">✦</div><h3>Premium гишүүнчлэл</h3>
    <p>Тусгай lore нийтлэл болон Premium архивт нэвтрэх эрх аваарай.</p>
@@ -370,18 +354,7 @@ async function loadArchiveStats(){
 
 loadArchiveStats();
 
-/* Contributor applications and Premium membership */
-const staffForm=document.getElementById("staffApplicationForm");
-const staffStatus=document.getElementById("staffApplicationStatus");
-staffForm?.addEventListener("submit",async(event)=>{
- event.preventDefault();staffStatus.textContent="Хүсэлт илгээж байна...";
- const form=new FormData(staffForm),values=Object.fromEntries(form.entries());
- const {data:{session}}=await supabase.auth.getSession();
- const payload={full_name:String(values.full_name||"").trim(),email:String(values.email||"").trim().toLowerCase(),desired_role:String(values.desired_role||"editor"),experience:String(values.experience||"").trim()||null,portfolio_url:String(values.portfolio_url||"").trim()||null,message:String(values.message||"").trim()||null,status:"pending",applicant_user_id:session?.user?.id||null};
- const {error}=await supabase.from("staff_applications").insert(payload);
- if(error){staffStatus.textContent=error.code==="23505"?"Энэ хүсэлт өмнө нь бүртгэгдсэн байна.":"Хүсэлт илгээж чадсангүй: "+error.message;return;}
- staffForm.reset();staffStatus.textContent="Хүсэлт амжилттай илгээгдлээ. Админ баг шалгасны дараа таны имэйлээр холбогдоно.";
-});
+/* Premium membership */
 const authPanel=document.getElementById("premiumAuthPanel"),userPanel=document.getElementById("premiumUserPanel"),userEmail=document.getElementById("premiumUserEmail"),plansPanel=document.getElementById("premiumPlans"),paymentBox=document.getElementById("premiumPaymentBox"),paymentStatus=document.getElementById("paymentStatus");
 let currentPaymentId=null,currentPremiumUser=null;
 const premiumAuthStatus=document.getElementById("premiumAuthStatus");
