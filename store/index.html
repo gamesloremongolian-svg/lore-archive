@@ -119,6 +119,27 @@ body{background:radial-gradient(ellipse at 8% -8%,#6e77c52b,transparent 34%),rad
 }
 @media(max-width:340px){.grid{grid-template-columns:1fr}.item{min-height:0}}
 
+
+/* Store discovery, item preview and collection polish */
+.category-filters{display:flex;gap:8px;overflow-x:auto;padding:2px 1px 10px;margin:-5px 0 12px;scrollbar-width:thin}
+.category-filter{flex:0 0 auto;min-height:38px;padding:8px 13px;border:1px solid #344967;border-radius:999px;background:#111d31;color:#bdcbe0;font-size:12px;font-weight:800}
+.category-filter.active{color:#fff;border-color:#72e1e5;background:linear-gradient(120deg,#314d70,#29365e);box-shadow:0 0 0 2px #72e1e51a}
+.count-pill{display:inline-grid;place-items:center;min-width:21px;height:21px;margin-left:5px;padding:0 6px;border-radius:99px;background:#72dfe5;color:#071522;font-size:10px}
+.item-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.item-actions .btn{flex:1;min-width:0}
+.item .preview-btn{background:#172943;border-color:#405c7b;color:#cceef1}
+.item .owned-tag{font-size:11px;color:#8ee0d6;font-weight:850}
+.preview-backdrop{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:18px;background:#030916d9;backdrop-filter:blur(9px)}
+.preview-dialog{position:relative;width:min(440px,100%);padding:22px;border:1px solid #58769b;border-radius:22px;background:linear-gradient(145deg,#1b2c47,#101b30);box-shadow:0 28px 90px #0009;text-align:center}
+.preview-close{position:absolute;right:12px;top:12px;width:38px;height:38px;border:1px solid #536b8c;border-radius:12px;background:#182943;color:white;font-size:25px}
+.preview-art{display:grid;place-items:center;min-height:180px;margin:15px 0;border:1px solid #526b904d;border-radius:17px;background:radial-gradient(ellipse at 50% 40%,#6d88ba55,transparent 70%),linear-gradient(145deg,#101d32,#172b45);font-size:78px}
+.preview-type{color:#83e5e8;font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+.preview-dialog h2{margin:8px 0;font-size:22px}
+.preview-dialog p{color:#b6c6dc;line-height:1.7;margin:0 0 12px}
+.preview-cost{color:#8de9e9;font-size:18px;font-weight:900;margin:12px}
+.preview-actions{display:flex;justify-content:center;gap:9px;flex-wrap:wrap}
+@media(max-width:760px){.category-filters{margin:0 -2px 10px}.preview-dialog{padding:17px}.preview-art{min-height:150px;font-size:66px}}
+
 </style><style id="loreverse-global-navigation">
 .lv-global-header{position:sticky;top:0;z-index:999;background:rgba(10,15,29,.94);backdrop-filter:blur(18px);border-bottom:1px solid rgba(133,158,190,.25);box-shadow:0 8px 28px rgba(0,0,0,.22);color:#f4f7ff}
 .lv-global-inner{width:min(1200px,calc(100% - 28px));min-height:66px;margin:auto;display:flex;align-items:center;gap:20px}
@@ -139,9 +160,11 @@ body{scroll-padding-top:76px}
 </script>
 <header class="top"><a class="brand" href="../">LOREVERSE <b>ДЭЛГҮҮР</b></a><button class="btn store-menu-btn" id="storeMenuBtn" aria-expanded="false" aria-controls="storeMenu">☰ ЦЭС</button><nav class="store-menu" id="storeMenu"><a href="../">Нүүр хуудас</a><a href="../community/">Нийгэмлэг</a><a href="../archive/">Lore архив</a><a href="../editorial/">Lore ба нийтлэл</a><a href="../games/">Тоглоомууд</a><button class="btn primary" id="authBtn">Нэвтрэх</button></nav></header>
 <main class="wrap"><section class="hero"><div><div class="eyebrow">ТАНЫ ЕРТӨНЦ. ТАНЫ ХЭВ МАЯГ.</div><h1>LOREVERSE STORE</h1><p>Discord-той төстэй профайл, нэрийн хавтан, дүрсний эффект, наалт, эможи болон чатын чимэглэл цуглуулаарай. Нэг бүртгэлээр бүх LOREVERSE үйлчилгээг ашиглана.</p></div><div class="wallet"><small>ТАНЫ LORE COIN</small><strong id="balance">—</strong></div></section>
-<nav class="tabs"><button class="tab active" data-tab="catalog">Дэлгүүр</button><button class="tab" data-tab="inventory">Миний цуглуулга</button></nav>
+<nav class="tabs"><button class="tab active" data-tab="catalog">Дэлгүүр</button><button class="tab" data-tab="inventory">Миний цуглуулга <span id="ownedCount" class="count-pill">0</span></button></nav>
+<div id="categoryFilters" class="category-filters" aria-label="Барааны ангилал"></div>
 <div class="sectionhead"><div><h2 id="heading">Онцлох бараанууд</h2><p id="subheading">Профайл, чат, нэрний чимэглэлээ LORE COIN-оор цуглуул.</p></div><button class="btn" id="refresh">↻ Шинэчлэх</button></div>
 <div class="grid" id="items"><div class="empty">Дэлгүүр ачаалж байна…</div></div><div class="status" id="status" role="status" aria-live="polite"></div>
+<div class="preview-backdrop hidden" id="previewModal" role="dialog" aria-modal="true" aria-labelledby="previewTitle"><div class="preview-dialog"><button class="preview-close" id="previewClose" aria-label="Хаах">×</button><div class="preview-art" id="previewIcon"></div><span class="preview-type" id="previewType"></span><h2 id="previewTitle"></h2><p id="previewDescription"></p><div class="preview-cost" id="previewCost"></div><div class="preview-actions" id="previewActions"></div></div></div>
 <p class="hint">Шинэ аккаунт бүрт 100 LORE COIN-ийн эхний урамшуулал олгоно. Одоогоор виртуал валютын систем; бодит мөнгөөр цэнэглэлт холбогдоогүй.</p></main>
 <script type="module">
 import {createClient} from "https://esm.sh/@supabase/supabase-js@2.119.0";
@@ -151,22 +174,66 @@ menuButton?.addEventListener("click",()=>{const open=menu.classList.toggle("open
 document.addEventListener("click",e=>{if(menu&&!menu.contains(e.target)&&!menuButton?.contains(e.target)){menu.classList.remove("open");menuButton?.setAttribute("aria-expanded","false");}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&menu){menu.classList.remove("open");menuButton?.setAttribute("aria-expanded","false");menuButton?.focus();}});
 
-const $=id=>document.getElementById(id);let user=null,tab="catalog",catalog=[],owned=new Set();
+const $=id=>document.getElementById(id);let user=null,tab="catalog",catalog=[],owned=new Set(),activeCategory="all",previewItem=null;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const typeLabels={profile_frame:"Профайл хүрээ",badge:"Badge",profile_background:"Профайл фон",avatar:"Avatar",sticker_pack:"Sticker",profile_effect:"Эффект",nameplate:"Нэрийн хавтан",premium_discount:"Хөнгөлөлт",chat_theme:"Chat theme",emoji_pack:"Emoji",soundboard_pack:"Soundboard"};
+const categoryGroups=[
+ {id:"all",label:"Бүгд",types:null},
+ {id:"profile",label:"Профайл",types:["profile_frame","profile_background","profile_effect","avatar","nameplate"]},
+ {id:"badge",label:"Badge",types:["badge"]},
+ {id:"chat",label:"Чат",types:["chat_theme","soundboard_pack"]},
+ {id:"sticker",label:"Sticker & Emoji",types:["sticker_pack","emoji_pack"]},
+ {id:"other",label:"Бусад",types:["premium_discount"]}
+];
 function say(s){$("status").textContent=s}
+function renderFilters(){
+ const host=$("categoryFilters");
+ host.innerHTML=categoryGroups.map(g=>{const count=catalog.filter(x=>!g.types||g.types.includes(x.item_type)).length;return '<button class="category-filter '+(activeCategory===g.id?'active':'')+'" data-category="'+g.id+'">'+g.label+' <span>'+count+'</span></button>'}).join("");
+}
+function filteredCatalog(){const group=categoryGroups.find(g=>g.id===activeCategory)||categoryGroups[0];return catalog.filter(x=>!group.types||group.types.includes(x.item_type))}
+function showPreview(id){
+ previewItem=catalog.find(x=>x.id===id);if(!previewItem)return;
+ $("previewIcon").textContent=previewItem.icon||"✦";$("previewTitle").textContent=previewItem.name;
+ $("previewDescription").textContent=previewItem.description||"LOREVERSE дэлгүүрийн виртуал гоёл.";
+ $("previewType").textContent=typeLabels[previewItem.item_type]||previewItem.item_type||"LOREVERSE ITEM";
+ $("previewCost").textContent=owned.has(id)?"Таны цуглуулгад байна":Number(previewItem.coin_cost).toLocaleString("en-US")+" LORE COIN";
+ $("previewActions").innerHTML=owned.has(id)?'<span class="owned-tag">✓ Эзэмшдэг</span>':(tab==="catalog"?'<button class="btn primary" data-modal-buy="'+id+'">Худалдаж авах</button>':'');
+ $("previewModal").classList.remove("hidden");$("previewClose").focus();
+}
+function closePreview(){$("previewModal").classList.add("hidden");previewItem=null}
 async function load(){const {data:{session}}=await supabase.auth.getSession();user=session?.user||null;$("authBtn").textContent=user?"Гарах":"Нэвтрэх";
 const {data:items,error:ie}=await supabase.from("lore_coin_items").select("id,name,description,coin_cost,item_type,icon,sort_order").eq("enabled",true).order("sort_order");
 if(ie)throw ie;catalog=items||[];
 if(!user){$("balance").textContent="Нэвтэр";owned.clear();render();say("Каталог нээлттэй. Худалдан авалт хийхийн тулд LOREVERSE аккаунтаараа нэвтэрнэ үү.");return}
 const [{data:bal,error:be},{data:inv,error:ve}]=await Promise.all([
 supabase.from("profiles").select("lore_coins").eq("id",user.id).single(),
-supabase.from("user_reward_inventory").select("item_id").eq("status","active")
+supabase.from("user_reward_inventory").select("item_id").eq("status","active").eq("user_id",user.id)
 ]);
 if(be)throw be;if(ve)throw ve;$("balance").textContent=Number(bal.lore_coins||0).toLocaleString("en-US");owned=new Set((inv||[]).map(x=>x.item_id));render()}
-function render(){const list=tab==="catalog"?catalog:catalog.filter(x=>owned.has(x.id));$("heading").textContent=tab==="catalog"?"Онцлох бараанууд":"Миний цуглуулга";$("subheading").textContent=tab==="catalog"?"LORE COIN-оор худалдан авч, аккаунтаараа хадгална.":"Таны эзэмшдэг профайл, чат болон нэмэлт гоёлууд.";
-if(!list.length){$("items").innerHTML='<div class="empty" style="grid-column:1/-1">'+(tab==="catalog"?"Одоогоор бараа алга.":"Одоогоор цуглуулсан зүйл алга. Дэлгүүрээс эхний бараагаа аваарай.")+'</div>';return}
-$("items").innerHTML=list.map(x=>{const has=owned.has(x.id);return '<article class="item"><div class="item-icon">'+esc(x.icon)+'</div><h3>'+esc(x.name)+'</h3><p>'+esc(x.description)+'</p><div class="itemfoot"><span class="price">'+(has?"Эзэмшдэг":Number(x.coin_cost).toLocaleString("en-US")+" ✦")+'</span>'+(tab==="catalog"?'<button class="btn primary" data-buy="'+x.id+'" '+(has?"disabled":"")+'>'+(has?"Авсан":"Худалдаж авах")+'</button>':(["sticker_pack","emoji_pack","soundboard_pack"].includes(x.item_type)?'<span class="muted">Цуглуулгад нэмэгдсэн</span>':'<button class="btn" data-equip="'+x.id+'">Тоноглох</button>'))+'</div></article>'}).join("")}
-$("items").addEventListener("click",async e=>{const buy=e.target.closest("[data-buy]")?.dataset.buy, equip=e.target.closest("[data-equip]")?.dataset.equip;if(!buy&&!equip)return;try{say("Боловсруулж байна…");if(buy){const {data,error}=await supabase.rpc("redeem_lore_coins",{p_item_id:buy});if(error)throw error;if(data?.success===false)throw new Error(data.message||"Худалдан авалт амжилтгүй");say("Худалдан авалт амжилттай.");}else{const {error}=await supabase.rpc("store_equip",{p_item_id:equip});if(error)throw error;say("Барааг профайлдаа тоноглолоо.");}await load()}catch(err){say(err.message||"Алдаа гарлаа.")}});
+function render(){
+ renderFilters();$("ownedCount").textContent=owned.size;
+ const list=tab==="catalog"?filteredCatalog():catalog.filter(x=>owned.has(x.id));
+ $("categoryFilters").classList.toggle("hidden",tab!=="catalog");
+ $("heading").textContent=tab==="catalog"?"Онцлох бараанууд":"Миний цуглуулга ("+list.length+")";
+ $("subheading").textContent=tab==="catalog"?"Ангиллаа сонгоод барааг урьдчилан харж, LORE COIN-оор цуглуул.":"Таны эзэмшдэг профайл, чат болон нэмэлт гоёлууд.";
+ if(!list.length){$("items").innerHTML='<div class="empty" style="grid-column:1/-1">'+(tab==="catalog"?"Энэ ангилалд бараа алга.":"Одоогоор цуглуулсан зүйл алга. Дэлгүүрээс эхний бараагаа аваарай.")+'</div>';return}
+ $("items").innerHTML=list.map(x=>{const has=owned.has(x.id);return '<article class="item"><button class="item-icon" type="button" data-preview="'+x.id+'" aria-label="'+esc(x.name)+' урьдчилан харах">'+esc(x.icon)+'</button><h3>'+esc(x.name)+'</h3><p>'+esc(x.description)+'</p><div class="itemfoot"><span class="price">'+(has?"Эзэмшдэг":Number(x.coin_cost).toLocaleString("en-US")+" ✦")+'</span><div class="item-actions"><button class="btn preview-btn" type="button" data-preview="'+x.id+'">Preview</button>'+(tab==="catalog"?'<button class="btn primary" data-buy="'+x.id+'" '+(has?"disabled":"")+'>'+(has?"Авсан":"Авах")+'</button>':(["sticker_pack","emoji_pack","soundboard_pack"].includes(x.item_type)?'<span class="muted">Цуглуулгад нэмэгдсэн</span>':'<button class="btn" data-equip="'+x.id+'">Тоноглох</button>'))+'</div></div></article>'}).join("");
+}
+async function purchase(id){
+ if(!user){say("Худалдан авахын тулд нэвтэрнэ үү.");closePreview();return}
+ try{say("Боловсруулж байна…");const {data,error}=await supabase.rpc("redeem_lore_coins",{p_item_id:id});if(error)throw error;if(data?.success===false)throw new Error(data.message||"Худалдан авалт амжилтгүй");say("Худалдан авалт амжилттай.");closePreview();await load()}catch(err){say(err.message||"Алдаа гарлаа.")}
+}
+$("items").addEventListener("click",async e=>{
+ const preview=e.target.closest("[data-preview]")?.dataset.preview,buy=e.target.closest("[data-buy]")?.dataset.buy,equip=e.target.closest("[data-equip]")?.dataset.equip;
+ if(preview){showPreview(preview);return}
+ if(buy){await purchase(buy);return}
+ if(equip){try{say("Боловсруулж байна…");const {error}=await supabase.rpc("store_equip",{p_item_id:equip});if(error)throw error;say("Барааг профайлдаа тоноглолоо.");await load()}catch(err){say(err.message||"Алдаа гарлаа.")}}
+});
+$("previewActions").addEventListener("click",e=>{const id=e.target.closest("[data-modal-buy]")?.dataset.modalBuy;if(id)purchase(id)});
+$("previewClose").onclick=closePreview;
+$("previewModal").addEventListener("click",e=>{if(e.target===$("previewModal"))closePreview()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("previewModal").classList.contains("hidden"))closePreview()});
+$("categoryFilters").addEventListener("click",e=>{const id=e.target.closest("[data-category]")?.dataset.category;if(!id)return;activeCategory=id;render()});
 document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>{tab=b.dataset.tab;document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b));render()}));
 $("refresh").onclick=()=>load().catch(e=>say(e.message));
 $("authBtn").onclick=async()=>{if(user){await supabase.auth.signOut();await load();return}const email=prompt("LOREVERSE аккаунтын имэйл:");if(!email)return;const password=prompt("Нууц үг:");if(!password)return;const {error}=await supabase.auth.signInWithPassword({email,password});if(error){say(error.message);return}await load().catch(e=>say(e.message))};
