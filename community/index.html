@@ -232,17 +232,17 @@ async function loadMessages(){
  $("messages").innerHTML=data.map(m=>{
   const n=p[m.author_id]?.display_name||"LOREVERSE гишүүн";
   const st=m.body.match(/^\[\[STICKER\|([^|]+)\|([^\]]+)\]\]$/);
-  const imageMatch=m.body.match(/(?:^|\\n)\\[\\[IMAGE\\|(https:\\/\\/[^\\]]+)\\]\\]$/);
+  const imageMatch=m.body.match(/(?:^|\n)\[\[IMAGE\|(https:\/\/[^\]]+)\]\]$/);
   let body;
   if(st)body='<div class="bubble" style="font-size:42px;text-align:center;padding:12px 20px">'+esc(st[1])+'<div class="muted">'+esc(st[2])+'</div></div>';
-  else if(imageMatch){const textPart=m.body.replace(/(?:^|\\n)\\[\\[IMAGE\\|https:\\/\\/[^\\]]+\\]\\]$/,'').trim();body='<div class="bubble">'+(textPart?esc(textPart):'')+'<img class="chat-image" src="'+esc(imageMatch[1])+'" alt="Хавсаргасан зураг" loading="lazy"></div>';}
+  else if(imageMatch){const textPart=m.body.replace(/(?:^|\n)\[\[IMAGE\|https:\/\/[^\]]+\]\]$/,'').trim();body='<div class="bubble">'+(textPart?esc(textPart):'')+'<img class="chat-image" src="'+esc(imageMatch[1])+'" alt="Хавсаргасан зураг" loading="lazy"></div>';}
   else body='<div class="bubble">'+esc(m.body)+'</div>';
   const owner=m.author_id===user.id;
   const tools=(owner||canModerate)?'<div class="msg-tools">'+(owner?'<button type="button" data-edit="'+m.id+'">Засах</button>':'')+'<button type="button" data-delete="'+m.id+'">Устгах</button></div>':'';
   return '<article class="msg"><span class="avatar">'+esc(n.slice(0,1).toUpperCase())+'</span><div><div class="meta">'+esc(n)+(m.edited_at?'<span class="edited-label">засварласан</span>':'')+'</div>'+body+tools+'<div class="time">'+new Date(m.created_at).toLocaleString("mn-MN",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})+'</div></div></article>';
  }).join("");
  $("messages").querySelectorAll("[data-edit]").forEach(b=>b.onclick=async()=>{
-  const row=data.find(x=>x.id===b.dataset.edit);if(!row||row.body.startsWith("[[IMAGE|")||row.body.includes("\\n[[IMAGE|"))return toast("Зурагтай мессежийг одоогоор засах боломжгүй");
+  const row=data.find(x=>x.id===b.dataset.edit);if(!row||row.body.includes("\n[[IMAGE|"))return toast("Зурагтай мессежийг одоогоор засах боломжгүй");
   const next=prompt("Мессежээ засварлана уу",row.body);if(next===null)return;
   if(!next.trim()||next.trim().length>4000)return toast("Мессеж 1–4000 тэмдэгт байх ёстой");
   const {error}=await supabase.from("community_messages").update({body:next.trim(),edited_at:new Date().toISOString()}).eq("id",row.id).eq("author_id",user.id);
