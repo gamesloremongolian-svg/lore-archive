@@ -1,4 +1,6 @@
 const { test, expect } = require('@playwright/test');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const baseURL = process.env.BASE_URL || 'https://lore-archive.pages.dev/';
 
@@ -291,5 +293,19 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('#message')).toBeDisabled();
     await expect(page.locator('#channels')).toContainText(/НЭЭЛТТЭЙ СЕРВЕРҮҮД|нээлттэй сервер алга/i);
   });
+
+
+  test('QPay invoice creation requires idempotency and blocks duplicate invoice creation', () => {
+    const migration = fs.readFileSync(path.join(__dirname, '../supabase/migrations/20261120100000_add_qpay_idempotency.sql'), 'utf8');
+    const handler = fs.readFileSync(path.join(__dirname, '../supabase/functions/qpay-payment/index.ts'), 'utf8');
+    expect(migration).toMatch(/unique index if not exists payment_records_qpay_idempotency_uidx/i);
+    expect(migration).toMatch(/user_id, purpose, idempotency_key/i);
+    expect(handler).toMatch(/body\.idempotency_key/);
+    expect(handler).toMatch(/invoice_creation_status === "created"/);
+    expect(handler).toMatch(/retry_safe: false/);
+    expect(handler).toMatch(/invoice_creation_status: "unknown"/);
+    expect(handler).toMatch(/invoice_response: responsePayload/);
+  });
+
 
 });
