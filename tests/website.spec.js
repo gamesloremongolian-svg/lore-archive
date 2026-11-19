@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 const baseURL = process.env.BASE_URL || 'https://lore-archive.pages.dev/';
 
 test.describe('LOREVERSE website health', () => {
-  test('homepage loads over HTTPS and exposes core sections', async ({ page }) => {
+  test('homepage loads over HTTPS and exposes the current LOREVERSE sections', async ({ page }) => {
     const response = await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
     expect(response, 'Homepage should return a response').not.toBeNull();
     expect(response.status()).toBeLessThan(400);
@@ -12,19 +12,30 @@ test.describe('LOREVERSE website health', () => {
     if (pageURL.protocol === 'http:') expect(['127.0.0.1', 'localhost']).toContain(pageURL.hostname);
     await expect(page).toHaveTitle(/LOREVERSE/i);
     await expect(page.locator('body')).toBeVisible();
-    await expect(page.locator('#admin')).toHaveCount(1);
-    await expect(page.locator('#archive')).toHaveCount(1);
+    await expect(page.locator('.brand')).toContainText('LOREVERSE');
+    await expect(page.locator('.hero h1')).toContainText('Дуртай ертөнцөө');
+    await expect(page.locator('.cards .card')).toHaveCount(4);
+    await expect(page.locator('.feature')).toBeVisible();
   });
 
-  test('homepage exposes accessible skip navigation and social metadata', async ({ page }) => {
+  test('homepage exposes a description, primary navigation and working mobile menu', async ({ page }) => {
     await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('.skip-link')).toHaveAttribute('href', '#main-content');
-    await expect(page.locator('#main-content')).toHaveCount(1);
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://lore-archive.pages.dev/');
-    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', /LOREVERSE/i);
     await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /LOREVERSE/i);
-    await page.keyboard.press('Tab');
-    await expect(page.locator('.skip-link')).toBeFocused();
+    await expect(page.locator('#mainNav a[href="./universe-hub/"]')).toHaveCount(2);
+    await expect(page.locator('#mainNav a[href="./editorial/"]')).toHaveCount(1);
+    await expect(page.locator('#mainNav a[href="./archive/"]')).toHaveCount(1);
+    await expect(page.locator('#mainNav a[href="./games/"]')).toHaveCount(1);
+    await expect(page.locator('#mainNav a[href="./community/"]')).toHaveCount(1);
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    const toggle = page.locator('#menuBtn');
+    const nav = page.locator('#mainNav');
+    await toggle.click();
+    await expect(nav).toHaveClass(/open/);
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await toggle.click();
+    await expect(nav).not.toHaveClass(/open/);
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   });
 
   test('public sitemap and crawler rules are published', async ({ request }) => {
@@ -41,37 +52,12 @@ test.describe('LOREVERSE website health', () => {
     expect(robotsText).toContain('Disallow: /editorial/');
   });
 
-  test('winter festival decorations can be toggled and respect reduced motion', async ({ page }) => {
-    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('.winter-banner')).toContainText('WINTER FESTIVAL');
-    await expect(page.locator('#winterSnow')).toHaveAttribute('aria-hidden', 'true');
-    const toggle = page.locator('#winterToggle');
-    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
-    await toggle.click();
-    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
-    await expect(page.locator('html')).toHaveClass(/winter-effects-off/);
-    await toggle.click();
-    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
-    await expect(page.locator('html')).not.toHaveClass(/winter-effects-off/);
-  });
-
-
-  test('24-day advent calendar renders all days and keeps future gifts locked', async ({ page }) => {
-    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('#winterCalendarGrid .winter-day')).toHaveCount(24);
-    await expect(page.locator('#winterCalendarTitle')).toContainText('24 ӨДРИЙН НУУЦ БЭЛЭГ');
-    await expect(page.locator('#winterCalendarReveal')).toBeVisible();
-    const disabledDays = await page.locator('#winterCalendarGrid .winter-day:disabled').count();
-    expect(disabledDays).toBeGreaterThanOrEqual(0);
-    await expect(page.locator('#winterCalendarCount')).toContainText('/ 24');
-  });
-
   test('internal hash links resolve to an element', async ({ page }) => {
     await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
     const broken = await page.locator('a[href*="#"]').evaluateAll(links => {
       return links.map(link => {
         const url = new URL(link.href, location.href);
-        if (url.origin !== location.origin || url.pathname !== location.pathname || !url.hash || url.hash === '#' || url.hash.startsWith('#anime-')) return null;
+        if (url.origin !== location.origin || url.pathname !== location.pathname || !url.hash || url.hash === '#') return null;
         let id;
         try { id = decodeURIComponent(url.hash.slice(1)); } catch { return link.getAttribute('href'); }
         return document.getElementById(id) ? null : link.getAttribute('href');
@@ -89,7 +75,7 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('#email')).toHaveAttribute('type', 'email');
     await expect(page.locator('#password')).toHaveAttribute('type', 'password');
     await expect(page.locator('#login')).toBeVisible();
-    await expect(page.locator('#signup')).toHaveCount(0); // Public registration is intentionally disabled.
+    await expect(page.locator('#signup')).toHaveCount(0);
     await expect(page.locator('[data-tab="system"]')).toHaveCount(1);
     await expect(page.locator('#runSystemCheck')).toHaveCount(1);
   });
@@ -100,52 +86,6 @@ test.describe('LOREVERSE website health', () => {
     await page.goto(new URL('admin/', baseURL).toString(), { waitUntil: 'networkidle', timeout: 30000 }).catch(() => {});
     await page.waitForTimeout(1500);
     expect(errors).toEqual([]);
-  });
-  test('mobile app navigation and AI launcher respond to taps', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
-
-    const hero = page.locator('#home');
-    const adGuide = page.locator('#ad-guide-section');
-    await expect(hero).toBeVisible();
-    await expect(adGuide).toBeVisible();
-    const order = await page.evaluate(() => {
-      const hero = document.querySelector('#home');
-      const ad = document.querySelector('#ad-guide-section');
-      return Boolean(hero && ad && hero.compareDocumentPosition(ad) & Node.DOCUMENT_POSITION_FOLLOWING);
-    });
-    expect(order, 'Ad Guide should appear directly after the homepage hero').toBe(true);
-
-    const navToggle = page.locator('#navToggle');
-    const nav = page.locator('#mainNav');
-    await navToggle.click();
-    await expect(nav).toHaveClass(/open/);
-    await expect(navToggle).toHaveAttribute('aria-expanded', 'true');
-    await nav.locator('a[href="#anime"]').click();
-    await expect(nav).not.toHaveClass(/open/);
-    await expect(navToggle).toHaveAttribute('aria-expanded', 'false');
-
-    await page.locator('#loreAiLauncher').click();
-    await expect(page.locator('#loreAiPanel')).toHaveClass(/open/);
-    await page.locator('#loreAiClose').click();
-    await expect(page.locator('#loreAiPanel')).not.toHaveClass(/open/);
-  });
-
-  test('homepage exposes the shared Supabase client to account handlers', async ({ page }) => {
-    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
-    await page.waitForFunction(
-      () => typeof window.supabase?.auth?.getUser === 'function',
-      null,
-      { timeout: 25000 }
-    );
-  });
-
-  test('manga catalogue leaves its loading state after a slow or failed API request', async ({ page }) => {
-    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('#mangaRailStatus')).not.toContainText(
-      'Манганы каталогоос мэдээлэл ачаалж байна…',
-      { timeout: 25000 }
-    );
   });
 
   test('browser-facing Supabase Edge Functions allow both production Pages origins', async ({ request }) => {
