@@ -406,10 +406,10 @@ html[data-theme="dark"] .holiday-heading p,html[data-theme="dark"] .holiday-note
 </section>
 
 <section class="wrap holiday-section" id="holiday-gifts" aria-labelledby="holidayTitle">
- <div class="holiday-heading"><div class="eyebrow">SEASONAL EVENT · DECEMBER 2026</div><h2 id="holidayTitle">LOREVERSE Holiday Gifts</h2><p>Арванхоёрдугаар сарын бэлгүүдээ нээж, шинэ жилийн нууц бэлгээ хүлээж аваарай.</p></div>
+ <div class="holiday-heading"><div class="eyebrow">SEASONAL EVENT · DECEMBER 2026</div><h2 id="holidayTitle">LOREVERSE LORE COIN БЭЛЭГ</h2><p>Арванхоёрдугаар сарын LORE COIN урамшууллаа цуглуулж, шинэ жилийн тусгай бэлгээ нээгээрэй.</p></div>
  <div class="holiday-calendar" id="holidayCalendar" aria-label="12 сарын бэлгийн календарь"></div>
  <div class="holiday-grand" id="holidayGrand">
-  <div class="holiday-grand-art" aria-hidden="true">🎁</div><div><div class="eyebrow">NEW YEAR SPECIAL</div><h3>Шинэ жилийн нууц бэлэг</h3><p id="holidayGrandText">12-р сарын бэлгүүдээ нээгээд шинэ жилийн тусгай бэлгийг хүлээгээрэй.</p><button class="btn" type="button" id="holidayGrandButton" disabled>Удахгүй нээгдэнэ</button></div>
+  <div class="holiday-grand-art" aria-hidden="true">🎁</div><div><div class="eyebrow">NEW YEAR SPECIAL</div><h3>Шинэ жилийн LORE COIN бэлэг</h3><p id="holidayGrandText">12-р сарын бэлгүүдээ нээгээд шинэ жилийн тусгай бэлгийг хүлээгээрэй.</p><button class="btn" type="button" id="holidayGrandButton" disabled>Удахгүй нээгдэнэ</button></div>
  </div>
  <p class="holiday-note" id="holidayNote" role="status">Бэлэг өдөр бүр тухайн өдөр нээгдэнэ. Өмнөх өдрийн бэлгийг нөхөж нээх боломжтой.</p>
 </section>
@@ -514,18 +514,18 @@ html[data-theme="dark"] .holiday-heading p,html[data-theme="dark"] .holiday-note
  const grid=document.getElementById("holidayCalendar"),note=document.getElementById("holidayNote"),grand=document.getElementById("holidayGrandButton"),grandText=document.getElementById("holidayGrandText");
  if(!grid)return;
  const gifts=[
-  ["Lore нууц","📜","Өнөөдрийн нууц lore"],
-  ["Дүрийн баримт","🧩","Сонирхолтой дүрийн баримт"],
-  ["Өвлийн зураг","❄️","Өвлийн сэдэвт wallpaper"],
-  ["Quiz","🎯","Lore сорил"],
-  ["Нууц архив","📚","Архивын онцгой танилцуулга"],
-  ["Шинэ мэдлэг","🔮","Нууц тайлбар"],
-  ["Community","🤝","Community challenge"],
-  ["Дүрийн карт","🃏","Дүрийн танилцуулга"],
-  ["Lore quiz","✨","Нэмэлт сорил"],
-  ["Өвлийн мэнд","🌟","Баярын мэндчилгээ"],
-  ["Нууц бэлэг","🎀","Нууц бэлгийн мэндчилгээ"],
-  ["Том бэлэг","🎁","Шинэ жилийн бэлгийн урьдчилсан дохио"]
+  ["LORE COIN","🪙","Өдрийн LORE COIN урамшуулал"],
+  ["LORE COIN","🪙","LORE COIN урамшуулал"],
+  ["LORE COIN","🪙","LORE COIN урамшуулал"],
+  ["LORE COIN","🪙","LORE COIN урамшуулал"],
+  ["LORE COIN","🪙","LORE COIN урамшуулал"],
+  ["LORE COIN","🪙","LORE COIN урамшуулал"],
+  ["LORE COIN","🪙","LORE COIN урамшуулал"],
+  ["LORE COIN","🪙","LORE COIN урамшуулал"],
+  ["LORE COIN","🪙","LORE COIN урамшуулал"],
+  ["LORE COIN","🪙","LORE COIN урамшуулал"],
+  ["LORE COIN","🪙","LORE COIN урамшуулал"],
+  ["LORE COIN","🪙","Шинэ жилийн LORE COIN урамшуулал"]
  ];
  const now=new Date(),year=2026,month=11,day=now.getFullYear()===year&&now.getMonth()===month?now.getDate():0;
  const opened=JSON.parse(localStorage.getItem("loreverse-december-gifts-2026")||"[]");
@@ -547,9 +547,9 @@ html[data-theme="dark"] .holiday-heading p,html[data-theme="dark"] .holiday-note
   });
   const all=opened.length>=12;
   grand.disabled=!all;grand.textContent=all?"Шинэ жилийн бэлгийг нээх":"12 бэлгээ нээгээрэй";
-  grandText.textContent=all?"Бүх 12 бэлгээ нээлээ! Шинэ жилийн мэнд хүргэе.":"12-р сарын бүх бэлгээ нээгээд шинэ жилийн тусгай мэндчилгээг нээгээрэй.";
+  grandText.textContent=all?"Бүх 12 бэлгээ нээлээ! Шинэ жилийн мэнд хүргэе.":"12 өдрийн LORE COIN урамшууллаа нээгээд шинэ жилийн тусгай бэлгээ аваарай.";
  }
- grand.addEventListener("click",()=>{if(opened.length>=12){note.textContent="🎄 LOREVERSE-ээс танд шинэ жилийн халуун мэнд хүргэе! Ирэх жил илүү олон ертөнц, шинэ lore-оор уулзацгаая.";grand.textContent="Бэлэг нээгдсэн ✓";grand.disabled=true;}});
+ grand.addEventListener("click",()=>{if(opened.length>=12){note.textContent="🪙 LOREVERSE-ээс шинэ жилийн LORE COIN бэлгийн мэнд хүргэе!";grand.textContent="Бэлэг нээгдсэн ✓";grand.disabled=true;}});
  render();
 })();
 
