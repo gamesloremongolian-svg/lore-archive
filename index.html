@@ -395,13 +395,13 @@ header{display:flex;position:sticky;top:0;z-index:100}
 
 </style>
 <style>
-#bugReportLauncher{position:fixed;right:18px;bottom:18px;z-index:80;border:0;border-radius:999px;background:#78985d;color:#fff;padding:13px 18px;font:800 14px system-ui;box-shadow:0 8px 28px #1b2b1b35;cursor:pointer}
-#bugReportModal{position:fixed;inset:0;z-index:100;background:#17211799;display:none;align-items:center;justify-content:center;padding:16px}#bugReportModal.open{display:flex}
+#bugReportLauncher{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:9999;display:inline-flex;align-items:center;gap:9px;border:1px solid #d8e8ce;border-radius:999px;background:linear-gradient(135deg,#263d2c,#668d50);color:#fff;padding:14px 19px;font:800 14px/1.2 system-ui;box-shadow:0 10px 32px #10251555;cursor:pointer;isolation:isolate}#bugReportLauncher:hover{transform:translateY(-2px);box-shadow:0 14px 36px #10251566}#bugReportLauncher:focus-visible{outline:3px solid #f0c66e;outline-offset:3px}
+#bugReportModal{position:fixed;inset:0;z-index:10000;background:#17211799;display:none;align-items:center;justify-content:center;padding:16px}#bugReportModal.open{display:flex}
 #bugReportModal .bug-card{width:min(560px,100%);max-height:90vh;overflow:auto;background:#fff;color:#202820;border:1px solid #dce3da;border-radius:18px;padding:22px;box-shadow:0 24px 70px #0003}
 #bugReportModal h2{margin:0 0 5px;font-size:24px}#bugReportModal p{color:#667166;margin:0 0 16px;font-size:13px}
 #bugReportModal label{display:block;font-size:13px;font-weight:750;margin:12px 0 5px}#bugReportModal input,#bugReportModal textarea,#bugReportModal select{width:100%;padding:11px 12px;border:1px solid #dce3da;border-radius:10px;background:#fff;color:#202820;font:inherit}#bugReportModal textarea{min-height:85px;resize:vertical}
 #bugReportModal .bug-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}#bugReportModal button{border:0;border-radius:10px;padding:11px 16px;font-weight:800;cursor:pointer}#bugReportModal .bug-submit{background:#78985d;color:white}#bugReportModal .bug-cancel{background:#edf1eb;color:#344034}#bugReportStatus{margin-top:10px;min-height:20px;font-size:13px;color:#53634d}
-@media(max-width:520px){#bugReportLauncher{right:12px;bottom:12px;padding:12px 15px}#bugReportModal .bug-card{padding:17px}}
+@media(max-width:520px){#bugReportLauncher{right:12px;bottom:calc(12px + env(safe-area-inset-bottom));padding:13px 16px;font-size:13px}#bugReportModal{padding:10px}#bugReportModal .bug-card{padding:17px;max-height:calc(100dvh - 20px)}}
 </style>
 </head>
 <body>
@@ -416,6 +416,7 @@ header{display:flex;position:sticky;top:0;z-index:100}
 <a href="./store/">✦ LOREVERSE STORE</a>
 <a href="./community/">Community</a>
 <a href="#access">Premium эрх авах</a>
+<a href="#bugReportModal" id="bugReportNavLink">⚑ Алдаа мэдээлэх</a>
 <a class="nav-cta" href="./rank/">Нэвтрэх / Бүртгүүлэх</a>
 </nav>
 <button type="button" class="theme-toggle" id="themeToggle" aria-label="Шөнийн горим асаах" aria-pressed="false"><span aria-hidden="true">☾</span><span class="theme-toggle-label">Шөнө</span></button>
@@ -745,7 +746,7 @@ document.getElementById("closeCategoryResults").addEventListener("click",()=>{pa
 </script>
 
 
-<button id="bugReportLauncher" type="button" aria-haspopup="dialog">⚑ Алдаа мэдээлэх</button>
+<button id="bugReportLauncher" type="button" aria-haspopup="dialog" aria-controls="bugReportModal"><span aria-hidden="true">⚑</span> Алдаа мэдээлэх</button>
 <div id="bugReportModal" role="dialog" aria-modal="true" aria-labelledby="bugReportTitle"><form class="bug-card" id="bugReportForm">
 <h2 id="bugReportTitle">Алдаа мэдээлэх</h2><p>Сайт дээр гарсан асуудлыг дэлгэрэнгүй бичээрэй. Манай баг шалгана.</p>
 <label for="bugTitle">Алдааны гарчиг</label><input id="bugTitle" name="title" minlength="5" maxlength="160" required placeholder="Жишээ: Дэлгүүр нээгдэхгүй байна">
@@ -757,7 +758,7 @@ document.getElementById("closeCategoryResults").addEventListener("click",()=>{pa
 </form></div>
 <script>
 const bugModal=document.getElementById("bugReportModal"),bugForm=document.getElementById("bugReportForm"),bugStatus=document.getElementById("bugReportStatus");
-document.getElementById("bugReportLauncher").addEventListener("click",async()=>{const {data}=await supabase.auth.getSession();bugStatus.textContent=data.session?"":"Алдаа мэдээлэхийн тулд эхлээд аккаунтаараа нэвтэрнэ үү.";bugModal.classList.add("open");});
+async function openBugReport(e){if(e)e.preventDefault();try{const {data,error}=await supabase.auth.getSession();if(error)throw error;bugStatus.textContent=data.session?"":"Илгээхийн тулд эхлээд аккаунтаараа нэвтэрнэ үү."; }catch(err){bugStatus.textContent="Нэвтрэлтийг шалгаж чадсангүй. Хуудсыг дахин ачаална уу.";}bugModal.classList.add("open");document.getElementById("bugTitle").focus();}\ndocument.getElementById("bugReportLauncher").addEventListener("click",openBugReport);document.getElementById("bugReportNavLink").addEventListener("click",openBugReport);
 document.getElementById("bugReportCancel").addEventListener("click",()=>bugModal.classList.remove("open"));
 bugModal.addEventListener("click",e=>{if(e.target===bugModal)bugModal.classList.remove("open");});
 bugForm.addEventListener("submit",async e=>{e.preventDefault();const {data:{session}}=await supabase.auth.getSession();if(!session){bugStatus.textContent="Илгээхийн өмнө нэвтэрнэ үү.";return;}
