@@ -1,7 +1,6 @@
 name: "LOREVERSE AI Design & Bug Doctor"
 description: "Бүх сайт, админ, дэлгүүр, Community болон mobile UI-г AI-аар шалгуулах"
 title: "[AI Doctor] LOREVERSE бүрэн аудит"
-labels: ["ai-doctor", "maintenance"]
 body:
   - type: markdown
     attributes:
