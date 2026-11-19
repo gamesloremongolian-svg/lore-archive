@@ -992,7 +992,7 @@ document.getElementById("closeCategoryResults").addEventListener("click",()=>{pa
 <script>
 const bugModal=document.getElementById("bugReportModal"),bugForm=document.getElementById("bugReportForm"),bugStatus=document.getElementById("bugReportStatus");
 async function openBugReport(e){if(e)e.preventDefault();try{const {data,error}=await supabase.auth.getSession();if(error)throw error;bugStatus.textContent=data.session?"":"Илгээхийн тулд эхлээд аккаунтаараа нэвтэрнэ үү."; }catch(err){bugStatus.textContent="Нэвтрэлтийг шалгаж чадсангүй. Хуудсыг дахин ачаална уу.";}bugModal.classList.add("open");document.getElementById("bugTitle").focus();}
-document.getElementById("bugReportLauncher").addEventListener("click",openBugReport);document.getElementById("bugReportNavLink").addEventListener("click",openBugReport);
+document.getElementById("bugReportLauncher")?.addEventListener("click",openBugReport);document.getElementById("bugReportNavLink")?.addEventListener("click",openBugReport);
 document.getElementById("bugReportCancel").addEventListener("click",()=>bugModal.classList.remove("open"));
 bugModal.addEventListener("click",e=>{if(e.target===bugModal)bugModal.classList.remove("open");});
 bugForm.addEventListener("submit",async e=>{e.preventDefault();const {data:{session}}=await supabase.auth.getSession();if(!session){bugStatus.textContent="Илгээхийн өмнө нэвтэрнэ үү.";return;}
