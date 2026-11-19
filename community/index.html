@@ -158,7 +158,7 @@ body{scroll-padding-top:76px}
 (()=>{const h=document.querySelector('.lv-global-header');if(!h)return;document.querySelectorAll('body header:not(.lv-global-header)').forEach(x=>x.classList.add('lv-old-header'));const p=location.pathname.replace(/index\.html$/,'').replace(/\/$/,'');const links=h.querySelectorAll('.lv-nav a');links.forEach(a=>{const u=new URL(a.href,location.href);let q=u.pathname.replace(/index\.html$/,'').replace(/\/$/,'');if(q===p||(q==='/'&&p===''))a.setAttribute('aria-current','page')});const b=document.getElementById('lvMenuBtn'),n=document.getElementById('lvNav');b?.addEventListener('click',()=>{const open=n.classList.toggle('open');b.setAttribute('aria-expanded',String(open));b.querySelector('span').textContent=open?'ХААХ':'ЦЭС'});n?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{n.classList.remove('open');b?.setAttribute('aria-expanded','false')}));})();
 </script>
 <header class="top"><a class="brand" href="../">✦ LOREVERSE <span>НИЙГЭМЛЭГ</span></a><div style="display:flex;gap:8px;align-items:center"><a class="btn" href="./feed/">Нийгэмлэгийн нийтлэл</a><a class="btn" href="../chat/">Хувийн чат</a><button class="btn" id="logout" type="button">Гарах</button></div></header>
-<section class="auth" id="auth"><h1>Админы эрхээр нэвтрэх</h1><p class="muted">Нийгэмлэгийн удирдлагад зөвхөн идэвхтэй админ болон туслах администратор нэвтэрнэ.</p><form id="login"><label>Имэйл</label><input class="field" id="email" type="email" autocomplete="email" required><label>Нууц үг</label><input class="field" id="password" type="password" autocomplete="current-password" required><button class="btn" type="submit">Нэвтрэх</button><p class="muted" id="authNote"></p></form></section>
+<section class="auth" id="auth"><h1>LOREVERSE нийгэмлэгт нэвтрэх</h1><p class="muted">Бүртгэлтэй бүх гишүүн сервер үүсгэх, нээлттэй серверт нэгдэх, чатлах боломжтой.</p><form id="login"><label>Имэйл</label><input class="field" id="email" type="email" autocomplete="email" required><label>Нууц үг</label><input class="field" id="password" type="password" autocomplete="current-password" required><button class="btn" type="submit">Нэвтрэх</button><p class="muted" id="authNote"></p></form></section>
 <div class="layout hidden" id="app">
 <aside class="servers"><button class="server-icon active" id="homeBtn" title="Серверүүд">✦</button><div id="serverIcons"></div><button class="server-icon" id="createServerBtn" title="Сервер үүсгэх">＋</button><button class="server-icon" id="joinServerBtn" title="Урилгаар нэгдэх">↗</button></aside>
 <aside class="side"><div class="side-head"><div><h2 id="serverName">Таны серверүүд</h2><div class="muted" id="serverMeta">LOREVERSE НИЙГЭМЛЭГ</div></div><button class="btn" id="inviteBtn" title="Урилга үүсгэх" disabled>＋</button></div><div class="label">ЧАТ ӨРӨӨНҮҮД</div><div id="channels"><p class="muted">Сервер сонгоно уу.</p></div><div class="label">ГИШҮҮД</div><div id="members" class="empty-hint">Сервер сонгоход гишүүдийн мэдээлэл энд харагдана.</div><div style="margin-top:20px"><button class="btn" id="newChannelBtn" style="width:100%" disabled>＋ Өрөө нэмэх</button></div></aside>
@@ -177,9 +177,20 @@ $("modal").onclick=e=>{if(e.target===$("modal"))$("modal").classList.remove("ope
 async function loadServers(){
  const {data:members,error}=await supabase.from("community_server_members").select("server_id,role").eq("user_id",user.id);
  if(error)throw error;const ids=(members||[]).map(x=>x.server_id);
- if(!ids.length){servers=[];renderServers();return}
+ if(!ids.length){servers=[];renderServers();await loadPublicServers();return}
  const {data,error:e}=await supabase.from("community_servers").select("id,name,description,icon_url,owner_id").in("id",ids).order("created_at");
- if(e)throw e;servers=(data||[]).map(s=>({...s,role:members.find(m=>m.server_id===s.id)?.role||"member"}));renderServers();
+ if(e)throw e;servers=(data||[]).map(s=>({...s,role:members.find(m=>m.server_id===s.id)?.role||"member"}));renderServers();await loadPublicServers();
+}
+async function loadPublicServers(){
+ if(!user)return;
+ const {data:joined,error:memberError}=await supabase.from("community_server_members").select("server_id").eq("user_id",user.id);
+ if(memberError){$("channels").innerHTML='<p class="muted">Серверүүдийг ачаалж чадсангүй.</p>';return}
+ const joinedIds=new Set((joined||[]).map(x=>x.server_id));
+ const {data,error}=await supabase.from("community_servers").select("id,name,description").eq("is_public",true).order("created_at",{ascending:false}).limit(40);
+ if(error){$("channels").innerHTML='<p class="muted">Нээлттэй серверүүдийг ачаалж чадсангүй.</p>';return}
+ const available=(data||[]).filter(s=>!joinedIds.has(s.id));
+ $("channels").innerHTML='<div class="label">НЭЭЛТТЭЙ СЕРВЕРҮҮД</div>'+(available.length?available.map(s=>'<div class="empty-hint" style="margin:7px 0"><b>'+esc(s.name)+'</b><p class="muted">'+esc(s.description||"Тайлбар оруулаагүй")+'</p><button class="btn primary" type="button" data-public-server="'+s.id+'">Нэгдэх</button></div>').join(""):'<p class="muted">Одоогоор нээлттэй сервер алга. Та өөрөө сервер үүсгэж болно.</p>');
+ $("channels").querySelectorAll("[data-public-server]").forEach(b=>b.onclick=async()=>{b.disabled=true;const {data,error}=await supabase.rpc("community_join_public_server",{p_server_id:b.dataset.publicServer});if(error){b.disabled=false;toast(error.message);return}await loadServers();await selectServer(data);toast("Серверт амжилттай нэгдлээ")});
 }
 function renderServers(){
  $("newChannelBtn").disabled=!activeServer||!["owner","admin"].includes(activeServer.role);
@@ -187,7 +198,7 @@ function renderServers(){
  $("homeBtn").classList.toggle("active",!activeServer);
  $("serverIcons").innerHTML=servers.map(s=>'<button class="server-icon '+(activeServer?.id===s.id?'active':'')+'" data-server="'+s.id+'" title="'+esc(s.name)+'">'+esc(s.name.slice(0,2).toUpperCase())+'</button>').join("");
  $("serverIcons").querySelectorAll("[data-server]").forEach(b=>b.onclick=()=>selectServer(b.dataset.server));
- if(!servers.length){$("serverName").textContent="Таны серверүүд";$("serverMeta").textContent="Одоогоор сервер алга";$("channels").innerHTML='<p class="muted">＋ дарж сервер үүсгэнэ үү.</p>';}
+ if(!activeServer){$("serverName").textContent="Нээлттэй серверүүд";$("serverMeta").textContent="Нийгэмлэгт нэгдэх";$("channels").innerHTML='<p class="muted">Нээлттэй серверүүдийг ачаалж байна…</p>';$("members").textContent="Сервер сонгоогүй";}
 }
 async function selectServer(id){
  activeServer=servers.find(s=>s.id===id);if(!activeServer)return;activeChannel=null;
@@ -225,13 +236,24 @@ $("createServerBtn").onclick=()=>showModal("Шинэ сервер үүсгэх",
 $("newChannelBtn").onclick=()=>{if(!activeServer)return toast("Эхлээд сервер сонгоно уу");if(!["owner","admin"].includes(activeServer.role))return toast("Зөвхөн серверийн эзэн эсвэл админ суваг нэмнэ");showModal("Шинэ суваг үүсгэх",'<label class="muted">Сувгийн нэр (англи жижиг үсэг, тоо, -)</label><input class="field" id="channelInput" maxlength="40" required pattern="[a-z0-9][a-z0-9-]{1,39}" placeholder="general-chat"><label class="muted">Сувгийн төрөл</label><select class="field" id="channelTypeInput"><option value="text">Энгийн чат</option><option value="announcement">Зарлалын суваг</option></select><label class="muted">Тайлбар</label><input class="field" id="channelDescInput" maxlength="250">',async()=>{const {error}=await supabase.from("community_channels").insert({server_id:activeServer.id,name:$("channelInput").value.trim(),channel_type:$("channelTypeInput").value,description:$("channelDescInput").value.trim(),created_by:user.id,position:channels.length});if(error)throw error;$("modal").classList.remove("open");await selectServer(activeServer.id);toast("Суваг нэмэгдлээ")},"Нэмэх")};
 $("inviteBtn").onclick=async()=>{if(!activeServer)return toast("Сервер сонгоно уу");if(!["owner","admin","moderator"].includes(activeServer.role))return toast("Урилга үүсгэх эрх хүрэхгүй");const {data,error}=await supabase.from("community_invites").insert({server_id:activeServer.id,created_by:user.id}).select("token").single();if(error)return toast(error.message);const url=location.origin+location.pathname+"?invite="+data.token;try{await navigator.clipboard.writeText(url);toast("Урилгын холбоос хууллаа")}catch{prompt("Урилгын холбоос",url)}};
 $("joinServerBtn").onclick=()=>showModal("Урилгаар серверт нэгдэх",'<label class="muted">Урилгын код эсвэл холбоос</label><input class="field" id="inviteInput" required placeholder="Урилгын код">',async()=>{let v=$("inviteInput").value.trim();try{v=new URL(v).searchParams.get("invite")||v}catch{}const {data,error}=await supabase.rpc("community_join_with_invite",{p_token:v});if(error)throw error;$("modal").classList.remove("open");await loadServers();await selectServer(data);toast("Серверт нэгдлээ")},"Нэгдэх");
-$("homeBtn").onclick=()=>{$("app").classList.remove("show-chat");activeServer=null;renderServers()};
+$("homeBtn").onclick=()=>{$("app").classList.remove("show-chat");activeServer=null;activeChannel=null;renderServers();loadPublicServers()};
 $("mobileBack").onclick=()=>$("app").classList.remove("show-chat");
 $("navChannels").onclick=()=>$("app").classList.remove("show-chat");
 $("navChat").onclick=()=>{if(!activeChannel)return toast("Эхлээд сервер болон чат өрөө сонгоно уу");$("app").classList.add("show-chat")};
 $("logout").onclick=async()=>{if(rt)await supabase.removeChannel(rt);await supabase.auth.signOut({scope:"local"});location.reload()};
 $("modalForm").onsubmit=async e=>{e.preventDefault();try{await modalAction()}catch(err){toast(err.message||"Алдаа гарлаа")}};
-async function start(session){user=session?.user||null;if(!user||user.is_anonymous){$("auth").classList.remove("hidden");$("app").classList.add("hidden");return}const {data:staff,error:staffError}=await supabase.from("staff_members").select("role,active").eq("user_id",user.id).maybeSingle();if(staffError||!staff?.active){await supabase.auth.signOut({scope:"local"});user=null;$("auth").classList.remove("hidden");$("app").classList.add("hidden");$("authNote").textContent=staffError?"Админы эрх шалгахад алдаа гарлаа.":"Зөвхөн идэвхтэй админ болон туслах админ нэвтрэх боломжтой.";return}$("auth").classList.add("hidden");$("app").classList.remove("hidden");await loadServers();const invite=new URLSearchParams(location.search).get("invite");if(invite){$("joinServerBtn").click();$("inviteInput").value=invite;}}
+async function start(session){
+ user=session?.user||null;
+ if(!user||user.is_anonymous){
+  $("auth").classList.remove("hidden");$("app").classList.add("hidden");
+  $("authNote").textContent=user?"Зөвхөн бүртгэлтэй хэрэглэгч нэвтэрнэ.":"Бүртгэлтэй аккаунтаараа нэвтэрнэ үү.";
+  return;
+ }
+ $("auth").classList.add("hidden");$("app").classList.remove("hidden");
+ try{await loadServers();}catch(err){toast(err.message||"Серверүүдийг ачаалахад алдаа гарлаа");}
+ const invite=new URLSearchParams(location.search).get("invite");
+ if(invite){$("joinServerBtn").click();$("inviteInput").value=invite;}
+}
 $("login").onsubmit=async e=>{e.preventDefault();$("authNote").textContent="Нэвтэрч байна…";const {data,error}=await supabase.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error){$("authNote").textContent=error.message;return}await start(data.session)};
 const {data:{session}}=await supabase.auth.getSession();await start(session);
 supabase.auth.onAuthStateChange((_event,session)=>{if(session?.user?.id!==user?.id)start(session).catch(e=>toast(e.message))});
