@@ -139,6 +139,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
   .home-bottom{z-index:20}
 }
 
+
+.member-list{display:grid;gap:7px;margin-top:8px}.member-card{display:flex;align-items:center;gap:9px;padding:8px;border:1px solid #344a69;border-radius:12px;background:#142139;min-width:0}.member-avatar{width:34px;height:34px;flex:0 0 34px;border-radius:50%;object-fit:cover;background:linear-gradient(140deg,#a88cff,#48c7d5);display:grid;place-items:center;color:#09101f;font-weight:900}.member-info{min-width:0;flex:1}.member-name{font-size:12px;font-weight:800;overflow-wrap:anywhere}.member-role{font-size:10px;color:#a9bad2}.member-actions{display:flex;gap:5px;align-items:center}.member-actions select{max-width:108px;padding:5px;font-size:10px}.member-actions button{padding:5px 7px;min-height:30px;font-size:10px}.roster-count{font-size:10px;color:#a9bad2;margin:5px 2px}
 </style></head><body>
 <header class="top"><a class="brand" href="../">✦ LOREVERSE <span>COMMUNITY</span></a><div style="display:flex;gap:8px;align-items:center"><a class="btn" href="../chat/">Хувийн чат</a><button class="btn" id="logout" type="button">Гарах</button></div></header>
 <section class="auth" id="auth"><h1>Бүртгүүлэх</h1><p class="muted">LOREVERSE аккаунт үүсгээд Community-д нэгдээрэй.</p><form id="register"><label>Имэйл</label><input class="field" id="regEmail" type="email" autocomplete="email" required><label>Нууц үг (дор хаяж 6 тэмдэгт)</label><input class="field" id="regPassword" type="password" minlength="6" autocomplete="new-password" required><button class="btn primary" type="submit">Бүртгүүлэх</button><p class="muted" id="registerNote"></p></form><hr style="border:0;border-top:1px solid #49345f;margin:22px 0"><h2 style="font-size:17px;margin:0">Аль хэдийн бүртгэлтэй юу?</h2><form id="login"><label>Имэйл</label><input class="field" id="email" type="email" autocomplete="email" required><label>Нууц үг</label><input class="field" id="password" type="password" autocomplete="current-password" required><button class="btn" type="submit">Нэвтрэх</button><p class="muted" id="authNote"></p></form></section>
@@ -180,10 +182,37 @@ async function selectServer(id){
  const channelGroups=[{key:"text",title:"ТЕКСТЭН СУВГУУД",items:channels.filter(ch=>ch.channel_type==="text")},{key:"announcement",title:"ЗАРЛАЛЫН СУВГУУД",items:channels.filter(ch=>ch.channel_type==="announcement")}].filter(g=>g.items.length);
  $("channels").innerHTML=channelGroups.map(g=>'<div class="channel-group"><div class="label">'+g.title+'</div>'+g.items.map(ch=>'<button class="channel" data-kind="'+g.key+'" data-channel="'+ch.id+'">'+esc(ch.name)+'</button>').join("")+'</div>').join("")||'<p class="muted">Одоогоор суваг алга.</p>';
  $("channels").querySelectorAll("[data-channel]").forEach(b=>b.onclick=()=>selectChannel(b.dataset.channel));
- const {data:mem}=await supabase.from("community_server_members").select("user_id,role").eq("server_id",id);
- $("members").textContent=(mem||[]).length+" гишүүн";
+ await loadMembers(id);
  renderServers();
  if(channels.length){if(!window.matchMedia("(max-width:1100px)").matches)await selectChannel(channels[0].id);}else{$("messages").innerHTML='<div class="empty">Энэ серверт суваг алга.</div>';$("message").disabled=true;$("sendBtn").disabled=true;}
+}
+async function loadMembers(serverId){
+ const host=$("members");host.innerHTML='<div class="muted">Гишүүдийг ачаалж байна…</div>';
+ const {data:members,error}=await supabase.from("community_server_members").select("user_id,role,joined_at").eq("server_id",serverId).order("joined_at",{ascending:true});
+ if(error){host.innerHTML='<div class="muted">Гишүүдийн жагсаалт ачаалж чадсангүй: '+esc(error.message)+'</div>';return}
+ if(!members?.length){host.innerHTML='<div class="muted">Одоогоор гишүүн алга.</div>';return}
+ const ids=members.map(m=>m.user_id);
+ const {data:profiles}=await supabase.from("chat_public_profiles").select("id,display_name,avatar_url").in("id",ids);
+ const p=Object.fromEntries((profiles||[]).map(x=>[x.id,x]));
+ const canManage=["owner","admin"].includes(activeServer?.role);
+ host.innerHTML='<div class="roster-count">'+members.length+' гишүүн · Онлайн төлөв одоогоор бүртгэгддэггүй</div><div class="member-list">'+members.map(m=>{
+  const profile=p[m.user_id]||{},name=profile.display_name||"LOREVERSE гишүүн",role=m.role||"member";
+  const avatar=profile.avatar_url?'<img class="member-avatar" src="'+esc(profile.avatar_url)+'" alt="">':'<span class="member-avatar">'+esc(name.slice(0,1).toUpperCase())+'</span>';
+  const controls=canManage&&role!=="owner"&&m.user_id!==user.id?'<div class="member-actions"><select class="field" data-role-user="'+m.user_id+'" aria-label="Гишүүний эрх"><option value="member" '+(role==="member"?"selected":"")+'>Гишүүн</option><option value="moderator" '+(role==="moderator"?"selected":"")+'>Модератор</option></select><button class="btn" data-remove-user="'+m.user_id+'" type="button" title="Гишүүнийг хасах">Хасах</button></div>':'';
+  return '<div class="member-card">'+avatar+'<div class="member-info"><div class="member-name">'+esc(name)+'</div><div class="member-role">'+(role==="owner"?"Серверийн эзэн":role==="admin"?"Админ":role==="moderator"?"Модератор":"Гишүүн")+'</div></div>'+controls+'</div>';
+ }).join("")+'</div>';
+ host.querySelectorAll("[data-role-user]").forEach(sel=>sel.onchange=async()=>{
+  const uid=sel.dataset.roleUser,nextRole=sel.value;
+  const {error}=await supabase.from("community_server_members").update({role:nextRole}).eq("server_id",serverId).eq("user_id",uid);
+  if(error){toast("Эрх өөрчилж чадсангүй: "+error.message);await loadMembers(serverId);return}
+  toast("Гишүүний эрх шинэчлэгдлээ");await loadMembers(serverId);
+ });
+ host.querySelectorAll("[data-remove-user]").forEach(btn=>btn.onclick=async()=>{
+  const uid=btn.dataset.removeUser;if(!confirm("Энэ гишүүнийг серверээс хасах уу?"))return;
+  const {error}=await supabase.from("community_server_members").delete().eq("server_id",serverId).eq("user_id",uid);
+  if(error){toast("Гишүүн хасаж чадсангүй: "+error.message);return}
+  toast("Гишүүнийг серверээс хаслаа");await loadMembers(serverId);
+ });
 }
 async function selectChannel(id){
  activeChannel=channels.find(c=>c.id===id);if(!activeChannel)return;
