@@ -182,10 +182,28 @@ $("cancelModal").onclick=()=> $("modal").classList.remove("open");
 $("modal").onclick=e=>{if(e.target===$("modal"))$("modal").classList.remove("open")};
 async function loadServers(){
  const {data:members,error}=await supabase.from("community_server_members").select("server_id,role").eq("user_id",user.id);
- if(error)throw error;const ids=(members||[]).map(x=>x.server_id);
- if(!ids.length){servers=[];renderServers();await loadPublicServers();return}
+ if(error)throw error;
+ const ids=(members||[]).map(x=>x.server_id);
+ if(!ids.length){
+  servers=[];activeServer=null;activeChannel=null;
+  renderServers();
+  await loadPublicServers();
+  return;
+ }
  const {data,error:e}=await supabase.from("community_servers").select("id,name,description,icon_url,owner_id").in("id",ids).order("created_at");
- if(e)throw e;servers=(data||[]).map(s=>({...s,role:members.find(m=>m.server_id===s.id)?.role||"member"}));renderServers();await loadPublicServers();
+ if(e)throw e;
+ servers=(data||[]).map(s=>({...s,role:members.find(m=>m.server_id===s.id)?.role||"member"}));
+ // Select a server automatically after login/reload so its channels, member list,
+ // management controls and invite button are immediately available on mobile.
+ const selected=servers.find(s=>s.id===activeServer?.id)||servers[0];
+ renderServers();
+ if(selected){
+  await selectServer(selected.id);
+ }else{
+  activeServer=null;activeChannel=null;
+  renderServers();
+  await loadPublicServers();
+ }
 }
 async function loadPublicServers(){
  if(!user)return;
