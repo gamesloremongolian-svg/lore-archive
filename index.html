@@ -69,6 +69,18 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
  .category-strip .card h3{font-size:clamp(9px,2.7vw,12px);text-align:center;white-space:normal}
 }
 
+
+/* Bottom auto-scrolling category navigation */
+.scrolling-categories{width:100%;overflow:hidden;border-top:1px solid #edf0eb;border-bottom:1px solid #edf0eb;background:#f7f9f6;padding:13px 0;margin-top:18px}
+.scrolling-track{display:flex;width:max-content;animation:category-marquee 24s linear infinite}
+.scrolling-categories:hover .scrolling-track{animation-play-state:paused}
+.scrolling-group{display:flex;align-items:center;gap:25px;padding:0 25px;white-space:nowrap}
+.scrolling-group button,.scrolling-group span{border:0;background:none;color:#52634e;font:800 14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.02em}
+.scrolling-group button{cursor:pointer;padding:7px 10px;border-radius:9px}
+.scrolling-group button:hover{background:#e9f0e5;color:#66864f}
+.scrolling-group span{color:#91a784}
+@keyframes category-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.scrolling-track{animation:none}.scrolling-group[aria-hidden="true"]{display:none}}
 </style>
 </head>
 <body>
@@ -99,6 +111,18 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 
 </main>
 <footer><div class="wrap foot"><span>© 2026 LOREVERSE. Бүх эрх хуулиар хамгаалагдсан.</span><span>Монгол хэл дээрх lore & universe archive</span></div></footer>
+<section class="scrolling-categories" aria-label="Ертөнцийн ангиллууд">
+  <div class="scrolling-track">
+    <div class="scrolling-group">
+      <button type="button" data-jump-category="anime">✦ Анимэ</button><span>✧</span>
+      <button type="button" data-jump-category="manga">▤ Манга</button><span>✧</span>
+      <button type="button" data-jump-category="game">◈ Тоглоом</button><span>✧</span>
+    </div>
+    <div class="scrolling-group" aria-hidden="true">
+      <span>✦ Анимэ</span><span>✧</span><span>▤ Манга</span><span>✧</span><span>◈ Тоглоом</span><span>✧</span>
+    </div>
+  </div>
+</section>
 <script>
 (()=>{const b=document.getElementById('menuBtn'),n=document.getElementById('mainNav');if(b&&n)b.addEventListener('click',()=>{const open=n.classList.toggle('open');b.setAttribute('aria-expanded',String(open));});})();
 </script>
@@ -144,4 +168,12 @@ async function showCategory(cat,shouldScroll=true){
 cards.forEach((x)=>x.addEventListener("click",()=>{showCategory(x.dataset.category,true);}));
 document.getElementById("closeCategoryResults").addEventListener("click",()=>{panel.hidden=true;active=null;cards.forEach(x=>x.setAttribute("aria-pressed","false"));});
 </script>
+
+document.querySelectorAll("[data-jump-category]").forEach(button=>{
+ button.addEventListener("click",()=>{
+  const target=document.querySelector('[data-category="'+button.dataset.jumpCategory+'"]');
+  if(target)target.click();
+  else document.querySelector(".category-label")?.scrollIntoView({behavior:"smooth",block:"start"});
+ });
+});
 </body></html>
