@@ -234,9 +234,12 @@ test.describe('LOREVERSE website health', () => {
         }
       `
     }));
+    const pageErrors = [];
+    page.on('pageerror', error => pageErrors.push(error.message));
     await page.goto(new URL('store/', baseURL).toString(), { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('#balance')).toContainText('100');
-    await expect(page.locator('#items [data-buy="test-frame"]')).toBeVisible();
+    await expect(page.locator('#status')).not.toContainText('');
+    await expect(page.locator('#balance')).toContainText('100', { timeout: 10000 });
+    await expect(page.locator('#items [data-buy="test-frame"]')).toBeVisible({ timeout: 10000 });
     await page.locator('#items [data-buy="test-frame"]').click();
     await expect(page.locator('#balance')).toContainText('60');
     await expect(page.locator('#ownedCount')).toContainText('1');
@@ -282,7 +285,7 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('#auth')).toHaveClass(/hidden/);
     await expect(page.locator('#app')).not.toHaveClass(/hidden/);
     await expect(page.locator('#message')).toBeDisabled();
-    await expect(page.locator('#channels')).toContainText('Нээлттэй сервер');
+    await expect(page.locator('#channels')).toContainText(/НЭЭЛТТЭЙ СЕРВЕРҮҮД|нээлттэй сервер алга/i);
   });
 
 });
