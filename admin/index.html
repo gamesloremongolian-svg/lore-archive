@@ -110,6 +110,50 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .loreverse-anime-caption{position:absolute;left:22px;bottom:15px;padding:7px 12px;border:1px solid #ffffff55;border-radius:999px;background:#100b2bbd;color:#fff;font-size:11px;letter-spacing:.13em;font-weight:800;backdrop-filter:blur(10px)}
 @media(max-width:560px){.loreverse-anime-banner{margin:12px 0 18px;border-radius:15px}.loreverse-anime-banner img{min-height:150px;max-height:190px;object-position:62% center}.loreverse-anime-caption{left:10px;bottom:9px;font-size:9px;padding:6px 9px}}
 
+
+/* Admin v2: compact mobile-first control center */
+.loreverse-anime-banner{margin:12px 0 16px;border-radius:16px}
+.loreverse-anime-banner img{height:clamp(112px,22vw,210px);min-height:0;max-height:210px;object-fit:cover;object-position:center 48%}
+#dash{scroll-margin-top:12px}
+#dash>.title{font-size:clamp(25px,4vw,34px)}
+#dash>.status{overflow-wrap:anywhere}
+#dash>.statgrid .stat{min-width:0}
+#dash>.statgrid .stat span{display:block;line-height:1.35}
+#dash>.statgrid .stat b{font-size:clamp(19px,3vw,25px)}
+#dash>p.row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#dash>p.row .btn{display:flex;align-items:center;justify-content:center;text-align:center;min-height:46px;padding:10px}
+#dash>.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:10px}
+#dash>.tabs button{min-width:0;min-height:44px;overflow-wrap:anywhere;white-space:normal;line-height:1.3}
+#dash>.tabs button.active{background:linear-gradient(110deg,#35b6a4,#65c6b5);border-color:#8ce3d7;color:#10202a;box-shadow:0 5px 18px #35b6a433}
+#dash>[id$="Tab"]:not(.hidden){scroll-margin-top:12px}
+#dash [id$="Tab"] h2{font-size:clamp(20px,3vw,25px);line-height:1.25}
+#dash [id$="Tab"] .row{gap:9px}
+#dash [id$="Tab"] .row>*{min-width:0}
+#dash [id$="Tab"] button{min-height:42px}
+#dash [id$="Tab"] input:not([type=checkbox]),#dash [id$="Tab"] select{min-height:44px}
+#dash [id$="Tab"] textarea{min-height:115px}
+#dash [id$="Tab"] .list{overflow-wrap:anywhere}
+@media(max-width:700px){
+ .wrap{width:calc(100% - 18px);margin:9px auto 24px}
+ .loreverse-anime-banner img{height:145px;object-position:60% center}
+ .loreverse-anime-caption{font-size:9px}
+ #dash>.tabs{position:sticky;top:0;z-index:30;grid-template-columns:repeat(2,minmax(0,1fr));max-height:42vh;overflow-y:auto;overscroll-behavior:contain;background:#121e2eee;backdrop-filter:blur(16px)}
+ #dash>.tabs button{font-size:12px;padding:9px 7px}
+ #dash>.statgrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ #dash>.statgrid .stat{padding:9px 7px}
+ #dash>p.row{grid-template-columns:1fr}
+ #dash>p.row .btn{width:100%}
+ #dash [id$="Tab"] .row{display:grid;grid-template-columns:1fr}
+ #dash [id$="Tab"] .row>*{width:100%}
+ #dash [id$="Tab"] .list{padding:11px}
+}
+@media(max-width:420px){
+ .loreverse-anime-banner img{height:122px}
+ #dash>.statgrid{grid-template-columns:1fr 1fr}
+ #dash>.statgrid .stat:last-child{grid-column:1/-1}
+ #dash>.tabs{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 </style></head><body><main class="wrap"><p style="display:flex;justify-content:flex-end;align-items:center;gap:8px"><label for="lang">Interface language</label><select id="lang" style="width:auto;margin:0"><option value="mn">Монгол</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option></select></p>
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><a href="../index.html" class="brand">✦ LORE<span>VERSE</span></a><a class="btn" href="../index.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:7px">← Нүүр хуудас руу буцах</a></div>
 <div class="loreverse-anime-banner" aria-label="LOREVERSE anime universe"><img src="../assets/images/loreverse-admin-anime.svg" alt="LOREVERSE fantasy anime illustration"><span class="loreverse-anime-caption">ANIME · MANGA · GAME LORE</span></div>
@@ -342,7 +386,7 @@ $('grantReward').onclick=async()=>{
  const {data,error}=await supabase.rpc('grant_lore_reward',{p_user_id:userId,p_event_key:eventKey,p_xp:xp,p_coins:coins,p_reference_id:referenceId});
  say('rewardMsg',error?error.message:(data?.message||'Дууслаа.'));
 };
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{if(!(roleTabs[currentStaffRole]||[]).includes(b.dataset.tab)){say('welcome','Таны эрх энэ хэсэгт нэвтрэх боломжгүй.');return;}['post','ads','team','premium','community','users','hiring','analytics','events','feedback','corrections','notifications','bugreports','support','sticker','system','workflows'].forEach(t=>$(t+'Tab').classList.toggle('hidden',t!==b.dataset.tab));if(b.dataset.tab==='premium')loadPlans();if(b.dataset.tab==='community')loadCommunity();if(b.dataset.tab==='users')loadUsers();if(b.dataset.tab==='hiring')loadApplications();if(b.dataset.tab==='analytics')loadAnalytics();if(b.dataset.tab==='events')loadEvents();if(b.dataset.tab==='feedback')loadFeedback();if(b.dataset.tab==='corrections')loadCorrections();if(b.dataset.tab==='bugreports')loadBugReports();if(b.dataset.tab==='support')loadAdminTickets();if(b.dataset.tab==='workflows')loadAllWorkflows()});
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{if(!(roleTabs[currentStaffRole]||[]).includes(b.dataset.tab)){say('welcome','Таны эрх энэ хэсэгт нэвтрэх боломжгүй.');return;}['post','ads','team','premium','community','users','hiring','analytics','events','feedback','corrections','notifications','bugreports','support','sticker','system','workflows'].forEach(t=>$(t+'Tab').classList.toggle('hidden',t!==b.dataset.tab));document.querySelectorAll('.tabs [data-tab]').forEach(x=>x.classList.toggle('active',x===b));if(b.dataset.tab==='premium')loadPlans();if(b.dataset.tab==='community')loadCommunity();if(b.dataset.tab==='users')loadUsers();if(b.dataset.tab==='hiring')loadApplications();if(b.dataset.tab==='analytics')loadAnalytics();if(b.dataset.tab==='events')loadEvents();if(b.dataset.tab==='feedback')loadFeedback();if(b.dataset.tab==='corrections')loadCorrections();if(b.dataset.tab==='bugreports')loadBugReports();if(b.dataset.tab==='support')loadAdminTickets();if(b.dataset.tab==='workflows')loadAllWorkflows();const panel=$(b.dataset.tab+'Tab');if(panel)panel.scrollIntoView({behavior:'smooth',block:'start'});});
 
 supabase.auth.onAuthStateChange((event)=>{if(event==='PASSWORD_RECOVERY'){$('authPanel').classList.add('hidden');$('dash').classList.add('hidden');$('recoveryPanel').classList.remove('hidden')}});enter();
 
