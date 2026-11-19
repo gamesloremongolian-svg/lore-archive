@@ -590,6 +590,33 @@ header:has(#mainNav) .menu{border-color:#465b7c;background:#1b2941;color:#fff}
 <div class="art"><img src="./assets/images/a_clean_high_resolution_anime_style_png_illustrat.png" alt="LOREVERSE-ийн мөнгөлөг үстэй, ногоон хувцаст fantasy анимэ дүр"></div>
 </section>
 
+<section class="wrap featured-character" id="featuredCharacter" aria-labelledby="featuredCharacterTitle" hidden>
+ <div class="featured-kicker">✦ LOREVERSE · ӨДРИЙН СОНГОЛТ</div>
+ <div class="featured-layout">
+  <div class="featured-art" id="featuredCharacterArt"><div class="featured-art-placeholder" aria-hidden="true">✧</div></div>
+  <div class="featured-copy">
+   <div class="eyebrow" id="featuredCharacterWork">ӨНӨӨДРИЙН ОНЦЛОХ ДҮР</div>
+   <h2 id="featuredCharacterTitle">Өдрийн онцлох дүр</h2>
+   <p id="featuredCharacterDescription"></p>
+   <a id="featuredCharacterLink" href="./archive/" class="featured-link">Дэлгэрэнгүй lore унших <span aria-hidden="true">↗</span></a>
+  </div>
+ </div>
+</section>
+<style>
+.featured-character{margin:24px auto 34px;padding:clamp(16px,3vw,28px);border:1px solid #dce6d8;border-radius:22px;background:linear-gradient(115deg,#f5f8f2,#eaf1e7 58%,#f7f9f5);overflow:hidden}
+.featured-kicker{font-size:10px;font-weight:900;letter-spacing:.17em;color:#6f8d58;margin-bottom:15px}
+.featured-layout{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);align-items:center;gap:clamp(18px,4vw,42px)}
+.featured-art{position:relative;min-height:270px;max-height:390px;aspect-ratio:4/3;display:grid;place-items:center;overflow:hidden;border-radius:17px;background:radial-gradient(ellipse at 50% 42%,#d6e8ce,#e9f0e5 62%,#f3f6f0);isolation:isolate}
+.featured-art:after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,#ffffff16,transparent 55%,#78985d18);pointer-events:none}
+.featured-art img{width:100%;height:100%;object-fit:contain;position:relative;z-index:1;filter:drop-shadow(0 14px 22px #253d2530)}
+.featured-art-placeholder{font-size:76px;color:#78985d;opacity:.55}
+.featured-copy .eyebrow{font-size:10px;letter-spacing:.16em;color:#78985d;font-weight:900}
+.featured-copy h2{font-size:clamp(27px,4vw,42px);line-height:1.1;letter-spacing:-.045em;margin:10px 0 12px;color:#202820}
+.featured-copy p{font-size:14px;line-height:1.8;color:#59665a;max-width:620px;margin:0 0 20px}
+.featured-link{display:inline-flex;gap:10px;align-items:center;padding:11px 16px;border-radius:11px;background:#78985d;color:white;font-weight:850;font-size:13px}
+@media(max-width:650px){.featured-character{margin:18px auto 26px;padding:14px;border-radius:17px}.featured-layout{grid-template-columns:1fr;gap:14px}.featured-art{min-height:210px;max-height:270px;aspect-ratio:16/10}.featured-copy h2{font-size:28px}.featured-copy p{font-size:13px;margin-bottom:15px}}
+@media(prefers-reduced-motion:no-preference){.featured-art img{animation:featuredFloat 7s ease-in-out infinite}@keyframes featuredFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}}
+</style>
 
 <section class="wrap about-loreverse" id="aboutLoreverse" aria-labelledby="aboutLoreverseTitle">
  <div class="about-loreverse-panel">
@@ -1007,6 +1034,51 @@ async function loadLatestApk(){
  }catch(e){el("latestApkVersion").textContent="Одоогоор ачаалж чадсангүй";el("latestApkNotes").textContent="Хамгийн сүүлийн хувилбарыг GitHub Releases хэсгээс шалгана уу.";el("latestApkDownload").href="https://github.com/loreverse-ctrl/lore-archive/releases/latest";}
 }
 loadLatestPosts();loadLatestApk();
+</script>
+
+
+<script type="module">
+import { createClient as createFeaturedClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
+const featuredClient=createFeaturedClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
+const featuredEsc=v=>String(v??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+async function renderFeaturedCharacter(){
+ const section=document.getElementById("featuredCharacter");if(!section)return;
+ try{
+  const {data:settings,error:settingsError}=await featuredClient.from("featured_character_settings").select("entity_id,mode,enabled,image_url,description_override").eq("setting_key","homepage").maybeSingle();
+  if(settingsError)throw settingsError;if(settings?.enabled===false)return;
+  const {data:entities,error}=await featuredClient.from("archive_entities").select("id,franchise_id,slug,canonical_name,status").eq("status","published").limit(500);
+  if(error)throw error;if(!entities?.length)return;
+  const ids=entities.map(x=>x.id),fids=[...new Set(entities.map(x=>x.franchise_id).filter(Boolean))];
+  const [translationsResult,franchisesResult]=await Promise.all([
+   featuredClient.from("archive_entity_translations").select("entity_id,display_name,description,editorial_status,language_code").in("entity_id",ids).eq("language_code","mn").eq("editorial_status","published"),
+   featuredClient.from("archive_franchises").select("id,name,cover_image_url,category").in("id",fids).eq("status","published")
+  ]);
+  if(translationsResult.error||franchisesResult.error)throw translationsResult.error||franchisesResult.error;
+  const translations=new Map((translationsResult.data||[]).map(x=>[x.entity_id,x]));
+  const franchises=new Map((franchisesResult.data||[]).map(x=>[x.id,x]));
+  let chosen=null;
+  if(settings?.mode==="manual"&&settings.entity_id)chosen=entities.find(x=>x.id===settings.entity_id)||null;
+  if(!chosen){
+   const candidates=entities.filter(x=>translations.has(x.id)&&franchises.has(x.franchise_id));
+   if(!candidates.length)return;
+   const day=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Ulaanbaatar",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+   let hash=0;for(let i=0;i<day.length;i++)hash=(hash*31+day.charCodeAt(i))>>>0;
+   chosen=[...candidates].sort((x,y)=>x.id.localeCompare(y.id))[hash%candidates.length];
+  }
+  if(!chosen)return;
+  const tr=translations.get(chosen.id),fr=franchises.get(chosen.franchise_id);if(!tr||!fr)return;
+  const name=tr.display_name||chosen.canonical_name,description=settings?.mode==="manual"&&settings.description_override?settings.description_override:(tr.description||"Энэ дүрийн түүх, онцлог болон харьяалагдах ертөнцийн lore мэдээллийг LOREVERSE архиваас судлаарай.");
+  const image=settings?.mode==="manual"&&settings.image_url?settings.image_url:fr.cover_image_url;
+  document.getElementById("featuredCharacterTitle").textContent=name;
+  document.getElementById("featuredCharacterWork").textContent=fr.name+" · ӨДРИЙН ОНЦЛОХ ДҮР";
+  document.getElementById("featuredCharacterDescription").textContent=description;
+  document.getElementById("featuredCharacterLink").href="./archive/?entity="+encodeURIComponent(chosen.slug||chosen.id);
+  const art=document.getElementById("featuredCharacterArt");
+  if(image){const img=document.createElement("img");img.loading="lazy";img.decoding="async";img.alt=name+" — "+fr.name;img.src=image;img.onerror=()=>{art.innerHTML='<div class="featured-art-placeholder" aria-hidden="true">✧</div>';};art.replaceChildren(img);}
+  section.hidden=false;
+ }catch(error){console.warn("Featured character unavailable:",error);}
+}
+renderFeaturedCharacter();
 </script>
 
 </body></html>
