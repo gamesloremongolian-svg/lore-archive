@@ -199,16 +199,30 @@ body{background:radial-gradient(ellipse at 8% -8%,#6e77c52b,transparent 34%),rad
 body{scroll-padding-top:76px}
 @media(max-width:900px){.lv-global-inner{min-height:62px;gap:10px}.lv-menu-btn{display:inline-flex;align-items:center;gap:7px;margin-left:auto}.lv-nav{display:none;position:absolute;top:calc(100% + 1px);left:0;right:0;padding:12px 14px 16px;background:#0d1526;border-bottom:1px solid #40516d;box-shadow:0 16px 28px #0007;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.lv-nav.open{display:grid}.lv-nav a{justify-content:flex-start;min-height:42px;padding:10px 12px;background:#17243a;border-color:#2b3d59}.lv-nav .lv-nav-cta{grid-column:1/-1;justify-content:center}}
 @media(min-width:901px) and (max-width:1120px){.lv-global-inner{gap:10px}.lv-nav{gap:2px}.lv-nav a{font-size:11px;padding-inline:7px}}
+/* Daily rewards and verified quests */
+.daily-panel{padding:clamp(14px,3vw,22px);border:1px solid #435a7c;border-radius:22px;background:radial-gradient(ellipse at 88% 0%,#6d5dc333,transparent 42%),linear-gradient(145deg,#182943,#101b2e);box-shadow:0 16px 42px #0003}
+.daily-hero{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}
+.daily-hero>div:first-child>span,.daily-quest-head>div>span{font-size:9px;font-weight:950;letter-spacing:.2em;color:#8de3e6}
+.daily-hero h2{font-size:clamp(19px,3vw,25px);margin:7px 0}.daily-hero p{font-size:12px;line-height:1.65;color:#b6c6dc;margin:0;max-width:600px}
+.streak-display{flex:none;min-width:90px;padding:12px;border-radius:17px;text-align:center;background:linear-gradient(145deg,#493b6c,#273c5a);border:1px solid #8b78c9}
+.streak-display strong{display:block;font-size:30px;color:#f1e6ff;line-height:1.1}.streak-display small{font-size:8px;font-weight:950;letter-spacing:.1em;color:#d6c8f7}
+.daily-checkin{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px;border:1px solid #4d806f;border-radius:17px;background:linear-gradient(110deg,#17483f,#1c3a47)}
+.daily-kicker{font-size:9px;letter-spacing:.16em;font-weight:950;color:#a9ead6}.daily-checkin h3{font-size:27px;margin:4px 0;color:#d7fff0}.daily-checkin p{font-size:11px;color:#b9d9d1;margin:0}
+.daily-checkin .btn{min-width:135px;min-height:43px}.daily-quest-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:22px 0 12px}.daily-quest-head h3{font-size:17px;margin:4px 0}
+.daily-quests{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.daily-quest{padding:13px;border:1px solid #354c6c;border-radius:15px;background:linear-gradient(145deg,#1c2e48,#142238);display:flex;flex-direction:column;min-width:0}
+.daily-quest h4{font-size:13px;margin:0 0 6px}.daily-quest p{font-size:10px;line-height:1.55;color:#b4c4d9;margin:0 0 12px;flex:1}.daily-quest .quest-reward{font-size:12px;font-weight:950;color:#8de8e8;margin-bottom:10px}.daily-quest .btn{width:100%;min-height:37px}
+.daily-quest .btn:disabled,.daily-checkin .btn:disabled{opacity:.55;cursor:not-allowed}.daily-footnote{font-size:10px;line-height:1.6;color:#91a5bf;margin:14px 0 0}
+@media(max-width:760px){.daily-hero{align-items:flex-start}.daily-checkin{align-items:flex-start;flex-direction:column}.daily-checkin .btn{width:100%}.daily-quests{grid-template-columns:1fr}.daily-quest{padding:12px}.daily-quest-head h3{font-size:15px}.streak-display{min-width:76px;padding:10px}.streak-display strong{font-size:25px}}
 </style></head><body><header class="lv-global-header"><div class="lv-global-inner"><a class="lv-brand" href="../"><span>✦</span> LOREVERSE</a><button class="lv-menu-btn" id="lvMenuBtn" type="button" aria-expanded="false" aria-controls="lvNav">☰ <span>ЦЭС</span></button><nav class="lv-nav" id="lvNav" aria-label="Үндсэн цэс"><a href="../">Нүүр</a><a href="../editorial/">Lore ба нийтлэл</a><a href="../archive/">Lore архив</a><a href="../ai/">✦ AI туслах</a><a href="../games/">Тоглоомууд</a><a href="../store/">Дэлгүүр</a><a href="../marketplace/">Арилжаа</a><a href="../community/">Нийгэмлэг</a><a href="../uid-lookup/">UID шалгах</a><a href="../profile/">Профайл</a><a class="lv-nav-cta" href="../rank/">Нэвтрэх / Чансаа</a></nav></div></header><script id="loreverse-global-navigation-script">
 (()=>{const h=document.querySelector('.lv-global-header');if(!h)return;document.querySelectorAll('body header:not(.lv-global-header)').forEach(x=>x.classList.add('lv-old-header'));const p=location.pathname.replace(/index\.html$/,'').replace(/\/$/,'');const links=h.querySelectorAll('.lv-nav a');links.forEach(a=>{const u=new URL(a.href,location.href);let q=u.pathname.replace(/index\.html$/,'').replace(/\/$/,'');if(q===p||(q==='/'&&p===''))a.setAttribute('aria-current','page')});const b=document.getElementById('lvMenuBtn'),n=document.getElementById('lvNav');b?.addEventListener('click',()=>{const open=n.classList.toggle('open');b.setAttribute('aria-expanded',String(open));b.querySelector('span').textContent=open?'ХААХ':'ЦЭС'});n?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{n.classList.remove('open');b?.setAttribute('aria-expanded','false')}));})();
 </script>
 <header class="top"><a class="brand" href="../">LOREVERSE <b>ДЭЛГҮҮР</b></a><button class="btn store-menu-btn" id="storeMenuBtn" aria-expanded="false" aria-controls="storeMenu">☰ ЦЭС</button><nav class="store-menu" id="storeMenu"><a href="../">Нүүр хуудас</a><a href="../community/">Нийгэмлэг</a><a href="../archive/">Lore архив</a><a href="../editorial/">Lore ба нийтлэл</a><a href="../games/">Тоглоомууд</a><button class="btn primary" id="authBtn">Нэвтрэх</button></nav></header>
 <main class="wrap"><section class="hero"><div><div class="eyebrow">ТАНЫ ЕРТӨНЦ. ТАНЫ ХЭВ МАЯГ.</div><h1>LOREVERSE STORE</h1><p>Discord-той төстэй профайл, нэрийн хавтан, дүрсний эффект, наалт, эможи болон чатын чимэглэл цуглуулаарай. Нэг бүртгэлээр бүх LOREVERSE үйлчилгээг ашиглана.</p></div><div class="wallet"><small>ТАНЫ LORE COIN</small><strong id="balance">—</strong></div></section>
-<nav class="tabs"><button class="tab active" data-tab="catalog">Дэлгүүр</button><button class="tab" data-tab="inventory">Миний цуглуулга <span id="ownedCount" class="count-pill">0</span></button><button class="tab" data-tab="collectors">🏆 Цуглуулагчид</button></nav>
+<nav class="tabs"><button class="tab active" data-tab="catalog">Дэлгүүр</button><button class="tab" data-tab="inventory">Миний цуглуулга <span id="ownedCount" class="count-pill">0</span></button><button class="tab" data-tab="daily">🎁 Өдөр тутмын</button><button class="tab" data-tab="collectors">🏆 Цуглуулагчид</button></nav>
 <div id="categoryFilters" class="category-filters" aria-label="Барааны ангилал"></div>
 <div class="sectionhead"><div><h2 id="heading">Онцлох бараанууд</h2><p id="subheading">Профайл, чат, нэрний чимэглэлээ LORE COIN-оор цуглуул.</p></div><button class="btn" id="refresh">↻ Шинэчлэх</button></div>
 <section id="specialShelf" class="special-shelf"><div class="special-heading"><div><span>LOREVERSE EXCLUSIVES</span><h2>Онцлох болон хязгаартай бараа</h2><p>Тусгай сонголт, шинээр нэмэгдсэн гоёлууд.</p></div></div><div id="specialItems" class="special-grid"><div class="empty">Тусгай бараа ачаалж байна…</div></div></section>
-<div class="grid" id="items"><div class="empty">Дэлгүүр ачаалж байна…</div></div><section id="leaderboard" class="leaderboard hidden" aria-live="polite"><div class="leaderboard-intro"><span>LOREVERSE COMMUNITY</span><h2>Шилдэг цуглуулагчид</h2><p>Хамгийн олон дэлгүүрийн бараа цуглуулсан гишүүд</p></div><div id="leaderboardRows" class="leaderboard-rows"><div class="empty">Чансаа ачаалж байна…</div></div><p class="leaderboard-footnote">Зөвхөн идэвхтэй эзэмшилд байгаа давхардалгүй барааг тоолно.</p></section><div class="status" id="status" role="status" aria-live="polite"></div>
+<div class="grid" id="items"><div class="empty">Дэлгүүр ачаалж байна…</div></div><section id="dailyPanel" class="daily-panel hidden"><div class="daily-hero"><div><span>LOREVERSE DAILY REWARDS</span><h2>Өдөр бүр орж, Lore Coin цуглуул!</h2><p>Өдөр тутмын шагналаа аваад streak-ээ үргэлжлүүл. Даалгавраа биелүүлж нэмэлт Coin аваарай.</p></div><div class="streak-display"><strong id="dailyStreak">0</strong><small>ӨДРИЙН STREAK</small></div></div><div class="daily-checkin"><div><span class="daily-kicker">ӨНӨӨДРИЙН ШАГНАЛ</span><h3 id="dailyRewardValue">10 ✦</h3><p id="dailyRewardHint">Өдөр бүр нэвтэрч урамшууллаа аваарай.</p></div><button class="btn primary" id="claimDailyBtn">Шагнал авах</button></div><div class="daily-quest-head"><div><span>DAILY QUESTS</span><h3>Өдөр тутмын даалгавар</h3></div><button class="btn" id="refreshDailyBtn">↻ Шинэчлэх</button></div><div id="dailyQuests" class="daily-quests"><div class="empty">Даалгавар ачаалж байна…</div></div><p class="daily-footnote">Өдөр солигдох цаг: Улаанбаатарын цагаар 00:00. Нэг даалгаврын шагналыг өдөрт нэг удаа авна.</p></section><section id="leaderboard" class="leaderboard hidden" aria-live="polite"><div class="leaderboard-intro"><span>LOREVERSE COMMUNITY</span><h2>Шилдэг цуглуулагчид</h2><p>Хамгийн олон дэлгүүрийн бараа цуглуулсан гишүүд</p></div><div id="leaderboardRows" class="leaderboard-rows"><div class="empty">Чансаа ачаалж байна…</div></div><p class="leaderboard-footnote">Зөвхөн идэвхтэй эзэмшилд байгаа давхардалгүй барааг тоолно.</p></section><div class="status" id="status" role="status" aria-live="polite"></div>
 <div class="preview-backdrop hidden" id="previewModal" role="dialog" aria-modal="true" aria-labelledby="previewTitle"><div class="preview-dialog"><button class="preview-close" id="previewClose" aria-label="Хаах">×</button><div class="preview-art" id="previewIcon"></div><span class="preview-type" id="previewType"></span><h2 id="previewTitle"></h2><p id="previewDescription"></p><div class="preview-cost" id="previewCost"></div><div class="preview-actions" id="previewActions"></div></div></div>
 <p class="hint">Шинэ аккаунт бүрт 100 LORE COIN-ийн эхний урамшуулал олгоно. Одоогоор виртуал валютын систем; бодит мөнгөөр цэнэглэлт холбогдоогүй.</p></main>
 <script type="module">
@@ -219,7 +233,7 @@ menuButton?.addEventListener("click",()=>{const open=menu.classList.toggle("open
 document.addEventListener("click",e=>{if(menu&&!menu.contains(e.target)&&!menuButton?.contains(e.target)){menu.classList.remove("open");menuButton?.setAttribute("aria-expanded","false");}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&menu){menu.classList.remove("open");menuButton?.setAttribute("aria-expanded","false");menuButton?.focus();}});
 
-const $=id=>document.getElementById(id);let user=null,tab="catalog",catalog=[],owned=new Set(),activeCategory="all",previewItem=null;
+const $=id=>document.getElementById(id);let user=null,tab="catalog",catalog=[],owned=new Set(),activeCategory="all",previewItem=null,dailyStatus=null;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const typeLabels={profile_frame:"Профайл хүрээ",badge:"Badge",profile_background:"Профайл фон",avatar:"Avatar",sticker_pack:"Sticker",profile_effect:"Эффект",nameplate:"Нэрийн хавтан",premium_discount:"Хөнгөлөлт",chat_theme:"Chat theme",emoji_pack:"Emoji",soundboard_pack:"Soundboard"};
 const categoryGroups=[
@@ -258,12 +272,32 @@ function closePreview(){$("previewModal").classList.add("hidden");previewItem=nu
 async function load(){const {data:{session}}=await supabase.auth.getSession();user=session?.user||null;$("authBtn").textContent=user?"Гарах":"Нэвтрэх";
 const {data:items,error:ie}=await supabase.from("lore_coin_items").select("id,name,description,coin_cost,item_type,icon,sort_order,created_at,is_featured,is_limited").eq("enabled",true).order("sort_order");
 if(ie)throw ie;catalog=items||[];
-if(!user){$("balance").textContent="Нэвтэр";owned.clear();render();say("Каталог нээлттэй. Худалдан авалт хийхийн тулд LOREVERSE аккаунтаараа нэвтэрнэ үү.");return}
+if(!user){$("balance").textContent="Нэвтэр";owned.clear();render();if(tab==="daily")await loadDailyRewards();say("Каталог нээлттэй. Худалдан авалт хийхийн тулд LOREVERSE аккаунтаараа нэвтэрнэ үү.");return}
 const [{data:bal,error:be},{data:inv,error:ve}]=await Promise.all([
 supabase.from("profiles").select("lore_coins").eq("id",user.id).single(),
 supabase.from("user_reward_inventory").select("item_id").eq("status","active").eq("user_id",user.id)
 ]);
-if(be)throw be;if(ve)throw ve;$("balance").textContent=Number(bal.lore_coins||0).toLocaleString("en-US");owned=new Set((inv||[]).map(x=>x.item_id));render()}
+if(be)throw be;if(ve)throw ve;$("balance").textContent=Number(bal.lore_coins||0).toLocaleString("en-US");owned=new Set((inv||[]).map(x=>x.item_id));render();if(tab==="daily")await loadDailyRewards()}
+async function loadDailyRewards(){
+ const host=$("dailyQuests");
+ if(!user){$("dailyStreak").textContent="—";$("dailyRewardValue").textContent="Нэвтрэх";$("dailyRewardHint").textContent="Өдөр тутмын шагнал авахын тулд бүртгэлтэй аккаунтаараа нэвтэрнэ үү.";$("claimDailyBtn").disabled=true;host.innerHTML='<div class="empty">Эхлээд LOREVERSE аккаунтаараа нэвтэрнэ үү.</div>';return}
+ $("claimDailyBtn").disabled=true;host.innerHTML='<div class="empty">Даалгавар ачаалж байна…</div>';
+ const {data,error}=await supabase.rpc("lore_daily_reward_status");
+ if(error){host.innerHTML='<div class="empty">Урамшууллын мэдээлэл ачаалж чадсангүй: '+esc(error.message)+'</div>';return}
+ dailyStatus=data;$("dailyStreak").textContent=Number(data.streak||0);$("dailyRewardValue").textContent=Number(data.daily_reward||10).toLocaleString("mn-MN")+" ✦";
+ $("dailyRewardHint").textContent=data.claimed?"Өнөөдрийн шагналаа авсан байна. Маргааш дахин ирээрэй!":(Number(data.streak||0)>=6?"7 дахь өдрийн бонус: 50 LORE COIN!":"Өдөр тутмын нэвтрэлтийн шагналаа аваарай.");
+ $("claimDailyBtn").disabled=!!data.claimed;$("claimDailyBtn").textContent=data.claimed?"✓ Өнөөдөр авсан":"Шагнал авах";
+ host.innerHTML=(data.quests||[]).map(q=>'<article class="daily-quest"><h4>'+esc(q.label)+'</h4><p>'+esc(q.description)+'</p><div class="quest-reward">+'+Number(q.reward||0)+' LORE COIN</div><button class="btn '+(q.claimed?'':'primary')+'" type="button" data-quest="'+esc(q.key)+'" '+(!q.completed||q.claimed?'disabled':'')+'>'+(q.claimed?'✓ Авсан':q.completed?'Шагнал авах':'Биелүүлээгүй')+'</button></article>').join("");
+}
+async function claimDaily(){
+ if(!user){say("Урамшуулал авахын тулд нэвтэрнэ үү.");return}
+ const btn=$("claimDailyBtn");btn.disabled=true;btn.textContent="Олгож байна…";
+ try{const {data,error}=await supabase.rpc("claim_lore_daily_reward");if(error)throw error;say("Өдрийн шагнал: +"+Number(data.reward)+" LORE COIN. Streak: "+data.streak+" өдөр.");await load();await loadDailyRewards()}catch(e){say(e.message||"Шагнал олгоход алдаа гарлаа.");await loadDailyRewards()}
+}
+async function claimQuest(key,button){
+ button.disabled=true;button.textContent="Олгож байна…";
+ try{const {data,error}=await supabase.rpc("claim_lore_daily_quest",{p_quest_key:key});if(error)throw error;say("Даалгаврын шагнал: +"+Number(data.reward)+" LORE COIN.");await load();await loadDailyRewards()}catch(e){say(e.message||"Даалгаврын шагнал олгоход алдаа гарлаа.");await loadDailyRewards()}
+}
 async function loadLeaderboard(){
  const host=$("leaderboardRows");host.innerHTML='<div class="empty">Цуглуулагчдын жагсаалт ачаалж байна…</div>';
  const {data,error}=await supabase.rpc("store_collector_leaderboard");
@@ -278,11 +312,12 @@ async function loadLeaderboard(){
 }
 function render(){
  renderFilters();$("ownedCount").textContent=owned.size;renderSpecialShelf();
- const isCollectors=tab==="collectors";
- $("categoryFilters").classList.toggle("hidden",tab!=="catalog");
- $("items").classList.toggle("hidden",isCollectors);
- $("leaderboard").classList.toggle("hidden",!isCollectors);
+ const isCollectors=tab==="collectors",isDaily=tab==="daily";
+ $("categoryFilters").classList.toggle("hidden",tab!=="catalog");$("specialShelf").classList.toggle("hidden",tab!=="catalog");
+ $("items").classList.toggle("hidden",isCollectors||isDaily);
+ $("leaderboard").classList.toggle("hidden",!isCollectors);$("dailyPanel").classList.toggle("hidden",!isDaily);
  if(isCollectors){$("heading").textContent="Цуглуулагчдын чансаа";$("subheading").textContent="LOREVERSE дэлгүүрийн шилдэг цуглуулагчид.";loadLeaderboard();return}
+ if(isDaily){$("heading").textContent="Өдөр тутмын урамшуулал";$("subheading").textContent="Нэвтрэлтийн шагнал, streak болон өдөр тутмын даалгавар.";loadDailyRewards();return}
  const list=tab==="catalog"?filteredCatalog():catalog.filter(x=>owned.has(x.id));
  $("heading").textContent=tab==="catalog"?"Онцлох бараанууд":"Миний цуглуулга ("+list.length+")";
  $("subheading").textContent=tab==="catalog"?"Ангиллаа сонгоод барааг урьдчилан харж, LORE COIN-оор цуглуул.":"Таны эзэмшдэг профайл, чат болон нэмэлт гоёлууд.";
@@ -305,6 +340,7 @@ $("previewModal").addEventListener("click",e=>{if(e.target===$("previewModal"))c
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("previewModal").classList.contains("hidden"))closePreview()});
 $("categoryFilters").addEventListener("click",e=>{const id=e.target.closest("[data-category]")?.dataset.category;if(!id)return;activeCategory=id;render()});
 document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>{tab=b.dataset.tab;document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b));render()}));
+$("claimDailyBtn").addEventListener("click",claimDaily);$("refreshDailyBtn").addEventListener("click",()=>loadDailyRewards().catch(e=>say(e.message)));$("dailyQuests").addEventListener("click",e=>{const b=e.target.closest("[data-quest]");if(b)claimQuest(b.dataset.quest,b)});
 $("refresh").onclick=()=>load().catch(e=>say(e.message));
 $("authBtn").onclick=async()=>{if(user){await supabase.auth.signOut();await load();return}const email=prompt("LOREVERSE аккаунтын имэйл:");if(!email)return;const password=prompt("Нууц үг:");if(!password)return;const {error}=await supabase.auth.signInWithPassword({email,password});if(error){say(error.message);return}await load().catch(e=>say(e.message))};
 supabase.auth.onAuthStateChange(()=>setTimeout(()=>load().catch(e=>say(e.message)),0));
