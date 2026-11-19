@@ -39,11 +39,7 @@ The six files named LOREVERSE (1).apk through LOREVERSE (6).apk are byte-identic
 
 but its embedded signing certificate is the same.
 
-The existing .github/workflows/android-release.yml pins the expected installed-app certificate to a different fingerprint:
-
-`1651193714A7E5610BBDC20FA228374DB1728A955BC2E880B55E9DEF2F5AD343`.
-
-Therefore, the release workflow will reject the supplied APK certificate. The pin was deliberately not changed: the correct production signing identity must be confirmed from the currently installed Play-distributed APK or Play Console before modifying a release signing check. Never replace the key or run the new-key release workflow merely to bypass this check; that can prevent in-place Android updates.
+The existing .github/workflows/android-release.yml originally pinned a different certificate (`165119...D343`) and its latest run failed after the configured candidate keystore opened but did not match that pin. The seven APKs supplied in this conversation share the certificate fingerprint shown above (`BA74...0550`). Based on the prior confirmation that the user installed the new-key LOREVERSE app after uninstalling the previous version, the release workflow pin has been updated on this PR branch to `BA74E8D5E0650850DE90B08A53AFAB78040726C07BBF0EF14E20FB0066570550`. The workflow itself will perform the decisive keystore and generated-APK fingerprint checks when the PR is merged and the Android release job runs. If the app currently installed on the phone was instead installed from Google Play with a different Play App Signing certificate, this pin must not be treated as verified for that Play-distributed installation. Never run the new-key workflow for routine updates; a different signing key prevents in-place Android updates.
 
 ### New-key release workflow
 The manually dispatched .github/workflows/android-release-newkey.yml documents that its APK uses a new signing key and requires uninstalling the old app. Treat it as a migration-only workflow, not a normal update workflow. Do not run it for routine releases.
