@@ -235,7 +235,7 @@ supabase.from("user_reward_inventory").select("item_id").eq("status","active").e
 if(be)throw be;if(ve)throw ve;$("balance").textContent=Number(bal.lore_coins||0).toLocaleString("en-US");owned=new Set((inv||[]).map(x=>x.item_id));render()}
 async function loadLeaderboard(){
  const host=$("leaderboardRows");host.innerHTML='<div class="empty">Цуглуулагчдын жагсаалт ачаалж байна…</div>';
- const {data,error}=await supabase.from("store_collector_leaderboard").select("rank,display_name,avatar_url,collected_count").order("rank",{ascending:true}).limit(50);
+ const {data,error}=await supabase.rpc("store_collector_leaderboard");
  if(error){host.innerHTML='<div class="empty">Цуглуулагчдын жагсаалтыг ачаалж чадсангүй. Дахин шинэчилнэ үү.</div>';say("Цуглуулагчдын жагсаалтын алдаа: "+error.message);return}
  if(!data?.length){host.innerHTML='<div class="empty">Одоогоор цуглуулгын оноо бүртгэгдээгүй байна. Дэлгүүрээс бараа авсан гишүүд энд гарч ирнэ.</div>';return}
  host.innerHTML=data.map(x=>{
