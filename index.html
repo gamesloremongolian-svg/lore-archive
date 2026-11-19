@@ -939,7 +939,10 @@ async function createPremiumInvoice(planCode){
  try{
   const {data,error}=await supabase.functions.invoke("qpay-payment",{body:{action:"create_invoice",plan_code:planCode,idempotency_key:currentInvoiceIdempotencyKey}});
   if(error||!data?.ok){
-   paymentStatus.textContent=data?.error||error?.message||"Нэхэмжлэл үүсгэж чадсангүй. Дахин оролдохдоо ижил хүсэлтийн түлхүүр ашиглана.";
+   // Keep the server-side payment reference visible when QPay's outcome is ambiguous.
+   if(data?.payment_id)currentPaymentId=data.payment_id;
+   const reference=data?.payment_id?" Төлбөрийн лавлах дугаар: "+data.payment_id+".":"";
+   paymentStatus.textContent=(data?.error||error?.message||"Нэхэмжлэл үүсгэж чадсангүй.")+reference+" Давхар нэхэмжлэлээс сэргийлж шинэ invoice автоматаар үүсгэхгүй. Админд энэ дугаарыг илгээнэ үү.";
    return;
   }
   currentPaymentId=data.payment_id;
