@@ -51,7 +51,7 @@ jobs:
 
           {
             echo "Tracked paths (first 100):"
-            git ls-files | head -100
+            git ls-files | sed -n '1,100p'
             for file in \
               package.json README.md index.html \
               admin/index.html community/index.html store/index.html \
