@@ -985,11 +985,13 @@ async function loadLatestApk(){
   const release=await r.json(),apk=(release.assets||[]).find(a=>a.name.toLowerCase().endsWith(".apk"));
   el("latestApkVersion").textContent=release.name||release.tag_name||"Албан ёсны хувилбар";
   el("latestApkDate").textContent="Гарсан огноо: "+date(release.published_at);
-  el("latestApkNotes").textContent=(release.body||"Албан ёсны LOREVERSE Android хувилбар.").split("\n").filter(Boolean).slice(0,2).join(" ");
+  // The release workflow verifies this APK against the original installed-app SHA-256 certificate.
+  // Do not repeat the stale release-body warning that incorrectly says this build uses a new key.
+  el("latestApkNotes").textContent="Албан ёсны LOREVERSE хувилбар · өмнөх апптай ижил signing certificate-ээр баталгаажсан.";
   if(apk){el("latestApkDownload").href=apk.browser_download_url;el("latestApkDownload").textContent="APK татах · "+(apk.size/1048576).toFixed(1)+" MB";}
   else{el("latestApkDownload").href=release.html_url;el("latestApkDownload").textContent="Release нээх";}
   el("latestApkRelease").href=release.html_url;
-  if((release.body||"").toLowerCase().includes("uninstall"))el("latestApkWarning").textContent="Анхаар: энэ хувилбар шинэ signing key-тэй. Хуучин түлхүүрээр гарын үсэг зурсан өмнөх аппыг устгасны дараа суулгана. Өгөгдлөө урьдчилан нөөцлөөрэй.";
+  el("latestApkWarning").textContent="Шинэчлэхдээ өмнөх LOREVERSE аппыг устгах шаардлагагүй. APK-ийн signing certificate нь өмнөх суулгасан хувилбартай таарч байгаа тул шууд update хийж суулгана уу.";
  }catch(e){el("latestApkVersion").textContent="Одоогоор ачаалж чадсангүй";el("latestApkNotes").textContent="Хамгийн сүүлийн хувилбарыг GitHub Releases хэсгээс шалгана уу.";el("latestApkDownload").href="https://github.com/loreverse-ctrl/lore-archive/releases/latest";}
 }
 loadLatestPosts();loadLatestApk();
