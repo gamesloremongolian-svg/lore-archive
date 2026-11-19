@@ -575,8 +575,9 @@ async function analyticsCount(table,filter){
  let q=supabase.from(table).select('id',{count:'exact',head:true});
  if(filter)q=q.filter(filter[0],filter[1],filter[2]);
  const {count,error}=await q;
- if(error)throw new Error(table+': '+error.message);
- return count||0;
+ // Some Community tables intentionally restrict roster visibility through RLS.
+ // Keep the rest of the dashboard usable and show this metric as unavailable.
+ return error?{count:null,error:error.message}:{count:count||0,error:null};
 }
 async function loadAnalytics(){
  const cards=$('analyticsCards'),contentHost=$('analyticsContentChart'),growthHost=$('analyticsGrowthChart'),dailyHost=$('analyticsDaily'),communityHost=$('analyticsCommunity'),updated=$('analyticsUpdated');
@@ -587,8 +588,10 @@ async function loadAnalytics(){
    ['Нийгэмлэг сервер','community_servers'],['Нийт гишүүнчлэл','community_server_members'],['Community суваг','community_channels'],
    ['Чат мессеж','community_messages',['deleted_at','is','null']],['Feed нийтлэл','community_posts',['status','eq','published']]
   ];
-  const counts=await Promise.all(specs.map(async s=>({label:s[0],count:await analyticsCount(s[1],s[2])})));
-  cards.innerHTML=counts.map(x=>'<div class="stat"><span class="muted">'+analyticsEsc(x.label)+'</span><b>'+x.count.toLocaleString('mn-MN')+'</b></div>').join('');
+  const counts=await Promise.all(specs.map(async s=>({label:s[0],...(await analyticsCount(s[1],s[2]))})));
+  cards.innerHTML=counts.map(x=>'<div class="stat"><span class="muted">'+analyticsEsc(x.label)+'</span><b>'+(x.error?'—':Number(x.count).toLocaleString('mn-MN'))+'</b>'+(x.error?'<small class="analytics-note">Эрхийн хязгаарлалт</small>':'')+'</div>').join('');
+  const restricted=counts.filter(x=>x.error);
+  if(restricted.length)updated.textContent='Зарим Community тоо RLS эрхээр хязгаарлагдсан: '+restricted.map(x=>x.label).join(', ');
   const [postsRes,profilesRes,dailyRes,channelsRes]=await Promise.all([
    supabase.from('content_posts').select('content_type,status').limit(2000),
    supabase.from('profiles').select('created_at').gte('created_at',new Date(Date.now()-13*86400000).toISOString()).limit(5000),
