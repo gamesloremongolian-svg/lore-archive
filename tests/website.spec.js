@@ -305,6 +305,10 @@ test.describe('LOREVERSE website health', () => {
     expect(handler).toMatch(/retry_safe: false/);
     expect(handler).toMatch(/invoice_creation_status: "unknown"/);
     expect(handler).toMatch(/invoice_response: responsePayload/);
+    const homepage = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+    expect(homepage).toMatch(/crypto\.randomUUID\(\)/);
+    expect(homepage).toMatch(/idempotency_key:currentInvoiceIdempotencyKey/);
+    expect(homepage).toMatch(/currentInvoiceIdempotencyKey=null/);
   });
 
 
