@@ -320,6 +320,9 @@ test.describe('LOREVERSE website health', () => {
     expect(homepage).toMatch(/currentInvoiceIdempotencyKey=null/);
     expect(homepage).toMatch(/sessionStorage\.setItem\("loreverse_qpay_idempotency_key"/);
     expect(homepage).toMatch(/sessionStorage\.getItem\("loreverse_qpay_idempotency_key"/);
+    expect(homepage).toMatch(/if\(data\?\.payment_id\)currentPaymentId=data\.payment_id/);
+    expect(homepage).toMatch(/Төлбөрийн лавлах дугаар/);
+    expect(homepage).toMatch(/Давхар нэхэмжлэлээс сэргийлж шинэ invoice автоматаар үүсгэхгүй/);
   });
 
 
