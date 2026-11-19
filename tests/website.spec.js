@@ -27,8 +27,8 @@ test.describe('LOREVERSE website health', () => {
     // submenu is no longer part of the current navigation.
     await expect(page.locator('#menuBtn')).toHaveCount(1);
     await expect(page.locator('#mainNav')).toHaveCount(1);
-    // Staff-only editorial and archive management routes are intentionally not exposed in public navigation.
-    await expect(page.locator('#mainNav a[href="./knowledge/"]')).toHaveCount(1);
+    // Lore is intentionally removed from the public MENU; its page and sitemap remain available.
+    await expect(page.locator('#mainNav a[href="./knowledge/"]')).toHaveCount(0);
     await expect(page.locator('#mainNav a[href="./ai/"]')).toHaveCount(1);
     await expect(page.locator('#mainNav a[href="./community/"]')).toHaveCount(1);
     await expect(page.locator('#mainNav a[href="./store/"]')).toHaveCount(1);
