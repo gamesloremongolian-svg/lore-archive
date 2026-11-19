@@ -223,6 +223,11 @@ body{scroll-padding-top:76px}
 .daily-quest h4{font-size:13px;margin:0 0 6px}.daily-quest p{font-size:10px;line-height:1.55;color:#b4c4d9;margin:0 0 12px;flex:1}.daily-quest .quest-reward{font-size:12px;font-weight:950;color:#8de8e8;margin-bottom:10px}.daily-quest .btn{width:100%;min-height:37px}
 .daily-quest .btn:disabled,.daily-checkin .btn:disabled{opacity:.55;cursor:not-allowed}.daily-footnote{font-size:10px;line-height:1.6;color:#91a5bf;margin:14px 0 0}
 @media(max-width:760px){.daily-hero{align-items:flex-start}.daily-checkin{align-items:flex-start;flex-direction:column}.daily-checkin .btn{width:100%}.daily-quests{grid-template-columns:1fr}.daily-quest{padding:12px}.daily-quest-head h3{font-size:15px}.streak-display{min-width:76px;padding:10px}.streak-display strong{font-size:25px}}
+</style><style id="loreverse-original-cosmetics">
+.item-icon svg{width:min(100%,112px);height:100%;max-height:108px;overflow:visible;filter:drop-shadow(0 8px 14px #0006)}
+.preview-art svg{width:min(100%,170px);height:170px;filter:drop-shadow(0 12px 20px #0007)}
+.item-emoji{font-size:1em;line-height:1}
+.item-icon:focus-visible{outline:2px solid #72e1e5;outline-offset:3px}
 </style></head><body><header class="lv-global-header"><div class="lv-global-inner"><a class="lv-brand" href="../"><span>✦</span> LOREVERSE</a><button class="lv-menu-btn" id="lvMenuBtn" type="button" aria-expanded="false" aria-controls="lvNav">☰ <span>ЦЭС</span></button><nav class="lv-nav" id="lvNav" aria-label="Үндсэн цэс"><a href="../">Нүүр</a><a href="../editorial/">Lore ба нийтлэл</a><a href="../archive/">Lore архив</a><a href="../ai/">✦ AI туслах</a><a href="../games/">Тоглоомууд</a><a href="../store/">Дэлгүүр</a><a href="../marketplace/">Арилжаа</a><a href="../community/">Нийгэмлэг</a><a href="../uid-lookup/">UID шалгах</a><a href="../profile/">Профайл</a><a class="lv-nav-cta" href="../rank/">Нэвтрэх / Чансаа</a></nav></div></header><script id="loreverse-global-navigation-script">
 (()=>{const h=document.querySelector('.lv-global-header');if(!h)return;document.querySelectorAll('body header:not(.lv-global-header)').forEach(x=>x.classList.add('lv-old-header'));const p=location.pathname.replace(/index\.html$/,'').replace(/\/$/,'');const links=h.querySelectorAll('.lv-nav a');links.forEach(a=>{const u=new URL(a.href,location.href);let q=u.pathname.replace(/index\.html$/,'').replace(/\/$/,'');if(q===p||(q==='/'&&p===''))a.setAttribute('aria-current','page')});const b=document.getElementById('lvMenuBtn'),n=document.getElementById('lvNav');b?.addEventListener('click',()=>{const open=n.classList.toggle('open');b.setAttribute('aria-expanded',String(open));b.querySelector('span').textContent=open?'ХААХ':'ЦЭС'});n?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{n.classList.remove('open');b?.setAttribute('aria-expanded','false')}));})();
 </script>
@@ -247,6 +252,15 @@ const $=id=>document.getElementById(id);let user=null,tab="catalog",catalog=[],o
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const typeLabels={profile_frame:"Профайл хүрээ",badge:"Badge",profile_background:"Профайл фон",avatar:"Avatar",sticker_pack:"Sticker",profile_effect:"Эффект",nameplate:"Нэрийн хавтан",premium_discount:"Хөнгөлөлт",chat_theme:"Chat theme",emoji_pack:"Emoji",soundboard_pack:"Soundboard"};
 const profileTypes=["profile_frame","profile_background","profile_effect","avatar","nameplate","badge"];
+const cosmeticArt={
+ "lv-crown":["#463b70","#ffe18a","♛"],"lv-sakura":["#713f70","#ffb6dc","✿"],"lv-nebula":["#273c78","#b9a4ff","✧"],"lv-phoenix":["#783d32","#ffb45e","♨"],"lv-moon":["#354d72","#d8edff","☾"],"lv-comet":["#244c70","#9df5ff","☄"],"lv-prism":["#3d4d78","#b6f5ff","◈"],"lv-dragon":["#633b52","#ffb18a","♜"],"lv-koi":["#315d68","#ffb77e","♧"],"lv-fox":["#684c3e","#ffd09b","♢"],"lv-butterfly":["#563f79","#e6baff","❋"],"lv-crystal":["#315b78","#a8efff","◇"],"lv-shadow":["#343b59","#c5c7ff","▰"],"lv-wings":["#3a5278","#e1f4ff","⋈"],"lv-rune":["#514275","#d6bdff","ᚱ"],"lv-aurora":["#245b64","#a8ffe1","✺"],"lv-lightning":["#554a7b","#fff08c","ϟ"],"lv-lotus":["#69476c","#ffc5e9","❀"],"lv-halo":["#4c4b78","#fff1a6","✧"],"lv-void":["#302e68","#c2aaff","◉"]
+};
+function iconArt(icon){
+ const art=cosmeticArt[icon];
+ if(!art)return '<span class="item-emoji">'+esc(icon||"✦")+'</span>';
+ const [base,glow,glyph]=art;
+ return '<svg viewBox="0 0 120 120" role="img" aria-hidden="true"><circle cx="60" cy="60" r="43" fill="'+base+'" opacity=".78"/><circle cx="60" cy="60" r="36" fill="none" stroke="'+glow+'" stroke-opacity=".58" stroke-width="2"/><circle cx="60" cy="60" r="27" fill="'+glow+'" opacity=".12"/><path d="M19 31l5 2-5 2-2 5-2-5-5-2 5-2 2-5zm82 52l5 2-5 2-2 5-2-5-5-2 5-2 2-5z" fill="'+glow+'"/><text x="60" y="76" text-anchor="middle" font-size="48" font-family="serif" font-weight="700" fill="'+glow+'">'+glyph+'</text></svg>';
+}
 const categoryGroups=[
  {id:"all",label:"Бүгд",types:null},
  {id:"profile",label:"Профайл",types:["profile_frame","profile_background","profile_effect","avatar","nameplate"]},
@@ -272,7 +286,7 @@ function renderFilters(){
 function filteredCatalog(){const group=categoryGroups.find(g=>g.id===activeCategory)||categoryGroups[0];return catalog.filter(x=>!group.types||group.types.includes(x.item_type))}
 function showPreview(id){
  previewItem=catalog.find(x=>x.id===id);if(!previewItem)return;
- $("previewIcon").textContent=previewItem.icon||"✦";$("previewTitle").textContent=previewItem.name;
+ $("previewIcon").innerHTML=iconArt(previewItem.icon);$("previewTitle").textContent=previewItem.name;
  $("previewDescription").textContent=previewItem.description||"LOREVERSE дэлгүүрийн виртуал гоёл.";
  $("previewType").textContent=typeLabels[previewItem.item_type]||previewItem.item_type||"LOREVERSE ITEM";
  $("previewCost").textContent=owned.has(id)?"Таны цуглуулгад байна":Number(previewItem.coin_cost).toLocaleString("en-US")+" LORE COIN";
@@ -342,7 +356,7 @@ function render(){
   }else{
    action=["sticker_pack","emoji_pack","soundboard_pack"].includes(x.item_type)?'<span class="muted">Цуглуулгад нэмэгдсэн</span>':'<button class="btn" data-equip="'+x.id+'">Тоноглох</button>';
   }
-  return '<article class="item"><button class="item-icon" type="button" data-preview="'+x.id+'" aria-label="'+esc(x.name)+' урьдчилан харах">'+esc(x.icon)+'</button>'+itemBadges(x)+'<h3>'+esc(x.name)+'</h3><p>'+esc(x.description)+'</p><div class="itemfoot"><span class="price">'+(has?"Эзэмшдэг":Number(x.coin_cost).toLocaleString("en-US")+" ✦")+'</span><div class="item-actions"><button class="btn preview-btn" type="button" data-preview="'+x.id+'">Preview</button>'+action+'</div></div></article>';
+  return '<article class="item"><button class="item-icon" type="button" data-preview="'+x.id+'" aria-label="'+esc(x.name)+' урьдчилан харах">'+iconArt(x.icon)+'</button>'+itemBadges(x)+'<h3>'+esc(x.name)+'</h3><p>'+esc(x.description)+'</p><div class="itemfoot"><span class="price">'+(has?"Эзэмшдэг":Number(x.coin_cost).toLocaleString("en-US")+" ✦")+'</span><div class="item-actions"><button class="btn preview-btn" type="button" data-preview="'+x.id+'">Preview</button>'+action+'</div></div></article>';
  }).join("");
 }
 async function purchase(id){
