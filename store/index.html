@@ -228,7 +228,7 @@ body{scroll-padding-top:76px}
 </script>
 <header class="top"><a class="brand" href="../">LOREVERSE <b>ДЭЛГҮҮР</b></a><button class="btn store-menu-btn" id="storeMenuBtn" aria-expanded="false" aria-controls="storeMenu">☰ ЦЭС</button><nav class="store-menu" id="storeMenu"><a href="../">Нүүр хуудас</a><a href="../community/">Нийгэмлэг</a><a href="../archive/">Lore архив</a><a href="../editorial/">Lore ба нийтлэл</a><a href="../games/">Тоглоомууд</a><button class="btn primary" id="authBtn">Нэвтрэх</button></nav></header>
 <main class="wrap"><section class="hero"><div><div class="eyebrow">ТАНЫ ЕРТӨНЦ. ТАНЫ ХЭВ МАЯГ.</div><h1>LOREVERSE STORE</h1><p>Discord-той төстэй профайл, нэрийн хавтан, дүрсний эффект, наалт, эможи болон чатын чимэглэл цуглуулаарай. Нэг бүртгэлээр бүх LOREVERSE үйлчилгээг ашиглана.</p></div><div class="wallet"><small>ТАНЫ LORE COIN</small><strong id="balance">—</strong></div></section>
-<nav class="tabs"><button class="tab active" data-tab="catalog">Дэлгүүр</button><button class="tab" data-tab="inventory">Миний цуглуулга <span id="ownedCount" class="count-pill">0</span></button><button class="tab" data-tab="daily">🎁 Өдөр тутмын</button><button class="tab" data-tab="collectors">🏆 Цуглуулагчид</button></nav>
+<nav class="tabs"><button class="tab active" data-tab="catalog">Дэлгүүр</button><button class="tab" data-tab="profile">Профайл гоёл</button><button class="tab" data-tab="inventory">Миний цуглуулга <span id="ownedCount" class="count-pill">0</span></button><button class="tab" data-tab="daily">🎁 Өдөр тутмын</button><button class="tab" data-tab="collectors">🏆 Цуглуулагчид</button></nav>
 <div id="categoryFilters" class="category-filters" aria-label="Барааны ангилал"></div>
 <div class="sectionhead"><div><h2 id="heading">Онцлох бараанууд</h2><p id="subheading">Профайл, чат, нэрний чимэглэлээ LORE COIN-оор цуглуул.</p></div><button class="btn" id="refresh">↻ Шинэчлэх</button></div>
 <section id="specialShelf" class="special-shelf"><div class="special-heading"><div><span>LOREVERSE EXCLUSIVES</span><h2>Онцлох болон хязгаартай бараа</h2><p>Тусгай сонголт, шинээр нэмэгдсэн гоёлууд.</p></div></div><div id="specialItems" class="special-grid"><div class="empty">Тусгай бараа ачаалж байна…</div></div></section>
@@ -246,6 +246,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&menu){menu.classLis
 const $=id=>document.getElementById(id);let user=null,tab="catalog",catalog=[],owned=new Set(),activeCategory="all",previewItem=null,dailyStatus=null;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const typeLabels={profile_frame:"Профайл хүрээ",badge:"Badge",profile_background:"Профайл фон",avatar:"Avatar",sticker_pack:"Sticker",profile_effect:"Эффект",nameplate:"Нэрийн хавтан",premium_discount:"Хөнгөлөлт",chat_theme:"Chat theme",emoji_pack:"Emoji",soundboard_pack:"Soundboard"};
+const profileTypes=["profile_frame","profile_background","profile_effect","avatar","nameplate","badge"];
 const categoryGroups=[
  {id:"all",label:"Бүгд",types:null},
  {id:"profile",label:"Профайл",types:["profile_frame","profile_background","profile_effect","avatar","nameplate"]},
@@ -275,7 +276,7 @@ function showPreview(id){
  $("previewDescription").textContent=previewItem.description||"LOREVERSE дэлгүүрийн виртуал гоёл.";
  $("previewType").textContent=typeLabels[previewItem.item_type]||previewItem.item_type||"LOREVERSE ITEM";
  $("previewCost").textContent=owned.has(id)?"Таны цуглуулгад байна":Number(previewItem.coin_cost).toLocaleString("en-US")+" LORE COIN";
- $("previewActions").innerHTML=owned.has(id)?'<span class="owned-tag">✓ Эзэмшдэг</span>':(tab==="catalog"?'<button class="btn primary" data-modal-buy="'+id+'">Худалдаж авах</button>':'');
+ $("previewActions").innerHTML=owned.has(id)?'<span class="owned-tag">✓ Эзэмшдэг</span>':((tab==="catalog"||tab==="profile")?'<button class="btn primary" data-modal-buy="'+id+'">Худалдаж авах</button>':'');
  $("previewModal").classList.remove("hidden");$("previewClose").focus();
 }
 function closePreview(){$("previewModal").classList.add("hidden");previewItem=null}
@@ -323,7 +324,7 @@ async function loadLeaderboard(){
 }
 function render(){
  renderFilters();$("ownedCount").textContent=owned.size;renderSpecialShelf();
- const isCollectors=tab==="collectors",isDaily=tab==="daily";
+ const isCollectors=tab==="collectors",isDaily=tab==="daily",isProfile=tab==="profile";
  $("categoryFilters").classList.toggle("hidden",tab!=="catalog");$("specialShelf").classList.toggle("hidden",tab!=="catalog");
  $("items").classList.toggle("hidden",isCollectors||isDaily);
  $("leaderboard").classList.toggle("hidden",!isCollectors);$("dailyPanel").classList.toggle("hidden",!isDaily);
