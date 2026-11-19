@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080914"><title>LOREVERSE · AI Editorial</title>
+<html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080914"><title>LOREVERSE · ХИЙМЭЛ ОЮУНТ РЕДАКЦ</title>
 <style>
 :root{color-scheme:dark;--bg:#080914;--panel:#12152a;--panel2:#0b0e1d;--line:#303553;--muted:#aeb2cc;--text:#f7f5ff;--violet:#a487ff;--cyan:#70e7ef;--good:#8be0b2;--warn:#ffd28a;--shadow:0 22px 70px #0006}
 *{box-sizing:border-box}
@@ -70,20 +70,20 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 <div class="auth-foot">Холболт Supabase Authentication-ээр хамгаалагдана. Нууц үг энэ сайтад хадгалагдахгүй.</div>
 </section>
 
-<section class="panel hidden" id="workspace" class="panel hidden"><div class="eyebrow">AI-ASSISTED DRAFTING</div><h1 class="title">Шинэ lore ноорог үүсгэх</h1><p class="muted">AI зөвхөн ноорог үүсгэнэ. Автоматаар нийтлэхгүй. Эх сурвалжийг редактор өөрөө шалгана.</p>
+<section class="panel hidden" id="workspace" class="panel hidden"><div class="eyebrow">ХИЙМЭЛ ОЮУНТ ТУСЛАМЖТАЙ НООРОГ БЭЛТГЭХ</div><h1 class="title">Шинэ Lore ноорог үүсгэх</h1><p class="muted">AI зөвхөн ноорог үүсгэнэ. Автоматаар нийтлэхгүй. Эх сурвалжийг редактор өөрөө шалгана.</p>
 <div class="grid">
 <div><label>Сэдэв *</label><input id="topic" maxlength="180" placeholder="Жишээ: Chaos хэрхэн үүссэн бэ?"></div>
 <div><label>Ертөнц / бүтээл</label><input id="universe" placeholder="ANANTA, Genshin Impact..."></div>
 <div><label>Нийтлэлийн төрөл</label><select id="type"><option value="lore">Lore судалгаа</option><option value="game">Тоглоом</option><option value="anime">Анимэ</option><option value="manga">Манга</option><option value="guide">Гарын авлага</option><option value="news">Мэдээ</option></select></div>
 <div><label>Редакторын чиглэл</label><input id="notes" placeholder="Хамрах хүрээ, өнцөг, урт..."></div>
-<div class="full"><label>Эх сурвалжийн HTTPS холбоосууд (мөр бүрт нэг)</label><textarea id="sources" placeholder="https://..."></textarea><p class="muted">Эх сурвалж өгөөгүй бол AI баталгаагүй хэсгийг тэмдэглэнэ. Хуурамч URL зохиохгүй.</p></div>
-</div><div class="row"><button id="generate">ChatGPT-д зориулсан заавар бэлтгэх</button><span id="genState" class="muted"></span></div>
+<div class="full"><label>Эх сурвалжийн HTTPS холбоос (мөр бүрд нэг)</label><textarea id="sources" placeholder="https://..."></textarea><p class="muted">Эх сурвалж өгөөгүй бол AI баталгаагүй хэсгийг тэмдэглэнэ. Хуурамч URL зохиохгүй.</p></div>
+</div><div class="row"><button id="generate">ChatGPT-д өгөх заавар бэлтгэх</button><span id="genState" class="muted"></span></div>
 <div id="manualPanel" class="draft hidden">
-<h3>1. ChatGPT-д илгээх заавар</h3>
+<h3>1. ChatGPT-д өгөх заавар</h3>
 <p class="muted">Доорх зааврыг хуулж ChatGPT-д илгээнэ. API түлхүүр шаардлагагүй.</p>
 <textarea id="chatPrompt" style="min-height:220px"></textarea>
 <div class="row"><button id="copyPrompt" class="secondary">Заавар хуулах</button></div>
-<label>2. ChatGPT-ийн JSON хариуг энд буулгана</label>
+<label>2. ChatGPT-ийн JSON хариуг энд оруулна</label>
 <textarea id="chatResponse" style="min-height:220px" placeholder='{"title":"...","slug":"...","summary":"...","body":"...","canon_status":"unknown","editorial_warnings":[]}'></textarea>
 <div class="row"><button id="importResponse">Ноорог редакторт оруулах</button></div>
 </div>
@@ -91,10 +91,10 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 <div class="full"><label>Гарчиг</label><input id="draftTitle"></div>
 <div><label>Slug</label><input id="draftSlug"></div><div><label>Canon төлөв</label><select id="canon"><option value="unknown">Тодорхойгүй</option><option value="canon">Canon</option><option value="non_canon">Non-canon</option><option value="theory">Онол / таамаг</option></select></div>
 <div class="full"><label>Товч агуулга</label><textarea id="draftSummary"></textarea></div>
-<div class="full"><label>Нийтлэлийн үндсэн агуулга (Markdown)</label><textarea id="draftBody" class="body"></textarea></div>
+<div class="full"><label>Нийтлэлийн үндсэн агуулга (Markdown формат)</label><textarea id="draftBody" class="body"></textarea></div>
 </div><div class="row" style="margin-top:12px"><button id="saveDraft">Ноорог хадгалах</button><button id="discard" class="secondary">Цэвэрлэх</button><span id="saveMsg" class="muted"></span></div></div>
 </section>
-<section class="panel hidden" id="queue" class="panel hidden"><div class="row"><div><div class="eyebrow">EDITORIAL REVIEW QUEUE</div><h2 style="margin:4px 0">Ноорог ба хяналт</h2></div><button id="refresh" class="secondary right">Шинэчлэх</button></div><p class="muted">Editor нооргийг хяналтад илгээнэ. Owner/Admin шалгасны дараа нийтэлнэ.</p><div id="draftList" class="status">Ачаалж байна…</div></section>
+<section class="panel hidden" id="queue" class="panel hidden"><div class="row"><div><div class="eyebrow">РЕДАКЦЫН ХЯНАЛТЫН ДАРААЛАЛ</div><h2 style="margin:4px 0">Ноорог ба хяналт</h2></div><button id="refresh" class="secondary right">Шинэчлэх</button></div><p class="muted">Editor нооргийг хяналтад илгээнэ. Owner/Admin шалгасны дараа нийтэлнэ.</p><div id="draftList" class="status">Ачаалж байна…</div></section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
