@@ -522,6 +522,11 @@ html[data-theme="dark"] .about-loreverse-panel{background:linear-gradient(135deg
 html[data-theme="dark"] .about-loreverse-item{background:#121b15;border-color:#344338}
 @media(max-width:680px){.about-loreverse{padding:16px 0 4px}.about-loreverse-grid{grid-template-columns:1fr;gap:9px}.about-loreverse-item{display:grid;grid-template-columns:38px 1fr;column-gap:12px;padding:13px}.about-loreverse-item .about-icon{grid-row:1/4;margin:0}.about-loreverse-item h3{align-self:end}.about-loreverse-item a{margin-top:7px}}
 
+
+/* The installed app does not need a self-download prompt; keep it on the website only. */
+html.capacitor-app .apk-panel{display:none!important}
+html.capacitor-app .updates-grid{grid-template-columns:minmax(0,1fr)}
+
 </style>
 <style>
 #bugReportLauncher{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:9999;display:inline-flex;align-items:center;gap:9px;border:1px solid #d8e8ce;border-radius:999px;background:linear-gradient(135deg,#263d2c,#668d50);color:#fff;padding:14px 19px;font:800 14px/1.2 system-ui;box-shadow:0 10px 32px #10251555;cursor:pointer;isolation:isolate}#bugReportLauncher:hover{transform:translateY(-2px);box-shadow:0 14px 36px #10251566}#bugReportLauncher:focus-visible{outline:3px solid #f0c66e;outline-offset:3px}
@@ -769,6 +774,21 @@ header:has(#mainNav) .menu{border-color:#465b7c;background:#1b2941;color:#fff}
 })();
 </script>
 
+<script>
+(()=> {
+ try {
+  const cap=window.Capacitor;
+  const native=!!(cap&&(cap.isNativePlatform?.()||["android","ios"].includes(cap.getPlatform?.())));
+  if(native){
+   document.documentElement.classList.add("capacitor-app");
+   const title=document.getElementById("latestUpdatesTitle");
+   const desc=document.querySelector(".updates-head p");
+   if(title)title.textContent="Шинэ мэдээлэл";
+   if(desc)desc.textContent="Сайт дээр шинээр нийтлэгдсэн lore болон бусад мэдээлэл.";
+  }
+ } catch(e) {}
+})();
+</script>
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
 const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
