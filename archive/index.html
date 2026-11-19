@@ -56,13 +56,13 @@ const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publi
  const results=document.getElementById("publicArchiveResults");
  const status=document.getElementById("publicArchiveStatus");
  const escapeHTML=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
- let records=[],category="all",timer=null;
+ const params=new URLSearchParams(location.search); let categorySet=new Set((params.get("category")||"all").split(",").filter(Boolean)); if(categorySet.has("all"))categorySet.clear(); let records=[],timer=null;
  const labels={game:"GAME",anime:"ANIME",manga:"MANGA",light_novel:"LIGHT NOVEL",web_novel:"WEB NOVEL",mixed:"UNIVERSE"};
  function render(){
   const term=searchInput.value.trim().toLocaleLowerCase();
   const lang=languageInput.value;
   const filtered=records.filter(item=>{
-   if(category!=="all"&&item.category!==category)return false;
+   if(categorySet.size&&!categorySet.has(item.category))return false;
    const hay=[item.name,item.description,...item.works.flatMap(w=>[w.canonical_title,w.translation?.title,w.translation?.synopsis])].join(" ").toLocaleLowerCase();
    return !term||hay.includes(term);
   });
@@ -124,13 +124,13 @@ const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publi
  filters.addEventListener("click",e=>{
   const button=e.target.closest("[data-archive-category]");
   if(!button)return;
-  category=button.dataset.archiveCategory;
+  categorySet=button.dataset.archiveCategory==="all"?new Set():new Set([button.dataset.archiveCategory]);
   filters.querySelectorAll("[data-archive-category]").forEach(x=>x.classList.toggle("active",x===button));
   render();
  });
  searchInput.addEventListener("input",render);
  languageInput.addEventListener("change",load);
- load();
+ if(categorySet.size)filters.querySelectorAll(".chip").forEach(x=>x.classList.toggle("active",categorySet.has(x.dataset.archiveCategory))); load();
 })();
 
 
