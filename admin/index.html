@@ -163,6 +163,52 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .health-pill.ok{background:#174b3d;color:#a7f3d0}.health-pill.bad{background:#592b35;color:#fecdd3}.health-pill.unknown{background:#394354;color:#dbe4ef}
 .health-detail{font-size:12px;color:var(--muted);margin:8px 0 0;overflow-wrap:anywhere}
 @media(max-width:520px){.site-health-grid{grid-template-columns:1fr}.health-card{padding:12px}}
+
+/* Final mobile-first admin layout override: keep the full admin feature set, improve phone usability. */
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+.wrap{width:min(1180px,calc(100% - 24px));margin:18px auto 36px}
+#dash{padding:clamp(13px,2.5vw,24px)}
+#dash>.title{font-size:clamp(25px,5vw,34px);line-height:1.18}
+#dash>.status{font-size:13px;overflow-wrap:anywhere}
+#dash>.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;position:static;max-height:none;overflow:visible;padding:10px}
+#dash>.tabs button{width:100%;min-width:0;min-height:46px;padding:10px 8px;font-size:13px;line-height:1.35;white-space:normal;overflow-wrap:anywhere}
+#dash>.statgrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#dash>.statgrid .stat{min-width:0;padding:13px}
+#dash>.statgrid .stat .muted{font-size:12px}
+#dash>p.row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#dash>p.row>*{min-width:0;display:flex;align-items:center;justify-content:center;text-align:center;min-height:46px}
+#dash [id$="Tab"]{min-width:0}
+#dash [id$="Tab"] h2{font-size:clamp(20px,3.5vw,26px);line-height:1.25;margin:18px 0 12px}
+#dash [id$="Tab"] label{display:block;margin:12px 0 5px;font-size:13px;line-height:1.45}
+#dash [id$="Tab"] input:not([type=checkbox]),#dash [id$="Tab"] select,#dash [id$="Tab"] textarea{width:100%;min-height:46px;margin:5px 0 12px;padding:12px;font-size:16px;line-height:1.45}
+#dash [id$="Tab"] textarea{min-height:120px}
+#dash [id$="Tab"] .row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#dash [id$="Tab"] .row>*{min-width:0;width:100%}
+#dash [id$="Tab"] button,#dash [id$="Tab"] .btn{min-height:44px;white-space:normal;overflow-wrap:anywhere}
+#dash [id$="Tab"] .list{min-width:0;overflow-wrap:anywhere;word-break:break-word}
+.loreverse-anime-banner img{width:100%;height:clamp(130px,24vw,230px);min-height:0;object-fit:cover;object-position:center 48%}
+@media(max-width:900px){
+ .wrap{width:calc(100% - 20px);margin:10px auto 28px}
+ #dash>.tabs{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:9px}
+ #dash>.tabs button{font-size:13px;min-height:46px}
+ #dash>.statgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #dash>.statgrid .stat:last-child{grid-column:1/-1}
+ #dash>p.row{grid-template-columns:1fr}
+ #dash [id$="Tab"] .row{grid-template-columns:1fr}
+}
+@media(max-width:420px){
+ .wrap{width:calc(100% - 14px);margin:7px auto 22px}
+ .panel{padding:12px;border-radius:14px}
+ #dash{padding:12px}
+ #dash>.tabs{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:7px}
+ #dash>.tabs button{font-size:12px;min-height:44px;padding:8px 6px}
+ #dash>.statgrid{gap:6px}
+ #dash>.statgrid .stat{padding:9px 7px}
+ #dash>.statgrid .stat b{font-size:19px}
+ #dash [id$="Tab"] .row{grid-template-columns:1fr}
+ .loreverse-anime-banner img{height:125px}
+}
+
 </style></head><body><main class="wrap"><p style="display:flex;justify-content:flex-end;align-items:center;gap:8px"><label for="lang">Interface language</label><select id="lang" style="width:auto;margin:0"><option value="mn">Монгол</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option></select></p>
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><a href="../index.html" class="brand">✦ LORE<span>VERSE</span></a><a class="btn" href="../index.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:7px">← Нүүр хуудас руу буцах</a></div>
 <div class="loreverse-anime-banner" aria-label="LOREVERSE anime universe"><img src="../assets/images/loreverse-admin-anime.svg" alt="LOREVERSE fantasy anime illustration"><span class="loreverse-anime-caption">ANIME · MANGA · GAME LORE</span></div>
