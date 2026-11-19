@@ -349,7 +349,7 @@ async function selectServer(id){
   $("members").innerHTML='<div class="server-role-note">'+roster.length+' гишүүн · Роль ба тэмдэг</div><div class="member-roster">'+roster.map(m=>{
    const p=byId[m.user_id]||{},name=p.display_name||"LOREVERSE гишүүн",role=m.role||"member",r=ROLE_META[role]||ROLE_META.member;
    const avatar=p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">':esc(name.slice(0,1).toUpperCase());
-   const action=canManageRoles&&m.role!=="owner"&&m.user_id!==user.id?'<button class="role-manage" type="button" data-role-user="'+m.user_id+'" data-next-role="'+(role==="moderator"?"member":"moderator")+'">'+(role==="moderator"?"МОД буулгах":"МОД болгох")+'</button>':'';
+   const action=canManageRoles&&["member","moderator"].includes(role)&&m.user_id!==user.id?'<button class="role-manage" type="button" data-role-user="'+m.user_id+'" data-next-role="'+(role==="moderator"?"member":"moderator")+'">'+(role==="moderator"?"МОД буулгах":"МОД болгох")+'</button>':'';
    return '<div class="member-card"><span class="avatar">'+avatar+'</span><div class="member-copy"><b class="member-name-'+r.className+'">'+esc(name)+'</b>'+roleBadge(role)+'</div>'+action+'</div>';
   }).join("")+'</div>';
   $("members").querySelectorAll("[data-role-user]").forEach(btn=>btn.onclick=async()=>{
