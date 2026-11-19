@@ -107,7 +107,7 @@ $("clearChat").onclick=()=>{if(user){newConversation()}else{$("messages").innerH
 $("toggleHistory").onclick=()=>$("history").classList.toggle("open");
 document.querySelectorAll(".chips button").forEach(b=>b.onclick=()=>sendQuestion(b.textContent));
 (async()=>{
-  const {data}=await sb.auth.getSession();user=data.session?.user||null;
+  const {data}=await sb.auth.getSession();user=(data.session?.user&&!data.session.user.is_anonymous)?data.session.user:null;
   if(user){
     $("accountStatus").textContent="Бүртгэлтэй · Түүх хадгалагдана";
     $("quota").textContent="Өдөрт 10 асуулт";
