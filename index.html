@@ -226,6 +226,67 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
   .art img{object-fit:contain;object-position:center top}
 }
 
+
+/* Final spacing and alignment pass */
+:root{scroll-padding-top:84px}
+.wrap{width:min(1160px,calc(100% - 40px))}
+main{padding-bottom:30px}
+.stats-section{padding:26px 0 10px}
+.stats-heading{margin-bottom:16px}
+.stats-grid{gap:12px}
+.stat-card{min-height:108px;padding:15px}
+.category-label{padding-top:30px}
+.category-strip{padding-top:15px;padding-bottom:10px}
+.category-strip .cards{gap:14px}
+.feature{margin:22px 0 30px;padding:24px 28px;gap:20px}
+.access-section{padding:26px 0 34px}
+.access-heading{margin:0 auto 18px}
+.access-grid{gap:16px}
+.access-card{padding:24px}
+.access-icon{margin:4px 0 8px}
+.access-card h3{margin:2px 0 8px}
+.access-card>p{line-height:1.65;margin-bottom:14px}
+.auth-panel,.premium-user,.premium-account,.plan-list,.payment-box{margin-top:14px}
+.access-form{gap:12px}
+.access-form label{gap:7px}
+.access-form input,.access-form select,.access-form textarea{padding:12px}
+.plan-option{padding:14px 16px;margin:9px 0}
+.payment-box{padding:16px;border-radius:14px}
+@media(max-width:850px){
+ .wrap{width:calc(100% - 32px)}
+ .stats-section{padding:20px 0 8px}
+ .category-label{padding-top:24px}
+ .category-strip{padding-top:12px;padding-bottom:8px}
+ .feature{margin:18px 0 24px;padding:20px 22px}
+ .access-section{padding:22px 0 28px}
+ .access-card{padding:20px}
+}
+@media(max-width:600px){
+ .wrap{width:calc(100% - 28px)}
+ main{padding-bottom:20px}
+ .stats-section{padding:16px 0 6px}
+ .stats-heading{margin-bottom:10px}
+ .stats-grid{gap:8px}
+ .stat-card{min-height:82px;padding:11px}
+ .category-label{padding-top:20px}
+ .category-strip{padding-top:10px;padding-bottom:6px}
+ .category-strip .cards{gap:8px}
+ .category-strip .card{min-height:76px;padding:9px 6px;gap:6px;flex-direction:column}
+ .category-strip .symbol{flex:0 0 28px;width:28px;height:28px}
+ .category-strip .card h3{font-size:10px;text-align:center;line-height:1.25}
+ .feature{margin:14px 0 20px;padding:16px;display:flex;align-items:flex-start;flex-direction:column;gap:12px}
+ .feature .btn{align-self:flex-start}
+ .access-section{padding:18px 0 24px}
+ .access-heading{margin-bottom:14px}
+ .access-card{padding:16px;border-radius:15px}
+ .premium-account{padding:12px;margin-top:12px}
+ .access-form{gap:10px}
+ .access-form input,.access-form select,.access-form textarea{padding:11px}
+ .plan-option{padding:12px;margin:8px 0}
+ .payment-box{padding:12px}
+ .payment-history-row{gap:8px;font-size:11px}
+}
+
 </style>
 </head>
 <body>
