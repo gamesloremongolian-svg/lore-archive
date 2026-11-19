@@ -212,4 +212,77 @@ test.describe('LOREVERSE website health', () => {
     }
   });
 
+
+  test('store purchase flow updates inventory and balance after a successful RPC', async ({ page }) => {
+    await page.route('https://esm.sh/@supabase/supabase-js@2.119.0', route => route.fulfill({
+      status: 200,
+      contentType: 'application/javascript',
+      body: `
+        let coins = 100, purchased = false;
+        const user = { id: 'test-user', email: 'test@loreverse.invalid' };
+        const item = { id: 'test-frame', name: 'Test Frame', description: 'Automated test item', coin_cost: 40, item_type: 'profile_frame', icon: '✦', sort_order: 1, created_at: new Date().toISOString(), is_featured: false, is_limited: false };
+        const query = table => {
+          const q = { select(){return q}, eq(){return q}, order(){return q}, single(){return Promise.resolve({data:{lore_coins:coins},error:null})}, then(resolve,reject){let data=[];if(table==='lore_coin_items')data=[item];if(table==='user_reward_inventory'&&purchased)data=[{item_id:item.id}];return Promise.resolve({data,error:null}).then(resolve,reject)} };
+          return q;
+        };
+        export function createClient(){
+          return {
+            auth:{getSession:async()=>({data:{session:{user}},error:null}),signOut:async()=>({error:null})},
+            from:query,
+            rpc:async(name,args)=>{if(name!=='redeem_lore_coins'||args.p_item_id!==item.id)return {data:null,error:{message:'Unexpected RPC'}};if(purchased)return {data:null,error:{message:'Already purchased'}};if(coins<item.coin_cost)return {data:null,error:{message:'Not enough LORE Coins'}};coins-=item.coin_cost;purchased=true;return {data:{success:true},error:null}}
+          };
+        }
+      `
+    }));
+    await page.goto(new URL('store/', baseURL).toString(), { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#balance')).toContainText('100');
+    await expect(page.locator('#items [data-buy="test-frame"]')).toBeVisible();
+    await page.locator('#items [data-buy="test-frame"]').click();
+    await expect(page.locator('#balance')).toContainText('60');
+    await expect(page.locator('#ownedCount')).toContainText('1');
+    await expect(page.locator('#status')).toContainText('Худалдан авалт амжилттай');
+  });
+
+  test('store shows an RPC rejection without granting the item', async ({ page }) => {
+    await page.route('https://esm.sh/@supabase/supabase-js@2.119.0', route => route.fulfill({
+      status: 200,
+      contentType: 'application/javascript',
+      body: `
+        const user={id:'test-user',email:'test@loreverse.invalid'};
+        const item={id:'test-frame',name:'Test Frame',description:'Test',coin_cost:400,item_type:'profile_frame',icon:'✦',sort_order:1,created_at:new Date().toISOString()};
+        const q=table=>{const x={select(){return x},eq(){return x},order(){return x},single(){return Promise.resolve({data:{lore_coins:20},error:null})},then(a,b){return Promise.resolve({data:table==='lore_coin_items'?[item]:[],error:null}).then(a,b)}};return x};
+        export function createClient(){return {auth:{getSession:async()=>({data:{session:{user}},error:null})},from:q,rpc:async()=>({data:null,error:{message:'Not enough LORE Coins'}})}}
+      `
+    }));
+    await page.goto(new URL('store/', baseURL).toString(), { waitUntil: 'domcontentloaded' });
+    await page.locator('#items [data-buy="test-frame"]').click();
+    await expect(page.locator('#status')).toContainText('Not enough LORE Coins');
+    await expect(page.locator('#ownedCount')).toContainText('0');
+  });
+
+  test('community sign-in reveals the authenticated app and handles an empty server list', async ({ page }) => {
+    await page.route('https://esm.sh/@supabase/supabase-js@2.119.0', route => route.fulfill({
+      status: 200,
+      contentType: 'application/javascript',
+      body: `
+        const user={id:'test-user',email:'test@loreverse.invalid'};
+        const emptyQuery=()=>{const q={select(){return q},eq(){return q},in(){return q},order(){return q},limit(){return q},then(a,b){return Promise.resolve({data:[],error:null}).then(a,b)}};return q};
+        let session=null;
+        export function createClient(){return {
+          auth:{getSession:async()=>({data:{session},error:null}),signInWithPassword:async({email,password})=>{if(email!=='test@loreverse.invalid'||password!=='test-password')return {data:null,error:{message:'Invalid login credentials'}};session={user};return {data:{session},error:null}},onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})},
+          from:emptyQuery,channel:()=>({on(){return this},subscribe(){return this}}),removeChannel:async()=>{}
+        }}
+      `
+    }));
+    await page.goto(new URL('community/', baseURL).toString(), { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#auth')).toBeVisible();
+    await page.locator('#email').fill('test@loreverse.invalid');
+    await page.locator('#password').fill('test-password');
+    await page.locator('#login button[type="submit"]').click();
+    await expect(page.locator('#auth')).toHaveClass(/hidden/);
+    await expect(page.locator('#app')).not.toHaveClass(/hidden/);
+    await expect(page.locator('#message')).toBeDisabled();
+    await expect(page.locator('#channels')).toContainText('Нээлттэй сервер');
+  });
+
 });
