@@ -297,6 +297,42 @@ main{padding-bottom:30px}
  .access-grid{width:100%;grid-template-columns:minmax(0,1fr);gap:10px}
  .access-grid>.premium-card{width:100%}
 }
+
+/* LOREVERSE winter holiday atmosphere */
+:root{--winter-ice:#eef5f2;--winter-gold:#c6a96a}
+body{
+ background:
+  radial-gradient(ellipse at 8% 2%,rgba(219,235,229,.42),transparent 32%),
+  radial-gradient(ellipse at 92% 18%,rgba(231,237,248,.38),transparent 30%),
+  var(--bg);
+}
+body::before{
+ content:"";position:fixed;inset:-120px 0 0;z-index:40;pointer-events:none;opacity:.34;
+ background-image:
+  radial-gradient(3px 3px at 18px 24px,rgba(255,255,255,.95) 55%,transparent 70%),
+  radial-gradient(2px 2px at 72px 88px,rgba(177,198,190,.85) 55%,transparent 70%),
+  radial-gradient(2.5px 2.5px at 142px 42px,rgba(255,255,255,.95) 55%,transparent 70%),
+  radial-gradient(1.5px 1.5px at 205px 118px,rgba(177,198,190,.8) 55%,transparent 70%);
+ background-size:240px 170px;
+ animation:winterSnow 28s linear infinite;
+}
+@keyframes winterSnow{from{transform:translate3d(0,-35px,0)}to{transform:translate3d(18px,170px,0)}}
+header{border-bottom-color:#e4ebe7;background:rgba(250,253,251,.9)}
+header:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,transparent,#d5e6df,#c6a96a,#d5e6df,transparent);opacity:.7}
+.hero{position:relative}
+.hero:before{content:"❄";position:absolute;top:8px;right:7%;font-size:25px;color:#b6cfc4;opacity:.65;pointer-events:none}
+.stats-section .stat-total{background:linear-gradient(145deg,#f2f8f4,#e7f1ec);border-color:#d8e7df}
+.feature{background:linear-gradient(110deg,#f7faf8,#edf4ef);border-color:#dce9e1}
+.access-card,.premium-card{box-shadow:0 8px 24px rgba(47,75,58,.045)}
+.btn,.nav-cta{box-shadow:0 3px 10px rgba(72,101,75,.12)}
+@media(max-width:600px){
+ body::before{opacity:.23;background-size:210px 150px}
+ .hero:before{top:0;right:4%;font-size:19px}
+}
+@media(prefers-reduced-motion:reduce){
+ body::before{animation:none}
+ html{scroll-behavior:auto}
+}
 </style>
 </head>
 <body>
