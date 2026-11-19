@@ -22,7 +22,8 @@ test.describe('LOREVERSE website health', () => {
   test('homepage exposes a description, primary navigation and working mobile menu', async ({ page }) => {
     await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /LOREVERSE/i);
-    await expect(page.locator('#mainNav a[href="./universe-hub/"]')).toHaveCount(1);
+    await expect(page.locator("#universeMenuBtn")).toHaveCount(1);
+    await expect(page.locator("#universeSubmenu button[data-nav-category]")).toHaveCount(3);
     await expect(page.locator('#mainNav a[href="./editorial/"]')).toHaveCount(1);
     await expect(page.locator('#mainNav a[href="./archive/"]')).toHaveCount(1);
     await expect(page.locator('#mainNav a[href="./games/"]')).toHaveCount(1);
