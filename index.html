@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1712">
+<meta name="description" content="LOREVERSE — Anime, manga, game болон lore ертөнцийн Монгол архив.">
+<title>LOREVERSE — Өөр ертөнц рүү нэвтэр</title>
+<link rel="icon" href="./assets/loreverse-mark.svg">
+<style>
+:root{color-scheme:dark;--bg:#09130f;--panel:#122019;--panel2:#17271f;--line:#2b4537;--muted:#a6b8ac;--text:#f2f7f2;--lime:#c5f36b;--green:#72b58a}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 12% -8%,#416a4b55,transparent 36%),radial-gradient(ellipse at 90% 22%,#263d3155,transparent 32%),var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit;text-decoration:none}.wrap{width:min(1180px,calc(100% - 36px));margin:auto}
+header{height:76px;display:flex;align-items:center;border-bottom:1px solid #ffffff12;background:#09130fbd;backdrop-filter:blur(18px);position:sticky;top:0;z-index:20}
+.head{display:flex;align-items:center;justify-content:space-between;gap:22px}.brand{display:flex;align-items:center;gap:11px;font-weight:950;letter-spacing:.13em;font-size:18px}.brand img{width:34px;height:34px}.brand span{color:var(--lime)}
+nav{display:flex;align-items:center;gap:24px;color:#c2d0c6;font-size:13px}nav a:hover{color:var(--lime)}.nav-cta,.btn{display:inline-flex;align-items:center;justify-content:center;background:var(--lime);color:#152015;padding:11px 17px;border-radius:10px;font-weight:850}
+.menu{display:none;background:transparent;border:1px solid var(--line);color:white;border-radius:9px;padding:8px 12px}
+.hero{padding:82px 0 58px;display:grid;grid-template-columns:1.15fr .85fr;align-items:center;gap:50px;min-height:510px}
+.eyebrow{font-size:10px;letter-spacing:.22em;color:var(--lime);font-weight:900;text-transform:uppercase}
+h1{font-size:clamp(42px,6vw,70px);line-height:1.02;letter-spacing:-.055em;margin:17px 0 20px;max-width:720px}
+h1 em{font-style:normal;color:var(--lime)}.lead{max-width:570px;color:#b7c7bc;font-size:17px;line-height:1.8}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.btn.secondary{background:#1a2a21;border:1px solid #3b5846;color:#e8f2e9}
+.art{min-height:340px;border:1px solid #46624b;border-radius:28px;background:radial-gradient(circle at 50% 35%,#9fcb6d35,transparent 42%),linear-gradient(145deg,#1d3327,#0d1913);display:grid;place-items:center;position:relative;overflow:hidden;box-shadow:0 28px 80px #0006}
+.art:before,.art:after{content:"";position:absolute;border:1px solid #c5f36b35;border-radius:50%;width:270px;height:270px}.art:after{width:370px;height:370px}
+.orbit{font-size:clamp(90px,15vw,160px);font-weight:950;letter-spacing:-.12em;color:var(--lime);text-shadow:0 0 65px #c5f36b55;z-index:1}
+.art-label{position:absolute;bottom:22px;left:22px;color:#c3d4c7;font-size:11px;letter-spacing:.2em}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin:28px 0 18px}.section-head h2{font-size:26px;letter-spacing:-.04em;margin:5px 0}.section-head p{color:var(--muted);margin:0;font-size:13px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:linear-gradient(145deg,#1a2b21,#101b15);border:1px solid var(--line);border-radius:17px;padding:21px;min-height:185px;transition:.2s}.card:hover{transform:translateY(-4px);border-color:#8eae64;background:linear-gradient(145deg,#243b2b,#122017)}.symbol{width:42px;height:42px;border-radius:12px;background:#c5f36b18;color:var(--lime);display:grid;place-items:center;font-size:21px;margin-bottom:22px}.card h3{margin:0 0 5px;font-size:17px}.card p{margin:0;color:var(--muted);font-size:13px}
+.feature{margin:64px 0 44px;padding:28px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(110deg,#17291f,#111d16);display:flex;align-items:center;justify-content:space-between;gap:24px}.feature h2{margin:4px 0;font-size:24px}.feature p{color:var(--muted);margin:0}
+footer{border-top:1px solid #ffffff14;padding:25px 0 35px;color:#91a398;font-size:12px}.foot{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+@media(max-width:850px){nav{display:none;position:absolute;top:75px;left:0;right:0;padding:18px;background:#0c1811;border-bottom:1px solid var(--line);flex-direction:column;align-items:stretch;gap:14px}nav.open{display:flex}.menu{display:block}.hero{grid-template-columns:1fr;padding:55px 0 40px;gap:30px}.art{min-height:260px}.cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.wrap{width:calc(100% - 28px)}header{height:66px}.hero{padding-top:42px}h1{font-size:43px}.lead{font-size:15px}.cards{grid-template-columns:1fr}.card{min-height:145px}.feature{align-items:flex-start;flex-direction:column;padding:22px}.art{min-height:225px}}
+</style>
+</head>
+<body>
+<header><div class="wrap head">
+<a class="brand" href="./"><img src="./assets/loreverse-mark.svg" alt=""><span>LORE</span>VERSE</a>
+<nav id="mainNav"><a href="./universe-hub/">Universe Hub</a><a href="./editorial/">Lore & Articles</a><a href="./archive/">Archive</a><a href="./games/">Games</a><a href="./community/">Community</a><a class="nav-cta" href="./universe-hub/">Ертөнцүүдийг үзэх</a></nav>
+<button class="menu" id="menuBtn" aria-label="Цэс нээх" aria-expanded="false">Цэс ☰</button>
+</div></header>
+<main>
+<section class="wrap hero">
+<div><div class="eyebrow">MONGOLIAN LORE UNIVERSE</div><h1>Дуртай ертөнцөө <em>илүү гүнзгий</em> нээ.</h1><p class="lead">Anime, manga, тоглоомын ертөнцийн түүх, дүрүүд, нууц болон тайлбаруудыг нэг дороос. LOREVERSE — сонирхлоос мэдлэг рүү.</p><div class="actions"><a class="btn" href="./universe-hub/">Ертөнцөөр аялах ↗</a><a class="btn secondary" href="./editorial/">Шинэ нийтлэлүүд</a></div></div>
+<div class="art" aria-label="LOREVERSE брэндийн дүрслэл"><div class="orbit">L</div><div class="art-label">EXPLORE · DISCOVER · UNDERSTAND</div></div>
+</section>
+<section class="wrap">
+<div class="section-head"><div><div class="eyebrow">DISCOVER</div><h2>Өөрийн ертөнцөө сонго</h2><p>Сонирхсон чиглэлээрээ судалж, шинэ зүйл нээ.</p></div></div>
+<div class="cards">
+<a class="card" href="./universe-hub/"><div class="symbol">✦</div><h3>Anime Universe</h3><p>Дүрүүд, ертөнц, үйл явдлын гүн тайлбар.</p></a>
+<a class="card" href="./archive/"><div class="symbol">▤</div><h3>Manga & Novel</h3><p>Манга, ранобэ болон унших архив.</p></a>
+<a class="card" href="./games/"><div class="symbol">◇</div><h3>Game Worlds</h3><p>Тоглоомын lore, түүх, нууц мэдээлэл.</p></a>
+<a class="card" href="./editorial/"><div class="symbol">⌘</div><h3>Lore Archive</h3><p>Судалгаа, нийтлэл, тайлбаруудын сан.</p></a>
+</div>
+</section>
+<section class="wrap feature"><div><div class="eyebrow">JOIN THE COMMUNITY</div><h2>Сонирхлоо бусадтай хуваалц.</h2><p>LOREVERSE-ийн community-д нэгдэж, ертөнцүүдийн тухай ярилцаарай.</p></div><a class="btn" href="./community/">Community руу ↗</a></section>
+</main>
+<footer><div class="wrap foot"><span>© 2026 LOREVERSE. Бүх эрх хуулиар хамгаалагдсан.</span><span>Монгол хэл дээрх lore & universe archive</span></div></footer>
+<script>
+(()=>{const b=document.getElementById('menuBtn'),n=document.getElementById('mainNav');if(b&&n)b.addEventListener('click',()=>{const open=n.classList.toggle('open');b.setAttribute('aria-expanded',String(open));});})();
+</script>
+</body></html>
