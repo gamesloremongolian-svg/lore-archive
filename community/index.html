@@ -167,7 +167,7 @@ body{scroll-padding-top:76px}
 <section class="auth" id="auth"><h1>LOREVERSE нийгэмлэгт нэвтрэх</h1><p class="muted">Бүртгэлтэй бүх гишүүн сервер үүсгэх, нээлттэй серверт нэгдэх, чатлах боломжтой.</p><form id="login"><label>Имэйл</label><input class="field" id="email" type="email" autocomplete="email" required><label>Нууц үг</label><input class="field" id="password" type="password" autocomplete="current-password" required><button class="btn" type="submit">Нэвтрэх</button><p class="muted" id="authNote"></p></form></section>
 <div class="layout hidden" id="app">
 <aside class="servers"><button class="server-icon active" id="homeBtn" title="Серверүүд">✦</button><div id="serverIcons"></div><button class="server-icon" id="createServerBtn" title="Сервер үүсгэх">＋</button><button class="server-icon" id="joinServerBtn" title="Урилгаар нэгдэх">↗</button></aside>
-<aside class="side"><div class="side-head"><div><h2 id="serverName">Таны серверүүд</h2><div class="muted" id="serverMeta">LOREVERSE НИЙГЭМЛЭГ</div></div><button class="btn" id="inviteBtn" title="Урилга үүсгэх" disabled>＋</button></div><div class="label">ЧАТ ӨРӨӨНҮҮД</div><div id="channels"><p class="muted">Сервер сонгоно уу.</p></div><div class="label">ГИШҮҮД</div><div id="members" class="empty-hint">Сервер сонгоход гишүүдийн мэдээлэл энд харагдана.</div><div style="margin-top:20px"><button class="btn" id="newChannelBtn" style="width:100%" disabled>＋ Өрөө нэмэх</button></div><div style="margin-top:9px"><button class="btn" id="modsToggle" style="width:100%" disabled>🧩 MOD удирдлага</button></div><section id="modsPanel" class="mods-panel hidden"><div class="label">СЕРВЕРИЙН MOD ДЭЛГҮҮР</div><div id="modsList"><p class="muted">Сервер сонгоно уу.</p></div></section></aside>
+<aside class="side"><div class="side-head"><div><h2 id="serverName">Таны серверүүд</h2><div class="muted" id="serverMeta">LOREVERSE НИЙГЭМЛЭГ</div></div><button class="btn" id="inviteBtn" title="Урилга үүсгэх" disabled>＋</button></div><div class="label">ЧАТ ӨРӨӨНҮҮД</div><div id="channels"><p class="muted">Сервер сонгоно уу.</p></div><div class="label">ГИШҮҮД</div><div id="members" class="empty-hint">Сервер сонгоход гишүүдийн мэдээлэл энд харагдана.</div><div style="margin-top:20px"><button class="btn" id="newChannelBtn" style="width:100%" disabled>＋ Өрөө нэмэх</button></div><div style="margin-top:9px"><button class="btn" id="modsToggle" style="width:100%" disabled>🧩 MOD удирдлага</button></div><section id="modsPanel" class="mods-panel hidden"><div class="label">СЕРВЕРИЙН MOD ДЭЛГҮҮР</div><div id="modsList"><p class="muted">Сервер сонгоно уу.</p></div></section><div style="margin-top:9px"><button class="btn" id="modRequestBtn" style="width:100%" disabled>📝 MOD захиалга</button></div><section id="modRequestsPanel" class="mods-panel hidden"><div class="label">МИНИЙ MOD ЗАХИАЛГУУД</div><div id="modRequestsList"><p class="muted">Захиалга алга.</p></div></section></aside>
 <main class="main"><div class="head"><div><h1 id="channelName">LOREVERSE НИЙГЭМЛЭГ</h1><div class="muted" id="channelDesc">Сервер сонгоод харилцаагаа эхлүүлээрэй</div></div><button class="btn" id="mobileBack">←</button></div><div class="messages" id="messages"><div class="empty"><div style="font-size:40px;color:var(--pink)">✦</div><h2>Нийгэмлэгээ байгуул</h2><p>Өөрийн сервер үүсгэх эсвэл урилгын холбоосоор нэгдэж, сувагтаа чатлаарай.</p></div></div><form class="compose" id="sendForm"><div class="sticker-wrap"><button class="sticker-btn" id="stickerToggle" type="button" title="Стикэр сонгох">☺</button><div class="sticker-panel" id="stickerPanel"><div class="sticker-tabs" id="stickerTabs"></div><div class="sticker-grid" id="stickerGrid"></div></div></div><label class="btn attach-btn" for="chatImage" title="Зураг хавсаргах">＋<input id="chatImage" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden></label><textarea class="field" id="message" maxlength="4000" placeholder="Мессеж бичих… (Enter — илгээх, Shift+Enter — мөр шилжүүлэх)" disabled></textarea><button class="btn primary" id="sendBtn" disabled>Илгээх</button></form></main></div>
 <nav class="home-bottom" aria-label="Нийгэмлэгийн навигаци"><button type="button" id="navChannels" aria-label="Чат сувгууд">☷ СУВГУУД</button><button type="button" class="nav-chat" id="navChat" aria-label="Чат руу орох">✉ ЧАТ РУУ</button><a href="../" aria-label="LOREVERSE нүүр хуудас">⌂ НҮҮР</a></nav>
 <div class="modal" id="modal"><form class="dialog" id="modalForm"><h2 id="modalTitle">Сервер үүсгэх</h2><div id="modalFields"></div><div class="dialog-actions"><button class="btn" type="button" id="cancelModal">Болих</button><button class="btn primary" type="submit" id="modalSubmit">Үүсгэх</button></div></form></div><div class="toast" id="toast"></div>
@@ -241,9 +241,30 @@ async function loadMods(){
  });
 }
 $("modsToggle").onclick=()=>{$("modsPanel").classList.toggle("hidden");if(!$("modsPanel").classList.contains("hidden"))loadMods()};
+async function loadModRequests(){
+ if(!activeServer)return;
+ const {data,error}=await supabase.from("community_mod_requests").select("id,mod_name,description,status,admin_note,created_at,requested_by").eq("server_id",activeServer.id).order("created_at",{ascending:false}).limit(30);
+ if(error){$("modRequestsList").innerHTML='<p class="muted">'+esc(error.message)+'</p>';return}
+ const staff=["owner","admin","moderator"].includes(activeServer.role);
+ const rows=(data||[]).filter(r=>staff||r.requested_by===user.id);
+ const labels={pending:"Хүлээгдэж байна",reviewing:"Хянаж байна",approved:"Зөвшөөрсөн",rejected:"Татгалзсан",completed:"Хийгдсэн"};
+ $("modRequestsList").innerHTML=rows.length?rows.map(r=>'<article class="mod-card"><h3>'+esc(r.mod_name)+'</h3><p>'+esc(r.description)+'</p><div class="muted">'+labels[r.status]+' · '+new Date(r.created_at).toLocaleDateString("mn-MN")+'</div>'+(r.admin_note?'<p>Админы тэмдэглэл: '+esc(r.admin_note)+'</p>':'')+'</article>').join(""):'<p class="muted">Одоогоор MOD захиалга алга.</p>';
+}
+$("modRequestBtn").onclick=()=>{
+ if(!activeServer)return toast("Эхлээд сервер сонгоно уу");
+ showModal("MOD захиалга өгөх",'<p class="muted">Хүсэж буй MOD-ийн нэр болон ажиллах зарчмыг бичнэ үү. Захиалга серверийн админд харагдана.</p><label class="muted">MOD-ийн нэр</label><input class="field" id="modRequestName" maxlength="80" minlength="2" required placeholder="Жишээ: Reaction Roles"><label class="muted">Ямар боломж хэрэгтэй вэ?</label><textarea class="field" id="modRequestDescription" maxlength="1500" minlength="10" required placeholder="MOD юу хийх ёстойг дэлгэрэнгүй тайлбарлана уу"></textarea>',async()=>{
+  const name=$("modRequestName").value.trim(),description=$("modRequestDescription").value.trim();
+  if(name.length<2||description.length<10)return toast("Нэр болон тайлбараа бүрэн оруулна уу");
+  const {error}=await supabase.from("community_mod_requests").insert({server_id:activeServer.id,requested_by:user.id,mod_name:name,description});
+  if(error)throw error;
+  $("modal").classList.remove("open");toast("MOD захиалга илгээгдлээ");$("modRequestsPanel").classList.remove("hidden");await loadModRequests();
+ },"Захиалах");
+};
+$("modRequestsToggle")?.addEventListener("click",()=>{$("modRequestsPanel").classList.toggle("hidden");if(!$("modRequestsPanel").classList.contains("hidden"))loadModRequests()});
+
 
 function renderServers(){
- $("newChannelBtn").disabled=!activeServer||!["owner","admin"].includes(activeServer.role);$("modsToggle").disabled=!activeServer||!["owner","admin"].includes(activeServer.role);if(!activeServer)$("modsPanel").classList.add("hidden");
+ $("newChannelBtn").disabled=!activeServer||!["owner","admin"].includes(activeServer.role);$("modsToggle").disabled=!activeServer||!["owner","admin"].includes(activeServer.role);if(!activeServer)$("modsPanel").classList.add("hidden");$("modRequestBtn").disabled=!activeServer;if(!activeServer)$("modRequestsPanel").classList.add("hidden");
  $("inviteBtn").disabled=!activeServer||!["owner","admin","moderator"].includes(activeServer.role);
  $("homeBtn").classList.toggle("active",!activeServer);
  $("serverIcons").innerHTML=servers.map(s=>'<button class="server-icon '+(activeServer?.id===s.id?'active':'')+'" data-server="'+s.id+'" title="'+esc(s.name)+'">'+esc(s.name.slice(0,2).toUpperCase())+'</button>').join("");
@@ -261,6 +282,7 @@ async function selectServer(id){
  const {data:mem}=await supabase.from("community_server_members").select("user_id,role").eq("server_id",id);
  $("members").textContent=(mem||[]).length+" гишүүн";
  await loadMods();
+ await loadModRequests();
  renderServers();
  if(channels.length){if(!window.matchMedia("(max-width:1100px)").matches)await selectChannel(channels[0].id);}else{$("messages").innerHTML='<div class="empty">Энэ серверт суваг алга.</div>';$("message").disabled=true;$("sendBtn").disabled=true;}
 }
