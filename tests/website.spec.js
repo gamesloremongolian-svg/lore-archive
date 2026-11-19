@@ -16,7 +16,8 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('.hero h1')).toContainText('Дуртай ертөнцөө');
     await expect(page.locator('.cards .card')).toHaveCount(3);
     await expect(page.locator('.cards [data-category="all"]')).toHaveCount(0);
-    await expect(page.locator('.feature')).toBeVisible();
+    await expect(page.locator('.feature').first()).toBeVisible();
+    await expect(page.locator('.feature').nth(1)).toContainText('BUG HUNTER');
   });
 
   test('homepage exposes a description, primary navigation and working mobile menu', async ({ page }) => {
