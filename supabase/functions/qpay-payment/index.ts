@@ -278,35 +278,27 @@ Deno.serve(async (req: Request) => {
         .eq("id", payment.related_id).eq("user_id", user.id).maybeSingle();
       if (membershipReadError || !membership) return reply(500, { error: "Premium захиалгын мэдээлэл олдсонгүй." });
 
-      const paidAt = new Date().toISOString();
-      if (membership.status !== "active") {
-        const { data: plan } = await admin.from("membership_plans")
-          .select("duration_days").eq("plan_code", membership.plan_code).maybeSingle();
-        if (!plan?.duration_days) return reply(500, { error: "Premium багцын хугацаа олдсонгүй." });
-        const { data: activeRows } = await admin.from("memberships")
-          .select("ends_at").eq("user_id", user.id).eq("status", "active");
-        const now = Date.now();
-        const futureEnd = (activeRows || []).map((x: any) => x.ends_at ? Date.parse(x.ends_at) : 0)
-          .filter((n: number) => n > now).sort((a: number, b: number) => b - a)[0];
-        const startMs = futureEnd || now;
-        const startsAt = new Date(startMs).toISOString();
-        const endsAt = new Date(startMs + Number(plan.duration_days) * 86400000).toISOString();
-        const { error: activateError } = await admin.from("memberships")
-          .update({ status: "active", starts_at: startsAt, ends_at: endsAt })
-          .eq("id", membership.id).eq("user_id", user.id).neq("status", "active");
-        if (activateError) {
-          console.error("Membership activation failed", activateError);
-          return reply(500, { error: "Төлбөр баталгаажсан. Гэвч Premium эрх идэвхжүүлэхэд алдаа гарлаа. Админтай холбогдоно уу." });
-        }
+      const { data: plan, error: planReadError } = await admin.from("membership_plans")
+        .select("duration_days").eq("plan_code", membership.plan_code).maybeSingle();
+      if (planReadError || !plan?.duration_days || Number(plan.duration_days) <= 0) {
+        return reply(500, { error: "Premium багцын хугацаа олдсонгүй." });
       }
 
-      const { error: paidUpdateError } = await admin.from("payment_records")
-        .update({ status: "paid", paid_at: paidAt }).eq("id", payment.id).eq("user_id", user.id);
-      if (paidUpdateError) {
-        console.error("Payment paid status update failed", paidUpdateError);
-        return reply(500, { error: "Төлбөр баталгаажсан ч бүртгэлийг шинэчилж чадсангүй." });
+      // Settlement is one database transaction. The RPC serializes all membership
+      // extensions for this user and marks payment paid in the same commit.
+      const { data: settlement, error: settlementError } = await admin.rpc("settle_qpay_membership_payment", {
+        p_payment_id: payment.id,
+        p_user_id: user.id,
+        p_duration_days: Number(plan.duration_days),
+        p_paid_at: new Date().toISOString(),
+      });
+      if (settlementError || !settlement?.ok) {
+        console.error("Atomic QPay settlement failed", settlementError || settlement);
+        return reply(500, {
+          error: "Төлбөр баталгаажсан боловч Premium эрхийг атомик идэвхжүүлж чадсангүй. Админтай холбогдоно уу.",
+        });
       }
-      return reply(200, { ok: true, paid: true, status: "paid" });
+      return reply(200, { ok: true, paid: true, status: "paid", already_settled: Boolean(settlement.already_settled) });
     }
 
     return reply(400, { error: "action нь create_invoice эсвэл check_payment байна." });
