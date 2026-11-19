@@ -57,7 +57,7 @@ function addMessage(role,content,sources=[]){
   const el=document.createElement("article");el.className="msg "+role;
   const label=role==="user"?"ТА":"LOREVERSE AI";
   el.innerHTML='<span class="who">'+label+'</span><div class="body">'+esc(content).replace(/\n/g,"<br>")+'</div>';
-  if(role==="assistant"&&sources.length){const box=document.createElement("div");box.className="sources";box.textContent="Архиваас ашигласан материал:";for(const src of sources){const a=document.createElement("a");a.textContent=src.title||"Нийтлэл";a.href=src.urls?.[0]||("../archive/");a.target="_blank";a.rel="noopener noreferrer";box.append(a)}el.append(box)}
+  if(role==="assistant"&&sources.length){const box=document.createElement("div");box.className="sources";box.textContent="Архиваас ашигласан материал:";for(const src of sources){const a=document.createElement("a");a.textContent=src.title||"Нийтлэл";const sourceUrl=Array.isArray(src.urls)?src.urls.find(u=>typeof u==="string"&&/^https:\/\//i.test(u)):null;a.href=sourceUrl||("../archive/");a.target="_blank";a.rel="noopener noreferrer";box.append(a)}el.append(box)}
   $("messages").append(el);$("messages").scrollTop=$("messages").scrollHeight;
 }
 function setBusy(v){busy=v;$("send").disabled=v;$("question").disabled=v;$("send").textContent=v?"…":"Илгээх ↑";}
