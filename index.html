@@ -149,6 +149,13 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 .access-heading h2{font-size:clamp(22px,3vw,30px);line-height:1.2;letter-spacing:-.04em;margin:6px 0}
 .access-heading p{color:var(--muted);font-size:13px;margin:0}
 .access-grid{display:grid;grid-template-columns:minmax(0,720px);justify-content:center;gap:14px;align-items:start}
+.premium-account{display:grid;gap:12px;margin:14px 0;padding:14px;border:1px solid #e1e8df;border-radius:14px;background:#f8faf7}
+.membership-status h4,.payment-history h4{margin:0 0 8px;font-size:14px}
+.membership-status p{margin:5px 0;font-size:13px;color:var(--muted)}
+.payment-history-list{display:grid;gap:7px}
+.payment-history-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid #e5ebe3;font-size:12px}
+.payment-history-row strong{white-space:nowrap}
+
 .access-card{border:1px solid #e1e8df;border-radius:18px;padding:20px;background:linear-gradient(145deg,#fff,#f8faf7);min-width:0}
 .premium-card{background:linear-gradient(145deg,#f7faf5,#edf3e9);border-color:#dce7d6}
 .access-kicker{font-size:9px;letter-spacing:.18em;font-weight:850;color:#78915f}
@@ -287,6 +294,10 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
    <div class="premium-user" id="premiumUserPanel" hidden>
     <p id="premiumUserEmail"></p><button type="button" class="text-action" id="premiumSignOut">Гарах</button>
    </div>
+   <div class="premium-account" id="premiumAccountPanel" hidden>
+    <div class="membership-status"><h4>Миний Premium эрх</h4><p id="membershipStatus" role="status">Төлөв ачаалж байна...</p><p>Дуусах огноо: <strong id="membershipExpiry">—</strong></p></div>
+    <div class="payment-history"><h4>Төлбөрийн түүх</h4><div id="premiumPaymentHistory"><p class="auth-hint">Төлбөрийн түүх ачаалж байна...</p></div></div>
+   </div>
    <div class="plan-list" id="premiumPlans"><p class="auth-hint">Гишүүнчлэлийн багц ачаалж байна...</p></div>
    <div class="payment-box" id="premiumPaymentBox" hidden>
     <h4 id="paymentTitle">QPay төлбөр</h4><p id="paymentInstructions">QR код уншуулж төлбөрөө хийнэ үү.</p>
@@ -361,8 +372,27 @@ const premiumAuthStatus=document.getElementById("premiumAuthStatus");
 function setPremiumUser(user){
  currentPremiumUser=user||null;
  const signedIn=!!user;authPanel.hidden=signedIn;userPanel.hidden=!signedIn;
+ const accountPanel=document.getElementById("premiumAccountPanel");if(accountPanel){accountPanel.hidden=!signedIn;if(signedIn)loadPremiumAccount();}
  userEmail.textContent=signedIn?"Нэвтэрсэн: "+(user.email||""): "";
  plansPanel.querySelectorAll("button[data-plan-code]").forEach(b=>b.disabled=!signedIn);
+}
+async function loadPremiumAccount(){
+ if(!currentPremiumUser)return;
+ const panel=document.getElementById("premiumAccountPanel"),status=document.getElementById("membershipStatus"),expiry=document.getElementById("membershipExpiry"),history=document.getElementById("premiumPaymentHistory");
+ panel.hidden=false;status.textContent="Төлөв ачаалж байна...";expiry.textContent="—";history.innerHTML='<p class="auth-hint">Төлбөрийн түүх ачаалж байна...</p>';
+ const uid=currentPremiumUser.id;
+ const [mr,pr]=await Promise.all([
+  supabase.from("memberships").select("plan_code,status,starts_at,ends_at").eq("user_id",uid).order("created_at",{ascending:false}).limit(10),
+  supabase.from("payment_records").select("amount,currency,status,paid_at,created_at,purpose").eq("user_id",uid).eq("purpose","membership").order("created_at",{ascending:false}).limit(10)
+ ]);
+ if(mr.error){status.textContent="Premium эрхийн мэдээлэл уншиж чадсангүй."; }else{
+  const now=Date.now(),active=(mr.data||[]).filter(x=>x.status==="active"&&x.ends_at&&Date.parse(x.ends_at)>now).sort((a,b)=>Date.parse(b.ends_at)-Date.parse(a.ends_at))[0];
+  status.textContent=active?"Идэвхтэй":"Идэвхтэй Premium эрх алга";
+  expiry.textContent=active?new Date(active.ends_at).toLocaleDateString("mn-MN",{year:"numeric",month:"long",day:"numeric"}):"—";
+ }
+ if(pr.error){history.innerHTML='<p class="auth-hint">Төлбөрийн түүхийг уншиж чадсангүй.</p>';return;}
+ const rows=pr.data||[];
+ history.innerHTML=rows.length?'<div class="payment-history-list">'+rows.map(x=>'<div class="payment-history-row"><span>'+esc(new Date(x.paid_at||x.created_at).toLocaleDateString("mn-MN"))+' · '+(x.status==="paid"?"Төлөгдсөн":x.status==="pending"?"Хүлээгдэж буй":x.status==="failed"?"Амжилтгүй":"Цуцлагдсан")+'</span><strong>'+new Intl.NumberFormat("mn-MN").format(Number(x.amount||0))+' '+esc(x.currency||"MNT")+'</strong></div>').join("")+'</div>':'<p class="auth-hint">Одоогоор төлбөрийн түүх алга.</p>';
 }
 async function refreshPremiumSession(){const {data:{session}}=await supabase.auth.getSession();setPremiumUser(session?.user||null);}
 supabase.auth.onAuthStateChange((_event,session)=>{setPremiumUser(session?.user||null);});
@@ -410,7 +440,7 @@ document.getElementById("checkPremiumPayment")?.addEventListener("click",async()
  paymentStatus.textContent="Төлбөрийн төлөв шалгаж байна...";
  const {data,error}=await supabase.functions.invoke("qpay-payment",{body:{action:"check_payment",payment_id:currentPaymentId}});
  if(error||!data?.ok){paymentStatus.textContent=data?.error||error?.message||"Төлөв шалгаж чадсангүй.";return;}
- if(data.paid){paymentStatus.textContent="Төлбөр баталгаажлаа. Premium эрх идэвхжлээ.";await loadPremiumPlans();}
+ if(data.paid){paymentStatus.textContent="Төлбөр баталгаажлаа. Premium эрх идэвхжлээ.";await loadPremiumPlans();await loadPremiumAccount();}
  else paymentStatus.textContent="Төлбөр хараахан баталгаажаагүй байна. QPay-аар төлсний дараа дахин шалгана уу.";
 });
 
