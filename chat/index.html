@@ -114,7 +114,7 @@ $("authForm").addEventListener("submit",async e=>{
 async function enterChat(){
  if(!currentUser)return;
  await ensureProfile(currentUser);
- $("authWrap").classList.add("hidden");$("appShell").classList.remove("hidden");$("appShell").classList.add("hide-sidebar");
+ $("authWrap").classList.add("hidden");$("appShell").classList.remove("hidden","hide-sidebar");
  $("myName").textContent=myDisplayName;renderAvatar($("myAvatar"),myDisplayName,myAvatarUrl);
  await updatePresence();await loadMembers();await loadConversations();subscribeToConversationUpdates();
  if(refreshPresenceTimer)clearInterval(refreshPresenceTimer);
@@ -175,7 +175,7 @@ async function loadConversations(){
 async function openConversation(conversation,partner){
  activeConversation=conversation;activePartner=partner;
  $("chatTitle").textContent=partner.display_name||"Хувийн чат";$("chatSubtitle").textContent="Зөвхөн та хоёрын хоорондох яриа";$("onlineStatus").textContent="● PRIVATE";$("messageInput").disabled=false;$("sendButton").disabled=false;$("messageInput").placeholder="Мессеж бичих… (Enter — илгээх, Shift+Enter — мөр шилжүүлэх)";
- $("appShell").classList.remove("hide-sidebar");
+ $("appShell").classList.add("hide-sidebar");
  await loadMessages();
  if(messageChannel)await supabase.removeChannel(messageChannel);
  messageChannel=supabase.channel("direct-messages-"+conversation.id).on("postgres_changes",{event:"*",schema:"public",table:"direct_messages",filter:"conversation_id=eq."+conversation.id},async()=>{await loadMessages();await loadConversations();}).subscribe();
@@ -220,7 +220,7 @@ $("messageInput").addEventListener("keydown",e=>{
  }
 });
 $("refreshButton").onclick=async()=>{await loadMembers($("memberSearch").value);await loadConversations();if(activeConversation)await loadMessages();};
-$("mobileBack").onclick=()=>$("appShell").classList.add("hide-sidebar");
+$("mobileBack").onclick=()=>$("appShell").classList.remove("hide-sidebar");
 $("logoutButton").onclick=async()=>{if(refreshPresenceTimer)clearInterval(refreshPresenceTimer);if(messageChannel)await supabase.removeChannel(messageChannel);if(conversationChannel)await supabase.removeChannel(conversationChannel);messageChannel=null;conversationChannel=null;await supabase.auth.signOut({scope:"local"});currentUser=null;activeConversation=null;$("messageInput").disabled=false;$("sendButton").disabled=true;$("messageInput").value="";$("messageInput").placeholder="Мессежээ бичнэ үү… (илгээхийн тулд эхлээд гишүүн сонгоно)";$("appShell").classList.add("hidden");$("authWrap").classList.remove("hidden");setAuthMode("login");};
 
 const stickerSets={
