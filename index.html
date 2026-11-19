@@ -1245,6 +1245,56 @@ img,svg,video,canvas{max-width:100%}
 }
 </style>
 
+
+<style id="loreverse-anime-hub-v1">
+/* Anime-inspired discovery hub: responsive, readable, and keeps existing catalogue IDs intact. */
+.anime-showcase{position:relative;isolation:isolate;padding:clamp(18px,3vw,34px);border:1px solid #8e70e844;border-radius:28px;background:radial-gradient(ellipse at 88% 4%,#a86bff20,transparent 34%),radial-gradient(ellipse at 5% 100%,#ef8bcf12,transparent 38%),linear-gradient(145deg,#151326 0%,#101321 58%,#12192b 100%);box-shadow:0 22px 70px #0004;overflow:hidden}
+.anime-showcase:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.22;background-image:radial-gradient(#e8d9ff 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(120deg,#000,transparent 72%)}
+.anime-hub-intro{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(180px,.75fr);align-items:center;gap:18px;min-height:230px;padding:clamp(20px,4vw,42px);border:1px solid #b994ff36;border-radius:23px;background:linear-gradient(110deg,#211a39ee,#17182cee 62%,#18253aee);position:relative;overflow:hidden}
+.anime-hub-kicker{display:inline-flex;align-items:center;gap:8px;color:#e9b9ed;font-size:10px;font-weight:900;letter-spacing:.19em}
+.anime-hub-copy h2{font-size:clamp(27px,4.5vw,48px);line-height:1.12;letter-spacing:-.045em;margin:12px 0;color:#fff}
+.anime-hub-copy h2 span{background:linear-gradient(100deg,#c5a0ff,#f0a9d8 55%,#8ee8f0);color:transparent;background-clip:text}
+.anime-hub-copy p{max-width:570px;color:#c0bfd4;font-size:14px;line-height:1.8;margin:0}
+.anime-hub-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.anime-hub-actions a{min-height:43px;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:10px 16px;border-radius:12px;font-size:12px;font-weight:850}
+.anime-hub-primary{background:linear-gradient(110deg,#9b70ff,#bd83dc);color:#130f22;box-shadow:0 8px 24px #9b70ff35}
+.anime-hub-secondary{border:1px solid #bba1df55;background:#ffffff08;color:#f3eaff}
+.anime-hub-art{position:relative;min-height:180px;display:grid;place-items:center;overflow:hidden}
+.anime-hub-symbol{width:130px;height:130px;display:grid;place-items:center;border:1px solid #f0c7ff88;border-radius:42% 58% 55% 45%;background:radial-gradient(circle at 35% 28%,#f4c5e8,#a477dc 38%,#34315e 72%);color:#fff8ff;font-family:serif;font-size:65px;text-shadow:0 5px 24px #321c59;box-shadow:0 0 55px #c28cff55,inset 0 0 28px #fff5;transform:rotate(-8deg)}
+.anime-orbit{position:absolute;width:190px;height:76px;border:1px solid #d8b5ff77;border-radius:50%;transform:rotate(-28deg)}
+.orbit-two{width:210px;height:96px;transform:rotate(48deg);border-color:#83e7ed66}
+.anime-spark{position:absolute;color:#ffe2fa;text-shadow:0 0 15px #f0a9d8;font-size:24px}
+.spark-one{top:17%;right:15%}.spark-two{bottom:16%;left:12%;font-size:30px}
+.anime-hub-caption{position:absolute;bottom:0;color:#c5b6df;font-size:8px;font-weight:900;letter-spacing:.22em}
+.anime-quick-nav{display:flex;gap:9px;overflow-x:auto;padding:17px 1px 5px;scrollbar-width:none}
+.anime-quick-nav::-webkit-scrollbar{display:none}
+.anime-quick-nav a{flex:0 0 auto;padding:9px 13px;border:1px solid #b89cdb38;border-radius:999px;background:#ffffff08;color:#ded7ed;font-size:11px;font-weight:750;white-space:nowrap}
+.anime-quick-nav a:first-child{background:#9b70ff20;border-color:#b995ff75;color:#e6d5ff}
+.anime-showcase .anime-rail-block{scroll-margin-top:18px;margin:27px 0 25px}
+.anime-showcase .rail-heading{border-bottom-color:#a88bdc30;padding-bottom:12px}
+.anime-showcase .rail-heading h3{font-size:13px;letter-spacing:.1em}
+.anime-showcase .rail-heading span{color:#c4a2ff}
+.anime-showcase .anime-poster{flex-basis:clamp(145px,18vw,184px);min-height:275px;border-radius:15px;border-color:#a88bdc3d;box-shadow:0 8px 24px #0003}
+.anime-showcase .anime-poster:hover{border-color:#d6b5ff;box-shadow:0 14px 30px #0005}
+.anime-showcase .anime-source-note{padding:12px 14px;border-radius:12px;background:#ffffff07;color:#aeadc4;font-size:10px}
+@media(max-width:620px){
+ .anime-showcase{padding:13px;border-radius:21px}
+ .anime-hub-intro{grid-template-columns:1fr;min-height:0;padding:21px 17px 13px}
+ .anime-hub-copy h2{font-size:30px}
+ .anime-hub-copy p{font-size:13px}
+ .anime-hub-art{min-height:125px;margin-top:2px}
+ .anime-hub-symbol{width:92px;height:92px;font-size:46px}
+ .anime-orbit{width:145px;height:58px}.orbit-two{width:160px;height:70px}
+ .anime-hub-caption{font-size:7px}
+ .anime-quick-nav{gap:7px;padding-top:13px}
+ .anime-quick-nav a{padding:9px 11px;font-size:10px}
+ .anime-showcase .anime-poster{flex-basis:148px;min-height:245px}
+ .anime-showcase .rail-heading h3{font-size:11px}
+ .anime-showcase .rail-heading span{font-size:8px}
+}
+@media(prefers-reduced-motion:reduce){.anime-showcase *{scroll-behavior:auto!important;transition:none!important}}
+</style>
+
 </head>
 <body>
 <a class="skip-link" href="#main-content">Үндсэн агуулга руу очих</a>
@@ -1427,10 +1477,20 @@ img,svg,video,canvas{max-width:100%}
 
 <section class="stats"><div class="stat"><strong>07</strong><span>Эхний тоглоомын ертөнц</span></div><div class="stat"><strong>01</strong><span>Нэгдсэн lore архив</span></div><div class="stat"><strong>04</strong><span>Интерфэйсийн хэл</span></div></section>
 <section class="section anime-showcase" id="anime">
+ <div class="anime-hub-intro">
+  <div class="anime-hub-copy">
+   <span class="anime-hub-kicker">✦ LOREVERSE ANIME UNIVERSE</span>
+   <h2>Анимэ ертөнцөө <span>нээцгээе</span></h2>
+   <p>Дуртай цуврал, кино, дүрүүдээ нэг дороос олж, түүх болон ертөнцийнх нь талаар судлаарай.</p>
+   <div class="anime-hub-actions"><a href="#catalog" class="anime-hub-primary">Анимэ хайх <span>↗</span></a><a href="#archive" class="anime-hub-secondary">Лорэ унших</a></div>
+  </div>
+  <div class="anime-hub-art" aria-hidden="true"><span class="anime-orbit orbit-one"></span><span class="anime-orbit orbit-two"></span><span class="anime-spark spark-one">✦</span><span class="anime-spark spark-two">✧</span><span class="anime-hub-symbol">桜</span><span class="anime-hub-caption">STORIES BEYOND WORLDS</span></div>
+ </div>
+ <nav class="anime-quick-nav" aria-label="Анимэ ангилал"><a href="#anime-popular">Алдартай цуврал</a><a href="#anime-movies">Анимэ кино</a><a href="#anime-trending">Тренд</a><a href="#catalog">Бүгдийг хайх</a></nav>
  <div class="section-head"><div><div class="eyebrow">DISCOVER ANIME</div><h2>Өнөөдрийн анимэ</h2><p>Алдартай, трэнд болж буй болон шинээр гарсан анимэ бүтээлүүд.</p></div><a class="anime-more" href="#catalog">Бүх анимэ ↗</a></div>
- <div class="anime-rail-block"><div class="rail-heading"><h3>АЛДАРТАЙ ЦУВРАЛ</h3><span>POPULAR SERIES</span></div><div class="carousel-viewport"><div class="carousel-track anime-poster-rail" id="animePopularRail"><div class="anime-loading">Анимэ зургуудыг ачаалж байна…</div></div></div></div>
- <div class="anime-rail-block"><div class="rail-heading"><h3>АНИМЭ КИНО</h3><span>ANIME MOVIES</span></div><div class="carousel-viewport"><div class="carousel-track anime-poster-rail" id="animeMovieRail"><div class="anime-loading">Киноны постеруудыг ачаалж байна…</div></div></div></div>
- <div class="anime-rail-block"><div class="rail-heading"><h3>ТРЭНД БОЛЖ БУЙ</h3><span>TRENDING NOW</span></div><div class="carousel-viewport"><div class="carousel-track anime-poster-rail" id="animeTrendingRail"><div class="anime-loading">Шинэ мэдээлэл ачаалж байна…</div></div></div></div>
+ <div class="anime-rail-block" id="anime-popular"><div class="rail-heading"><h3>АЛДАРТАЙ ЦУВРАЛ</h3><span>POPULAR SERIES</span></div><div class="carousel-viewport"><div class="carousel-track anime-poster-rail" id="animePopularRail"><div class="anime-loading">Анимэ зургуудыг ачаалж байна…</div></div></div></div>
+ <div class="anime-rail-block" id="anime-movies"><div class="rail-heading"><h3>АНИМЭ КИНО</h3><span>ANIME MOVIES</span></div><div class="carousel-viewport"><div class="carousel-track anime-poster-rail" id="animeMovieRail"><div class="anime-loading">Киноны постеруудыг ачаалж байна…</div></div></div></div>
+ <div class="anime-rail-block" id="anime-trending"><div class="rail-heading"><h3>ТРЭНД БОЛЖ БУЙ</h3><span>TRENDING NOW</span></div><div class="carousel-viewport"><div class="carousel-track anime-poster-rail" id="animeTrendingRail"><div class="anime-loading">Шинэ мэдээлэл ачаалж байна…</div></div></div></div>
  <p class="anime-source-note" id="animeSourceNote">Зургийн мэдээлэл AniList каталогоос автоматаар татагдана.</p>
 </section>
 
