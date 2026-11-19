@@ -84,7 +84,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
 const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
 const $=id=>document.getElementById(id);
 const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let currentUser=null,myDisplayName="Member",myAvatarUrl=null,activeConversation=null,activePartner=null,messageChannel=null,conversationChannel=null,refreshPresenceTimer=null,memberCache=[],friendIds=new Set(),notificationChannel=null,friendChannel=null;
+let currentUser=null,myDisplayName="Member",myAvatarUrl=null,activeConversation=null,activePartner=null,messageChannel=null,conversationChannel=null,refreshPresenceTimer=null,memberCache=[],friendIds=new Set(),pendingFriendIds=new Set(),notificationChannel=null,friendChannel=null;
 function initials(name){return String(name||"L").trim().split(/\s+/).slice(0,2).map(x=>x[0]||"").join("").toUpperCase()||"L";}
 function renderAvatar(el,name,url){el.innerHTML=url?`<img src="${safe(url)}" alt="${safe(name)}">`:safe(initials(name));}
 function note(s){$("authNote").textContent=s;}
@@ -135,7 +135,7 @@ async function loadMembers(query=""){
 function renderMembers(){
  const el=$("memberResults");
  if(!memberCache.length){el.innerHTML='<p class="hint">Одоогоор өөр бүртгэлтэй гишүүн алга. Өөр аккаунтаар бүртгүүлсэн хүн нэмэгдсэний дараа эндээс сонгож чатлана.</p>';return;}
- el.innerHTML=memberCache.map(m=>'<div class="member"><span class="avatar small">'+(m.avatar_url?'<img src="'+safe(m.avatar_url)+'" alt="">':safe(initials(m.display_name)))+'</span><span style="min-width:0;flex:1"><span class="member-name">'+safe(m.display_name)+'</span><span class="member-meta">Rank XP · '+Number(m.total_xp||0).toLocaleString("mn-MN")+'</span></span><span class="member-actions">'+(friendIds.has(m.id)?'<button class="mini-action" type="button" data-chat="'+safe(m.id)+'">Чат</button>':'<button class="mini-action" type="button" data-friend="'+safe(m.id)+'">+ Найз</button>')+'</span></div>').join("");
+ el.innerHTML=memberCache.map(m=>'<div class="member"><span class="avatar small">'+(m.avatar_url?'<img src="'+safe(m.avatar_url)+'" alt="">':safe(initials(m.display_name)))+'</span><span style="min-width:0;flex:1"><span class="member-name">'+safe(m.display_name)+'</span><span class="member-meta">Rank XP · '+Number(m.total_xp||0).toLocaleString("mn-MN")+'</span></span><span class="member-actions">'+(friendIds.has(m.id)?'<button class="mini-action" type="button" data-chat="'+safe(m.id)+'">Чат</button>':pendingFriendIds.has(m.id)?'<button class="mini-action" type="button" disabled>Илгээсэн</button>':'<button class="mini-action" type="button" data-friend="'+safe(m.id)+'">+ Найз</button>')+'</span></div>').join("");
  el.querySelectorAll("[data-chat]").forEach(b=>b.onclick=()=>startConversation(b.dataset.chat));
  el.querySelectorAll("[data-friend]").forEach(b=>b.onclick=()=>sendFriendRequest(b.dataset.friend,b));
 }
@@ -151,7 +151,7 @@ async function loadFriends(){
 async function loadFriendRequests(){
  const {data,error}=await supabase.rpc("list_friend_requests");
  if(error){$("friendRequestList").innerHTML='<p class="hint">'+safe(error.message)+'</p>';return;}
- const rows=data||[],incoming=rows.filter(x=>x.direction==="incoming");
+ const rows=data||[],incoming=rows.filter(x=>x.direction==="incoming");pendingFriendIds=new Set(rows.filter(x=>x.direction==="outgoing").map(x=>x.user_id));
  $("friendRequestCount").textContent=String(incoming.length);$("friendRequestCount").classList.toggle("hidden",!incoming.length);
  $("friendRequestList").innerHTML=rows.length?rows.map(x=>'<div class="friend-row"><span><b>'+safe(x.display_name)+'</b><small>'+(x.direction==="incoming"?"Танд хүсэлт илгээсэн":"Таны илгээсэн хүсэлт")+'</small></span>'+(x.direction==="incoming"?'<button class="mini-action" type="button" data-accept="'+safe(x.request_id)+'">Зөвшөөрөх</button><button class="mini-action" type="button" data-reject="'+safe(x.request_id)+'">Татгалзах</button>':'<small>Хүлээгдэж буй</small>')+'</div>').join(""):'<p class="hint">Шинэ найзын хүсэлт алга.</p>';
  $("friendRequestList").querySelectorAll("[data-accept]").forEach(b=>b.onclick=()=>respondFriendRequest(b.dataset.accept,true,b));
