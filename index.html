@@ -86,19 +86,19 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 @media(prefers-reduced-motion:reduce){.scrolling-track{animation:none}}
 
 
-/* Vertical top-to-bottom illustrated category scroller */
-.vertical-category-marquee{width:min(640px,calc(100% - 28px));height:184px;margin:28px auto 30px;overflow:hidden;position:relative;border:1px solid #e3e9e0;border-radius:18px;background:#f7f9f6}
-.vertical-category-marquee:before,.vertical-category-marquee:after{content:"";position:absolute;left:0;right:0;height:25px;z-index:2;pointer-events:none}
-.vertical-category-marquee:before{top:0;background:linear-gradient(#f7f9f6,transparent)}
-.vertical-category-marquee:after{bottom:0;background:linear-gradient(transparent,#f7f9f6)}
-.vertical-category-track{display:flex;flex-direction:column;gap:10px;padding:10px;animation:vertical-category-flow 18s linear infinite}
-.vertical-category-marquee:hover .vertical-category-track{animation-play-state:paused}
-.vertical-category-item{height:105px;min-height:105px;display:flex;align-items:center;gap:14px;overflow:hidden;position:relative;border:1px solid #e0e7dd;border-radius:13px;background:#fff;color:#263126;text-decoration:none}
-.vertical-category-item img{width:145px;height:105px;object-fit:cover;flex:0 0 145px}
-.vertical-category-item strong{font-size:17px;font-weight:850}
-@keyframes vertical-category-flow{from{transform:translateY(-50%)}to{transform:translateY(0)}}
-@media(max-width:520px){.vertical-category-marquee{height:164px;margin:22px auto}.vertical-category-item{height:92px;min-height:92px;gap:12px}.vertical-category-item img{width:126px;height:92px;flex-basis:126px}.vertical-category-item strong{font-size:15px}}
-@media(prefers-reduced-motion:reduce){.vertical-category-track{animation:none}}
+/* User-provided scroll-menu structure with vertical continuous motion */
+.scroll-menu{width:min(640px,calc(100% - 28px));height:184px;margin:28px auto 30px;overflow:hidden;position:relative;border:1px solid #e3e9e0;border-radius:18px;background:#f7f9f6}
+.scroll-menu:before,.scroll-menu:after{content:"";position:absolute;left:0;right:0;height:24px;z-index:2;pointer-events:none}
+.scroll-menu:before{top:0;background:linear-gradient(#f7f9f6,transparent)}
+.scroll-menu:after{bottom:0;background:linear-gradient(transparent,#f7f9f6)}
+.scroll-menu-track{display:flex;flex-direction:column;gap:10px;padding:10px;animation:scroll-menu-down 18s linear infinite}
+.scroll-menu:hover .scroll-menu-track,.scroll-menu:focus-within .scroll-menu-track{animation-play-state:paused}
+.menu-item{height:105px;min-height:105px;display:flex;align-items:center;gap:14px;overflow:hidden;position:relative;border:1px solid #e0e7dd;border-radius:13px;background:#fff;color:#263126;text-decoration:none}
+.menu-item img{width:145px;height:105px;object-fit:cover;flex:0 0 145px}
+.menu-item span{font-size:17px;font-weight:850}
+@keyframes scroll-menu-down{from{transform:translateY(-50%)}to{transform:translateY(0)}}
+@media(max-width:520px){.scroll-menu{height:164px;margin:22px auto}.menu-item{height:92px;min-height:92px;gap:12px}.menu-item img{width:126px;height:92px;flex-basis:126px}.menu-item span{font-size:15px}}
+@media(prefers-reduced-motion:reduce){.scroll-menu-track{animation:none}}
 </style>
 </head>
 <body>
@@ -178,14 +178,14 @@ cards.forEach((x)=>x.addEventListener("click",()=>{showCategory(x.dataset.catego
 document.getElementById("closeCategoryResults").addEventListener("click",()=>{panel.hidden=true;active=null;cards.forEach(x=>x.setAttribute("aria-pressed","false"));});
 </script>
 
-<section class="vertical-category-marquee" aria-label="Ангиллуудын босоо урсдаг цэс">
- <div class="vertical-category-track">
-  <a class="vertical-category-item" href="./#anime"><img src="./assets/images/category-anime.svg" alt=""><strong>Анимэ</strong></a>
-  <a class="vertical-category-item" href="./#manga"><img src="./assets/images/category-manga.svg" alt=""><strong>Манга</strong></a>
-  <a class="vertical-category-item" href="./games/"><img src="./assets/images/category-game.svg" alt=""><strong>Тоглоом</strong></a>
-  <a class="vertical-category-item" href="./#anime" aria-hidden="true" tabindex="-1"><img src="./assets/images/category-anime.svg" alt=""><strong>Анимэ</strong></a>
-  <a class="vertical-category-item" href="./#manga" aria-hidden="true" tabindex="-1"><img src="./assets/images/category-manga.svg" alt=""><strong>Манга</strong></a>
-  <a class="vertical-category-item" href="./games/" aria-hidden="true" tabindex="-1"><img src="./assets/images/category-game.svg" alt=""><strong>Тоглоом</strong></a>
- </div>
-</section>
+<div class="scroll-menu" aria-label="Анимэ, манга, тоглоомын урсдаг цэс">
+  <div class="scroll-menu-track">
+    <a href="./#anime" class="menu-item"><img src="./assets/images/category-anime.svg" alt="Анимэ"><span>Анимэ</span></a>
+    <a href="./#manga" class="menu-item"><img src="./assets/images/category-manga.svg" alt="Манга"><span>Манга</span></a>
+    <a href="./games/" class="menu-item"><img src="./assets/images/category-game.svg" alt="Тоглоом"><span>Тоглоом</span></a>
+    <a href="./#anime" class="menu-item" aria-hidden="true" tabindex="-1"><img src="./assets/images/category-anime.svg" alt=""><span>Анимэ</span></a>
+    <a href="./#manga" class="menu-item" aria-hidden="true" tabindex="-1"><img src="./assets/images/category-manga.svg" alt=""><span>Манга</span></a>
+    <a href="./games/" class="menu-item" aria-hidden="true" tabindex="-1"><img src="./assets/images/category-game.svg" alt=""><span>Тоглоом</span></a>
+  </div>
+</div>
 </body></html>
