@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10131c"><meta name="description" content="LOREVERSE AI туслах — Монгол хэлээр lore судалгаа, тоглоомын тайлбар болон архивын хайлт.">
+<title>AI туслах — LOREVERSE</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0e16;--panel:#141a27;--panel2:#1b2434;--line:#2b374b;--text:#eef3fb;--muted:#9eacc0;--accent:#a6d77a;--accent2:#76d6df;--danger:#ff9b9b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -15%,#25354a 0,transparent 50%),var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+a{color:inherit;text-decoration:none}button,input,textarea{font:inherit}button{cursor:pointer}
+.top{height:62px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 max(16px,calc((100vw - 1200px)/2));background:#0b0e16eF;position:sticky;top:0;z-index:10;backdrop-filter:blur(16px)}
+.brand{font-weight:950;letter-spacing:.12em}.brand span{color:var(--accent)}.toplinks{display:flex;gap:18px;color:var(--muted);font-size:13px}.toplinks a:hover{color:var(--accent)}
+.shell{max-width:1200px;margin:0 auto;padding:28px 18px 50px}.intro{text-align:center;margin:4px auto 24px;max-width:720px}.eyebrow{color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}.intro h1{font-size:clamp(30px,5vw,46px);line-height:1.08;margin:9px 0 10px}.intro p{color:var(--muted);margin:0}
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:16px;align-items:stretch;min-height:620px}
+.side,.chat{border:1px solid var(--line);border-radius:20px;background:#121825eF;overflow:hidden}
+.side{padding:14px;display:flex;flex-direction:column;gap:12px}.newchat{width:100%;padding:12px;border:1px solid #526b48;background:#273724;color:#eaffdc;border-radius:12px;font-weight:800}
+.sidehead{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;font-weight:800;letter-spacing:.08em}.history{display:flex;flex-direction:column;gap:6px;overflow:auto;max-height:430px}.history button{border:1px solid transparent;background:transparent;color:var(--muted);text-align:left;padding:10px;border-radius:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.history button.active,.history button:hover{background:var(--panel2);border-color:var(--line);color:var(--text)}
+.side-note{margin-top:auto;padding:12px;border-radius:12px;background:#192334;color:var(--muted);font-size:12px}
+.chat{display:flex;flex-direction:column;min-height:620px}.chathead{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}.statusline{color:var(--muted);font-size:12px}.online{display:inline-block;width:7px;height:7px;border-radius:50%;background:#8ed77a;margin-right:7px}.limit{font-size:12px;color:var(--accent)}
+.messages{flex:1;padding:22px;overflow:auto;display:flex;flex-direction:column;gap:16px;max-height:650px;min-height:390px}.welcome{margin:auto;text-align:center;max-width:520px}.orb{width:62px;height:62px;border-radius:22px;margin:0 auto 15px;display:grid;place-items:center;background:linear-gradient(135deg,#314a3b,#263e56);border:1px solid #526c61;font-size:27px}.welcome h2{margin:0 0 8px;font-size:22px}.welcome p{margin:0;color:var(--muted)}.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:20px}.chips button{border:1px solid var(--line);background:var(--panel2);color:#dce8f5;padding:9px 12px;border-radius:999px;font-size:12px}
+.msg{max-width:min(86%,760px);padding:13px 15px;border-radius:15px;white-space:pre-wrap;overflow-wrap:anywhere}.msg.user{align-self:flex-end;background:#2a3d30;border:1px solid #48654c}.msg.assistant{align-self:flex-start;background:#1a2433;border:1px solid #2d3b50}.msg .who{display:block;color:var(--accent);font-size:10px;font-weight:900;letter-spacing:.1em;margin-bottom:6px}.msg.user .who{color:#c3d8ad}.msg a{color:var(--accent2);text-decoration:underline}.typing{color:var(--muted);font-size:13px;padding:8px 0}
+.composer{border-top:1px solid var(--line);padding:14px;display:flex;gap:10px;align-items:flex-end}.composer textarea{flex:1;resize:none;min-height:48px;max-height:140px;padding:13px 14px;background:#0d1420;border:1px solid var(--line);border-radius:13px;color:var(--text);outline:none}.composer textarea:focus{border-color:#83a96b}.send{border:0;border-radius:13px;background:var(--accent);color:#15200f;font-weight:900;padding:13px 18px;min-height:48px}.send:disabled{opacity:.45;cursor:not-allowed}.fineprint{padding:0 16px 13px;color:#7f8da2;font-size:11px;text-align:center}.toolrow{display:flex;gap:8px;align-items:center}.toolrow button{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:9px;padding:7px 9px;font-size:12px}
+.sources{margin-top:10px;padding-top:8px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}.sources a{display:block;margin-top:4px}
+.notice{margin:12px 18px 0;padding:10px 12px;border:1px solid #6a5430;background:#302819;color:#f3d9a0;border-radius:10px;font-size:12px;display:none}
+@media(max-width:760px){.top{height:56px;padding:0 14px}.toplinks a:not(:last-child){display:none}.shell{padding:20px 10px 30px}.intro{margin-bottom:17px}.layout{display:flex;flex-direction:column;min-height:0}.side{padding:10px;gap:8px}.sidehead,.side-note{display:none}.history{display:none}.history.open{display:flex;max-height:180px}.newchat{padding:10px}.chat{min-height:calc(100dvh - 280px);border-radius:16px}.messages{min-height:340px;max-height:none;padding:15px}.msg{max-width:94%}.composer{padding:10px;gap:7px}.send{padding:11px 13px}.toolrow button{padding:6px 7px}.chathead{padding:12px}.fineprint{font-size:10px}}
+</style>
+</head>
+<body>
+<header class="top"><a class="brand" href="../">LORE<span>VERSE</span></a><nav class="toplinks"><a href="../archive/">Lore архив</a><a href="../games/">Тоглоомууд</a><a href="../community/">Нийгэмлэг</a><a href="../profile/">Профайл</a></nav></header>
+<main class="shell">
+<section class="intro"><div class="eyebrow">LOREVERSE INTELLIGENCE</div><h1>AI туслах</h1><p>Тоглоомын ертөнц, дүрийн түүх, lore болон LOREVERSE архивын талаар Монгол хэлээр асуугаарай.</p></section>
+<div class="layout">
+<aside class="side">
+<button class="newchat" id="newChat">＋ Шинэ яриа эхлүүлэх</button>
+<div class="sidehead"><span>МИНИЙ ЯРИАНУУД</span><button id="toggleHistory" style="background:none;border:0;color:var(--muted)">⌄</button></div>
+<div class="history" id="history"></div>
+<div class="side-note" id="accountNote">Зочин горим · Өдөрт 3 асуулт. Бүртгэлээр нэвтэрвэл өдөрт 10 асуулт болон ярианы түүх хадгалах боломжтой.</div>
+</aside>
+<section class="chat">
+<div class="chathead"><div><b>✦ LOREVERSE AI</b><div class="statusline"><span class="online"></span><span id="accountStatus">Зочин горим</span></div></div><div class="toolrow"><span class="limit" id="quota">Өдөрт 3 асуулт</span><button id="clearChat">Цэвэрлэх</button></div></div>
+<div class="notice" id="notice"></div>
+<div class="messages" id="messages"><div class="welcome" id="welcome"><div class="orb">✦</div><h2>Юу мэдэхийг хүсэж байна вэ?</h2><p>Би эхлээд LOREVERSE-ийн нийтлэгдсэн архивыг хайж, олдсон эх сурвалжид тулгуурлан хариулна. Баримт ба таамгийг ялгаж өгнө.</p><div class="chips"><button>Albedo-ийн гарал үүсэл юу вэ?</button><button>Genshin-ийн Архонуудын түүхийг тайлбарла</button><button>ANANTA-ийн ертөнцийн талаар юу мэдэгдэж байна?</button><button>Wuthering Waves-ийн Resonator гэж юу вэ?</button></div></div></div>
+<div class="composer"><textarea id="question" maxlength="1800" rows="1" placeholder="Асуултаа энд бичнэ үү…"></textarea><button class="send" id="send">Илгээх ↑</button></div>
+<div class="fineprint">AI-ийн хариултад алдаа байж болно. Чухал мэдээллийг эх сурвалжаар нягтлаарай.</div>
+</section>
+</div>
+</main>
+<script type="module">
+import {createClient} from "https://esm.sh/@supabase/supabase-js@2.119.0";
+const sb=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let user=null,conversationId=null,busy=false,remaining=null;
+function notice(msg){$("notice").textContent=msg;$("notice").style.display=msg?"block":"none";}
+function addMessage(role,content,sources=[]){
+  $("welcome")?.remove();
+  const el=document.createElement("article");el.className="msg "+role;
+  const label=role==="user"?"ТА":"LOREVERSE AI";
+  el.innerHTML='<span class="who">'+label+'</span><div class="body">'+esc(content).replace(/\n/g,"<br>")+'</div>';
+  if(role==="assistant"&&sources.length){const box=document.createElement("div");box.className="sources";box.textContent="Архиваас ашигласан материал:";for(const src of sources){const a=document.createElement("a");a.textContent=src.title||"Нийтлэл";a.href=src.urls?.[0]||("../archive/");a.target="_blank";a.rel="noopener noreferrer";box.append(a)}el.append(box)}
+  $("messages").append(el);$("messages").scrollTop=$("messages").scrollHeight;
+}
+function setBusy(v){busy=v;$("send").disabled=v;$("question").disabled=v;$("send").textContent=v?"…":"Илгээх ↑";}
+async function loadHistory(){
+  if(!user)return;
+  const {data,error}=await sb.from("lore_ai_conversations").select("id,title,updated_at").eq("user_id",user.id).order("updated_at",{ascending:false}).limit(25);
+  if(error){console.warn("AI history",error.message);return}
+  $("history").innerHTML="";
+  (data||[]).forEach(row=>{const b=document.createElement("button");b.textContent=row.title||"Шинэ яриа";b.className=row.id===conversationId?"active":"";b.onclick=()=>openConversation(row.id);$("history").append(b)});
+}
+async function openConversation(id){
+  const {data,error}=await sb.from("lore_ai_messages").select("role,content,sources,created_at").eq("conversation_id",id).eq("user_id",user.id).order("created_at",{ascending:true}).limit(100);
+  if(error){notice("Ярианы түүхийг ачаалж чадсангүй.");return}
+  conversationId=id;$("messages").innerHTML="";
+  if(!data?.length){$("messages").innerHTML='<div class="welcome"><div class="orb">✦</div><h2>Яриа хоосон байна</h2></div>'}
+  else data.forEach(m=>addMessage(m.role,m.content,m.sources||[]));
+  await loadHistory();
+}
+async function newConversation(){
+  conversationId=null;$("messages").innerHTML='<div class="welcome" id="welcome"><div class="orb">✦</div><h2>Шинэ яриа</h2><p>Асуултаа бичээд эхлээрэй.</p></div>';notice("");await loadHistory();
+}
+async function sendQuestion(text){
+  const question=(text??$("question").value).trim();if(!question||busy)return;
+  $("question").value="";addMessage("user",question);setBusy(true);notice("");
+  const typing=document.createElement("div");typing.className="typing";typing.textContent="LOREVERSE AI хариулт бэлтгэж байна…";$("messages").append(typing);$("messages").scrollTop=$("messages").scrollHeight;
+  try{
+    if(user&&!conversationId){
+      const {data,error}=await sb.from("lore_ai_conversations").insert({user_id:user.id,title:question.slice(0,80)}).select("id").single();
+      if(error)throw new Error("Яриаг хадгалж чадсангүй: "+error.message);
+      conversationId=data.id;
+    }
+    const {data,error}=await sb.functions.invoke("lore-ai",{body:{question,conversation_id:conversationId}});
+    if(error)throw new Error(data?.error||error.message||"AI үйлчилгээтэй холбогдож чадсангүй.");
+    if(data?.error)throw new Error(data.error);
+    remaining=data.remaining;
+    if(typeof remaining==="number")$("quota").textContent="Үлдсэн: "+remaining;
+    typing.remove();addMessage("assistant",data.answer||"Хариулт ирсэнгүй.",data.sources||[]);
+    if(user){await loadHistory();$("accountStatus").textContent="Бүртгэлтэй · Түүх хадгалагдана"}
+  }catch(e){typing.remove();notice(e.message||"Алдаа гарлаа.");}
+  finally{setBusy(false);$("question").focus()}
+}
+$("send").onclick=()=>sendQuestion();
+$("question").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendQuestion()}});
+$("question").addEventListener("input",e=>{e.target.style.height="auto";e.target.style.height=Math.min(e.target.scrollHeight,140)+"px"});
+$("newChat").onclick=newConversation;
+$("clearChat").onclick=()=>{if(user){newConversation()}else{$("messages").innerHTML="";notice("")}};
+$("toggleHistory").onclick=()=>$("history").classList.toggle("open");
+document.querySelectorAll(".chips button").forEach(b=>b.onclick=()=>sendQuestion(b.textContent));
+(async()=>{
+  const {data}=await sb.auth.getSession();user=data.session?.user||null;
+  if(user){
+    $("accountStatus").textContent="Бүртгэлтэй · Түүх хадгалагдана";
+    $("quota").textContent="Өдөрт 10 асуулт";
+    $("accountNote").textContent="Бүртгэлтэй хэрэглэгч · Өдөрт 10 асуулт. Таны ярианы түүх бусдад харагдахгүй.";
+    await loadHistory();
+  }
+})();
+</script>
+</body></html>
