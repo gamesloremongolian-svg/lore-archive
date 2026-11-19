@@ -41,6 +41,8 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 .card p,.card .category-tag{display:none}
 .card[aria-pressed="true"]{transform:translateY(-2px)}
 @media(max-width:520px){.cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.card{min-height:58px;padding:7px 3px;gap:5px}.symbol{flex-basis:26px;width:26px;height:26px;font-size:14px}.card h3{font-size:clamp(9px,2.65vw,12px)}}
+
+.category-strip{padding-top:10px;padding-bottom:4px}.category-strip .cards{margin:0}@media(max-width:850px){.category-strip{padding-top:8px}}
 </style>
 </head>
 <body>
@@ -50,15 +52,17 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 <nav id="mainNav"><a href="./universe-hub/">Universe Hub</a><a href="./editorial/">Lore & Articles</a><a href="./archive/">Archive</a><a href="./games/">Games</a><a href="./community/">Community</a><a class="nav-cta" href="./universe-hub/">Ертөнцүүдийг үзэх</a></nav>
 <button class="menu" id="menuBtn" aria-label="Цэс нээх" aria-expanded="false">Цэс ☰</button>
 </div></header>
+<div class="wrap category-strip"><div class="cards">
+<button class="card" type="button" data-category="anime" aria-pressed="false"><div class="symbol">✦</div></div>
+
 <main id="main-content" tabindex="-1">
 <section class="wrap hero">
 <div><div class="eyebrow">MONGOLIAN LORE UNIVERSE</div><h1>Дуртай ертөнцөө <em>илүү гүнзгий</em> нээ.</h1><p class="lead">Anime, manga, тоглоомын ертөнцийн түүх, дүрүүд, нууц болон тайлбаруудыг нэг дороос. LOREVERSE — сонирхлоос мэдлэг рүү.</p><div class="actions"><a class="btn" href="./universe-hub/">Ертөнцөөр аялах ↗</a><a class="btn secondary" href="./editorial/">Шинэ нийтлэлүүд</a></div></div>
 <div class="art"><img src="./assets/images/a_clean_high_resolution_anime_style_png_illustrat.png" alt="LOREVERSE-ийн мөнгөлөг үстэй, ногоон хувцаст fantasy анимэ дүр"></div>
 </section>
 <section class="wrap">
-<div class="section-head"><div><div class="eyebrow">DISCOVER</div><h2>Өөрийн ертөнцөө сонго</h2><p>Сонирхсон чиглэлээрээ судалж, шинэ зүйл нээ.</p></div></div>
-<div class="cards">
-<button class="card" type="button" data-category="anime" aria-pressed="false"><div class="symbol">✦</div><h3>Anime Universe</h3><p>Анимэгийн дүрүүд, ертөнцийн бүтэц, үйл явдал ба нууц.</p><span class="category-tag">ANIME · CHARACTERS</span></button>
+
+<h3>Anime Universe</h3><p>Анимэгийн дүрүүд, ертөнцийн бүтэц, үйл явдал ба нууц.</p><span class="category-tag">ANIME · CHARACTERS</span></button>
 <button class="card" type="button" data-category="manga" aria-pressed="false"><div class="symbol">▤</div><h3>Manga & Novel</h3><p>Манга, вебтүүн, ранобэгийн бүлэг, зохиол ба унших сан.</p><span class="category-tag">MANGA · NOVEL</span></button>
 <button class="card" type="button" data-category="game" aria-pressed="false"><div class="symbol">◈</div><h3>Game Worlds</h3><p>Тоглоомын ертөнц, даалгавар, lore ба далд нууцууд.</p><span class="category-tag">GAMES · LORE</span></button>
 
