@@ -863,7 +863,7 @@ loadArchiveStats();
 
 /* Premium membership */
 const authPanel=document.getElementById("premiumAuthPanel"),userPanel=document.getElementById("premiumUserPanel"),userEmail=document.getElementById("premiumUserEmail"),plansPanel=document.getElementById("premiumPlans"),paymentBox=document.getElementById("premiumPaymentBox"),paymentStatus=document.getElementById("paymentStatus");
-let currentPaymentId=null,currentPremiumUser=null,currentInvoiceIdempotencyKey=null,currentInvoicePlanCode=null,invoiceRequestInFlight=false;
+let currentPaymentId=null,currentPremiumUser=null,currentInvoiceIdempotencyKey=sessionStorage.getItem("loreverse_qpay_idempotency_key"),currentInvoicePlanCode=sessionStorage.getItem("loreverse_qpay_plan_code"),invoiceRequestInFlight=false;
 const premiumAuthStatus=document.getElementById("premiumAuthStatus");
 function setPremiumUser(user){
  currentPremiumUser=user||null;
@@ -919,7 +919,7 @@ document.getElementById("forgotPremiumPassword")?.addEventListener("click",async
  const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
  premiumAuthStatus.textContent=error?error.message:"Нууц үг шинэчлэх холбоос имэйлээр илгээгдлээ.";
 });
-document.getElementById("premiumSignOut")?.addEventListener("click",async()=>{await supabase.auth.signOut();paymentBox.hidden=true;currentPaymentId=null;currentInvoiceIdempotencyKey=null;currentInvoicePlanCode=null;paymentStatus.textContent="";});
+document.getElementById("premiumSignOut")?.addEventListener("click",async()=>{await supabase.auth.signOut();paymentBox.hidden=true;currentPaymentId=null;currentInvoiceIdempotencyKey=null;currentInvoicePlanCode=null;sessionStorage.removeItem("loreverse_qpay_idempotency_key");sessionStorage.removeItem("loreverse_qpay_plan_code");paymentStatus.textContent="";});
 async function createPremiumInvoice(planCode){
  if(!currentPremiumUser){premiumAuthStatus.textContent="Premium авахын тулд эхлээд нэвтэрнэ үү.";return;}
  if(invoiceRequestInFlight)return;
@@ -927,6 +927,8 @@ async function createPremiumInvoice(planCode){
  if(!currentInvoiceIdempotencyKey||currentInvoicePlanCode!==planCode){
   currentInvoiceIdempotencyKey=crypto.randomUUID();
   currentInvoicePlanCode=planCode;
+  sessionStorage.setItem("loreverse_qpay_idempotency_key",currentInvoiceIdempotencyKey);
+  sessionStorage.setItem("loreverse_qpay_plan_code",currentInvoicePlanCode);
   currentPaymentId=null;
  }
  invoiceRequestInFlight=true;
@@ -958,7 +960,7 @@ document.getElementById("checkPremiumPayment")?.addEventListener("click",async()
  paymentStatus.textContent="Төлбөрийн төлөв шалгаж байна...";
  const {data,error}=await supabase.functions.invoke("qpay-payment",{body:{action:"check_payment",payment_id:currentPaymentId}});
  if(error||!data?.ok){paymentStatus.textContent=data?.error||error?.message||"Төлөв шалгаж чадсангүй.";return;}
- if(data.paid){paymentStatus.textContent="Төлбөр баталгаажлаа. Premium эрх идэвхжлээ.";currentInvoiceIdempotencyKey=null;currentInvoicePlanCode=null;await loadPremiumPlans();await loadPremiumAccount();}
+ if(data.paid){paymentStatus.textContent="Төлбөр баталгаажлаа. Premium эрх идэвхжлээ.";currentInvoiceIdempotencyKey=null;currentInvoicePlanCode=null;sessionStorage.removeItem("loreverse_qpay_idempotency_key");sessionStorage.removeItem("loreverse_qpay_plan_code");await loadPremiumPlans();await loadPremiumAccount();}
  else paymentStatus.textContent="Төлбөр хараахан баталгаажаагүй байна. QPay-аар төлсний дараа дахин шалгана уу.";
 });
 
