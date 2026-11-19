@@ -125,6 +125,23 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
   .category-strip{padding-top:10px;padding-bottom:4px}
 }
 
+
+/* Public archive statistics */
+.stats-section{padding:24px 0 8px}
+.stats-heading{margin-bottom:14px}
+.stats-heading h2{font-size:26px;line-height:1.2;letter-spacing:-.04em;margin:5px 0}
+.stats-heading p{font-size:13px;color:var(--muted);margin:0}
+.stats-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.stat-card{min-width:0;min-height:112px;padding:14px 12px;border:1px solid #e3e8e1;border-radius:15px;background:linear-gradient(145deg,#fff,#f8faf7);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px}
+.stat-total{background:linear-gradient(145deg,#f1f6ee,#e8f0e4);border-color:#d8e4d2}
+.stat-lore{background:linear-gradient(145deg,#f7f5fb,#f0edf7);border-color:#e6e0ef}
+.stat-icon{font-size:16px;color:#78985d;line-height:1}
+.stat-number{font-size:clamp(25px,3vw,34px);font-weight:900;letter-spacing:-.05em;line-height:1.1;color:#263126;font-variant-numeric:tabular-nums}
+.stat-label{font-size:11px;line-height:1.35;color:#667166;font-weight:750}
+.stats-note{margin:8px 0 0;color:#8a9488;font-size:10px}
+@media(max-width:850px){.stats-section{padding:18px 0 6px}.stats-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.stat-card{min-height:92px;padding:11px 10px}.stats-heading h2{font-size:22px}}
+@media(max-width:600px){.stats-section{padding:16px 0 4px}.stats-heading{margin-bottom:10px}.stats-heading h2{font-size:21px}.stats-heading p{font-size:12px}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.stat-card{min-height:86px;padding:10px;border-radius:12px}.stat-number{font-size:28px}.stat-label{font-size:10px}.stat-total{grid-column:span 2;min-height:76px}.stats-note{font-size:9px}}
+
 /* LOREVERSE responsive refinement: preserve the original artwork asset and its proportions. */
 @media (min-width:601px) and (max-width:850px){
   header{height:52px}
@@ -183,6 +200,21 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 <div><div class="eyebrow">MONGOLIAN LORE UNIVERSE</div><h1>Дуртай ертөнцөө <em>илүү гүнзгий</em> нээ.</h1><p class="lead">Anime, manga, тоглоомын ертөнцийн түүх, дүрүүд, нууц болон тайлбаруудыг нэг дороос. LOREVERSE — сонирхлоос мэдлэг рүү.</p></div>
 <div class="art"><img src="./assets/images/a_clean_high_resolution_anime_style_png_illustrat.png" alt="LOREVERSE-ийн мөнгөлөг үстэй, ногоон хувцаст fantasy анимэ дүр"></div>
 </section>
+<section class="wrap stats-section" aria-labelledby="archiveStatsTitle">
+  <div class="stats-heading">
+    <div class="eyebrow">LOREVERSE ARCHIVE</div>
+    <h2 id="archiveStatsTitle">Нэг дор цугласан ертөнцүүд</h2>
+    <p>Нийтлэгдсэн архив, lore мэдээллийн тоо.</p>
+  </div>
+  <div class="stats-grid" id="archiveStats" aria-live="polite">
+    <article class="stat-card stat-total"><span class="stat-icon">✦</span><span class="stat-number" data-stat="total">—</span><span class="stat-label">Нийт ертөнц</span></article>
+    <article class="stat-card"><span class="stat-icon">✧</span><span class="stat-number" data-stat="anime">—</span><span class="stat-label">Anime Universe</span></article>
+    <article class="stat-card"><span class="stat-icon">▤</span><span class="stat-number" data-stat="manga">—</span><span class="stat-label">Manga &amp; Novel</span></article>
+    <article class="stat-card"><span class="stat-icon">◈</span><span class="stat-number" data-stat="game">—</span><span class="stat-label">Game Worlds</span></article>
+    <article class="stat-card stat-lore"><span class="stat-icon">⌘</span><span class="stat-number" data-stat="lore">—</span><span class="stat-label">Нээлттэй lore нийтлэл</span></article>
+  </div>
+  <p class="stats-note" id="archiveStatsStatus" role="status">Архивын тоог ачаалж байна...</p>
+</section>
 <section class="wrap feature"><div><div class="eyebrow">JOIN THE COMMUNITY</div><h2>Сонирхлоо бусадтай хуваалц.</h2><p>LOREVERSE-ийн community-д нэгдэж, ертөнцүүдийн тухай ярилцаарай.</p></div><a class="btn" href="./community/">Community руу ↗</a></section>
 <div class="wrap category-label"><h2>Өөрийн ертөнцөө сонго</h2><p>Сонирхсон чиглэлээрээ судалж, шинэ зүйл нээ.</p></div>
 <div class="wrap category-strip"><div class="cards">
@@ -221,6 +253,29 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
 const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
 const esc=v=>String(v??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 const names={anime:"Anime Universe",manga:"Manga & Novel",game:"Game Worlds",all:"Lore Archive"};
+
+const statTargets={total:document.querySelector('[data-stat="total"]'),anime:document.querySelector('[data-stat="anime"]'),manga:document.querySelector('[data-stat="manga"]'),game:document.querySelector('[data-stat="game"]'),lore:document.querySelector('[data-stat="lore"]')};
+const statsStatus=document.getElementById("archiveStatsStatus");
+async function loadArchiveStats(){
+ try{
+  const [anime,manga,game,lore]=await Promise.all([
+   supabase.from("archive_franchises").select("id",{count:"exact",head:true}).eq("status","published").eq("category","anime"),
+   supabase.from("archive_franchises").select("id",{count:"exact",head:true}).eq("status","published").eq("category","manga"),
+   supabase.from("archive_franchises").select("id",{count:"exact",head:true}).eq("status","published").eq("category","game"),
+   supabase.from("content_posts").select("id",{count:"exact",head:true}).eq("status","published").eq("content_type","lore").eq("is_premium",false)
+  ]);
+  const results=[anime,manga,game,lore];
+  if(results.some(result=>result.error||result.count===null))throw new Error("Archive counts unavailable");
+  const values={anime:anime.count,manga:manga.count,game:game.count,lore:lore.count,total:anime.count+manga.count+game.count};
+  Object.entries(values).forEach(([key,value])=>{if(statTargets[key])statTargets[key].textContent=new Intl.NumberFormat("mn-MN").format(value);});
+  statsStatus.textContent="Нийтлэгдсэн мэдээлэлд үндэслэв · Ачаалах бүрд шинэчлэгдэнэ.";
+ }catch(error){
+  statsStatus.textContent="Архивын тоог одоогоор ачаалж чадсангүй.";
+  Object.values(statTargets).forEach(node=>{if(node)node.textContent="—";});
+ }
+}
+loadArchiveStats();
+
 const cards=[...document.querySelectorAll("[data-category]")],panel=document.getElementById("categoryResults"),title=document.getElementById("categoryTitle"),status=document.getElementById("categoryStatus"),items=document.getElementById("categoryItems");
 let active=null;
 async function showCategory(cat,shouldScroll=true){
