@@ -195,6 +195,9 @@ Deno.serve(async (req: Request) => {
         return reply(404, { error: "Төлбөрийн нэхэмжлэл олдсонгүй." });
       }
       if (payment.status === "paid") return reply(200, { ok: true, paid: true, already_confirmed: true });
+      if (payment.status !== "pending" || payment.currency !== "MNT" || !Number.isFinite(Number(payment.amount)) || Number(payment.amount) <= 0) {
+        return reply(409, { error: "Энэ төлбөрийн бүртгэл баталгаажуулах боломжгүй төлөвтэй байна." });
+      }
 
       const token = await qpayToken(baseUrl, clientId, clientSecret);
       const checkResponse = await fetch(baseUrl + "/v2/payment/check", {
@@ -215,9 +218,10 @@ Deno.serve(async (req: Request) => {
       const paidRows = rows.filter((r: any) =>
         String(r.payment_status || "").toUpperCase() === "PAID" &&
         String(r.payment_currency || "").toUpperCase() === "MNT" &&
-        Math.round(Number(r.payment_amount)) === Math.round(Number(payment.amount))
+        Number.isFinite(Number(r.payment_amount)) && Number(r.payment_amount) > 0
       );
-      if (!paidRows.length || Number(check.paid_amount || 0) < Number(payment.amount)) {
+      const verifiedPaidAmount = paidRows.reduce((sum: number, row: any) => sum + Number(row.payment_amount), 0);
+      if (!paidRows.length || verifiedPaidAmount < Number(payment.amount)) {
         return reply(200, { ok: true, paid: false, status: "pending" });
       }
 
