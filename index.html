@@ -287,6 +287,16 @@ main{padding-bottom:30px}
  .payment-history-row{gap:8px;font-size:11px}
 }
 
+
+/* Premium section: match the full content width */
+.access-heading{width:100%;max-width:none;margin:0 0 18px}
+.access-grid{display:grid;width:100%;grid-template-columns:minmax(0,1fr);justify-content:stretch;gap:16px;align-items:start}
+.access-grid>.premium-card{width:100%;min-width:0}
+@media(max-width:600px){
+ .access-heading{width:100%;margin:0 0 14px}
+ .access-grid{width:100%;grid-template-columns:minmax(0,1fr);gap:10px}
+ .access-grid>.premium-card{width:100%}
+}
 </style>
 </head>
 <body>
