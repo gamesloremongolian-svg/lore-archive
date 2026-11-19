@@ -86,19 +86,13 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 @media(prefers-reduced-motion:reduce){.scrolling-track{animation:none}}
 
 
-/* Three separate category cards moving horizontally */
-.scroll-menu{width:min(100%,980px);height:142px;margin:28px auto 30px;overflow:hidden;position:relative;border:1px solid #e3e9e0;border-radius:18px;background:#f7f9f6}
-.scroll-menu:before,.scroll-menu:after{content:"";position:absolute;top:0;bottom:0;width:24px;z-index:2;pointer-events:none}
-.scroll-menu:before{left:0;background:linear-gradient(90deg,#f7f9f6,transparent)}
-.scroll-menu:after{right:0;background:linear-gradient(270deg,#f7f9f6,transparent)}
-.scroll-menu-track{display:flex;flex-direction:row;align-items:center;width:max-content;gap:12px;padding:12px;animation:scroll-menu-horizontal 22s linear infinite}
-.scroll-menu:hover .scroll-menu-track,.scroll-menu:focus-within .scroll-menu-track{animation-play-state:paused}
-.menu-item{width:230px;min-width:230px;height:116px;display:flex;flex-direction:row;align-items:center;gap:12px;overflow:hidden;position:relative;border:1px solid #e0e7dd;border-radius:13px;background:#fff;color:#263126;text-decoration:none}
-.menu-item img{width:132px;height:116px;object-fit:cover;flex:0 0 132px}
-.menu-item span{display:flex;align-items:center;justify-content:flex-start;flex:1;font-size:16px;font-weight:850;padding:0 10px 0 0}
-@keyframes scroll-menu-horizontal{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@media(max-width:520px){.scroll-menu{height:126px;margin:22px auto}.scroll-menu-track{gap:9px;padding:9px}.menu-item{width:194px;min-width:194px;height:104px;gap:9px}.menu-item img{width:108px;height:104px;flex-basis:108px}.menu-item span{font-size:14px}}
-@media(prefers-reduced-motion:reduce){.scroll-menu-track{animation:none}}
+/* Three independent stacked category rows: label left, artwork right */
+.scroll-menu{width:min(100%,760px);margin:28px auto 30px;display:flex;flex-direction:column;gap:12px}
+.scroll-menu-track{display:contents}
+.menu-item{width:100%;min-height:112px;height:112px;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:16px;overflow:hidden;position:relative;border:1px solid #e0e7dd;border-radius:15px;background:#f7f9f6;color:#263126;text-decoration:none}
+.menu-item img{width:46%;height:112px;object-fit:cover;object-position:center;flex:0 0 46%;order:2}
+.menu-item span{display:flex;align-items:center;justify-content:flex-start;flex:1;font-size:18px;font-weight:850;padding:0 0 0 20px;order:1}
+@media(max-width:520px){.scroll-menu{margin:22px auto;gap:10px}.menu-item{min-height:94px;height:94px;gap:10px;border-radius:12px}.menu-item img{width:44%;height:94px;flex-basis:44%}.menu-item span{font-size:16px;padding-left:14px}}
 </style>
 </head>
 <body>
