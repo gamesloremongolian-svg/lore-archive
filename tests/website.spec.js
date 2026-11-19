@@ -238,8 +238,10 @@ test.describe('LOREVERSE website health', () => {
     }));
     await page.goto(new URL('store/', baseURL).toString(), { waitUntil: 'domcontentloaded' });
     await expect(page.locator('#balance')).toContainText('100', { timeout: 10000 });
-    await expect(page.locator('#items [data-buy="test-frame"]')).toBeVisible({ timeout: 10000 });
-    await page.locator('#items [data-buy="test-frame"]').click();
+    await expect(page.locator('#items [data-preview="test-frame"]')).toBeVisible({ timeout: 10000 });
+    await page.locator('#items [data-preview="test-frame"]').click();
+    await expect(page.locator('#previewActions [data-modal-buy="test-frame"]')).toBeVisible();
+    await page.locator('#previewActions [data-modal-buy="test-frame"]').click();
     await expect(page.locator('#balance')).toContainText('60');
     await expect(page.locator('#ownedCount')).toContainText('1');
     await expect(page.locator('#status')).toContainText('Худалдан авалт амжилттай');
@@ -257,7 +259,10 @@ test.describe('LOREVERSE website health', () => {
       `
     }));
     await page.goto(new URL('store/', baseURL).toString(), { waitUntil: 'domcontentloaded' });
-    await page.locator('#items [data-buy="test-frame"]').click();
+    await expect(page.locator('#items [data-preview="test-frame"]')).toBeVisible({ timeout: 10000 });
+    await page.locator('#items [data-preview="test-frame"]').click();
+    await expect(page.locator('#previewActions [data-modal-buy="test-frame"]')).toBeVisible();
+    await page.locator('#previewActions [data-modal-buy="test-frame"]').click();
     await expect(page.locator('#status')).toContainText('Not enough LORE Coins');
     await expect(page.locator('#ownedCount')).toContainText('0');
   });
