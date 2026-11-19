@@ -227,6 +227,51 @@ html,body{width:100%;max-width:100%;overflow-x:hidden}
 .analytics-note{color:var(--muted);font-size:12px;padding:10px 0}
 @media(max-width:650px){.analytics-chart-grid{grid-template-columns:1fr}.analytics-bars{height:130px}}
 
+
+/* Analytics dashboard polish: consistent full-width cards, clear hierarchy, compact mobile spacing */
+#analyticsTab{min-width:0;width:100%;max-width:100%;overflow:hidden}
+#analyticsTab>h2{font-size:clamp(22px,3.4vw,30px);letter-spacing:-.035em;margin:8px 0 6px}
+#analyticsTab>p.muted{max-width:760px;font-size:13px;line-height:1.7;margin:0 0 16px}
+#analyticsTab>.row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(120deg,#1b2a3d,#182238);margin:12px 0 22px}
+#analyticsTab>.row button{min-height:44px;padding:11px 18px}
+#analyticsTab>h3{display:flex;align-items:center;gap:9px;font-size:15px;letter-spacing:-.01em;margin:24px 0 11px;padding-bottom:9px;border-bottom:1px solid var(--line)}
+#analyticsTab>h3:before{content:"";display:block;width:4px;height:18px;border-radius:9px;background:linear-gradient(#70e2e9,#9474f5)}
+#analyticsCards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 20px}
+#analyticsCards .stat{min-width:0;padding:15px;border:1px solid #34435d;border-radius:15px;background:linear-gradient(145deg,#202f45,#182337);box-shadow:0 6px 18px #05091430}
+#analyticsCards .stat span{font-size:12px;line-height:1.4;color:#b8c7d8}
+#analyticsCards .stat b{display:block;margin-top:7px;font-size:clamp(22px,3vw,28px);line-height:1.1;color:#75dfd2;font-variant-numeric:tabular-nums}
+#analyticsCards .analytics-note{display:block;font-size:10px;line-height:1.4;margin-top:5px}
+.analytics-chart-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin:0 0 18px;width:100%;min-width:0}
+#analyticsDaily{grid-template-columns:repeat(2,minmax(0,1fr))}
+.analytics-chart-card{width:100%;min-width:0;padding:16px;border:1px solid #34415a;border-radius:16px;background:linear-gradient(145deg,#1d2b40,#172236);box-shadow:0 6px 20px #05091424}
+.analytics-chart-card h4{font-size:13px;font-weight:750;color:#e5edf7;margin:0 0 14px}
+.analytics-bars{height:160px;gap:clamp(4px,1vw,10px);padding:8px 4px 0}
+.analytics-bar{gap:7px}
+.analytics-bar i{width:min(100%,30px);background:linear-gradient(180deg,#72e5ed 0%,#8a74ef 100%);box-shadow:0 3px 12px #72cbe933}
+.analytics-bar b{font-size:11px}
+.analytics-bar small{font-size:10px}
+.analytics-row{gap:12px;margin:13px 0}
+.analytics-row>span{width:100px;font-size:12px}
+.analytics-track{height:11px;background:#0c1525}
+.analytics-track i{background:linear-gradient(90deg,#8a70eb,#6fdfe9)}
+.analytics-row b{font-size:12px;color:#e8f1fb}
+#analyticsCommunity .analytics-chart-card{height:100%}
+#analyticsTab .notice{margin-top:10px;border:1px solid #3c4960;border-radius:13px;padding:13px 15px;background:#172338;color:#b8c7d8;font-size:12px;line-height:1.65}
+@media(max-width:760px){
+ #analyticsCards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ #analyticsCards .stat{padding:12px}
+ #analyticsDaily{grid-template-columns:minmax(0,1fr)}
+ #analyticsTab>h3{margin-top:20px}
+ .analytics-chart-card{padding:13px}
+ .analytics-bars{height:140px}
+}
+@media(max-width:380px){
+ #analyticsCards{gap:6px}
+ #analyticsCards .stat{padding:10px}
+ #analyticsCards .stat span{font-size:11px}
+ .analytics-row>span{width:78px}
+}
+
 </style></head><body><main class="wrap"><p style="display:flex;justify-content:flex-end;align-items:center;gap:8px"><label for="lang">Interface language</label><select id="lang" style="width:auto;margin:0"><option value="mn">Монгол</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option></select></p>
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><a href="../index.html" class="brand">✦ LORE<span>VERSE</span></a><a class="btn" href="../index.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:7px">← Нүүр хуудас руу буцах</a></div>
 <div class="loreverse-anime-banner" aria-label="LOREVERSE anime universe"><img src="../assets/images/loreverse-admin-anime.svg" alt="LOREVERSE fantasy anime illustration"><span class="loreverse-anime-caption">ANIME · MANGA · GAME LORE</span></div>
