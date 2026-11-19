@@ -87,6 +87,16 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 
 
 
+/* Universe Hub navigation dropdown */
+.universe-menu-wrap{position:relative;display:flex;align-items:center}
+#universeMenuBtn{border:0;background:transparent;color:inherit;font:inherit;padding:8px 0;cursor:pointer;white-space:nowrap}
+#universeMenuBtn:hover{color:#6f8d58}
+#universeSubmenu{position:absolute;z-index:40;top:calc(100% + 8px);left:0;min-width:190px;padding:7px;background:#fff;border:1px solid #e1e8df;border-radius:12px;box-shadow:0 12px 30px #20302018}
+#universeSubmenu[hidden]{display:none}
+#universeSubmenu button{display:block;width:100%;padding:10px 12px;border:0;border-radius:8px;background:transparent;color:#344034;text-align:left;font:inherit;cursor:pointer}
+#universeSubmenu button:hover{background:#f1f5ef;color:#587a45}
+@media(max-width:850px){.universe-menu-wrap{width:100%;display:block}#universeMenuBtn{width:100%;text-align:left}#universeSubmenu{position:static;margin-top:4px;box-shadow:none;background:#f8faf7}}
+
 /* LOREVERSE responsive refinement: preserve the original artwork asset and its proportions. */
 @media (min-width:601px) and (max-width:850px){
   header{height:52px}
@@ -128,7 +138,15 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 <a class="skip-link" href="#main-content">Үндсэн агуулга руу алгасах</a>
 <header><div class="wrap head">
 <a class="brand" href="./"><img src="./assets/loreverse-mark.svg" alt=""><span>LORE</span>VERSE</a>
-<nav id="mainNav"><a href="./universe-hub/">Universe Hub</a><a href="./editorial/">Lore & Articles</a><a href="./archive/">Archive</a><a href="./games/">Games</a><a href="./community/">Community</a><a class="nav-cta" href="./rank/">Нэвтрэх</a></nav>
+<nav id="mainNav">
+<div class="universe-menu-wrap">
+<button type="button" id="universeMenuBtn" aria-expanded="false" aria-controls="universeSubmenu">Universe Hub ▾</button>
+<div id="universeSubmenu" hidden>
+<button type="button" data-nav-category="anime">Anime Universe</button>
+<button type="button" data-nav-category="manga">Manga &amp; Novel</button>
+<button type="button" data-nav-category="game">Game Worlds</button>
+</div>
+</div><a href="./universe-hub/">Universe Hub</a><a href="./editorial/">Lore & Articles</a><a href="./archive/">Archive</a><a href="./games/">Games</a><a href="./community/">Community</a><a class="nav-cta" href="./rank/">Нэвтрэх</a></nav>
 <button class="menu" id="menuBtn" aria-label="Цэс нээх" aria-expanded="false">Цэс ☰</button>
 </div></header>
 
@@ -156,7 +174,18 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 <footer><div class="wrap foot"><span>© 2026 LOREVERSE. Бүх эрх хуулиар хамгаалагдсан.</span><span>Монгол хэл дээрх lore & universe archive</span></div></footer>
 
 <script>
-(()=>{const b=document.getElementById('menuBtn'),n=document.getElementById('mainNav');if(b&&n)b.addEventListener('click',()=>{const open=n.classList.toggle('open');b.setAttribute('aria-expanded',String(open));});})();
+(()=>{
+ const b=document.getElementById('menuBtn'),n=document.getElementById('mainNav');
+ if(b&&n)b.addEventListener('click',()=>{const open=n.classList.toggle('open');b.setAttribute('aria-expanded',String(open));});
+ const hub=document.getElementById('universeMenuBtn'),sub=document.getElementById('universeSubmenu');
+ if(hub&&sub)hub.addEventListener('click',()=>{const open=sub.hidden;sub.hidden=!open;hub.setAttribute('aria-expanded',String(open));});
+ document.querySelectorAll('#universeSubmenu [data-nav-category]').forEach(item=>item.addEventListener('click',()=>{
+  const card=document.querySelector('[data-category="'+item.dataset.navCategory+'"]');
+  if(card)card.click();
+  sub.hidden=true;hub.setAttribute('aria-expanded','false');
+  if(n&&window.matchMedia('(max-width:850px)').matches){n.classList.remove('open');b?.setAttribute('aria-expanded','false');}
+ }));
+})();
 </script>
 
 <script type="module">
