@@ -87,6 +87,8 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('#login')).toBeVisible();
     await expect(page.locator('#signup')).toHaveCount(0);
     await expect(page.locator('[data-tab="system"]')).toHaveCount(1);
+    await expect(page.locator('#aiDoctorNavTab')).toHaveCount(1);
+    await expect(page.locator('#aiDoctorTab')).toBeHidden();
     await expect(page.locator('#runSystemCheck')).toHaveCount(1);
   });
 
