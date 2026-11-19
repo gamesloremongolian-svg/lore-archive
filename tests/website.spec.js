@@ -32,6 +32,8 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('#mainNav a[href="./community/"]')).toHaveCount(1);
     await expect(page.locator('#mainNav a[href="./store/"]')).toHaveCount(1);
     await expect(page.locator('#mainNav a[href="./profile/"]')).toHaveCount(1);
+    await expect(page.locator('#mainNav a[href="./bug-report/"]')).toContainText('Алдаа мэдээлэх');
+    await expect(page.locator('a[href="./bug-report/"]').filter({ hasText: 'Алдаа мэдээлэх' }).first()).toBeVisible();
     await expect(page.locator('#themeToggle')).toHaveCount(1);
 
     await page.setViewportSize({ width: 390, height: 844 });
