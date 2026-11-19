@@ -18,7 +18,7 @@
 import{createClient}from"https://esm.sh/@supabase/supabase-js@2.119.0";
 const db=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
 const $=x=>document.getElementById(x);let user=null;function say(id,t){$(id).textContent=t}
-async function boot(){const{data:{session}}=await db.auth.getSession();user=session?.user||null;$("login").hidden=!!user;$("app").hidden=!user;if(!user)return;const{data:s}=await db.from("staff_members").select("role,active").eq("user_id",user.id).maybeSingle();if(!s?.active||!["owner","admin","editor"].includes(s.role)){$("login").hidden=false;$("app").hidden=true;say("authStatus","Энэ хэрэглэгч редакторын эрхгүй.");return}say("who",user.email+" · "+s.role);await load()}
+async function boot(){try{const{data:{session}}=await db.auth.getSession();user=session?.user||null;if(!user){location.replace("../");return}const{data:s,error}=await db.from("staff_members").select("role,active").eq("user_id",user.id).maybeSingle();if(error||!s?.active||!["owner","admin","editor"].includes(s.role)){await db.auth.signOut();location.replace("../");return}$("login").hidden=true;$("app").hidden=false;say("who",user.email+" · "+s.role);await load()}catch(e){location.replace("../")}}
 async function load(){
  const {data:f,error}=await db.from("archive_franchises").select("id,name,slug,category,status").order("name");
  if(error){say("status",error.message);return}
