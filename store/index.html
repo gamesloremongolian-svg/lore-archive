@@ -63,8 +63,64 @@ body{background:radial-gradient(ellipse at 8% -8%,#6e77c52b,transparent 34%),rad
 }
 @media(prefers-reduced-motion:reduce){.item{transition:none}.item:hover{transform:none}}
 
+
+/* Premium single-menu storefront refinement */
+.top{height:76px;padding-inline:max(20px,calc((100% - 1160px)/2));gap:16px}
+.store-menu-btn{min-width:112px}
+.store-menu{display:none;position:absolute;right:max(20px,calc((100% - 1160px)/2));top:calc(100% + 9px);z-index:20;width:min(290px,calc(100vw - 28px));padding:10px;border:1px solid #38516f;border-radius:17px;background:#101d31;box-shadow:0 22px 55px #0008;flex-direction:column;gap:4px}
+.store-menu.open{display:flex}
+.store-menu a,.store-menu button{display:flex;align-items:center;justify-content:flex-start;min-height:44px;padding:10px 13px;border-radius:11px;font-size:13px;font-weight:800}
+.store-menu a:hover{background:#203650;color:var(--teal)}
+.store-menu button{justify-content:center;margin-top:4px}
+.wrap{margin-top:30px}
+.hero{min-height:190px}
+.hero:before{content:"";position:absolute;z-index:-1;width:260px;height:260px;right:8%;top:-130px;border-radius:50%;background:#6edce51a;filter:blur(5px)}
+.tabs{padding:6px;border:1px solid #263c59;border-radius:15px;background:#0d192b;width:max-content;max-width:100%}
+.tab{min-height:42px}
+.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.item{min-height:260px;padding:16px;border-radius:20px}
+.item-icon{height:118px;font-size:50px;position:relative;overflow:hidden}
+.item-icon:after{content:"";position:absolute;inset:0;background:linear-gradient(130deg,#ffffff0a,transparent 45%,#6ce2e50a);pointer-events:none}
+.item h3{font-size:15px;letter-spacing:-.015em}
+.item p{font-size:12px;line-height:1.65}
+.itemfoot .btn{min-width:118px}
+.price{font-variant-numeric:tabular-nums}
+.sectionhead>.btn{border-radius:12px}
+#items{transition:opacity .18s ease}
+@media(max-width:900px){
+ .top{height:68px;padding:0 16px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+ .item{min-height:245px}
+ .store-menu{right:14px}
+}
+@media(max-width:520px){
+ .top{height:62px;padding:0 12px}
+ .brand{font-size:12px}
+ .wrap{width:calc(100% - 24px);margin:15px auto 40px}
+ .hero{min-height:0;padding:18px;border-radius:18px}
+ .hero h1{font-size:clamp(27px,8vw,36px)}
+ .hero p{font-size:12px}
+ .wallet{min-height:56px}
+ .tabs{width:100%;display:grid;grid-template-columns:1fr 1fr}
+ .tab{padding:8px 10px}
+ .sectionhead{align-items:center}
+ .sectionhead h2{font-size:17px}
+ .sectionhead p{font-size:10px}
+ .sectionhead>.btn{padding:8px 10px;font-size:11px;white-space:nowrap}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .item{min-height:228px;padding:10px;border-radius:15px}
+ .item-icon{height:78px;font-size:36px}
+ .item h3{font-size:12px;margin:10px 0 4px}
+ .item p{font-size:10px;line-height:1.45;min-height:38px}
+ .itemfoot{align-items:stretch;flex-direction:column;gap:7px}
+ .itemfoot .btn{width:100%;min-width:0;min-height:37px}
+ .price{font-size:12px}
+ .hint{font-size:10px}
+}
+@media(max-width:340px){.grid{grid-template-columns:1fr}.item{min-height:0}}
+
 </style></head><body>
-<header class="top"><a class="brand" href="../">LOREVERSE <b>STORE</b></a><div class="toplinks"><a class="btn" href="../community/">Community</a><a class="btn" href="../">Нүүр</a><button class="btn" id="authBtn">Нэвтрэх</button></div></header>
+<header class="top"><a class="brand" href="../">LOREVERSE <b>STORE</b></a><button class="btn store-menu-btn" id="storeMenuBtn" aria-expanded="false" aria-controls="storeMenu">☰ MENU</button><nav class="store-menu" id="storeMenu"><a href="../">Нүүр хуудас</a><a href="../community/">Community</a><a href="../archive/">Lore Archive</a><a href="../editorial/">Lore &amp; Articles</a><a href="../games/">Games</a><button class="btn primary" id="authBtn">Нэвтрэх</button></nav></header>
 <main class="wrap"><section class="hero"><div><div class="eyebrow">YOUR WORLD. YOUR STYLE.</div><h1>LOREVERSE STORE</h1><p>Профайл, хүрээ, тэмдэг болон чатны гоёл чимэглэлээ цуглуул. Нэг аккаунт — бүх LOREVERSE.</p></div><div class="wallet"><small>ТАНЫ LORE COIN</small><strong id="balance">—</strong></div></section>
 <nav class="tabs"><button class="tab active" data-tab="catalog">Дэлгүүр</button><button class="tab" data-tab="inventory">Миний цуглуулга</button></nav>
 <div class="sectionhead"><div><h2 id="heading">Онцлох бараанууд</h2><p id="subheading">LORE COIN-оор худалдан авч, аккаунтаараа хадгална.</p></div><button class="btn" id="refresh">↻ Шинэчлэх</button></div>
@@ -73,6 +129,11 @@ body{background:radial-gradient(ellipse at 8% -8%,#6e77c52b,transparent 34%),rad
 <script type="module">
 import {createClient} from "https://esm.sh/@supabase/supabase-js@2.119.0";
 const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
+const menuButton=document.getElementById("storeMenuBtn"),menu=document.getElementById("storeMenu");
+menuButton?.addEventListener("click",()=>{const open=menu.classList.toggle("open");menuButton.setAttribute("aria-expanded",String(open));});
+document.addEventListener("click",e=>{if(menu&&!menu.contains(e.target)&&!menuButton?.contains(e.target)){menu.classList.remove("open");menuButton?.setAttribute("aria-expanded","false");}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&menu){menu.classList.remove("open");menuButton?.setAttribute("aria-expanded","false");menuButton?.focus();}});
+
 const $=id=>document.getElementById(id);let user=null,tab="catalog",catalog=[],owned=new Set();
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function say(s){$("status").textContent=s}
