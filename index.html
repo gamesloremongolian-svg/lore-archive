@@ -503,6 +503,25 @@ html[data-theme="dark"] .premium-card .auth-panel,
 html[data-theme="dark"] .premium-card .premium-user{background:#16221a;color:#e7eee7}
 html[data-theme="dark"] .premium-card .auth-panel h4,
 html[data-theme="dark"] .premium-card .premium-user h4{color:#edf5ed}
+
+/* LOREVERSE introduction — responsive and compatible with the site's day/night themes */
+.about-loreverse{padding:24px 0 10px}
+.about-loreverse-panel{position:relative;overflow:hidden;padding:clamp(20px,4vw,34px);border:1px solid var(--line);border-radius:22px;background:linear-gradient(135deg,var(--panel),var(--panel2));box-shadow:0 12px 32px rgba(20,40,28,.06)}
+.about-loreverse-panel:after{content:"✦";position:absolute;right:22px;top:12px;font-size:42px;color:var(--accent);opacity:.2;pointer-events:none}
+.about-loreverse-head{max-width:780px}
+.about-loreverse-head h2{margin:7px 0 10px;font-size:clamp(23px,4vw,34px);line-height:1.15;letter-spacing:-.04em;color:var(--text)}
+.about-loreverse-head p{margin:0;color:var(--muted);font-size:14px;line-height:1.8}
+.about-loreverse-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:22px}
+.about-loreverse-item{min-width:0;padding:17px;border:1px solid var(--line);border-radius:15px;background:var(--bg)}
+.about-loreverse-item .about-icon{display:grid;place-items:center;width:38px;height:38px;margin-bottom:11px;border-radius:12px;background:color-mix(in srgb,var(--accent) 16%,var(--panel));color:var(--accent-strong);font-size:19px}
+.about-loreverse-item h3{margin:0 0 5px;font-size:15px;color:var(--text)}
+.about-loreverse-item p{margin:0;color:var(--muted);font-size:12px;line-height:1.7}
+.about-loreverse-item a{display:inline-flex;margin-top:12px;color:var(--accent-strong);font-size:12px;font-weight:850}
+.about-loreverse-note{margin:16px 0 0;padding-top:13px;border-top:1px solid var(--line);color:var(--muted);font-size:11px;line-height:1.65}
+html[data-theme="dark"] .about-loreverse-panel{background:linear-gradient(135deg,#18251d,#202e26);border-color:#34483a;box-shadow:0 14px 34px #0003}
+html[data-theme="dark"] .about-loreverse-item{background:#121b15;border-color:#344338}
+@media(max-width:680px){.about-loreverse{padding:16px 0 4px}.about-loreverse-grid{grid-template-columns:1fr;gap:9px}.about-loreverse-item{display:grid;grid-template-columns:38px 1fr;column-gap:12px;padding:13px}.about-loreverse-item .about-icon{grid-row:1/4;margin:0}.about-loreverse-item h3{align-self:end}.about-loreverse-item a{margin-top:7px}}
+
 </style>
 <style>
 #bugReportLauncher{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:9999;display:inline-flex;align-items:center;gap:9px;border:1px solid #d8e8ce;border-radius:999px;background:linear-gradient(135deg,#263d2c,#668d50);color:#fff;padding:14px 19px;font:800 14px/1.2 system-ui;box-shadow:0 10px 32px #10251555;cursor:pointer;isolation:isolate}#bugReportLauncher:hover{transform:translateY(-2px);box-shadow:0 14px 36px #10251566}#bugReportLauncher:focus-visible{outline:3px solid #f0c66e;outline-offset:3px}
@@ -552,6 +571,23 @@ header:has(#mainNav) .menu{border-color:#465b7c;background:#1b2941;color:#fff}
 <section class="wrap hero">
 <div><div class="eyebrow">МОНГОЛ ХЭЛТЭЙ LORE ЕРТӨНЦ</div><h1>Дуртай ертөнцөө <em>илүү гүнзгий</em> нээ.</h1><p class="lead">Anime, manga, тоглоомын ертөнцийн түүх, дүрүүд, нууц болон тайлбаруудыг нэг дороос. LOREVERSE — сонирхлоос мэдлэг рүү.</p></div>
 <div class="art"><img src="./assets/images/a_clean_high_resolution_anime_style_png_illustrat.png" alt="LOREVERSE-ийн мөнгөлөг үстэй, ногоон хувцаст fantasy анимэ дүр"></div>
+</section>
+
+
+<section class="wrap about-loreverse" id="aboutLoreverse" aria-labelledby="aboutLoreverseTitle">
+ <div class="about-loreverse-panel">
+  <div class="about-loreverse-head">
+   <div class="eyebrow">ТАНИЛЦУУЛГА · ABOUT LOREVERSE</div>
+   <h2 id="aboutLoreverseTitle">LOREVERSE гэж юу вэ?</h2>
+   <p>LOREVERSE бол анимэ, манга, тоглоомын ертөнцийн түүх, дүрүүд, нууц болон далд холбоосыг Монгол хэлээр судалж, хуваалцах бие даасан платформ юм. Сонирхлыг мэдлэг болгон, эх сурвалжтай мэдээллийг нэг дороос хүргэхийг зорьдог.</p>
+  </div>
+  <div class="about-loreverse-grid">
+   <article class="about-loreverse-item"><span class="about-icon" aria-hidden="true">✧</span><h3>Lore ба судалгаа</h3><p>Ертөнцийн түүх, дүрийн намтар, үйл явдал, онол болон тайлбаруудыг уншаарай.</p><a href="./editorial/">Нийтлэл унших ↗</a></article>
+   <article class="about-loreverse-item"><span class="about-icon" aria-hidden="true">◈</span><h3>Ертөнцүүдийн архив</h3><p>Anime, manga, game ангиллаар сонирхдог цуврал, тоглоомын мэдээллээ олоорой.</p><a href="./games/">Ертөнц сонгох ↗</a></article>
+   <article class="about-loreverse-item"><span class="about-icon" aria-hidden="true">⌘</span><h3>Community ба Market</h3><p>Бусад сонирхогчтой ярилцаж, платформын үйлчилгээ болон зарын талбартай танилцаарай.</p><a href="./community/">Нийгэмлэгт нэгдэх ↗</a> <a href="./marketplace/">Market үзэх ↗</a></article>
+  </div>
+  <p class="about-loreverse-note">LOREVERSE нь бие даасан фэн платформ бөгөөд дурдагдсан анимэ, манга, тоглоом болон тэдгээрийн эрх эзэмшигчтэй албан ёсны холбоогүй.</p>
+ </div>
 </section>
 
 <section class="wrap holiday-section" id="holiday-gifts" aria-labelledby="holidayTitle">
