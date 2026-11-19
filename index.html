@@ -45,6 +45,30 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 .category-label{padding-top:10px}.category-label h2{font-size:17px;letter-spacing:-.03em;margin:2px 0 0}.category-strip{padding-top:7px;padding-bottom:4px}.category-strip .cards{margin:0}.category-strip .card{min-height:58px;padding:7px 3px;gap:5px;flex-direction:row;align-items:center;justify-content:center}.category-strip .symbol{flex:0 0 26px;width:26px;height:26px;margin:0;font-size:14px}.category-strip .card h3{margin:0;font-size:12px}.category-strip .card p,.category-strip .card .category-tag{display:none}@media(max-width:850px){.category-strip{padding-top:8px}}
 
 
+
+/* Universe selector styled to match the Community feature block */
+.category-label{padding-top:34px}
+.category-label h2{font-size:26px;line-height:1.2;letter-spacing:-.04em;margin:0 0 7px;color:#202820}
+.category-label p{margin:0;color:#667166;font-size:15px;line-height:1.6}
+.category-strip{padding-top:18px;padding-bottom:8px}
+.category-strip .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.category-strip .card{min-height:96px;padding:16px 18px;gap:13px;border:1px solid #e3e8e1;border-radius:17px;background:#fff;flex-direction:row;align-items:center;justify-content:center}
+.category-strip .card:after{width:90px;height:90px;right:-34px;top:-34px}
+.category-strip .symbol{flex:0 0 44px;width:44px;height:44px;margin:0;border-radius:13px;font-size:21px}
+.category-strip .card h3{margin:0;font-size:17px;line-height:1.25;white-space:normal}
+.category-strip .card p,.category-strip .card .category-tag{display:none}
+.category-strip .card[aria-pressed="true"]{transform:translateY(-2px)}
+@media(max-width:520px){
+ .category-label{padding-top:26px}
+ .category-label h2{font-size:22px}
+ .category-label p{font-size:13px}
+ .category-strip{padding-top:13px}
+ .category-strip .cards{gap:7px}
+ .category-strip .card{min-height:74px;padding:9px 4px;gap:6px;border-radius:13px;flex-direction:column}
+ .category-strip .symbol{flex:0 0 30px;width:30px;height:30px;font-size:15px;border-radius:9px}
+ .category-strip .card h3{font-size:clamp(9px,2.7vw,12px);text-align:center;white-space:normal}
+}
+
 </style>
 </head>
 <body>
@@ -61,11 +85,11 @@ footer{border-top:1px solid #e6ebe5;padding:25px 0 35px;color:#667166;font-size:
 <div class="art"><img src="./assets/images/a_clean_high_resolution_anime_style_png_illustrat.png" alt="LOREVERSE-ийн мөнгөлөг үстэй, ногоон хувцаст fantasy анимэ дүр"></div>
 </section>
 <section class="wrap feature"><div><div class="eyebrow">JOIN THE COMMUNITY</div><h2>Сонирхлоо бусадтай хуваалц.</h2><p>LOREVERSE-ийн community-д нэгдэж, ертөнцүүдийн тухай ярилцаарай.</p></div><a class="btn" href="./community/">Community руу ↗</a></section>
-<div class="wrap category-label"><span class="eyebrow">DISCOVER</span><h2>Өөрийн ертөнцөө сонго</h2></div>
+<div class="wrap category-label"><h2>Өөрийн ертөнцөө сонго</h2><p>Сонирхсон чиглэлээрээ судалж, шинэ зүйл нээ.</p></div>
 <div class="wrap category-strip"><div class="cards">
-<button class="card" type="button" data-category="anime" aria-pressed="false"><div class="symbol">✦</div><h3>Anime</h3></button>
-<button class="card" type="button" data-category="manga" aria-pressed="false"><div class="symbol">▤</div><h3>Manga</h3></button>
-<button class="card" type="button" data-category="game" aria-pressed="false"><div class="symbol">◈</div><h3>Game</h3></button>
+<button class="card" type="button" data-category="anime" aria-pressed="false"><div class="symbol">✦</div><h3>Anime Universe</h3></button>
+<button class="card" type="button" data-category="manga" aria-pressed="false"><div class="symbol">▤</div><h3>Manga &amp; Novel</h3></button>
+<button class="card" type="button" data-category="game" aria-pressed="false"><div class="symbol">◈</div><h3>Game Worlds</h3></button>
 </div></div>
 
 <section class="wrap">
