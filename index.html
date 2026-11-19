@@ -434,6 +434,75 @@ html[data-theme="dark"] .bug-card,html[data-theme="dark"] #bugReportModal .bug-c
 html[data-theme="dark"] .bug-card input,html[data-theme="dark"] .bug-card textarea,html[data-theme="dark"] .bug-card select{background:#111a14;color:#e7eee7;border-color:#405344}
 html[data-theme="dark"] .bug-card label,html[data-theme="dark"] .bug-card p{color:#b5c3b6}
 html[data-theme="dark"] .updates-head h2{color:#e8f0e8}
+
+/* Dark-mode readability pass: enforce contrast for all homepage content */
+html[data-theme="dark"] .category-label h2,
+html[data-theme="dark"] .category-strip .card h3,
+html[data-theme="dark"] .card h3,
+html[data-theme="dark"] .feature h2,
+html[data-theme="dark"] .access-heading h2,
+html[data-theme="dark"] .access-card h3,
+html[data-theme="dark"] .holiday-grand h3,
+html[data-theme="dark"] .updates-panel h3,
+html[data-theme="dark"] .update-item h4{color:#edf5ed}
+html[data-theme="dark"] .category-label p,
+html[data-theme="dark"] .category-strip .card p,
+html[data-theme="dark"] .feature p,
+html[data-theme="dark"] .access-heading p,
+html[data-theme="dark"] .access-card>p,
+html[data-theme="dark"] .access-card li,
+html[data-theme="dark"] .access-card ul,
+html[data-theme="dark"] .membership-status p,
+html[data-theme="dark"] .payment-history-row,
+html[data-theme="dark"] .auth-hint,
+html[data-theme="dark"] .access-status,
+html[data-theme="dark"] .payment-box p,
+html[data-theme="dark"] .holiday-grand p,
+html[data-theme="dark"] .holiday-note,
+html[data-theme="dark"] .holiday-heading p,
+html[data-theme="dark"] .update-item p,
+html[data-theme="dark"] .update-meta,
+html[data-theme="dark"] .updates-empty,
+html[data-theme="dark"] .updates-loading{color:#b9c9ba}
+html[data-theme="dark"] .access-kicker,
+html[data-theme="dark"] .eyebrow,
+html[data-theme="dark"] .category-strip .category-tag{color:#b4d39a}
+html[data-theme="dark"] .access-form label{color:#d2dfd1}
+html[data-theme="dark"] .access-form input,
+html[data-theme="dark"] .access-form select,
+html[data-theme="dark"] .access-form textarea{background:#0d1711;color:#edf5ed;border-color:#455b49}
+html[data-theme="dark"] .access-form input::placeholder,
+html[data-theme="dark"] .access-form textarea::placeholder{color:#91a293;opacity:1}
+html[data-theme="dark"] .access-form select option{background:#152119;color:#edf5ed}
+html[data-theme="dark"] .auth-panel,
+html[data-theme="dark"] .premium-user,
+html[data-theme="dark"] .premium-account,
+html[data-theme="dark"] .membership-status,
+html[data-theme="dark"] .payment-history{color:#e7eee7;border-color:#405543}
+html[data-theme="dark"] .payment-history-row{border-top-color:#405543}
+html[data-theme="dark"] .access-status{color:#c2d8b6}
+html[data-theme="dark"] .access-submit,
+html[data-theme="dark"] .auth-actions .btn,
+html[data-theme="dark"] .payment-box .btn{color:#fff}
+html[data-theme="dark"] .category-strip .card{background:linear-gradient(145deg,#1b2a21,#24352a);border-color:#425746}
+html[data-theme="dark"] .category-strip .symbol{background:#293b30;color:#c8e6a9;border-color:#526b52}
+html[data-theme="dark"] .holiday-grand{color:#f4faf4;border-color:#57745d}
+html[data-theme="dark"] .holiday-grand .eyebrow{color:#f0d99d}
+html[data-theme="dark"] .holiday-grand .btn{background:#d5b875;color:#243627}
+html[data-theme="dark"] .menu{background:#26362b;color:#f0f6ee;border-color:#526753}
+html[data-theme="dark"] #mainNav,
+html[data-theme="dark"] #mainNav a{background:#17221b;color:#e2ece2;border-color:#405443}
+html[data-theme="dark"] #mainNav a:hover,
+html[data-theme="dark"] #mainNav a:focus-visible{background:#293c2d;color:#e7f4df}
+html[data-theme="dark"] #mainNav .nav-cta{background:#78985d;color:#fff}
+html[data-theme="dark"] .skip-link{background:#1b2a20;color:#f2f7ef}
+html[data-theme="dark"] .premium-card{color:#e7eee7}
+html[data-theme="dark"] .premium-card .access-kicker{color:#c2dfa8}
+html[data-theme="dark"] .premium-card ul{color:#c3d1c2}
+html[data-theme="dark"] .premium-card .auth-panel,
+html[data-theme="dark"] .premium-card .premium-user{background:#16221a;color:#e7eee7}
+html[data-theme="dark"] .premium-card .auth-panel h4,
+html[data-theme="dark"] .premium-card .premium-user h4{color:#edf5ed}
 </style>
 <style>
 #bugReportLauncher{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:9999;display:inline-flex;align-items:center;gap:9px;border:1px solid #d8e8ce;border-radius:999px;background:linear-gradient(135deg,#263d2c,#668d50);color:#fff;padding:14px 19px;font:800 14px/1.2 system-ui;box-shadow:0 10px 32px #10251555;cursor:pointer;isolation:isolate}#bugReportLauncher:hover{transform:translateY(-2px);box-shadow:0 14px 36px #10251566}#bugReportLauncher:focus-visible{outline:3px solid #f0c66e;outline-offset:3px}
