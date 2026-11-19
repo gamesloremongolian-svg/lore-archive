@@ -22,12 +22,16 @@ test.describe('LOREVERSE website health', () => {
   test('homepage exposes a description, primary navigation and working mobile menu', async ({ page }) => {
     await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /LOREVERSE/i);
-    await expect(page.locator("#universeMenuBtn")).toHaveCount(1);
-    await expect(page.locator("#universeSubmenu button[data-nav-category]")).toHaveCount(3);
+    // The homepage now uses one responsive MENU dropdown; the retired Universe Hub
+    // submenu is no longer part of the current navigation.
+    await expect(page.locator('#menuBtn')).toHaveCount(1);
+    await expect(page.locator('#mainNav')).toHaveCount(1);
     await expect(page.locator('#mainNav a[href="./editorial/"]')).toHaveCount(1);
     await expect(page.locator('#mainNav a[href="./archive/"]')).toHaveCount(1);
     await expect(page.locator('#mainNav a[href="./games/"]')).toHaveCount(1);
     await expect(page.locator('#mainNav a[href="./community/"]')).toHaveCount(1);
+    await expect(page.locator('#mainNav a[href="./profile/"]')).toHaveCount(1);
+    await expect(page.locator('#themeToggle')).toHaveCount(1);
 
     await page.setViewportSize({ width: 390, height: 844 });
     const toggle = page.locator('#menuBtn');
