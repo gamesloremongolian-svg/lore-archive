@@ -1,0 +1,51 @@
+/* LOREVERSE guest homepage redesign — shared by web and Capacitor */
+:root{color-scheme:dark}
+html,body{background:#080d1b!important;color:#f3f5ff!important}
+body{background:radial-gradient(ellipse at 70% 0%,#29205a55,transparent 36%),linear-gradient(180deg,#080d1b,#090f20 58%,#070b16)!important}
+body>header:not(.lv-shell-header){display:none!important}
+main#main-content{padding:18px 0 36px}
+.lv-shell-header{background:rgba(7,13,28,.96)!important}
+.lv-shell-inner{max-width:1440px}
+.wrap{width:min(1320px,calc(100% - 44px))!important}
+.hero{position:relative;isolation:isolate;min-height:340px;margin:12px auto 20px!important;padding:42px clamp(22px,4vw,54px)!important;grid-template-columns:1.1fr .9fr!important;gap:20px!important;border:1px solid #5262a5;border-radius:22px;overflow:hidden;background:linear-gradient(100deg,#0b1530f5 0%,#11183be8 46%,#1b1a4a88 100%),url('./images/loreverse-guest-hero-bg.webp') center/cover}
+.hero:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 78% 50%,#8d54ff33,transparent 35%),linear-gradient(90deg,#080e20 0%,transparent 85%)}
+.hero>div:first-child{position:relative;z-index:2}
+.hero .eyebrow{color:#9e9bff;font-size:11px;letter-spacing:.2em}
+.hero h1{max-width:680px;font-size:clamp(36px,5.4vw,64px);line-height:1.04;color:#fff;margin:14px 0}
+.hero h1 em{background:linear-gradient(90deg,#9a8cff,#e18bff);background-clip:text;-webkit-background-clip:text;color:transparent}
+.hero .lead{max-width:590px;color:#d0d8ed;font-size:16px;line-height:1.75}
+.art{height:330px!important;max-width:480px!important;transform:none!important;margin:0 auto!important;align-items:center!important}
+.art:before{background:radial-gradient(ellipse,#7656c866,transparent 70%)!important}
+.art img{object-fit:contain!important;object-position:center!important;filter:drop-shadow(0 16px 28px #0009)!important}
+.lv-home-actions{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 14px}
+.lv-home-primary,.lv-home-secondary{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 20px;border-radius:13px;font-weight:850}
+.lv-home-primary{color:#fff!important;background:linear-gradient(110deg,#6657df,#b34be5);box-shadow:0 8px 24px #8652ef55}
+.lv-home-secondary{color:#f4f2ff!important;border:1px solid #9b82ed;background:#101a33}
+.lv-home-points{display:flex;gap:18px;flex-wrap:wrap;color:#d4d9ed;font-size:12px}
+.lv-home-points span:before{color:#9b8cff}
+.featured-character,.about-loreverse,.holiday-section,.stats-section,.updates-section,.category-label,.category-strip,.feature,.access-section,.category-results{color:#f2f5ff!important}
+.featured-character,.about-lo
+rever​se-panel,.holiday-section,.stats-section,.updates-section,.feature,.access-card,.access-grid,.category-results{background:linear-gradient(145deg,#151f39,#0e172b)!important;border:1px solid #35476b!important;border-radius:18px!important;box-shadow:0 12px 32px #0003}
+.featured-character{background:linear-gradient(115deg,#141d36,#1d1b45 65%,#111a30)!important;border-color:#4d4a89!important}
+.featured-copy h2,.about-loreverse h2,.holiday-section h2,.stats-heading h2,.updates-head h2,.category-label h2,.feature h2,.access-heading h2{color:#f5f6ff!important}
+.featured-copy p,.about-loreverse p,.holiday-section p,.stats-heading p,.feature p,.access-heading p{color:#b8c5dd!important}
+.category-strip .card,.stat-card,.result-card,.access-card,.auth-panel,.premium-account,.plan-option,.payment-box{background:linear-gradient(145deg,#1a2743,#101a2e)!important;border-color:#344867!important;color:#f4f6ff!important}
+.category-strip .card h3,.stat-number,.stat-label,.access-card h3,.access-card ul,.access-form label{color:#edf2ff!important}
+.category-strip .card p,.stat-label,.updates-panel p,.access-card>p,.auth-hint{color:#aebbd2!important}
+.category-strip .card:hover,.result-card:hover{border-color:#8d82ff!important;box-shadow:0 12px 28px #0005}
+.category-label{padding-top:26px!important}
+.category-strip .cards{grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:12px!important}
+.category-strip .card{min-height:104px!important;justify-content:flex-start!important;padding:16px!important}
+.category-strip .card .symbol{width:42px;height:42px;flex-basis:42px;background:#6755df2b!important;color:#a99cff!important}
+.category-strip .card h3{white-space:normal!important;font-size:14px!important}
+.feature{margin:18px auto!important;padding:22px 26px!important}
+.feature .btn,.featured-link,.access-submit,.auth-actions .btn,.payment-box .btn{background:linear-gradient(110deg,#6559d9,#269f9d)!important;color:#fff!important}
+.access-form input,.access-form select,.access-form textarea{background:#0b1427!important;color:#f2f5ff!important;border-color:#3a4d6e!important}
+.plan-option small,.payment-history-row{color:#b4c1d7!important}
+.winter-ribbon{background:#171b3b!important;color:#e9e9ff!important;border-color:#5552a0!important}
+.scrolling-categories{background:#0d172b!important;border-color:#263b59!important}
+.scrolling-title{color:#aebbd2!important}
+footer{border-color:#293a58!important;color:#9eacc4!important}
+@media(max-width:900px){.hero{grid-template-columns:1fr!important;padding:28px 24px!important}.art{height:280px!important;max-width:100%!important}.category-strip .cards{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:600px){main#main-content{padding-top:10px}.wrap{width:calc(100% - 24px)!important}.hero{min-height:0;padding:24px 18px 14px!important;border-radius:17px}.hero h1{font-size:clamp(34px,10vw,46px)}.hero .lead{font-size:14px}.art{height:245px!important;margin:0 auto!important}.lv-home-actions{gap:8px;margin-top:18px}.lv-home-primary,.lv-home-secondary{min-height:44px;padding:10px 14px;font-size:13px}.lv-home-points{gap:9px;font-size:10px}.category-strip .cards{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}.category-strip .card{min-height:84px!important;padding:10px!important;gap:8px!important}.category-strip .card h3{font-size:12px!important}.feature{padding:16px!important}.featured-character{margin:16px auto 20px!important}}
+@media(prefers-reduced-motion:reduce){.scrolling-track{animation:none!important}}
