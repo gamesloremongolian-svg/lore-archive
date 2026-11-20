@@ -44,7 +44,7 @@ html.capacitor-app #bugReportModal .bug-card{max-height:calc(100% - 12px)!import
   document.documentElement.classList.add("capacitor-app");
   const nav=document.getElementById("loreverseAppNav");
   if(!nav)return;
-  const path=location.pathname.replace(/\\/g,"").replace(/\/+$/,"")||"/";
+  const rawPath=location.pathname;\n  const path=rawPath.endsWith("/")?(rawPath.slice(0,-1)||"/"):rawPath;
   const routes={home:"/",community:"/community",store:"/store",profile:"/profile"};
   const current=Object.keys(routes).find(key=>path===routes[key]||path.startsWith(routes[key]+"/"))||"home";
   nav.querySelectorAll("[data-app-route]").forEach(a=>{
