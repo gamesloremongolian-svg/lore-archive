@@ -14,7 +14,7 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('body')).toBeVisible();
     await expect(page.locator('.lv-shell-brand')).toContainText('LOREVERSE');
     await expect(page.locator('.hero h1')).toContainText('Дуртай ертөнцөө');
-    await expect(page.locator('.cards .card')).toHaveCount(3);
+    await expect(page.locator('.cards .card')).toHaveCount(5);\n    await expect(page.locator('.cards .lv-extra-card')).toHaveCount(2);
     await expect(page.locator('.cards [data-category="all"]')).toHaveCount(0);
     await expect(page.locator('.feature').first()).toBeVisible();
     await expect(page.locator('.feature').nth(1)).toContainText('BUG HUNTER');
@@ -91,6 +91,13 @@ test.describe('LOREVERSE website health', () => {
     await page.setViewportSize({ width: 1024, height: 768 });
     await expect(nav).toBeVisible();
     await expect(menuButton).toBeHidden();
+    const tabletLayout = await page.evaluate(() => ({
+      viewportWidth: document.documentElement.clientWidth,
+      documentWidth: document.documentElement.scrollWidth,
+      nav: document.querySelector('.lv-shell-nav').getBoundingClientRect().toJSON()
+    }));
+    expect(tabletLayout.documentWidth, '1024px desktop/tablet header must not overflow horizontally').toBeLessThanOrEqual(tabletLayout.viewportWidth + 1);
+    expect(tabletLayout.nav.width).toBeGreaterThan(0);
   });
 
   test('public sitemap and crawler rules are published', async ({ request }) => {
