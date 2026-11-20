@@ -49,3 +49,31 @@ footer{border-color:#293a58!important;color:#9eacc4!important}
 @media(max-width:900px){.hero{grid-template-columns:1fr!important;padding:28px 24px!important}.art{height:280px!important;max-width:100%!important}.category-strip .cards{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
 @media(max-width:600px){main#main-content{padding-top:10px}.wrap{width:calc(100% - 24px)!important}.hero{min-height:0;padding:24px 18px 14px!important;border-radius:17px}.hero h1{font-size:clamp(34px,10vw,46px)}.hero .lead{font-size:14px}.art{height:245px!important;margin:0 auto!important}.lv-home-actions{gap:8px;margin-top:18px}.lv-home-primary,.lv-home-secondary{min-height:44px;padding:10px 14px;font-size:13px}.lv-home-points{gap:9px;font-size:10px}.category-strip .cards{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}.category-strip .card{min-height:84px!important;padding:10px!important;gap:8px!important}.category-strip .card h3{font-size:12px!important}.feature{padding:16px!important}.featured-character{margin:16px auto 20px!important}}
 @media(prefers-reduced-motion:reduce){.scrolling-track{animation:none!important}}
+
+/* Contrast and compact-screen corrections from Android visual QA */
+.about-loreverse-panel{background:linear-gradient(145deg,#151f39,#0e172b)!important;border-color:#35476b!important;color:#f2f5ff!important}
+.about-loreverse-panel .about-loreverse-head h2,.about-loreverse-panel .about-loreverse-item h3{color:#f5f6ff!important}
+.about-loreverse-panel .about-loreverse-head p,.about-loreverse-panel .about-loreverse-item p,.about-loreverse-panel .about-loreverse-note{color:#b8c5dd!important}
+.about-loreverse-panel .about-loreverse-item{background:#101a2e!important;border-color:#344867!important}
+.about-loreverse-panel .about-loreverse-item a{color:#8fded5!important}
+.holiday-day,.holiday-day:disabled{background:linear-gradient(145deg,#1b2741,#111b30)!important;border-color:#3a4b6c!important;color:#edf2ff!important;opacity:1!important}
+.holiday-day .gift-day{color:#a99cff!important;font-size:11px!important}
+.holiday-day .gift-label{color:#edf2ff!important;font-size:12px!important}
+.holiday-day .gift-icon{font-size:27px!important}
+.holiday-day.is-open{background:linear-gradient(145deg,#203c3a,#18312f)!important;border-color:#4a9d91!important}
+.holiday-note{color:#b8c5dd!important}
+@media(max-width:1080px){
+ .lv-shell-inner{min-height:64px!important}
+ .lv-shell-toggle{display:inline-grid!important;place-items:center!important;margin-left:auto!important}
+ .lv-shell-nav{display:none!important}
+ .lv-shell-nav[data-open=true]{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:600px){
+ .about-loreverse-panel{padding:17px!important}
+ .about-loreverse-grid{grid-template-columns:1fr!important}
+ .about-loreverse-item{display:grid!important;grid-template-columns:38px minmax(0,1fr)!important}
+ .holiday-calendar{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .holiday-day{min-height:84px!important;padding:8px!important}
+ .holiday-grand{padding:14px!important}
+ .holiday-grand h3{font-size:17px!important}
+}
