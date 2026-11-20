@@ -332,4 +332,43 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('#channels')).toContainText(/НЭЭЛТТЭЙ СЕРВЕРҮҮД|нээлттэй сервер алга/i);
   });
 
+
+  test('native Android bottom navigation is visible and routes correctly in the built app', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    await page.addInitScript(() => {
+      Object.defineProperty(window, 'Capacitor', {
+        configurable: true,
+        value: { isNativePlatform: () => true, getPlatform: () => 'android' }
+      });
+    });
+
+    for (const [route, active] of [
+      ['/', 'home'],
+      ['/community/', 'community'],
+      ['/store/', 'store'],
+      ['/profile/', 'profile']
+    ]) {
+      await page.goto(new URL(route, baseURL).toString(), { waitUntil: 'domcontentloaded' });
+      const nav = page.locator('#loreverseAppNav');
+      await expect(nav, route + ' should render the native bottom menu').toBeVisible();
+      await expect(nav.locator('a[data-app-route]')).toHaveCount(5);
+      await expect(nav.locator('[data-app-route="' + active + '"]')).toHaveAttribute('aria-current', 'page');
+      const bounds = await nav.evaluate(element => {
+        const r = element.getBoundingClientRect();
+        return { left: r.left, right: r.right, bottom: r.bottom };
+      });
+      expect(bounds.left).toBeGreaterThanOrEqual(0);
+      expect(bounds.right).toBeLessThanOrEqual(361);
+      expect(bounds.bottom).toBeLessThanOrEqual(801);
+    }
+
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+    await page.locator('#loreverseAppNav [data-app-route="community"]').click();
+    await expect(page).toHaveURL(/\\/community\\/$/);
+    await expect(page.locator('#loreverseAppNav')).toBeVisible();
+
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+    await page.locator('#loreverseAppNav [data-app-route="bug"]').click();
+    await expect(page).toHaveURL(/openBugReport=1/);
+  });
 });
