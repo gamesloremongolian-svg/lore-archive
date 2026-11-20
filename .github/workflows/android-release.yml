@@ -8,6 +8,7 @@ on:
       - 'index.html'
       - '**/*.html'
       - 'capacitor.config.ts'
+      - 'scripts/prepare-web.mjs'
       - 'assets/loreverse-app-icon.svg'
       - 'assets/loreverse-app-icon.jpg.base64'
       - 'scripts/set-android-icon.py'
