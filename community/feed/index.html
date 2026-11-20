@@ -34,4 +34,5 @@ $("feed").addEventListener("click",async e=>{const like=e.target.closest(".likeP
 $("feed").addEventListener("submit",async e=>{const form=e.target.closest(".comment-form");if(!form)return;e.preventDefault();if(!user)return;const input=form.elements.body,body=input.value.trim();if(!body)return;const b=form.querySelector("button");b.disabled=true;const {error}=await sb.from("community_post_comments").insert({post_id:form.dataset.id,author_id:user.id,body,status:"published"});if(error){status("Сэтгэгдэл илгээж чадсангүй: "+error.message);b.disabled=false;return}await loadFeed(true);$("comments-"+form.dataset.id)?.classList.remove("hidden")});
 async function init(){const {data}=await sb.auth.getUser();user=data.user||null;if(!user){$("authPanel").classList.remove("hidden");await loadFeed(true);return}const allowed=await permission();canPost=allowed;if(allowed)$("composerPanel").classList.remove("hidden");else $("permissionPanel").classList.remove("hidden");await loadFeed(true)}
 init();
-</script></body></html>
+</script><script src="../../assets/js/loreverse-shell.js?v=20261120-4" data-root="../../" defer></script>
+</body></html>
