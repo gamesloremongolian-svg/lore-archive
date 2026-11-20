@@ -44,7 +44,8 @@ html.capacitor-app #bugReportModal .bug-card{max-height:calc(100% - 12px)!import
   document.documentElement.classList.add("capacitor-app");
   const nav=document.getElementById("loreverseAppNav");
   if(!nav)return;
-  const rawPath=location.pathname;\n  const path=rawPath.endsWith("/")?(rawPath.slice(0,-1)||"/"):rawPath;
+  const rawPath=location.pathname;
+  const path=rawPath.endsWith("/")?(rawPath.slice(0,-1)||"/"):rawPath;
   const routes={home:"/",community:"/community",store:"/store",profile:"/profile"};
   const current=Object.keys(routes).find(key=>path===routes[key]||path.startsWith(routes[key]+"/"))||"home";
   nav.querySelectorAll("[data-app-route]").forEach(a=>{
@@ -53,7 +54,8 @@ html.capacitor-app #bugReportModal .bug-card{max-height:calc(100% - 12px)!import
     else a.removeAttribute("aria-current");
   });
   nav.addEventListener("click",event=>{
-    const link=event.target.closest("a[data-app-route]");
+    const targetElement=event.target instanceof Element?event.target:null;
+    const link=targetElement?.closest("a[data-app-route]");
     if(!link)return;
     event.preventDefault();
     const key=link.getAttribute("data-app-route");
