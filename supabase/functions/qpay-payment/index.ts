@@ -251,6 +251,10 @@ Deno.serve(async (req: Request) => {
         ebarimt_status: payment.ebarimt_status,
         ebarimt: payment.ebarimt_response || null,
       });
+      if (payment.status !== "pending" || payment.currency !== "MNT" ||
+          !Number.isFinite(Number(payment.amount)) || Number(payment.amount) <= 0) {
+        return reply(409, { error: "Энэ төлбөрийн бүртгэл баталгаажуулах боломжгүй төлөвтэй байна." });
+      }
 
       const token = await qpayToken(baseUrl, clientId, clientSecret);
       const checkResponse = await fetch(baseUrl + "/v2/payment/check", {
