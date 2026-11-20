@@ -98,3 +98,55 @@ body :where(.grid){gap:14px}
  body :where(.card,.panel,.item,.feature-card,.post-card,.game-card,.section-card,.archive-card,.product-card,.listing-card){border-radius:15px!important}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}body *{transition:none!important;animation:none!important}}
+
+
+/* LOREVERSE ONE v2 — page chrome, controls and responsive consistency */
+:root{color-scheme:dark}
+body{min-height:100vh}
+body :where(header.top,header.topbar,header.head,nav.top,.topbar,.topin,.head,.top){
+ color:var(--lv-text);border-color:rgba(112,137,176,.25)
+}
+body :where(header.top,header.topbar,header.head,nav.top,.topbar,.topin,.head,.top){
+ background:rgba(12,18,32,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)
+}
+body :where(.brand,.top .brand,.topbar .brand,.head .brand){
+ color:#f1f5ff!important;font-weight:950;letter-spacing:.1em
+}
+body :where(.brand span){color:#8fded5}
+body :where(.btn,.button,button,a.btn){
+ border-radius:12px;font-weight:750;transition:filter .16s ease,border-color .16s ease,transform .16s ease
+}
+body :where(.btn:hover,.button:hover,button:hover,a.btn:hover){filter:brightness(1.1)}
+body :where(.btn.primary,.btn:not(.secondary):not(.danger),button.primary){
+ background:linear-gradient(115deg,#6257bd,#238f91)!important;color:#fff!important;border:1px solid #78cfc477!important
+}
+body :where(.btn.secondary,.secondary){
+ background:#1b2940!important;color:#e7eefb!important;border:1px solid #3c506c!important
+}
+body :where(.btn.danger,button.danger){background:#7f3044!important;border-color:#a84e64!important}
+body :where(.panel,.card,.item,.post,.listing,.member,.preview,.tools,.doc,.overall,.stat,.result,.status){
+ border-color:rgba(112,137,176,.28)
+}
+body :where(.tabs button,.tabs a,.tab){
+ background:#17243a;color:#e7eefb;border:1px solid #354964;border-radius:11px
+}
+body :where(.tabs .active,.tab.active){background:#29345b;border-color:#8179d7;color:#fff}
+body :where(table){border-color:var(--lv-border)}
+body :where(th){background:#1b2940;color:#eaf1fc}
+body :where(td){border-color:rgba(112,137,176,.2)}
+body :where(.notice,.warning,.alert){
+ background:#22243a;color:#e9e8f6;border-color:#675d91
+}
+body :where(.error){color:#ff9cae}
+body :where(.success,.good){color:#8ce2c3}
+body :where(.tag,.pill,.badge){
+ border-radius:999px
+}
+body :where(img:not([class*="avatar"])){max-width:100%}
+body :where(.foot,footer){border-color:rgba(112,137,176,.2)}
+@media(max-width:760px){
+ body :where(.toolbar,.formgrid,.composer-grid,.filters){grid-template-columns:minmax(0,1fr)!important}
+ body :where(.grid){grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+ body :where(.top,.topbar,.head){gap:10px;flex-wrap:wrap}
+ body :where(.panel,.doc){padding:16px}
+}
