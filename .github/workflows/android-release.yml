@@ -55,6 +55,28 @@ jobs:
       - name: Sync Capacitor Android
         run: npx cap sync android
 
+      - name: Configure resilient Android dependency repositories
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path("android/settings.gradle")
+          if not path.exists():
+              raise SystemExit("Generated Android settings.gradle is missing.")
+          text = path.read_text()
+          mirrors = '''
+                  // Explicit mirrors improve resilience when the primary Maven endpoints fail.
+                  maven { url = uri("https://maven.google.com") }
+                  maven { url = uri("https://repo1.maven.org/maven2") }
+          '''
+          if "https://maven.google.com" not in text:
+              text = text.replace("repositories {", "repositories {\n" + mirrors, 1)
+          # Keep plugin and dependency repositories available in generated Capacitor projects.
+          if "pluginManagement" in text and "gradlePluginPortal()" not in text:
+              text = text.replace("repositories {", "repositories {\n            gradlePluginPortal()", 1)
+          path.write_text(text)
+          print("Added Google Maven and Maven Central fallback endpoints.")
+          PY
+
       - name: Install icon renderer
         run: sudo apt-get update && sudo apt-get install -y librsvg2-bin python3-pil
 
@@ -204,7 +226,7 @@ jobs:
 
       - name: Build release Android App Bundle and installable APK
         working-directory: android
-        run: ./gradlew bundleRelease assembleDebug
+        run: ./gradlew --refresh-dependencies --no-daemon bundleRelease assembleDebug
 
       - name: Prepare and verify direct-download APK
         run: |
