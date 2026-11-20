@@ -2,7 +2,12 @@
 alter table public.payment_records
   add column if not exists idempotency_key text,
   add column if not exists invoice_creation_status text not null default 'not_started',
-  add column if not exists invoice_response jsonb;
+  add column if not exists invoice_response jsonb,
+  add column if not exists qpay_payment_id text,
+  add column if not exists ebarimt_status text not null default 'not_requested',
+  add column if not exists ebarimt_receiver_type text,
+  add column if not exists ebarimt_receiver text,
+  add column if not exists ebarimt_response jsonb;
 
 alter table public.payment_records
   drop constraint if exists payment_records_invoice_creation_status_check;
@@ -15,6 +20,17 @@ create unique index if not exists payment_records_qpay_idempotency_uidx
   on public.payment_records (user_id, purpose, idempotency_key)
   where provider = 'qpay' and idempotency_key is not null;
 
+alter table public.payment_records
+  drop constraint if exists payment_records_ebarimt_status_check;
+
+alter table public.payment_records
+  add constraint payment_records_ebarimt_status_check
+  check (ebarimt_status in ('not_requested','creating','created','unknown','failed'));
+
+create unique index if not exists payment_records_qpay_payment_id_uidx
+  on public.payment_records (qpay_payment_id)
+  where provider = 'qpay' and qpay_payment_id is not null;
+
 create index if not exists payment_records_qpay_pending_created_idx
   on public.payment_records (created_at)
   where provider = 'qpay' and status = 'pending';
@@ -26,6 +42,7 @@ create or replace function public.settle_qpay_membership_payment(
   p_payment_id uuid,
   p_user_id uuid,
   p_duration_days integer,
+  p_qpay_payment_id text default null,
   p_paid_at timestamptz default now()
 )
 returns jsonb
@@ -60,6 +77,11 @@ begin
   end if;
 
   if v_payment.status = 'paid' then
+    if p_qpay_payment_id is not null and v_payment.qpay_payment_id is null then
+      update public.payment_records
+         set qpay_payment_id = p_qpay_payment_id
+       where id = v_payment.id;
+    end if;
     return jsonb_build_object('ok', true, 'already_settled', true);
   end if;
 
@@ -98,7 +120,8 @@ begin
 
   update public.payment_records
      set status = 'paid',
-         paid_at = coalesce(p_paid_at, now())
+         paid_at = coalesce(p_paid_at, now()),
+         qpay_payment_id = coalesce(p_qpay_payment_id, qpay_payment_id)
    where id = v_payment.id
      and user_id = p_user_id;
 
@@ -106,5 +129,5 @@ begin
 end;
 $$;
 
-revoke all on function public.settle_qpay_membership_payment(uuid, uuid, integer, timestamptz) from public, anon, authenticated;
-grant execute on function public.settle_qpay_membership_payment(uuid, uuid, integer, timestamptz) to service_role;
+revoke all on function public.settle_qpay_membership_payment(uuid, uuid, integer, text, timestamptz) from public, anon, authenticated;
+grant execute on function public.settle_qpay_membership_payment(uuid, uuid, integer, text, timestamptz) to service_role;
