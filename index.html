@@ -21,7 +21,7 @@ h1{font-size:clamp(42px,6vw,70px);line-height:1.02;letter-spacing:-.055em;margin
 h1 em{font-style:normal;color:#6f8d58}.lead{max-width:570px;color:#59665a;font-size:17px;line-height:1.8}
 .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.btn.secondary{background:#f3f6f1;border:1px solid #dce4d9;color:#344034}
 .art{height:430px;min-height:0;width:100%;max-width:410px;margin-left:auto;display:flex;align-items:flex-start;justify-content:center;position:relative;overflow:visible;background:transparent;border:0;box-shadow:none;transform:translate(-18px,-12px)}
-.art img{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;object-position:center top;filter:drop-shadow(0 18px 24px #24302418)}
+.art img{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;object-position:center top;filter:drop-shadow(0 18px 24px #24302418);opacity:1!important;visibility:visible!important;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translateZ(0);will-change:transform;transition:none!important;animation:none!important}
 .art,.art img{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important}
 .art{isolation:isolate}
 .art:before{content:"";display:block!important;position:absolute;z-index:0;left:1%;top:5%;width:98%;height:88%;border-radius:48% 52% 44% 56%;background:radial-gradient(ellipse at 52% 42%,#d9e5d3 0%,#e6eee2 48%,#f2f5ef 70%,transparent 82%);filter:blur(5px);pointer-events:none}
@@ -633,6 +633,7 @@ header:has(#mainNav) .menu{border-color:#465b7c;background:#1b2941;color:#fff}
 }
 </style>
 
+<link rel="preload" as="image" href="./assets/images/a_clean_high_resolution_anime_style_png_illustrat.png" fetchpriority="high">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Үндсэн агуулга руу алгасах</a>
@@ -659,7 +660,7 @@ header:has(#mainNav) .menu{border-color:#465b7c;background:#1b2941;color:#fff}
 <div class="winter-ribbon" role="note"><span class="winter-ribbon-icon" aria-hidden="true">❄</span><span><strong>LOREVERSE ӨВЛИЙН БАЯР</strong><small>Шинэ жилийн ид шид эхэллээ · Өөрийн ертөнцөө нээгээрэй</small></span><span class="winter-ribbon-star" aria-hidden="true">✦</span></div>
 <section class="wrap hero">
 <div><div class="eyebrow">МОНГОЛ ХЭЛТЭЙ LORE ЕРТӨНЦ</div><h1>Дуртай ертөнцөө <em>илүү гүнзгий</em> нээ.</h1><p class="lead">Anime, manga, тоглоомын ертөнцийн түүх, дүрүүд, нууц болон тайлбаруудыг нэг дороос. LOREVERSE — сонирхлоос мэдлэг рүү.</p></div>
-<div class="art"><img src="./assets/images/a_clean_high_resolution_anime_style_png_illustrat.png" alt="LOREVERSE-ийн мөнгөлөг үстэй, ногоон хувцаст fantasy анимэ дүр" loading="eager" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='https://raw.githubusercontent.com/loreverse-ctrl/lore-archive/main/assets/images/a_clean_high_resolution_anime_style_png_illustrat.png'}"></div>
+<div class="art"><img id="loreverseHeroCharacter" src="./assets/images/a_clean_high_resolution_anime_style_png_illustrat.png" alt="LOREVERSE-ийн мөнгөлөг үстэй, ногоон хувцаст fantasy анимэ дүр" loading="eager" fetchpriority="high" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='https://raw.githubusercontent.com/loreverse-ctrl/lore-archive/main/assets/images/a_clean_high_resolution_anime_style_png_illustrat.png'}"></div>
 </section>
 
 <section class="wrap featured-character" id="featuredCharacter" aria-labelledby="featuredCharacterTitle" hidden>
@@ -1290,5 +1291,9 @@ html.loreverse-copy-guard img,html.loreverse-copy-guard svg{-webkit-user-drag:no
 </style>
 <script>
 (()=>{document.documentElement.classList.add("loreverse-copy-guard");const editable=e=>!!e.closest('input,textarea,select,[contenteditable="true"],[role="textbox"]');["copy","cut","contextmenu","dragstart"].forEach(type=>document.addEventListener(type,e=>{if(!editable(e.target))e.preventDefault()},true));})();
+</script>
+
+<script>
+(()=>{const img=document.getElementById("loreverseHeroCharacter");if(!img)return;img.addEventListener("load",()=>{img.style.opacity="1";img.style.visibility="visible";},{passive:true});img.addEventListener("error",()=>{if(img.dataset.retry!=="1"){img.dataset.retry="1";img.src="https://raw.githubusercontent.com/loreverse-ctrl/lore-archive/main/assets/images/a_clean_high_resolution_anime_style_png_illustrat.png";}},{passive:true});})();
 </script>
 </body></html>
