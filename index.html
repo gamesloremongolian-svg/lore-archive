@@ -1104,7 +1104,7 @@ document.getElementById("closeCategoryResults").addEventListener("click",()=>{pa
 <script>
 const bugModal=document.getElementById("bugReportModal"),bugForm=document.getElementById("bugReportForm"),bugStatus=document.getElementById("bugReportStatus");
 async function openBugReport(e){if(e)e.preventDefault();try{const {data,error}=await supabase.auth.getSession();if(error)throw error;bugStatus.textContent=data.session?"":"Илгээхийн тулд эхлээд аккаунтаараа нэвтэрнэ үү."; }catch(err){bugStatus.textContent="Нэвтрэлтийг шалгаж чадсангүй. Хуудсыг дахин ачаална уу.";}bugModal.classList.add("open");document.getElementById("bugTitle").focus();}
-document.getElementById("bugReportLauncher")?.addEventListener("click",openBugReport);document.getElementById("bugReportNavLink")?.addEventListener("click",openBugReport);
+document.getElementById("bugReportLauncher")?.addEventListener("click",openBugReport);
 if(new URLSearchParams(location.search).get("openBugReport")==="1")setTimeout(()=>openBugReport(),350);
 document.getElementById("bugReportCancel").addEventListener("click",()=>bugModal.classList.remove("open"));
 bugModal.addEventListener("click",e=>{if(e.target===bugModal)bugModal.classList.remove("open");});
@@ -1295,5 +1295,16 @@ html.loreverse-copy-guard img,html.loreverse-copy-guard svg{-webkit-user-drag:no
 
 <script>
 (()=>{const img=document.getElementById("loreverseHeroCharacter");if(!img)return;img.addEventListener("load",()=>{img.style.opacity="1";img.style.visibility="visible";},{passive:true});img.addEventListener("error",()=>{if(img.dataset.retry!=="1"){img.dataset.retry="1";img.src="https://raw.githubusercontent.com/loreverse-ctrl/lore-archive/main/assets/images/a_clean_high_resolution_anime_style_png_illustrat.png";}},{passive:true});})();
+</script>
+
+<style id="loreverse-native-menu-fix">
+html.capacitor-app body{padding-bottom:calc(88px + env(safe-area-inset-bottom))!important}
+html.capacitor-app #bugReportModal{z-index:1100!important;inset:0 0 calc(76px + env(safe-area-inset-bottom)) 0!important;padding:12px!important;align-items:center!important}
+html.capacitor-app #bugReportModal .bug-card{max-height:calc(100% - 12px)!important;overscroll-behavior:contain}
+html.capacitor-app #loreverseAppNav a{touch-action:manipulation;pointer-events:auto!important}
+</style>
+
+<script id="loreverse-native-navigation-controller">
+(()=>{const cap=window.Capacitor;const native=!!(cap&&(cap.isNativePlatform?.()||["android","ios"].includes(cap.getPlatform?.())));if(!native)return;document.documentElement.classList.add("capacitor-app");const nav=document.getElementById("loreverseAppNav");if(!nav)return;const path=location.pathname.replace(/\\/g,"").replace(/\/+$/,"")||"/";const routes={home:"/",community:"/community",store:"/store",profile:"/profile"};const current=Object.keys(routes).find(key=>path===routes[key]||path.startsWith(routes[key]+"/"))||"home";nav.querySelectorAll("[data-app-route]").forEach(a=>{const key=a.getAttribute("data-app-route");if(key===current)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});nav.addEventListener("click",event=>{const link=event.target.closest("a[data-app-route]");if(!link)return;event.preventDefault();const key=link.getAttribute("data-app-route");if(key==="bug"){if(location.pathname==="/"&&typeof window.openBugReport==="function")window.openBugReport();else location.assign(new URL("/?openBugReport=1",location.origin).href);return}const destination=new URL(routes[key]||"/",location.origin);if(location.pathname!==destination.pathname)location.assign(destination.href);},{passive:false});})();
 </script>
 </body></html>
