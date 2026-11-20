@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
-const ignored = new Set(['.git', 'node_modules', 'www', 'android', 'ios', 'dist']);
+const ignored = new Set(['.git', 'node_modules', 'android', 'ios', 'dist']);
 const temp = await mkdtemp(join(tmpdir(), 'loreverse-js-check-'));
 let checked = 0;
 let failed = 0;

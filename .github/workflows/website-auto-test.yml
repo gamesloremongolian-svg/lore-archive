@@ -31,6 +31,8 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Build the exact Capacitor web bundle
         run: npm run build
+      - name: Check generated Capacitor inline JavaScript syntax
+        run: npm run check:web
       - name: Start local website server
         run: |
           python3 -m http.server 4173 --directory www --bind 127.0.0.1 >/tmp/loreverse-http.log 2>&1 &
