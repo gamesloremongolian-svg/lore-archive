@@ -541,7 +541,7 @@ html[data-theme="dark"] .stats-section .stat-icon{color:#b7d99d}
 
 </style>
 <style>
-#bugReportLauncher{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:9999;display:inline-flex;align-items:center;gap:9px;border:1px solid #d8e8ce;border-radius:999px;background:linear-gradient(135deg,#263d2c,#668d50);color:#fff;padding:14px 19px;font:800 14px/1.2 system-ui;box-shadow:0 10px 32px #10251555;cursor:pointer;isolation:isolate}#bugReportLauncher:hover{transform:translateY(-2px);box-shadow:0 14px 36px #10251566}#bugReportLauncher:focus-visible{outline:3px solid #f0c66e;outline-offset:3px}
+html.capacitor-app #bugReportLauncher{display:none!important}#bugReportLauncher{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:9999;display:inline-flex;align-items:center;gap:9px;border:1px solid #d8e8ce;border-radius:999px;background:linear-gradient(135deg,#263d2c,#668d50);color:#fff;padding:14px 19px;font:800 14px/1.2 system-ui;box-shadow:0 10px 32px #10251555;cursor:pointer;isolation:isolate}#bugReportLauncher:hover{transform:translateY(-2px);box-shadow:0 14px 36px #10251566}#bugReportLauncher:focus-visible{outline:3px solid #f0c66e;outline-offset:3px}
 #bugReportModal{position:fixed;inset:0;z-index:10000;background:#17211799;display:none;align-items:center;justify-content:center;padding:16px}#bugReportModal.open{display:flex}
 #bugReportModal .bug-card{width:min(560px,100%);max-height:90vh;overflow:auto;background:#fff;color:#202820;border:1px solid #dce3da;border-radius:18px;padding:22px;box-shadow:0 24px 70px #0003}
 #bugReportModal h2{margin:0 0 5px;font-size:24px}#bugReportModal p{color:#667166;margin:0 0 16px;font-size:13px}
@@ -659,7 +659,7 @@ header:has(#mainNav) .menu{border-color:#465b7c;background:#1b2941;color:#fff}
 <div class="winter-ribbon" role="note"><span class="winter-ribbon-icon" aria-hidden="true">❄</span><span><strong>LOREVERSE ӨВЛИЙН БАЯР</strong><small>Шинэ жилийн ид шид эхэллээ · Өөрийн ертөнцөө нээгээрэй</small></span><span class="winter-ribbon-star" aria-hidden="true">✦</span></div>
 <section class="wrap hero">
 <div><div class="eyebrow">МОНГОЛ ХЭЛТЭЙ LORE ЕРТӨНЦ</div><h1>Дуртай ертөнцөө <em>илүү гүнзгий</em> нээ.</h1><p class="lead">Anime, manga, тоглоомын ертөнцийн түүх, дүрүүд, нууц болон тайлбаруудыг нэг дороос. LOREVERSE — сонирхлоос мэдлэг рүү.</p></div>
-<div class="art"><img src="./assets/images/a_clean_high_resolution_anime_style_png_illustrat.png" alt="LOREVERSE-ийн мөнгөлөг үстэй, ногоон хувцаст fantasy анимэ дүр"></div>
+<div class="art"><img src="./assets/images/a_clean_high_resolution_anime_style_png_illustrat.png" alt="LOREVERSE-ийн мөнгөлөг үстэй, ногоон хувцаст fantasy анимэ дүр" loading="eager" decoding="async" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='https://raw.githubusercontent.com/loreverse-ctrl/lore-archive/main/assets/images/a_clean_high_resolution_anime_style_png_illustrat.png'}"></div>
 </section>
 
 <section class="wrap featured-character" id="featuredCharacter" aria-labelledby="featuredCharacterTitle" hidden>
@@ -1124,12 +1124,12 @@ const date=v=>v?new Date(v).toLocaleDateString("mn-MN",{year:"numeric",month:"sh
 async function loadLatestPosts(){
  const box=el("latestPostList");
  try{
-  const {data,error}=await latestSb.from("content_posts").select("id,title,slug,summary,content_type,published_at").eq("status","published").eq("is_premium",false).order("published_at",{ascending:false}).limit(5);
+  const {data,error}=await latestSb.from("content_posts").select("id,title,slug,summary,content_type,published_at").eq("status","published").eq("is_premium",false).order("published_at",{ascending:false}).limit(3);
   if(error)throw error;
   if(!data?.length){box.innerHTML='<p class="updates-empty">Одоогоор нийтлэгдсэн шинэ мэдээлэл алга.</p>';return;}
   const labels={anime:"Anime",manga:"Manga",game:"Game",lore:"Lore",news:"Мэдээ",guide:"Гарын авлага"};
   box.innerHTML=data.map(p=>'<a class="update-item" href="./knowledge/?post='+encodeURIComponent(p.slug||p.id)+'"><span class="update-mark">✧</span><span><h4>'+safe(p.title)+'</h4><p>'+safe(p.summary||"Шинэ нийтлэл унших")+'</p><span class="update-meta">'+safe(labels[p.content_type]||"Нийтлэл")+' · '+safe(date(p.published_at))+'</span></span></a>').join("");
-  el("latestPostStatus").textContent="Хамгийн сүүлд нийтлэгдсэн 5 нээлттэй нийтлэл.";
+  el("latestPostStatus").textContent="Хамгийн сүүлд нийтлэгдсэн 3 нээлттэй нийтлэл.";
  }catch(e){box.innerHTML='<p class="updates-empty">Шинэ мэдээллийг одоогоор ачаалж чадсангүй.</p>';el("latestPostStatus").textContent="Дахин оролдоно уу.";}
 }
 async function loadLatestApk(){
@@ -1255,6 +1255,8 @@ html.capacitor-app #loreverseAppNav{position:fixed!important;z-index:1200!import
 #loreverseAppNav a{flex:1 1 0!important;min-width:0!important;width:auto!important;max-width:none!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;padding:5px 2px!important;margin:0!important;border-radius:10px;color:#667166;font-size:10px;font-weight:750;line-height:1.2;text-align:center;box-sizing:border-box!important}
 #loreverseAppNav a[aria-current="page"]{background:#edf3e9;color:#587a45}
 #loreverseAppNav .app-nav-icon{font-size:19px;line-height:1.2}
+html.capacitor-app #loreverseAppNav a{font-size:9px!important;gap:2px!important;padding-left:1px!important;padding-right:1px!important}
+@media(max-width:390px){html.capacitor-app #loreverseAppNav .app-nav-icon{font-size:17px}html.capacitor-app #loreverseAppNav a{font-size:8px!important}}
 @media(prefers-reduced-motion:reduce){#loreverseAppNav a{transition:none!important}}
 </style>
 <nav id="loreverseAppNav" aria-label="Аппын үндсэн цэс">
@@ -1263,6 +1265,7 @@ html.capacitor-app #loreverseAppNav{position:fixed!important;z-index:1200!import
 <a href="./community/" data-app-route="community"><span class="app-nav-icon" aria-hidden="true">◎</span><span>Нийгэмлэг</span></a>
 <a href="./store/" data-app-route="store"><span class="app-nav-icon" aria-hidden="true">▣</span><span>Дэлгүүр</span></a>
 <a href="./profile/" data-app-route="profile"><span class="app-nav-icon" aria-hidden="true">♙</span><span>Профайл</span></a>
+<a href="#bugReportModal" id="bugReportNavLink" aria-haspopup="dialog" aria-controls="bugReportModal"><span class="app-nav-icon" aria-hidden="true">⚑</span><span>Алдаа</span></a>
 </nav>
 <script>
 (()=> {
@@ -1280,4 +1283,12 @@ html.capacitor-app #loreverseAppNav{position:fixed!important;z-index:1200!import
 })();
 </script>
 
+
+<style id="loreverse-copy-deterrent">
+html.loreverse-copy-guard body,html.loreverse-copy-guard body *:not(input):not(textarea):not(select):not(option):not([contenteditable="true"]){-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none}
+html.loreverse-copy-guard img,html.loreverse-copy-guard svg{-webkit-user-drag:none;user-drag:none}
+</style>
+<script>
+(()=>{document.documentElement.classList.add("loreverse-copy-guard");const editable=e=>!!e.closest('input,textarea,select,[contenteditable="true"],[role="textbox"]');["copy","cut","contextmenu","dragstart"].forEach(type=>document.addEventListener(type,e=>{if(!editable(e.target))e.preventDefault()},true));})();
+</script>
 </body></html>
