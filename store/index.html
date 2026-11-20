@@ -263,7 +263,7 @@ body{scroll-padding-top:76px}
   .grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
 }
 </style>
-<link rel="stylesheet" href="../assets/css/loreverse-shell.css?v=20261120-1">
+<link rel="stylesheet" href="../assets/css/loreverse-shell.css?v=20261120-2">
 </head><body><header class="lv-global-header"><div class="lv-global-inner"><a class="lv-brand" href="../"><span>✦</span> LOREVERSE</a><button class="lv-menu-btn" id="lvMenuBtn" type="button" aria-expanded="false" aria-controls="lvNav">☰ <span>ЦЭС</span></button><nav class="lv-nav" id="lvNav" aria-label="Үндсэн цэс"><a href="../">Нүүр</a><a href="../knowledge/">Lore</a><a href="../games/">Тоглоомын ертөнц</a><a href="../ai/">AI туслах</a><a href="../community/">Нийгэмлэг</a><a href="../store/">Дэлгүүр</a><a href="../marketplace/">Арилжаа</a><a href="../profile/">Профайл</a><a class="lv-nav-cta" href="../rank/">Нэвтрэх</a></nav></div></header><script id="loreverse-global-navigation-script">
 (()=>{const h=document.querySelector('.lv-global-header');if(!h)return;document.querySelectorAll('body header:not(.lv-global-header)').forEach(x=>x.classList.add('lv-old-header'));const p=location.pathname.replace(/index\.html$/,'').replace(/\/$/,'');const links=h.querySelectorAll('.lv-nav a');links.forEach(a=>{const u=new URL(a.href,location.href);let q=u.pathname.replace(/index\.html$/,'').replace(/\/$/,'');if(q===p||(q==='/'&&p===''))a.setAttribute('aria-current','page')});const b=document.getElementById('lvMenuBtn'),n=document.getElementById('lvNav');b?.addEventListener('click',()=>{const open=n.classList.toggle('open');b.setAttribute('aria-expanded',String(open));b.querySelector('span').textContent=open?'ХААХ':'ЦЭС'});n?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{n.classList.remove('open');b?.setAttribute('aria-expanded','false')}));})();
 </script>
@@ -416,5 +416,5 @@ $("refresh").onclick=()=>load().catch(e=>say(e.message));
 $("authBtn").onclick=async()=>{if(user){await supabase.auth.signOut();await load();return}const email=prompt("LOREVERSE аккаунтын имэйл:");if(!email)return;const password=prompt("Нууц үг:");if(!password)return;const {error}=await supabase.auth.signInWithPassword({email,password});if(error){say(error.message);return}await load().catch(e=>say(e.message))};
 supabase.auth.onAuthStateChange(()=>setTimeout(()=>load().catch(e=>say(e.message)),0));
 load().catch(e=>say(e.message));
-</script><script src="../assets/js/loreverse-shell.js?v=20261120-1" data-root="../" defer></script>
+</script><script src="../assets/js/loreverse-shell.js?v=20261120-2" data-root="../" defer></script>
 </body></html>
