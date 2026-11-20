@@ -364,7 +364,7 @@ test.describe('LOREVERSE website health', () => {
 
     await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
     await page.locator('#loreverseAppNav [data-app-route="community"]').click();
-    await expect(page).toHaveURL(/\\/community\\/$/);
+    await expect(page).toHaveURL(/\/community\/$/);
     await expect(page.locator('#loreverseAppNav')).toBeVisible();
 
     await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
