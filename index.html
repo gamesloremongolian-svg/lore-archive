@@ -1276,7 +1276,7 @@ html.capacitor-app #loreverseAppNav a{font-size:9px!important;gap:2px!important;
   document.documentElement.classList.add("capacitor-app");
   const nav=document.getElementById("loreverseAppNav");
   if(!nav)return;
-  const path=location.pathname.replace(/\\/g,"").replace(/\\/+$/,"")||"/";
+  const path=location.pathname.replace(/\/+$/,"")||"/";
   const routes={home:"/",community:"/community",store:"/store",profile:"/profile"};
   const current=Object.keys(routes).find(key=>path===routes[key]||path.startsWith(routes[key]+"/"))||"home";
   nav.querySelectorAll("[data-app-route]").forEach(a=>{
