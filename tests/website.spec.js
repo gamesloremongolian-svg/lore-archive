@@ -62,7 +62,7 @@ test.describe('LOREVERSE website health', () => {
     }
     await nav.locator('.lv-shell-more summary').click();
     for (const href of ['./archive/', './marketplace/', './rank/', './uid-lookup/', './bug-report/', './status/', './legal/']) {
-      await expect(nav.locator(`a[href="${href}"]`), href + ' should be available in the More menu').toBeVisible();
+      await expect(nav.locator(`.lv-shell-more .lv-shell-submenu a[href="${href}"]`), href + ' should be available in the More menu').toBeVisible();
     }
     await nav.locator('.lv-shell-more summary').click();
 
