@@ -311,6 +311,7 @@ test.describe('LOREVERSE website health', () => {
     expect(handler).toMatch(/settle_qpay_membership_payment/);
     expect(handler).toMatch(/already_settled/);
     expect(handler).toMatch(/create_ebarimt/);
+    expect(handler).toMatch(/payment.status !== "pending"/);
     expect(handler).toMatch(/\/v2\/ebarimt_v3\/create/);
     expect(handler).toMatch(/ebarimt_receiver_type/);
     expect(handler).toMatch(/ebarimt_status: "unknown"/);
