@@ -1285,7 +1285,8 @@ html.capacitor-app #loreverseAppNav a{font-size:9px!important;gap:2px!important;
     else a.removeAttribute("aria-current");
   });
   nav.addEventListener("click",event=>{
-    const link=event.target.closest("a[data-app-route]");
+    const targetElement=event.target instanceof Element?event.target:null;
+    const link=targetElement?.closest("a[data-app-route]");
     if(!link)return;
     event.preventDefault();
     const key=link.getAttribute("data-app-route");
