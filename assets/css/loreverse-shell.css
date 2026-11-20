@@ -49,3 +49,52 @@
 .lv-shell-nav a[aria-current=page] .lv-shell-nav-icon{color:#b4f1e5}
 .lv-shell-login>span:first-child{display:inline-grid;place-items:center;width:19px;height:19px;margin-right:7px;border-radius:50%;background:#0c3940;color:#bff7e9;font-size:13px}
 @media(max-width:900px){.lv-shell-nav-icon{width:22px;height:22px;margin-right:9px;font-size:17px}.lv-shell-nav a{display:flex;align-items:center}}
+
+
+/* LOREVERSE ONE — shared visual language for every page */
+:root{
+ --lv-bg:#090d19;--lv-bg-soft:#10182a;--lv-panel:#151e32;--lv-panel-2:#1b2740;
+ --lv-border:#34435e;--lv-text:#f1f5ff;--lv-muted:#aab7cc;
+ --lv-accent:#8b83ff;--lv-accent-2:#50cdbd;--lv-gold:#e7c47b;
+ --lv-radius:18px;--lv-shadow:0 14px 38px rgba(0,0,0,.22)
+}
+html{scroll-behavior:smooth;scroll-padding-top:88px}
+body{
+ color:var(--lv-text)!important;
+ background:radial-gradient(ellipse at 50% -18%,rgba(91,71,165,.24),transparent 44%),linear-gradient(180deg,#0b1020 0%,#090d19 58%,#0c1020 100%)!important;
+ font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important
+}
+body :where(h1,h2,h3,h4){color:var(--lv-text)}
+body :where(p,.muted,.note,.description,.subtitle){color:var(--lv-muted)}
+body :where(.wrap,.container,.page-wrap,.main-wrap){width:min(1160px,calc(100% - 32px));margin-left:auto;margin-right:auto}
+body :where(.hero){padding-top:clamp(28px,5vw,54px);padding-bottom:clamp(20px,3vw,34px)}
+body :where(.hero h1,h1){letter-spacing:-.035em;line-height:1.12}
+body :where(.eyebrow,.kicker){color:#8fded5;letter-spacing:.16em;font-weight:850}
+body :where(.card,.panel,.item,.stat,.feature-card,.post-card,.game-card,.section-card,.archive-card,.product-card,.listing-card){
+ background:linear-gradient(145deg,rgba(27,39,64,.96),rgba(16,24,41,.98))!important;
+ color:var(--lv-text)!important;border:1px solid rgba(112,137,176,.28)!important;
+ border-radius:var(--lv-radius)!important;box-shadow:0 8px 24px rgba(0,0,0,.12)
+}
+body :where(.card,.feature-card,.post-card,.game-card,.section-card,.archive-card,.product-card,.listing-card){transition:border-color .18s ease,transform .18s ease,box-shadow .18s ease}
+body :where(.card,.feature-card,.post-card,.game-card,.section-card,.archive-card,.product-card,.listing-card):hover{border-color:rgba(139,131,255,.62)!important;box-shadow:var(--lv-shadow);transform:translateY(-2px)}
+body :where(input,select,textarea){
+ color:var(--lv-text)!important;background:#0d1526!important;border:1px solid var(--lv-border)!important;
+ border-radius:12px!important;accent-color:var(--lv-accent-2)
+}
+body :where(input,select,textarea)::placeholder{color:#8392aa!important}
+body :where(button,.btn,[role=button]){
+ border-radius:12px
+}
+body :where(button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible){
+ outline:2px solid var(--lv-accent-2)!important;outline-offset:3px
+}
+body :where(.foot,footer){color:var(--lv-muted)}
+body :where(.foot a,footer a){color:#8fded5}
+body :where(hr){border:0;border-top:1px solid rgba(130,151,184,.2)}
+body :where(.grid){gap:14px}
+@media(max-width:640px){
+ body :where(.wrap,.container,.page-wrap,.main-wrap){width:calc(100% - 24px)}
+ body :where(.hero){padding-top:28px}
+ body :where(.card,.panel,.item,.feature-card,.post-card,.game-card,.section-card,.archive-card,.product-card,.listing-card){border-radius:15px!important}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}body *{transition:none!important;animation:none!important}}
