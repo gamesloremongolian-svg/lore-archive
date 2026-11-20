@@ -1098,7 +1098,8 @@ ebarimtType?.addEventListener("change",()=>{ebarimtReceiver.value="";ebarimtRece
 document.getElementById("createEbarimt")?.addEventListener("click",async()=>{
  if(!currentPaymentId){document.getElementById("ebarimtStatus").textContent="Төлбөрийн лавлах дугаар олдсонгүй.";return;}
  const receiverType=ebarimtType.value,receiver=ebarimtReceiver.value.trim();
- if(receiverType==="COMPANY"&&!receiver){document.getElementById("ebarimtStatus").textContent="Байгууллагын регистрийн дугаарыг оруулна уу.";return;}\n if(receiverType==="CITIZEN"&&receiver&&!/^\\d{8,20}$/.test(receiver)){document.getElementById("ebarimtStatus").textContent="EBarimt-д бүртгэлтэй утасны дугаарыг 8-20 оронтой оруулна уу.";return;}
+ if(receiverType==="COMPANY"&&!receiver){document.getElementById("ebarimtStatus").textContent="Байгууллагын регистрийн дугаарыг оруулна уу.";return;}
+ if(receiverType==="CITIZEN"&&receiver&&!/^\\d{8,20}$/.test(receiver)){document.getElementById("ebarimtStatus").textContent="EBarimt-д бүртгэлтэй утасны дугаарыг 8-20 оронтой оруулна уу.";return;}
  const button=document.getElementById("createEbarimt");button.disabled=true;
  document.getElementById("ebarimtStatus").textContent="И-баримт үүсгэж байна...";
  document.getElementById("ebarimtLottery").textContent="";
