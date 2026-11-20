@@ -5,6 +5,8 @@ on:
   push:
     branches: [main]
     paths:
+      - 'index.html'
+      - '**/*.html'
       - 'capacitor.config.ts'
       - 'assets/loreverse-app-icon.svg'
       - 'assets/loreverse-app-icon.jpg.base64'
