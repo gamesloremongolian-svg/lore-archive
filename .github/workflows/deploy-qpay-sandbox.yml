@@ -1,0 +1,80 @@
+name: Deploy QPay Sandbox Edge Function
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_sandbox:
+        description: "Type DEPLOY_QPAY_SANDBOX to deploy to the isolated Sandbox Supabase project"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qpay-sandbox-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: ${{ inputs.confirm_sandbox == 'DEPLOY_QPAY_SANDBOX' }}
+    runs-on: ubuntu-latest
+    environment: qpay-sandbox
+    timeout-minutes: 15
+    steps:
+      - name: Checkout reviewed branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Validate required secrets and sandbox target
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          QPAY_CLIENT_ID: ${{ secrets.QPAY_CLIENT_ID }}
+          QPAY_CLIENT_SECRET: ${{ secrets.QPAY_CLIENT_SECRET }}
+          QPAY_INVOICE_CODE: ${{ secrets.QPAY_INVOICE_CODE }}
+        run: |
+          set -eu
+          test -n "$SUPABASE_ACCESS_TOKEN"
+          test -n "$SUPABASE_PROJECT_REF"
+          test -n "$QPAY_CLIENT_ID"
+          test -n "$QPAY_CLIENT_SECRET"
+          test -n "$QPAY_INVOICE_CODE"
+          case "$SUPABASE_PROJECT_REF" in
+            nfacspfctvunwbxtvvyi) echo "Refusing to deploy QPay Sandbox workflow to the known LOREVERSE production project."; exit 1 ;;
+          esac
+          echo "Required deployment secrets are present; target is not the known production project."
+
+      - name: Configure QPay Sandbox secrets
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          QPAY_CLIENT_ID: ${{ secrets.QPAY_CLIENT_ID }}
+          QPAY_CLIENT_SECRET: ${{ secrets.QPAY_CLIENT_SECRET }}
+          QPAY_INVOICE_CODE: ${{ secrets.QPAY_INVOICE_CODE }}
+        run: |
+          set -eu
+          umask 077
+          ENV_FILE="$(mktemp)"
+          trap 'rm -f "$ENV_FILE"' EXIT
+          {
+            printf 'QPAY_BASE_URL=%s\n' 'https://merchant-sandbox.qpay.mn'
+            printf 'QPAY_CLIENT_ID=%s\n' "$QPAY_CLIENT_ID"
+            printf 'QPAY_CLIENT_SECRET=%s\n' "$QPAY_CLIENT_SECRET"
+            printf 'QPAY_INVOICE_CODE=%s\n' "$QPAY_INVOICE_CODE"
+          } > "$ENV_FILE"
+          supabase secrets set --project-ref "$SUPABASE_PROJECT_REF" --env-file "$ENV_FILE"
+
+      - name: Deploy QPay Edge Function to isolated Sandbox project
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+        run: |
+          set -eu
+          supabase functions deploy qpay-payment --project-ref "$SUPABASE_PROJECT_REF" --use-api
