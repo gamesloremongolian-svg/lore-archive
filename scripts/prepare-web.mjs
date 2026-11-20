@@ -81,4 +81,50 @@ async function addNativeNavigation(directory) {
   }
 }
 await addNativeNavigation(out);
-console.log('LOREVERSE web app copied with functional shared native navigation');
+
+// Capacitor WebView can resolve extensionless folder links back to the app root.
+// Normalize same-origin folder navigation to an explicit index.html on native builds.
+const capacitorFolderNavigation = `
+<script id="loreverse-capacitor-folder-navigation">
+(()=> {
+  try {
+    const cap = window.Capacitor;
+    const native = !!(cap && (cap.isNativePlatform?.() || ["android", "ios"].includes(cap.getPlatform?.())));
+    if (!native || window.__loreverseFolderNavigationInstalled) return;
+    window.__loreverseFolderNavigationInstalled = true;
+    document.addEventListener("click", event => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const target = event.target instanceof Element ? event.target : null;
+      const link = target?.closest("a[href]");
+      if (!link || link.target === "_blank" || link.hasAttribute("download")) return;
+      const rawHref = link.getAttribute("href") || "";
+      if (!rawHref || rawHref.startsWith("#") || /^(mailto:|tel:|javascript:|data:)/i.test(rawHref)) return;
+      let url;
+      try { url = new URL(link.href, location.href); } catch (_) { return; }
+      if (url.origin !== location.origin) return;
+      const lastSegment = url.pathname.split("/").pop() || "";
+      if (lastSegment.includes(".")) return;
+      if (url.pathname === location.pathname && !url.search && url.hash) return;
+      if (!url.pathname.endsWith("/")) url.pathname += "/";
+      url.pathname += "index.html";
+      event.preventDefault();
+      location.assign(url.href);
+    }, true);
+  } catch (_) {}
+})();
+</script>
+`;
+
+async function addCapacitorFolderNavigation(directory) {
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    const file = path.join(directory, entry.name);
+    if (entry.isDirectory()) { await addCapacitorFolderNavigation(file); continue; }
+    if (!entry.isFile() || !entry.name.endsWith('.html')) continue;
+    let html = await readFile(file, 'utf8');
+    if (html.includes('id="loreverse-capacitor-folder-navigation"') || !html.includes('</body>')) continue;
+    html = html.replace('</body>', capacitorFolderNavigation + '\\n</body>');
+    await writeFile(file, html);
+  }
+}
+await addCapacitorFolderNavigation(out);
+console.log('LOREVERSE web app copied with functional shared native navigation and Capacitor folder routing');
