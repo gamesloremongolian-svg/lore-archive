@@ -45,7 +45,7 @@
   <form id="authForm">
    <div id="nameField" class="hidden"><label for="displayName">Харагдах нэр</label><input class="field" id="displayName" maxlength="32" autocomplete="nickname" placeholder="Таны нэр"></div>
    <label for="email">Имэйл</label><input class="field" id="email" type="email" required autocomplete="email" placeholder="name@example.com">
-   <label for="password">Нууц үг</label><input class="field" id="password" type="password" required minlength="6" autocomplete="current-password" placeholder="Нууц үг">
+   <label for="password">Нууц үг</label><input class="field" id="password" type="password" required minlength="8" autocomplete="current-password" placeholder="Нууц үг">
    <button class="btn primary" id="authSubmit" type="submit">Нэвтрэх</button>
   </form>
   
@@ -85,9 +85,10 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
 const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1");
 const $=id=>document.getElementById(id);
 const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function safeImageUrl(value){try{const u=new URL(String(value||""));return u.protocol==="https:"?u.href:"";}catch{return "";}}
 let currentUser=null,myDisplayName="Member",myAvatarUrl=null,activeConversation=null,activePartner=null,messageChannel=null,conversationChannel=null,refreshPresenceTimer=null,memberCache=[],friendIds=new Set(),pendingFriendIds=new Set(),notificationChannel=null,friendChannel=null;
 function initials(name){return String(name||"L").trim().split(/\s+/).slice(0,2).map(x=>x[0]||"").join("").toUpperCase()||"L";}
-function renderAvatar(el,name,url){el.innerHTML=url?`<img src="${safe(url)}" alt="${safe(name)}">`:safe(initials(name));}
+function renderAvatar(el,name,url){const imageUrl=safeImageUrl(url);el.innerHTML=imageUrl?`<img src="${safe(imageUrl)}" alt="${safe(name)}">`:safe(initials(name));}
 function note(s){$("authNote").textContent=s;}
 async function ensureProfile(user){
  let {data,error}=await supabase.from("profiles").select("id,display_name,avatar_url").eq("id",user.id).maybeSingle();
@@ -136,7 +137,7 @@ async function loadMembers(query=""){
 function renderMembers(){
  const el=$("memberResults");
  if(!memberCache.length){el.innerHTML='<p class="hint">Одоогоор өөр бүртгэлтэй гишүүн алга. Өөр аккаунтаар бүртгүүлсэн хүн нэмэгдсэний дараа эндээс сонгож чатлана.</p>';return;}
- el.innerHTML=memberCache.map(m=>'<div class="member"><span class="avatar small">'+(m.avatar_url?'<img src="'+safe(m.avatar_url)+'" alt="">':safe(initials(m.display_name)))+'</span><span style="min-width:0;flex:1"><span class="member-name">'+safe(m.display_name)+'</span><span class="member-meta">Rank XP · '+Number(m.total_xp||0).toLocaleString("mn-MN")+'</span></span><span class="member-actions">'+(friendIds.has(m.id)?'<button class="mini-action" type="button" data-chat="'+safe(m.id)+'">Чат</button>':pendingFriendIds.has(m.id)?'<button class="mini-action" type="button" disabled>Илгээсэн</button>':'<button class="mini-action" type="button" data-friend="'+safe(m.id)+'">+ Найз</button>')+'</span></div>').join("");
+ el.innerHTML=memberCache.map(m=>'<div class="member"><span class="avatar small">'+(safeImageUrl(m.avatar_url)?'<img src="'+safe(safeImageUrl(m.avatar_url))+'" alt="">':safe(initials(m.display_name)))+'</span><span style="min-width:0;flex:1"><span class="member-name">'+safe(m.display_name)+'</span><span class="member-meta">Rank XP · '+Number(m.total_xp||0).toLocaleString("mn-MN")+'</span></span><span class="member-actions">'+(friendIds.has(m.id)?'<button class="mini-action" type="button" data-chat="'+safe(m.id)+'">Чат</button>':pendingFriendIds.has(m.id)?'<button class="mini-action" type="button" disabled>Илгээсэн</button>':'<button class="mini-action" type="button" data-friend="'+safe(m.id)+'">+ Найз</button>')+'</span></div>').join("");
  el.querySelectorAll("[data-chat]").forEach(b=>b.onclick=()=>startConversation(b.dataset.chat));
  el.querySelectorAll("[data-friend]").forEach(b=>b.onclick=()=>sendFriendRequest(b.dataset.friend,b));
 }
@@ -202,7 +203,7 @@ async function loadConversations(){
  const profiles=Object.fromEntries((profilesRes.data||[]).map(x=>[x.id,x]));
  const last={},unread={};(messagesRes.data||[]).forEach(m=>{if(!last[m.conversation_id])last[m.conversation_id]=m;if(m.sender_id!==currentUser.id&&!m.read_at)unread[m.conversation_id]=(unread[m.conversation_id]||0)+1;});
  const decorated=rows.map(c=>{const partnerId=c.user_one===currentUser.id?c.user_two:c.user_one;return {...c,partner:profiles[partnerId]||{id:partnerId,display_name:"Гишүүн"},last:last[c.id]||null,unread:unread[c.id]||0};}).sort((x,y)=>new Date(y.last?.created_at||y.created_at)-new Date(x.last?.created_at||x.created_at));
- $("conversationList").innerHTML=decorated.map(c=>'<button type="button" class="conversation '+(activeConversation?.id===c.id?'active':'')+'" data-conversation="'+safe(c.id)+'" data-partner="'+safe(c.partner.id)+'"><span class="avatar small">'+(c.partner.avatar_url?'<img src="'+safe(c.partner.avatar_url)+'" alt="">':safe(initials(c.partner.display_name)))+'</span><span style="min-width:0"><span class="conv-name">'+safe(c.partner.display_name)+'</span><span class="conv-preview">'+safe(c.last?.body||"Яриа эхэлсэн")+'</span></span>'+(c.unread?'<span class="unread-dot">'+c.unread+'</span>':'')+'</button>').join("");
+ $("conversationList").innerHTML=decorated.map(c=>'<button type="button" class="conversation '+(activeConversation?.id===c.id?'active':'')+'" data-conversation="'+safe(c.id)+'" data-partner="'+safe(c.partner.id)+'"><span class="avatar small">'+(safeImageUrl(c.partner.avatar_url)?'<img src="'+safe(safeImageUrl(c.partner.avatar_url))+'" alt="">':safe(initials(c.partner.display_name)))+'</span><span style="min-width:0"><span class="conv-name">'+safe(c.partner.display_name)+'</span><span class="conv-preview">'+safe(c.last?.body||"Яриа эхэлсэн")+'</span></span>'+(c.unread?'<span class="unread-dot">'+c.unread+'</span>':'')+'</button>').join("");
  $("conversationList").querySelectorAll("[data-conversation]").forEach(btn=>btn.onclick=()=>{const c=decorated.find(x=>x.id===btn.dataset.conversation);if(c)openConversation(c,c.partner);});
 }
 async function openConversation(conversation,partner){
