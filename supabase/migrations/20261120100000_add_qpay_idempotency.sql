@@ -38,6 +38,8 @@ create index if not exists payment_records_qpay_pending_created_idx
 
 -- Atomically settle a verified QPay membership payment. A per-user advisory
 -- transaction lock serializes simultaneous membership extensions.
+drop function if exists public.settle_qpay_membership_payment(uuid, uuid, integer, timestamptz);
+
 create or replace function public.settle_qpay_membership_payment(
   p_payment_id uuid,
   p_user_id uuid,
