@@ -221,24 +221,32 @@ jobs:
           marker = "    buildTypes {"
           if marker not in s:
               raise SystemExit("Could not find Android buildTypes block.")
-          s = s.replace(marker, block + "\n" + marker + '\n        debug { signingConfig signingConfigs.debug }', 1)
+          s = s.replace(marker, block + "\n" + marker + '\n        debug { signingConfig signingConfigs.debug }\n        release { signingConfig signingConfigs.debug }', 1)
           p.write_text(s)
           PY
 
       - name: Build release Android App Bundle and installable APK
         working-directory: android
-        run: ./gradlew --refresh-dependencies --no-daemon bundleRelease assembleDebug
+        run: ./gradlew --refresh-dependencies --no-daemon bundleRelease assembleRelease
 
       - name: Prepare and verify direct-download APK
         run: |
           set -euo pipefail
-          APK="android/app/build/outputs/apk/debug/app-debug.apk"
+          APK="android/app/build/outputs/apk/release/app-release.apk"
           test -s "$APK"
           AAPT="$(find "$ANDROID_HOME/build-tools" -name aapt -type f | sort -V | tail -1)"
           APKSIGNER="$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -1)"
           test -n "$AAPT" && test -n "$APKSIGNER"
-          "$AAPT" dump badging "$APK" | head -1 | grep -F "package: name='mn.loreverse.app'"
-          CERT_OUTPUT="$("$APKSIGNER" verify --print-certs "$APK")"
+          BADGING="$("$AAPT" dump badging "$APK")"
+          printf '%s\n' "$BADGING" | head -1 | grep -F "package: name='mn.loreverse.app'"
+          if printf '%s\n' "$BADGING" | grep -q 'application-debuggable'; then
+            echo "::error::Release APK is marked debuggable. Refusing publication."
+            exit 1
+          fi
+          ZIPALIGN="$(find "$ANDROID_HOME/build-tools" -name zipalign -type f | sort -V | tail -1)"
+          test -n "$ZIPALIGN"
+          "$ZIPALIGN" -c -v 4 "$APK"
+          CERT_OUTPUT="$("$APKSIGNER" verify --verbose --print-certs "$APK")"
           printf '%s\n' "$CERT_OUTPUT"
           printf '%s\n' "$CERT_OUTPUT" | tr -d ':' | grep -qi 'ba74e8d5e0650850de90b08a53afab78040726c07bbf0ef14e20fb0066570550' || {
             echo "::error::Signing certificate does not match the known installed LOREVERSE app. APK will NOT be published."
