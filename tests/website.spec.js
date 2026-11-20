@@ -376,4 +376,43 @@ test.describe('LOREVERSE website health', () => {
     await page.locator('#loreverseAppNav [data-app-route="bug"]').click();
     await expect(page).toHaveURL(/openBugReport=1/);
   });
+
+  test('QPay invoice creation requires idempotency and blocks duplicate invoice creation', () => {
+    const migration = fs.readFileSync(path.join(__dirname, '../supabase/migrations/20261120100000_add_qpay_idempotency.sql'), 'utf8');
+    const handler = fs.readFileSync(path.join(__dirname, '../supabase/functions/qpay-payment/index.ts'), 'utf8');
+    expect(migration).toMatch(/unique index if not exists payment_records_qpay_idempotency_uidx/i);
+    expect(migration).toMatch(/user_id, purpose, idempotency_key/i);
+    expect(handler).toMatch(/body\.idempotency_key/);
+    expect(handler).toMatch(/invoice_creation_status === "created"/);
+    expect(handler).toMatch(/existingMembership\.plan_code !== planCode/);
+    expect(handler).toMatch(/existingReadError/);
+    expect(handler).toMatch(/retry_safe: false/);
+    expect(handler).toMatch(/invoice_creation_status: "unknown"/);
+    expect(handler).toMatch(/QPay invoice outcome ambiguous/);
+    expect(handler).toMatch(/invoice_response: responsePayload/);
+    expect(handler).toMatch(/settle_qpay_membership_payment/);
+    expect(handler).toMatch(/already_settled/);
+    expect(handler).toMatch(/create_ebarimt/);
+    expect(handler).toMatch(/payment.status !== "pending"/);
+    expect(handler).toMatch(/\/v2\/ebarimt_v3\/create/);
+    expect(handler).toMatch(/ebarimt_receiver_type/);
+    expect(handler).toMatch(/ebarimt_status: "unknown"/);
+    expect(handler).toMatch(/qpay_payment_id/);
+    expect(migration).toMatch(/ebarimt_status/);
+    expect(migration).toMatch(/payment_records_qpay_payment_id_uidx/);
+    expect(migration).toMatch(/pg_advisory_xact_lock/);
+    expect(migration).toMatch(/for update/i);
+    expect(migration).toMatch(/revoke all on function public\.settle_qpay_membership_payment/i);
+    expect(migration).toMatch(/grant execute on function public\.settle_qpay_membership_payment.*service_role/i);
+    const homepage = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+    expect(homepage).toMatch(/crypto\.randomUUID\(\)/);
+    expect(homepage).toMatch(/idempotency_key:currentInvoiceIdempotencyKey/);
+    expect(homepage).toMatch(/currentInvoiceIdempotencyKey=null/);
+    expect(homepage).toMatch(/sessionStorage\.setItem\("loreverse_qpay_idempotency_key"/);
+    expect(homepage).toMatch(/sessionStorage\.getItem\("loreverse_qpay_idempotency_key"/);
+    expect(homepage).toMatch(/if\(data\?\.payment_id\)currentPaymentId=data\.payment_id/);
+    expect(homepage).toMatch(/Төлбөрийн лавлах дугаар/);
+    expect(homepage).toMatch(/Давхар нэхэмжлэлээс сэргийлж шинэ invoice автоматаар үүсгэхгүй/);
+  });
+
 });
