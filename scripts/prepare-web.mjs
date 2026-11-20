@@ -122,7 +122,7 @@ async function addCapacitorFolderNavigation(directory) {
     if (!entry.isFile() || !entry.name.endsWith('.html')) continue;
     let html = await readFile(file, 'utf8');
     if (html.includes('id="loreverse-capacitor-folder-navigation"') || !html.includes('</body>')) continue;
-    html = html.replace('</body>', capacitorFolderNavigation + '\\n</body>');
+    html = html.replace('</body>', capacitorFolderNavigation + '\n</body>');
     await writeFile(file, html);
   }
 }
