@@ -29,9 +29,11 @@ jobs:
         run: npm run check:web
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
+      - name: Build the exact Capacitor web bundle
+        run: npm run build
       - name: Start local website server
         run: |
-          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/loreverse-http.log 2>&1 &
+          python3 -m http.server 4173 --directory www --bind 127.0.0.1 >/tmp/loreverse-http.log 2>&1 &
           echo $! > /tmp/loreverse-http.pid
           for attempt in $(seq 1 30); do
             if curl --fail --silent http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
