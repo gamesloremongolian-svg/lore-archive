@@ -1266,21 +1266,34 @@ html.capacitor-app #loreverseAppNav a{font-size:9px!important;gap:2px!important;
 <a href="/community/" data-app-route="community"><span class="app-nav-icon" aria-hidden="true">◎</span><span>Нийгэмлэг</span></a>
 <a href="/store/" data-app-route="store"><span class="app-nav-icon" aria-hidden="true">▣</span><span>Дэлгүүр</span></a>
 <a href="/profile/" data-app-route="profile"><span class="app-nav-icon" aria-hidden="true">♙</span><span>Профайл</span></a>
-<a href="/?openBugReport=1" id="bugReportNavLink" aria-haspopup="dialog"><span class="app-nav-icon" aria-hidden="true">⚑</span><span>Алдаа</span></a>
+<a href="/?openBugReport=1" id="bugReportNavLink" data-app-route="bug" aria-haspopup="dialog"><span class="app-nav-icon" aria-hidden="true">⚑</span><span>Алдаа</span></a>
 </nav>
-<script>
+<script id="loreverse-native-navigation-controller">
 (()=> {
- try {
   const cap=window.Capacitor;
   const native=!!(cap&&(cap.isNativePlatform?.()||["android","ios"].includes(cap.getPlatform?.())));
   if(!native)return;
   document.documentElement.classList.add("capacitor-app");
-  const path=location.pathname.replace(/\/+$/,"/");
-  const routes={home:/\/$/,community:/\/community\//,store:/\/store\//,profile:/\/profile\//};
-  const key=Object.keys(routes).find(k=>routes[k].test(path))||"home";
-  const active=document.querySelector('#loreverseAppNav [data-app-route="'+key+'"]');
-  if(active)active.setAttribute("aria-current","page");
- } catch(e) {}
+  const nav=document.getElementById("loreverseAppNav");
+  if(!nav)return;
+  const path=location.pathname.replace(/\\/g,"").replace(/\\/+$/,"")||"/";
+  const routes={home:"/",community:"/community",store:"/store",profile:"/profile"};
+  const current=Object.keys(routes).find(key=>path===routes[key]||path.startsWith(routes[key]+"/"))||"home";
+  nav.querySelectorAll("[data-app-route]").forEach(a=>{
+    const key=a.getAttribute("data-app-route");
+    if(key===current)a.setAttribute("aria-current","page");
+    else a.removeAttribute("aria-current");
+  });
+  nav.addEventListener("click",event=>{
+    const link=event.target.closest("a[data-app-route]");
+    if(!link)return;
+    event.preventDefault();
+    const key=link.getAttribute("data-app-route");
+    const destination=key==="bug"?"/?openBugReport=1":(routes[key]||"/");
+    const target=new URL(destination,location.origin);
+    if(location.pathname+location.search!==target.pathname+target.search)location.assign(target.href);
+    else if(key==="bug"&&typeof window.openBugReport==="function")window.openBugReport();
+  },{passive:false});
 })();
 </script>
 
@@ -1304,7 +1317,5 @@ html.capacitor-app #bugReportModal .bug-card{max-height:calc(100% - 12px)!import
 html.capacitor-app #loreverseAppNav a{touch-action:manipulation;pointer-events:auto!important}
 </style>
 
-<script id="loreverse-native-navigation-controller">
-(()=>{const cap=window.Capacitor;const native=!!(cap&&(cap.isNativePlatform?.()||["android","ios"].includes(cap.getPlatform?.())));if(!native)return;document.documentElement.classList.add("capacitor-app");const nav=document.getElementById("loreverseAppNav");if(!nav)return;const path=location.pathname.replace(/\\/g,"").replace(/\/+$/,"")||"/";const routes={home:"/",community:"/community",store:"/store",profile:"/profile"};const current=Object.keys(routes).find(key=>path===routes[key]||path.startsWith(routes[key]+"/"))||"home";nav.querySelectorAll("[data-app-route]").forEach(a=>{const key=a.getAttribute("data-app-route");if(key===current)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});nav.addEventListener("click",event=>{const link=event.target.closest("a[data-app-route]");if(!link)return;event.preventDefault();const key=link.getAttribute("data-app-route");if(key==="bug"){if(location.pathname==="/"&&typeof window.openBugReport==="function")window.openBugReport();else location.assign(new URL("/?openBugReport=1",location.origin).href);return}const destination=new URL(routes[key]||"/",location.origin);if(location.pathname!==destination.pathname)location.assign(destination.href);},{passive:false});})();
-</script>
+
 </body></html>
