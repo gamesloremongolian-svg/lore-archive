@@ -28,26 +28,31 @@ function permissionMap(role) {
   return extractRoleArray(admin.slice(start), role + ':');
 }
 
+function canRole(role, action) {
+  const permissions = permissionMap(role);
+  return permissions.includes('*') || permissions.includes(action);
+}
+
 test.describe('LOREVERSE community/support role contract', () => {
   test('Owner and Admin see community and support; Editor does not', () => {
     for (const role of ['owner', 'admin']) {
       expect(roleTabs(role), role + ' tabs').toContain('community');
       expect(roleTabs(role), role + ' tabs').toContain('support');
-      expect(permissionMap(role), role + ' permissions').toContain('community');
-      expect(permissionMap(role), role + ' permissions').toContain('support');
+      expect(canRole(role, 'community'), role + ' community permission').toBe(true);
+      expect(canRole(role, 'support'), role + ' support permission').toBe(true);
     }
     expect(roleTabs('editor')).not.toContain('community');
     expect(roleTabs('editor')).not.toContain('support');
-    expect(permissionMap('editor')).not.toContain('community');
-    expect(permissionMap('editor')).not.toContain('support');
+    expect(canRole('editor', 'community')).toBe(false);
+    expect(canRole('editor', 'support')).toBe(false);
   });
 
   test('Privileged community/support loaders and mutation handlers enforce role gates', () => {
     const requiredGuards = [
       "async function loadCommunity(){\n if(!can('community'))return;",
       "if(!can('community'))return;const {error}=await supabase.rpc('set_chat_message_pin'",
-      "if(!can('community'))return;const {error}=await supabase.from('chat_reports').update",
-      "if(!can('community'))return;const {error}=await supabase.from('chat_messages').update",
+      "box.querySelectorAll('[data-resolve]').forEach(b=>b.onclick=async()=>{if(!can('community'))return;",
+      "box.querySelectorAll('[data-delete-message]').forEach(b=>b.onclick=async()=>{if(!can('community'))return;",
       "if(!can('community')||!b.dataset.muteUser)return;",
       "async function loadAdminTickets(){\n if(!can('support'))return;",
       "async function openAdminTicket(id){\n if(!can('support'))return;",
