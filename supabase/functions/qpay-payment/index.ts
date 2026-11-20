@@ -335,8 +335,8 @@ Deno.serve(async (req: Request) => {
       if (receiverType === "COMPANY" && (!receiver || receiver.length > 20)) {
         return reply(400, { error: "Байгууллагын регистрийн дугаарыг зөв оруулна уу." });
       }
-      if (receiverType === "CITIZEN" && receiver) {
-        return reply(400, { error: "Иргэний баримтад регистрийн дугаар шаардахгүй." });
+      if (receiverType === "CITIZEN" && receiver && !/^\\d{8,20}$/.test(receiver)) {
+        return reply(400, { error: "Иргэний EBarimt-д бүртгэлтэй утасны дугаарыг 8-20 оронтой оруулна уу." });
       }
 
       const { data: payment, error: paymentError } = await admin.from("payment_records")
@@ -357,7 +357,7 @@ Deno.serve(async (req: Request) => {
         .update({
           ebarimt_status: "creating",
           ebarimt_receiver_type: receiverType,
-          ebarimt_receiver: receiverType === "COMPANY" ? receiver : null,
+          ebarimt_receiver: receiver || null,
         })
         .eq("id", payment.id).in("ebarimt_status", ["not_requested", "failed"])
         .select("id").maybeSingle();
@@ -373,7 +373,7 @@ Deno.serve(async (req: Request) => {
           body: JSON.stringify({
             payment_id: payment.qpay_payment_id,
             ebarimt_receiver_type: receiverType,
-            ebarimt_receiver: receiverType === "COMPANY" ? receiver : "",
+            ebarimt_receiver: receiver,
           }),
         });
         const ebarimt = await ebarimtResponse.json().catch(() => ({}));
