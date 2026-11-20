@@ -1291,7 +1291,7 @@ html.capacitor-app #loreverseAppNav a{font-size:9px!important;gap:2px!important;
     if(!link)return;
     event.preventDefault();
     const key=link.getAttribute("data-app-route");
-    const destination=key==="bug"?"/?openBugReport=1":(routes[key]||"/");
+    const destination=key==="bug"?"/?openBugReport=1":({home:"/index.html",community:"/community/index.html",store:"/store/index.html",profile:"/profile/index.html"}[key]||"/index.html");
     const target=new URL(destination,location.origin);
     if(location.pathname+location.search!==target.pathname+target.search)location.assign(target.href);
     else if(key==="bug"&&typeof window.openBugReport==="function")window.openBugReport();

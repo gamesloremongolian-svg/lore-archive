@@ -59,7 +59,7 @@ html.capacitor-app #bugReportModal .bug-card{max-height:calc(100% - 12px)!import
     if(!link)return;
     event.preventDefault();
     const key=link.getAttribute("data-app-route");
-    const destination=key==="bug"?"/?openBugReport=1":(routes[key]||"/");
+    const destination=key==="bug"?"/?openBugReport=1":({home:"/index.html",community:"/community/index.html",store:"/store/index.html",profile:"/profile/index.html"}[key]||"/index.html");
     const target=new URL(destination,location.origin);
     if(location.pathname+location.search!==target.pathname+target.search)location.assign(target.href);
     else if(key==="bug"&&typeof window.openBugReport==="function")window.openBugReport();
@@ -96,7 +96,7 @@ const capacitorFolderNavigation = `
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       const target = event.target instanceof Element ? event.target : null;
       const link = target?.closest("a[href]");
-      if (!link || link.target === "_blank" || link.hasAttribute("download")) return;
+      if (!link || link.closest("#loreverseAppNav") || link.target === "_blank" || link.hasAttribute("download")) return;
       const rawHref = link.getAttribute("href") || "";
       if (!rawHref || rawHref.startsWith("#") || /^(mailto:|tel:|javascript:|data:)/i.test(rawHref)) return;
       let url;
