@@ -1,4 +1,6 @@
 const { test, expect } = require('@playwright/test');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const baseURL = process.env.BASE_URL || 'https://lore-archive.pages.dev/';
 
@@ -395,9 +397,8 @@ test.describe('LOREVERSE website health', () => {
     expect(handler).toMatch(/create_ebarimt/);
     expect(handler).toMatch(/payment.status !== "pending"/);
     expect(handler).toMatch(/\/v2\/ebarimt_v3\/create/);
-    expect(handler).toMatch(/barimt_status \\|\\| ""\\)\\.toUpperCase\\(\\) !== "REGISTERED"/);
     expect(handler).toMatch(/ebarimt_receiver_type/);
-    expect(handler).toContain('barimt_status || "").toUpperCase() !== "REGISTERED"');
+    expect(handler).toContain('String(ebarimt.barimt_status || "").toUpperCase() !== "REGISTERED"');
     expect(handler).toContain('ebarimt_receiver: receiver,');
     expect(handler).toContain('receiverType === "CITIZEN" && receiver');
     expect(handler).toMatch(/ebarimt_status: "unknown"/);
