@@ -377,7 +377,8 @@ Deno.serve(async (req: Request) => {
           }),
         });
         const ebarimt = await ebarimtResponse.json().catch(() => ({}));
-        if (!ebarimtResponse.ok || ebarimt.status !== true || String(ebarimt.barimt_status || "").toUpperCase() !== "CREATED") {
+        // QPay EBarimt v3 returns barimt_status=REGISTERED on successful receipt creation.
+        if (!ebarimtResponse.ok || ebarimt.status !== true || String(ebarimt.barimt_status || "").toUpperCase() !== "REGISTERED") {
           const uncertain = ebarimtResponse.status >= 500 || ebarimtResponse.status === 408 || ebarimtResponse.status === 429;
           await admin.from("payment_records")
             .update({ ebarimt_status: uncertain ? "unknown" : "failed" }).eq("id", payment.id);
