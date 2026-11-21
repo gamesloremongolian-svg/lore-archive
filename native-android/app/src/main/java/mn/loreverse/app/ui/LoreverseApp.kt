@@ -780,27 +780,9 @@ private fun CategoryScreen(title: String, category: String?, onOpen: (LoreItem) 
             .onFailure { loadError = "Серверээс мэдээлэл авч чадсангүй." }
         loading = false
     }
-    val fallback = when (title) {
-        "Манга" -> listOf(
-            LoreItem("Berserk", "Манга", "Dark Fantasy · Үргэлжилж буй"),
-            LoreItem("One Piece", "Манга", "Адал явдал · Үргэлжилж буй"),
-            LoreItem("Chainsaw Man", "Манга", "Action · Үргэлжилж буй")
-        )
-        "Тоглоом" -> listOf(
-            LoreItem("Genshin Impact", "Тоглоом", "Open-world Action RPG"),
-            LoreItem("Honkai: Star Rail", "Тоглоом", "Turn-based RPG"),
-            LoreItem("Wuthering Waves", "Тоглоом", "Action RPG")
-        )
-        "Lore" -> listOf(
-            LoreItem("ANANTA LORE #012", "Lore", "Chaos хэрхэн үүсдэг вэ?"),
-            LoreItem("Genshin Lore", "Lore", "Дүрүүд ба Тейватын түүх"),
-            LoreItem("World Archive", "Lore", "Ертөнцийн нууц, он дараалал")
-        )
-        else -> sampleItems.filter { it.category.contains("Анимэ") }
-    }
-    val list = if (remoteItems.isNotEmpty()) remoteItems.map {
+    val list = remoteItems.map {
         LoreItem(it.name, title, it.description.ifBlank { "Тайлбар удахгүй нэмэгдэнэ." }, it.coverImageUrl)
-    } else fallback
+    }
     Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
         Text(title, fontSize = 26.sp, fontWeight = FontWeight.Bold, color = TextMain)
         Spacer(Modifier.height(12.dp))
@@ -809,7 +791,7 @@ private fun CategoryScreen(title: String, category: String?, onOpen: (LoreItem) 
         } else if (loadError != null) {
             Text(loadError!!, color = TextMuted, modifier = Modifier.padding(top = 12.dp))
         } else if (remoteItems.isEmpty()) {
-            Text("Одоогоор нийтлэгдсэн мэдээлэл алга. Жишээ контент харуулж байна.", color = TextMuted, fontSize = 11.sp, modifier = Modifier.padding(top = 8.dp))
+            Text("Одоогоор энэ ангилалд нийтлэгдсэн мэдээлэл алга.", color = TextMuted, fontSize = 11.sp, modifier = Modifier.padding(top = 8.dp))
         }
         LazyColumn(
             contentPadding = PaddingValues(top = 14.dp, bottom = 20.dp),
