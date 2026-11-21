@@ -111,6 +111,7 @@ fun LoreverseApp() {
     var query by remember { mutableStateOf("") }
     var savedTitles by remember { mutableStateOf<Set<String>>(emptySet()) }
     var favoriteTitles by remember { mutableStateOf<Set<String>>(emptySet()) }
+    var signedInEmail by remember { mutableStateOf<String?>(null) }
 
     Surface(modifier = Modifier.fillMaxSize(), color = Void) {
         if (!entered) {
@@ -134,7 +135,7 @@ fun LoreverseApp() {
                 }
             ) { padding ->
                 when {
-                    settings -> SettingsScreen(onBack = { settings = false })
+                    settings -> SettingsScreen(onBack = { settings = false }, onAuthSuccess = { signedInEmail = it; settings = false })
                     detail != null -> DetailScreen(
                         item = detail!!,
                         isSaved = detail!!.title in savedTitles,
@@ -152,7 +153,7 @@ fun LoreverseApp() {
                         onQuery = { query = it },
                         modifier = Modifier.padding(padding)
                     )
-                    selected == "profile" -> ProfileScreen(onSettings = { settings = true }, modifier = Modifier.padding(padding))
+                    selected == "profile" -> ProfileScreen(email = signedInEmail, onSettings = { settings = true }, modifier = Modifier.padding(padding))
                     else -> CategoryScreen(
                         title = when (selected) { "anime" -> "Анимэ"; "manga" -> "Манга"; "games" -> "Тоглоом"; else -> "Lore" },
                         category = when (selected) { "anime" -> "anime"; "manga" -> "manga"; "games" -> "game"; else -> null },
@@ -452,7 +453,7 @@ private fun DetailScreen(
 }
 
 @Composable
-private fun ProfileScreen(onSettings: () -> Unit, modifier: Modifier = Modifier) {
+private fun ProfileScreen(email: String?, onSettings: () -> Unit, modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxSize().padding(18.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
         Text("Миний профайл", color = TextMain, fontSize = 25.sp, fontWeight = FontWeight.Bold)
         Box(
@@ -464,8 +465,8 @@ private fun ProfileScreen(onSettings: () -> Unit, modifier: Modifier = Modifier)
                     modifier = Modifier.size(88.dp).clip(CircleShape).background(Brush.linearGradient(listOf(Purple, Violet))),
                     contentAlignment = Alignment.Center
                 ) { Icon(Icons.Filled.Person, null, tint = TextMain, modifier = Modifier.size(48.dp)) }
-                Text("Зочин хэрэглэгч", color = TextMain, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Text("LOREVERSE Member", color = Violet, fontSize = 12.sp)
+                Text(email ?: "Зочин хэрэглэгч", color = TextMain, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(if (email == null) "Зочны эрх" else "Нэвтэрсэн хэрэглэгч", color = Violet, fontSize = 12.sp)
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -496,7 +497,7 @@ private fun Metric(value: String, label: String, modifier: Modifier = Modifier) 
 }
 
 @Composable
-private fun SettingsScreen(onBack: () -> Unit) {
+private fun SettingsScreen(onBack: () -> Unit, onAuthSuccess: (String) -> Unit) {
     var notifications by remember { mutableStateOf(true) }
     var darkMode by remember { mutableStateOf(true) }
     var dialog by remember { mutableStateOf<String?>(null) }
@@ -555,10 +556,16 @@ private fun SettingsScreen(onBack: () -> Unit) {
                     busy = true
                     scope.launch {
                         val result = if (authMode == "signin") auth.signIn(email, password) else auth.signUp(email, password)
-                        authMessage = result.fold(
-                            onSuccess = { if (authMode == "signup") "Бүртгэлийн хүсэлт амжилттай. Имэйл баталгаажуулах шаардлагатай байж болно." else "Нэвтрэх хүсэлт амжилттай." },
-                            onFailure = { it.message ?: "Үйлдэл амжилтгүй. Дахин оролдоно уу." }
-                        )
+                        result.onSuccess {
+                            if (authMode == "signin") {
+                                authMessage = "Нэвтрэлт амжилттай. Профайл руу шилжиж байна."
+                                onAuthSuccess(email.trim())
+                            } else {
+                                authMessage = "Бүртгэлийн хүсэлт амжилттай. Имэйл баталгаажуулах шаардлагатай байж болно."
+                            }
+                        }.onFailure {
+                            authMessage = it.message ?: "Үйлдэл амжилтгүй. Дахин оролдоно уу."
+                        }
                         busy = false
                     }
                 }) { Text(if (busy) "Түр хүлээнэ үү..." else if (authMode == "signin") "Нэвтрэх" else "Бүртгүүлэх") }
