@@ -8,6 +8,20 @@
 <style>
 :root{color-scheme:dark;--bg:#0b0d14;--panel:#141827;--line:#292f43;--text:#f5f5f7;--muted:#aeb3c3;--accent:#a99aff;--cyan:#70d8e8}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -15%,#342d64 0,transparent 48%),var(--bg);color:var(--text);font:16px/1.6 system-ui,Arial,sans-serif}a{color:inherit;text-decoration:none}.wrap{width:min(1120px,calc(100% - 36px));margin:auto}header{border-bottom:1px solid #ffffff18;background:#0b0d14cc;backdrop-filter:blur(12px)}.head{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}.brand{font-weight:900;letter-spacing:.12em}.brand span{color:var(--accent)}.back{color:var(--muted);font-size:13px}.hero{padding:76px 0 56px}.eyebrow{color:var(--accent);font-size:11px;font-weight:850;letter-spacing:.24em}.hero h1{max-width:850px;font-size:clamp(38px,7vw,76px);line-height:1.04;letter-spacing:-.045em;margin:18px 0}.hero h1 span{color:var(--accent)}.hero p{max-width:680px;color:var(--muted);font-size:17px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.btn{display:inline-flex;padding:12px 18px;border-radius:10px;background:var(--accent);color:#10101b;font-weight:850}.btn.secondary{background:#171d2d;border:1px solid var(--line);color:var(--text)}section.catalog{padding:26px 0 70px}.section-title{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:20px}.section-title h2{font-size:27px;margin:5px 0}.section-title p{color:var(--muted);margin:0;font-size:13px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:15px}.card{min-height:175px;padding:22px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,#191f31,#111522);display:flex;flex-direction:column;transition:.2s}.card:hover{transform:translateY(-3px);border-color:var(--accent)}.tag{font-size:10px;letter-spacing:.16em;color:var(--cyan);font-weight:850}.card h3{font-size:20px;margin:12px 0 5px}.card p{font-size:13px;color:var(--muted);margin:0}.go{margin-top:auto;padding-top:18px;color:var(--accent);font-size:11px;font-weight:850;letter-spacing:.08em}.note{padding:24px;border:1px solid #3c365b;border-radius:17px;background:linear-gradient(110deg,#29234a66,#121827);margin-top:26px}.note h2{margin:0 0 6px}.note p{color:var(--muted);margin:0}footer{border-top:1px solid #ffffff18;padding:25px 0;color:var(--muted);font-size:12px}
+
+.catalog-search{margin:10px 0 34px;padding:24px;border:1px solid #353653;border-radius:20px;background:linear-gradient(145deg,#171d30,#111522)}
+.catalog-search h2{margin:5px 0 6px;font-size:26px}.catalog-search .hint{color:var(--muted);font-size:13px;margin:0 0 16px}
+.catalog-controls{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:9px}
+.catalog-controls input,.catalog-controls select{min-width:0;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:#0c1120;color:var(--text)}
+.catalog-controls button,.catalog-page button{border:0;border-radius:10px;padding:12px 17px;background:var(--accent);color:#10101b;font-weight:850;cursor:pointer}
+.catalog-state{color:var(--muted);font-size:12px;min-height:24px;margin:12px 0}
+.catalog-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.catalog-result{min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#0d1322}
+.catalog-result img{width:100%;height:220px;object-fit:cover;display:block;background:#20263a}
+.catalog-result .body{padding:13px}.catalog-result h3{font-size:16px;margin:0 0 5px}.catalog-result p{font-size:12px;color:var(--muted);margin:7px 0;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.catalog-result .meta{font-size:11px;color:var(--cyan)}.catalog-result a{color:var(--accent);font-size:11px;font-weight:800}
+.catalog-page{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px}.catalog-page button:disabled{opacity:.35;cursor:not-allowed}
+@media(max-width:650px){.catalog-controls{grid-template-columns:1fr 1fr}.catalog-controls input{grid-column:1/-1}.catalog-controls button{grid-column:1/-1}.catalog-search{padding:17px}.catalog-result img{height:190px}}
 </style>
 <link rel="stylesheet" href="../assets/css/loreverse-shell.css?v=20261120-4">
 </head>
@@ -24,9 +38,68 @@
 
 <a class="card" href="../chat/"><span class="tag">COMMUNITY</span><h3>Нийгэмлэг</h3><p>Сонирхлоо хуваалцаж, ертөнцүүдийн талаар хэлэлцээрэй.</p><span class="go">COMMUNITY ↗</span></a>
 </div>
-<div class="note"><h2>Every Universe Has a Story.</h2><p>LOREVERSE — бүх ертөнцийн мэдлэг нэг дор.</p></div>
+
+<section class="catalog-search" id="catalog-search" aria-labelledby="catalogSearchTitle">
+  <div class="eyebrow">LIVE DISCOVERY · ANIME & MANGA</div>
+  <h2 id="catalogSearchTitle">Анимэ, манга хайх</h2>
+  <p class="hint">AniList-ийн нээлттэй каталогоос нэрээр хайна. Энэ хайлт нь гадаад сангийн мэдээллийг зөвхөн хүсэлтээр харуулна; бүх санг бөөнөөр хуулж хадгалахгүй.</p>
+  <form id="universeSearchForm" class="catalog-controls">
+    <input id="universeSearchInput" type="search" minlength="2" maxlength="80" placeholder="Жишээ: Frieren, One Piece, Naruto…" autocomplete="off" required aria-label="Анимэ эсвэл манга хайх">
+    <select id="universeSearchType" aria-label="Бүтээлийн төрөл"><option value="ANIME">Анимэ</option><option value="MANGA">Манга</option></select>
+    <button id="universeSearchButton" type="submit">Хайх</button>
+  </form>
+  <p id="universeSearchStatus" class="catalog-state" role="status" aria-live="polite">Хайх нэрээ оруулна уу.</p>
+  <div id="universeSearchResults" class="catalog-results"></div>
+  <div class="catalog-page"><button id="universePrev" type="button" disabled>← Өмнөх</button><span id="universePageLabel" class="catalog-state">1-р хуудас</span><button id="universeNext" type="button" disabled>Дараах →</button></div>
+  <p class="hint">Мэдээллийн эх сурвалж: <a href="https://anilist.co/" target="_blank" rel="noopener noreferrer">AniList</a>. LOREVERSE нь албан бус, бие даасан архив юм.</p>
+</section>
+\n<div class="note"><h2>Every Universe Has a Story.</h2><p>LOREVERSE — бүх ертөнцийн мэдлэг нэг дор.</p></div>
 </section>
 </main>
 <footer><div class="wrap">© LOREVERSE · Anime &amp; Gaming Knowledge Hub</div></footer>
-<script src="../assets/js/loreverse-shell.js?v=20261120-2" data-root="../" defer></script>
+
+<script id="universe-catalog-search">
+(()=>{
+ const endpoint="https://nfacspfctvunwbxtvvyi.supabase.co/functions/v1/universe-catalog";
+ const key="sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1";
+ const form=document.getElementById("universeSearchForm");
+ if(!form)return;
+ const input=document.getElementById("universeSearchInput");
+ const type=document.getElementById("universeSearchType");
+ const button=document.getElementById("universeSearchButton");
+ const status=document.getElementById("universeSearchStatus");
+ const results=document.getElementById("universeSearchResults");
+ const prev=document.getElementById("universePrev");
+ const next=document.getElementById("universeNext");
+ const pageLabel=document.getElementById("universePageLabel");
+ let page=1,hasNext=false,lastQuery="";
+ const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ function draw(items){
+  results.innerHTML=items.length?items.map(item=>{
+   const description=String(item.description||"").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
+   const info=[item.year,item.format,item.status,item.episodes?(item.episodes+" анги"):null,item.chapters?(item.chapters+" бүлэг"):null].filter(Boolean).join(" · ");
+   return '<article class="catalog-result">'+(item.image?'<img loading="lazy" src="'+esc(item.image)+'" alt="'+esc(item.title)+'" referrerpolicy="no-referrer">':'')+'<div class="body"><h3>'+esc(item.title)+'</h3><div class="meta">'+esc(info||"Мэдээлэл хязгаарлагдмал")+'</div><p>'+esc(description||"Танилцуулга байхгүй.")+'</p><div class="meta">'+esc((item.genres||[]).slice(0,4).join(" · "))+'</div><a href="'+esc(item.sourceUrl)+'" target="_blank" rel="noopener noreferrer">AniList дээр дэлгэрэнгүй ↗</a></div></article>';
+  }).join(""):'<article class="catalog-result"><div class="body">Илэрц олдсонгүй. Өөр нэрээр хайгаарай.</div></article>';
+ }
+ async function search(nextPage=1){
+  const q=input.value.trim();
+  if(q.length<2){status.textContent="Хайлт дор хаяж 2 тэмдэгттэй байна.";return;}
+  lastQuery=q;page=nextPage;button.disabled=true;status.textContent="Каталогоос хайж байна…";results.innerHTML="";
+  try{
+   const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","apikey":key},body:JSON.stringify({search:q,type:type.value,page})});
+   const data=await response.json().catch(()=>({}));
+   if(!response.ok)throw new Error(data.error||"Хайлт амжилтгүй боллоо.");
+   draw(data.results||[]);hasNext=Boolean(data.hasNextPage);
+   status.textContent=(data.results||[]).length+" илэрц олдлоо · Эх сурвалж: "+(data.provider||"AniList");
+   pageLabel.textContent=page+"-р хуудас";prev.disabled=page<=1;next.disabled=!hasNext;
+  }catch(error){status.textContent=error.message||"Сүлжээний алдаа гарлаа.";prev.disabled=true;next.disabled=true;}
+  finally{button.disabled=false;}
+ }
+ form.addEventListener("submit",event=>{event.preventDefault();search(1)});
+ prev.addEventListener("click",()=>{if(page>1)search(page-1)});
+ next.addEventListener("click",()=>{if(hasNext)search(page+1)});
+ type.addEventListener("change",()=>{if(lastQuery)search(1)});
+})();
+</script>
+\n<script src="../assets/js/loreverse-shell.js?v=20261120-2" data-root="../" defer></script>
 </body></html>
