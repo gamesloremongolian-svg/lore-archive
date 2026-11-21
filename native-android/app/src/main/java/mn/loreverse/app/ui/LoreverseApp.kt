@@ -68,6 +68,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -412,6 +414,26 @@ private fun NewsScreen(modifier: Modifier = Modifier) {
             else -> items(posts, key = { it.id }) { post ->
                 Card(colors = CardDefaults.cardColors(containerColor = Panel), shape = RoundedCornerShape(18.dp)) {
                     Column(Modifier.fillMaxWidth().clickable { expandedId = if (expandedId == post.id) null else post.id }.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        if (!post.coverImageUrl.isNullOrBlank()) {
+                            AsyncImage(
+                                model = post.coverImageUrl,
+                                contentDescription = post.title,
+                                modifier = Modifier.fillMaxWidth().height(190.dp).clip(RoundedCornerShape(14.dp)),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier.fillMaxWidth().height(150.dp)
+                                    .clip(RoundedCornerShape(14.dp))
+                                    .background(Brush.linearGradient(listOf(ColorHex(0xFF43208A), PanelRaised))),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                    Icon(Icons.Filled.Newspaper, contentDescription = null, tint = Violet, modifier = Modifier.size(42.dp))
+                                    Text("LOREVERSE · МЭДЭЭ", color = TextMain, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                                }
+                            }
+                        }
                         Text(post.title, color = TextMain, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                         post.summary?.takeIf { it.isNotBlank() }?.let { Text(it, color = TextMuted) }
                         if (expandedId == post.id) {
