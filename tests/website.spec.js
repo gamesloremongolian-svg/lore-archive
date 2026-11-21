@@ -14,7 +14,7 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('body')).toBeVisible();
     await expect(page.locator('.lv-shell-brand')).toContainText('LOREVERSE');
     await expect(page.locator('.hero h1')).toContainText('Дуртай ертөнцөө');
-    await expect(page.locator('.cards .card')).toHaveCount(3);
+    await expect(page.locator('.cards .card')).toHaveCount(5);
     await expect(page.locator('.cards [data-category="all"]')).toHaveCount(0);
     await expect(page.locator('.feature').first()).toBeVisible();
     await expect(page.locator('.feature').nth(1)).toContainText('BUG HUNTER');
@@ -88,9 +88,10 @@ test.describe('LOREVERSE website health', () => {
     expect(layout.nav.left).toBeGreaterThanOrEqual(layout.header.left);
     expect(layout.nav.right).toBeLessThanOrEqual(layout.header.right + 1);
 
+    // The shared shell switches to its compact menu at 1080px and below.
     await page.setViewportSize({ width: 1024, height: 768 });
-    await expect(nav).toBeVisible();
-    await expect(menuButton).toBeHidden();
+    await expect(nav).toBeHidden();
+    await expect(menuButton).toBeVisible();
   });
 
   test('public sitemap and crawler rules are published', async ({ request }) => {
@@ -177,6 +178,41 @@ test.describe('LOREVERSE website health', () => {
         }
       }
     }
+  });
+
+  test('AniList catalog search and detail API return usable anime data', async ({ request }) => {
+    const endpoint = 'https://nfacspfctvunwbxtvvyi.supabase.co/functions/v1/universe-catalog';
+    const headers = {
+      Origin: 'https://e-archive.pages.dev',
+      apikey: 'sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1',
+      'Content-Type': 'application/json'
+    };
+
+    const searchResponse = await request.post(endpoint, {
+      headers,
+      data: { search: 'Frieren', type: 'ANIME', page: 1 },
+      timeout: 30000
+    });
+    expect(searchResponse.status(), 'AniList search should succeed').toBe(200);
+    const searchData = await searchResponse.json();
+    expect(searchData.provider).toBe('AniList');
+    expect(searchData.results.length).toBeGreaterThan(0);
+    const anime = searchData.results.find(item => item.externalId && item.sourceUrl);
+    expect(anime, 'Search results should include an AniList ID and source URL').toBeTruthy();
+
+    const detailResponse = await request.post(endpoint, {
+      headers,
+      data: { action: 'detail', id: anime.externalId, type: 'ANIME' },
+      timeout: 30000
+    });
+    expect(detailResponse.status(), 'AniList detail query should succeed').toBe(200);
+    const detailData = await detailResponse.json();
+    expect(detailData.provider).toBe('AniList');
+    expect(detailData.item.title).toBeTruthy();
+    expect(detailData.item.sourceUrl).toContain('anilist.co');
+    expect(Array.isArray(detailData.item.characters)).toBe(true);
+    expect(Array.isArray(detailData.item.staff)).toBe(true);
+    expect(Array.isArray(detailData.item.relations)).toBe(true);
   });
 
   test('critical public routes return valid HTML on desktop and mobile', async ({ page, request }) => {
