@@ -223,12 +223,14 @@ async function checkPartnerOnline(){
 }
 async function loadMessages(){
  if(!activeConversation)return;
+ const messageList=$("messageList");
+ const keepAtBottom=messageList.scrollHeight-messageList.scrollTop-messageList.clientHeight<80;
  const {data,error}=await supabase.from("direct_messages").select("id,sender_id,body,created_at,read_at").eq("conversation_id",activeConversation.id).order("created_at",{ascending:true}).limit(150);
  if(error){$("messageList").innerHTML='<div class="empty">'+safe(error.message)+'</div>';return;}
  const rows=data||[];
  if(!rows.length){$("messageList").innerHTML='<div class="empty"><div class="symbol">✦</div><h2>Яриагаа эхлүүлээрэй</h2><p>Эхний мессежээ илгээнэ үү. Энэ яриаг зөвхөн та хоёр уншина.</p></div>';return;}
  $("messageList").innerHTML=rows.map(m=>{const mine=m.sender_id===currentUser.id;const sticker=m.body.match(/^\[\[LOREVERSE_STICKER\|([^|]+)\|([^\]]+)\]\]$/);const content=sticker?'<div class="bubble sticker-bubble" aria-label="'+safe(sticker[2])+'">'+safe(sticker[1])+'</div>':'<div class="bubble">'+safe(m.body)+'</div>';return '<article class="message '+(mine?'mine':'')+'"><span class="avatar small">'+((mine?myAvatarUrl:activePartner.avatar_url)?'<img src="'+safe(mine?myAvatarUrl:activePartner.avatar_url)+'" alt="">':safe(initials(mine?myDisplayName:activePartner.display_name)))+'</span><div class="bubble-wrap"><div class="message-name">'+safe(mine?"Та":activePartner.display_name)+'</div>'+content+'<div class="time">'+new Date(m.created_at).toLocaleString("mn-MN",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})+'</div></div></article>';}).join("");
- $("messageList").scrollTop=$("messageList").scrollHeight;
+ if(keepAtBottom)$("messageList").scrollTop=$("messageList").scrollHeight;
  const {error:readError}=await supabase.from("direct_messages").update({read_at:new Date().toISOString()}).eq("conversation_id",activeConversation.id).neq("sender_id",currentUser.id).is("read_at",null);
  if(readError)console.warn("Read receipt:",readError.message);await loadConversations();
 }
