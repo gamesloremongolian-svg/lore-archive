@@ -1,25 +1,25 @@
 /* LOREVERSE guest homepage redesign — shared by web and Capacitor */
 :root{color-scheme:dark}
-html,body{background:#080d1b!important;color:#f3f5ff!important}
-body{background:radial-gradient(ellipse at 70% 0%,#29205a55,transparent 36%),linear-gradient(180deg,#080d1b,#090f20 58%,#070b16)!important}
+html,body{background:#0a0911!important;color:#f3f5ff!important}
+body{background:radial-gradient(ellipse at 70% 0%,#35205f55,transparent 36%),linear-gradient(180deg,#0a0911,#0d0b15 58%,#08070d)!important}
 body>header:not(.lv-shell-header){display:none!important}
 main#main-content{padding:18px 0 36px}
 .lv-shell-header{background:rgba(7,13,28,.96)!important}
 .lv-shell-inner{max-width:1440px}
 .wrap{width:min(1320px,calc(100% - 44px))!important}
 .hero{position:relative;isolation:isolate;min-height:340px;margin:12px auto 20px!important;padding:42px clamp(22px,4vw,54px)!important;grid-template-columns:1.1fr .9fr!important;gap:20px!important;border:1px solid #5262a5;border-radius:22px;overflow:hidden;background:linear-gradient(100deg,#0b1530f5 0%,#11183be8 46%,#1b1a4a88 100%),url('./images/loreverse-guest-hero-bg.webp') center/cover}
-.hero:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 78% 50%,#8d54ff33,transparent 35%),linear-gradient(90deg,#080e20 0%,transparent 85%)}
+.hero:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 78% 50%,#7540ff33,transparent 35%),linear-gradient(90deg,#080e20 0%,transparent 85%)}
 .hero>div:first-child{position:relative;z-index:2}
-.hero .eyebrow{color:#9e9bff;font-size:11px;letter-spacing:.2em}
+.hero .eyebrow{color:#b49aff;font-size:11px;letter-spacing:.2em}
 .hero h1{max-width:680px;font-size:clamp(36px,5.4vw,64px);line-height:1.04;color:#fff;margin:14px 0}
-.hero h1 em{background:linear-gradient(90deg,#9a8cff,#e18bff);background-clip:text;-webkit-background-clip:text;color:transparent}
-.hero .lead{max-width:590px;color:#d0d8ed;font-size:16px;line-height:1.75}
+.hero h1 em{background:linear-gradient(90deg,#9a8cff,#c9a3ff);background-clip:text;-webkit-background-clip:text;color:transparent}
+.hero .lead{max-width:590px;color:#d8d0e8;font-size:16px;line-height:1.75}
 .art{height:330px!important;max-width:480px!important;transform:none!important;margin:0 auto!important;align-items:center!important}
-.art:before{background:radial-gradient(ellipse,#7656c866,transparent 70%)!important}
+.art:before{background:radial-gradient(ellipse,#7540ff66,transparent 70%)!important}
 .art img{object-fit:contain!important;object-position:center!important;filter:drop-shadow(0 16px 28px #0009)!important}
 .lv-home-actions{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 14px}
 .lv-home-primary,.lv-home-secondary{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 20px;border-radius:13px;font-weight:850}
-.lv-home-primary{color:#fff!important;background:linear-gradient(110deg,#6657df,#b34be5);box-shadow:0 8px 24px #8652ef55}
+.lv-home-primary{color:#fff!important;background:linear-gradient(110deg,#7540ff,#b34be5);box-shadow:0 8px 24px #8652ef55}
 .lv-home-secondary{color:#f4f2ff!important;border:1px solid #9b82ed;background:#101a33}
 .lv-home-points{display:flex;gap:18px;flex-wrap:wrap;color:#d4d9ed;font-size:12px}
 .lv-home-points span:before{color:#9b8cff}
