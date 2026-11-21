@@ -86,6 +86,7 @@ import mn.loreverse.app.data.PublishedFranchise
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.*
 import mn.loreverse.app.data.AuthRepository
 import mn.loreverse.app.data.CommunityRepository
 import mn.loreverse.app.data.CommunityPost
@@ -771,6 +772,7 @@ private fun DetailScreen(
     var detail by remember(item.title) { mutableStateOf<mn.loreverse.app.data.FranchiseDetail?>(null) }
     var loading by remember(item.title) { mutableStateOf(true) }
     var failed by remember(item.title) { mutableStateOf(false) }
+    var showFullDetails by remember(item.title) { mutableStateOf(false) }
 
     LaunchedEffect(item.title) {
         val result = withContext(Dispatchers.IO) {
@@ -813,27 +815,66 @@ private fun DetailScreen(
             }
         }
         item {
-            Text("Нийтлэгдсэн дэлгэрэнгүй", color = TextMain, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             when {
-                loading -> Text("Мэдээлэл ачаалж байна...", color = TextMuted)
+                loading -> Text("Дэлгэрэнгүй мэдээлэл ачаалж байна...", color = TextMuted)
                 failed -> Text("Серверийн мэдээлэл ачаалж чадсангүй. Дараа дахин оролдоно уу.", color = TextMuted)
-                detail == null -> Text("Энэ бүтээлийн нийтлэгдсэн архивын мэдээлэл одоогоор алга.", color = TextMuted)
-                detail!!.works.isEmpty() -> Text("Монгол хэл дээр нийтлэгдсэн дэлгэрэнгүй бичлэг одоогоор алга.", color = TextMuted)
+                detail == null || detail!!.works.isEmpty() ->
+                    Text("Энэ бүтээлд Монгол хэл дээр нийтлэгдсэн дэлгэрэнгүй архив одоогоор алга.", color = TextMuted)
+                else -> {
+                    Button(
+                        onClick = { showFullDetails = !showFullDetails },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = Purple)
+                    ) {
+                        Icon(Icons.Filled.MenuBook, null, modifier = Modifier.size(18.dp))
+                        Text(if (showFullDetails) "  Дэлгэрэнгүйг хураах" else "  Дэлгэрэнгүй харах")
+                    }
+                }
             }
         }
-        if (!loading && !failed && detail != null) {
+        if (showFullDetails && !loading && !failed && detail != null) {
             items(detail!!.works) { (work, translation) ->
+                val contentObject = translation.content as? JsonObject
+                val sourceItems = (translation.sources as? JsonArray)?.mapNotNull { it as? JsonObject }.orEmpty()
                 Card(colors = CardDefaults.cardColors(containerColor = Panel), shape = RoundedCornerShape(18.dp)) {
-                    Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text(translation.title, color = TextMain, fontWeight = FontWeight.Bold, fontSize = 17.sp)
-                        Text(work.canonicalTitle + " · " + work.workType, color = Violet, fontSize = 11.sp)
-                        if (translation.synopsis.isNotBlank()) {
-                            Text(translation.synopsis, color = TextMuted, fontSize = 13.sp)
+                    Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Text(translation.title, color = TextMain, fontWeight = FontWeight.Bold, fontSize = 19.sp)
+                        Text(work.canonicalTitle + " · " + work.workType, color = Violet, fontSize = 12.sp)
+                        val worldContext = contentObject?.get("world_context")?.jsonPrimitive?.contentOrNull
+                        if (!worldContext.isNullOrBlank()) {
+                            Text("Ертөнцийн тухай", color = TextMain, fontWeight = FontWeight.Bold)
+                            Text(worldContext, color = TextMuted)
+                        }
+                        val concepts = contentObject?.get("core_concepts") as? JsonArray
+                        if (!concepts.isNullOrEmpty()) {
+                            Text("Гол ойлголтууд", color = TextMain, fontWeight = FontWeight.Bold)
+                            concepts.forEach { concept ->
+                                val value = concept.jsonPrimitive.contentOrNull
+                                if (!value.isNullOrBlank()) Text("• $value", color = TextMuted)
+                            }
+                        }
+                        val editorial = contentObject?.get("editorial_note")?.jsonPrimitive?.contentOrNull
+                        if (!editorial.isNullOrBlank()) {
+                            Text("Редакцын тэмдэглэл", color = TextMain, fontWeight = FontWeight.Bold)
+                            Text(editorial, color = TextMuted)
+                        }
+                        val limits = contentObject?.get("research_limits")?.jsonPrimitive?.contentOrNull
+                        if (!limits.isNullOrBlank()) {
+                            Text("Судалгааны хүрээ", color = TextMain, fontWeight = FontWeight.Bold)
+                            Text(limits, color = TextMuted)
+                        }
+                        if (sourceItems.isNotEmpty()) {
+                            Text("Эх сурвалж", color = TextMain, fontWeight = FontWeight.Bold)
+                            sourceItems.forEach { source ->
+                                val label = source["label"]?.jsonPrimitive?.contentOrNull ?: "Эх сурвалж"
+                                val url = source["url"]?.jsonPrimitive?.contentOrNull
+                                Text(if (url.isNullOrBlank()) label else "$label\n$url", color = Violet, fontSize = 12.sp)
+                            }
                         }
                         Text(
                             "Канон: ${translation.canonStatus} · Спойлер: ${translation.spoilerLevel}",
                             color = TextMuted,
-                            fontSize = 10.sp
+                            fontSize = 11.sp
                         )
                     }
                 }
