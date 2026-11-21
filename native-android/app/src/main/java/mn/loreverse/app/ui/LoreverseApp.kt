@@ -69,7 +69,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import coil.ImageLoader
 import coil.compose.AsyncImage
+import coil.decode.SvgDecoder
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -142,7 +145,7 @@ fun LoreverseApp() {
             Scaffold(
                 containerColor = Void,
                 bottomBar = {
-                    if (detail == null && !settings) {
+                    if (detail == null && !settings && selected != "owner") {
                         NavigationBar(containerColor = Panel) {
                             destinations.forEach { destination ->
                                 NavigationBarItem(
@@ -179,7 +182,7 @@ fun LoreverseApp() {
                     selected == "store" -> StoreScreen(modifier = Modifier.padding(padding))
                     selected == "news" -> NewsScreen(modifier = Modifier.padding(padding))
                     selected == "report" -> BugReportScreen(modifier = Modifier.padding(padding))
-                    selected == "owner" -> OwnerControlCenterScreen(onBack = { selected = "profile" }, modifier = Modifier.padding(padding))
+                    selected == "owner" -> OwnerControlCenterScreen(onBack = { selected = "profile" }, onOpenFeedback = { selected = "report" }, onOpenNews = { selected = "news" }, onOpenContent = { selected = "anime" }, modifier = Modifier.padding(padding))
                     selected == "profile" -> ProfileScreen(email = signedInEmail, onSettings = { settings = true }, onAuth = { openAuthFromProfile = true; settings = true }, onOwner = { selected = "owner" }, modifier = Modifier.padding(padding))
                     else -> CategoryScreen(
                         title = when (selected) { "anime" -> "Анимэ"; "manga" -> "Манга"; "games" -> "Тоглоом"; else -> "Lore" },
@@ -190,6 +193,17 @@ fun LoreverseApp() {
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun rememberLoreverseImageLoader(): ImageLoader {
+    val context = LocalContext.current
+    return remember(context) {
+        ImageLoader.Builder(context)
+            .components { add(SvgDecoder.Factory()) }
+            .crossfade(true)
+            .build()
     }
 }
 
@@ -404,6 +418,7 @@ private fun StoreScreen(modifier: Modifier = Modifier) {
 
 @Composable
 private fun NewsScreen(modifier: Modifier = Modifier) {
+    val imageLoader = rememberLoreverseImageLoader()
     var posts by remember { mutableStateOf<List<PublishedNews>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
     var failed by remember { mutableStateOf(false) }
@@ -436,6 +451,7 @@ private fun NewsScreen(modifier: Modifier = Modifier) {
                         if (!post.coverImageUrl.isNullOrBlank()) {
                             AsyncImage(
                                 model = post.coverImageUrl,
+                                imageLoader = imageLoader,
                                 contentDescription = post.title,
                                 modifier = Modifier.fillMaxWidth().height(190.dp).clip(RoundedCornerShape(14.dp)),
                                 contentScale = ContentScale.Crop
@@ -806,6 +822,7 @@ private fun CategoryScreen(title: String, category: String?, onOpen: (LoreItem) 
 
 @Composable
 private fun ContentCard(item: LoreItem, onClick: () -> Unit) {
+    val imageLoader = rememberLoreverseImageLoader()
     Card(
         modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
         shape = RoundedCornerShape(18.dp),
@@ -820,6 +837,7 @@ private fun ContentCard(item: LoreItem, onClick: () -> Unit) {
                 if (!item.imageUrl.isNullOrBlank()) {
                     AsyncImage(
                         model = item.imageUrl,
+                        imageLoader = imageLoader,
                         contentDescription = item.title,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
@@ -847,6 +865,7 @@ private fun DetailScreen(
     onToggleFavorite: () -> Unit,
     onBack: () -> Unit
 ) {
+    val imageLoader = rememberLoreverseImageLoader()
     var detail by remember(item.title) { mutableStateOf<mn.loreverse.app.data.FranchiseDetail?>(null) }
     var loading by remember(item.title) { mutableStateOf(true) }
     var failed by remember(item.title) { mutableStateOf(false) }
@@ -1118,7 +1137,7 @@ private fun ProfileScreen(
 }
 
 @Composable
-private fun OwnerControlCenterScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
+private fun OwnerControlCenterScreen(onBack: () -> Unit, onOpenFeedback: () -> Unit, onOpenNews: () -> Unit, onOpenContent: () -> Unit, modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
     val repository = remember { mn.loreverse.app.data.OwnerDashboardRepository() }
     var stats by remember { mutableStateOf<mn.loreverse.app.data.OwnerDashboardStats?>(null) }
@@ -1146,6 +1165,23 @@ private fun OwnerControlCenterScreen(onBack: () -> Unit, modifier: Modifier = Mo
                 Column(Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text("Эрх баталгаажсан", color = Violet, fontWeight = FontWeight.Bold)
                     Text("Owner эрхийг Supabase RLS бодлогоор давхар шалгана.", color = TextMain)
+                }
+            }
+        }
+        item {
+            Text("Админ туслах цэс", color = TextMain, fontSize = 19.sp, fontWeight = FontWeight.Bold)
+            Column(verticalArrangement = Arrangement.spacedBy(9.dp), modifier = Modifier.padding(top = 8.dp)) {
+                Button(onClick = { refresh() }, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = PanelRaised)) {
+                    Icon(Icons.Filled.Settings, null); Text("  Самбарын статистик шинэчлэх")
+                }
+                OutlinedButton(onClick = onOpenContent, modifier = Modifier.fillMaxWidth()) {
+                    Icon(Icons.Filled.AutoStories, null); Text("  Контентын архив")
+                }
+                OutlinedButton(onClick = onOpenNews, modifier = Modifier.fillMaxWidth()) {
+                    Icon(Icons.Filled.Newspaper, null); Text("  Мэдээ, зарлал")
+                }
+                OutlinedButton(onClick = onOpenFeedback, modifier = Modifier.fillMaxWidth()) {
+                    Icon(Icons.Filled.BugReport, null); Text("  Алдаа, санал хүсэлтийн хяналт")
                 }
             }
         }
