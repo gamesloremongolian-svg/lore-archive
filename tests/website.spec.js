@@ -401,7 +401,7 @@ test.describe('LOREVERSE website health', () => {
     expect(handler).toContain('String(ebarimt.barimt_status || "").toUpperCase() !== "REGISTERED"');
     expect(handler).toContain('ebarimt_receiver: receiver,');
     expect(handler).toContain('receiverType === "CITIZEN" && receiver');
-    expect(handler).toContain('!/^\\\\d{8,20}$/.test(receiver)');
+    expect(handler).toContain('!/^\\d{8,20}$/.test(receiver)');
     expect(handler).toMatch(/ebarimt_status: "unknown"/);
     expect(handler).toMatch(/qpay_payment_id/);
     expect(migration).toMatch(/ebarimt_status/);
