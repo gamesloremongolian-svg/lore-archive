@@ -199,3 +199,55 @@ GitHub `loreverse-ctrl/lore-archive` репозиторын `main` салбар,
 4. Нийтлэх үед шинэ франчайз болон work status-ийг нэг deployment багцаар published болгох, sitemap болон public detail route-ийг шалгах шаардлагатай.
 
 Иймээс 15 work нь редакцын хяналтын шатанд бэлтгэгдсэн; нийтэд автоматаар publish хийгдээгүй.
+
+## Өмнө оруулсан мэдээллийн аудит — 2026-11-21
+
+Энэ шалгалт нь сүүлийн 15 work-ийн шинэчлэлээс тусдаа, өмнө нь байсан бүх archive бүртгэл болон content_posts-ийг хамарсан.
+
+### Одоогийн бүртгэлийн хэмжээ
+
+| Хэсэг | Нийт | Нийтлэгдсэн | Draft / Review |
+|---|---:|---:|---:|
+| Franchises | 43 | 28 | 15 draft |
+| Works | 107 | 28 | 79 draft |
+| Entities | 167 | 55 | 112 draft |
+| Timeline events | 34 | 5 | 29 draft |
+| Content posts | 27 | 21 | 6 review |
+
+### Илэрсэн бүтцийн асуудал ба хийсэн засвар
+
+1. **Entity → Franchise холбоос тасарсан.** Анхны аудитад 36 entity franchise_id-гүй байсан. 20th Century Boys-ийн 14 entity-г өөрийн work-ийн franchise-аас зөв холбосон. Monster болон Pluto-ийн entity-үүдэд харгалзах franchise бүртгэл байгаагүй тул хоёр шинэ draft franchise үүсгэж, Monster-ийн 7, Pluto-ийн 14 entity болон хоёр work-ийг холбосон. Одоо 167/167 entity franchise-тай бөгөөд entity.franchise_id нь холбоотой work.franchise_id-тэй 100% таарч байна.
+2. **Timeline canon/хувилбарын зөрүү.** Overlord-ийн `half-elf-demigod` event нь Light Novel-ийн 15–16-р ботийн үйл явдлыг тайлбарласан мөртлөө зөвхөн Overlord Anime work-д холбогдсон байсан. Энэ event-ийг нийтэд харагдах published төлөвөөс draft болгож буулгасан. Light Novel work тусад нь бүртгэсний дараа зөв холбоосоор дахин нийтлэх шаардлагатай.
+3. **Франчайзын давхардал.** Ижил нэртэй 6 хос franchise илэрсэн:
+   - Chainsaw Man: `chainsaw-man` (draft) / `chainsaw-man-manga` (published)
+   - Demon Slayer: `demon-slayer-kimetsu-no-yaiba` / `demon-slayer-manga`
+   - Frieren: `frieren-beyond-journeys-end` / `frieren-manga`
+   - Jujutsu Kaisen: `jujutsu-kaisen` / `jujutsu-kaisen-manga`
+   - Naruto: `naruto` / `naruto-manga`
+   - One Piece: `one-piece` / `one-piece-manga`
+   
+   Эдгээрийн manga/anime work-ууд тусдаа franchise record-д холбогдсон байна. Энэ нь franchise түвшний давхардал; URL болон entity холбоосыг алдагдуулахгүйгээр нэгтгэх/redirect хийх тусгай migration шаардлагатай. Энэ аудитын хүрээнд эдгээрийг устгаж, нэгтгээгүй.
+4. **Work-ийн холбоос дутуу.** 56 draft work franchise_id-гүй хэвээр; бүгдэд нь placeholder synopsis, албан ёсны source байхгүй. Эдгээр нь одоогоор бүрэн lore биш, зөвхөн каталогийн хоосон draft бүртгэл тул эх сурвалж болон зөв franchise-ийг баталгаажуулж байж холбох ёстой.
+5. **Franchise cover зураг.** 28 published franchise-ийн 17 нь, 15 draft franchise-ийн 15 нь cover зураггүй. Нийт 43-аас 32 нь зураггүй. Зөвшөөрөлгүй poster/artwork ашиглаагүй; placeholder cover fallback хэвээр.
+6. **Нийтлэгдсэн work-ийн гүнзгийрүүлэлт.** 28/28 published work эх сурвалжтай боловч 27/28 canon_status нь `unknown`. Зөвхөн 5/28 нь 200+ тэмдэгтийн world_context болон 3+ core concepts-тэй; 6/28 synopsis нь 150 тэмдэгтээс богино. Overlord work нь 5 section-тэй ч бусад 27 work-д ийм түвшний дэлгэрэнгүй lore бүтэц харагдахгүй. Иймээс source link байгаа нь бүрэн lore баталгаажсан гэсэн үг биш.
+7. **Entity профайлын ялгаа.** 55/55 published entity эх сурвалжтай. Genshin Impact-ийн 25/25 entity тайлбар 100+ тэмдэгттэй, 20/25 нь дор хаяж 2 profile section-тэй. Overlord-ийн 30/30 entity эх сурвалжтай боловч 23/30 description 100 тэмдэгтээс богино, 0/30 нь profile_sections-тэй; тэдний content ихэвчлэн metadata төдий. Overlord-ийн дүрүүдийг тус тусад нь гүнзгийрүүлэх шаардлагатай.
+8. **Timeline-ийн хэмжээ.** 5 published, 29 draft event байна. Published 5 event-ийн дотор in_universe_date талбар хоосон; одоогоор sort_order-оор эрэмбэлдэг. Он цагийн тодорхойгүй хэсгийг зохиомлоор бөглөж болохгүй.
+9. **Content posts.** 27 нийтлэлээс 21 published, 6 review. 27/27 эх сурвалжтай боловч 27/27 cover_image_url хоосон. ANANTA-ийн 18 нийтлэлийн дотор Nova City/Lingyun-ийн газарзүйн сэдвээр 3 нийтлэл ихээхэн давхцаж байна: `ananta-nova-city-lingyun-regions`, `ananta-two-cities-cultural-contrast`, `ananta-two-cities-nova-chongxiao`. Эдгээрийг нэг үндсэн газрын зураглалын нийтлэл болгож, үлдсэн хоёрын өнцгийг ялгаж дахин засварлах хэрэгтэй.
+10. **Relation graph.** 109 entity relation байна; 17 published, 92 draft. Self-link илрээгүй. Published relation-уудын description хоосон биш.
+
+### ANANTA-ийн өмнөх мэдээллийн дахин шалгалт
+
+- 2027-01-15 дэлхийн нээлтийн огноо албан ёсны ANANTA сайт болон PlayStation-ийн хуудсанд одоо ч хэвээр байна.
+- Nova City ба Chongxiao-ийн Lingyun City хоёр хотын бүтэц албан ёсны PlayStation болон ANANTA сайтаар баталгаажсан.
+- 2026 оны нээлтийн огнооны хэвлэлийн мэдээнд “Go Viral. Save the World.”, influencer/social influence, A.C.D. багийг дахин бүрдүүлэх, олон дүр солих, хотын даалгаврын системийн талаар тайлбарласан.
+- Эдгээр нь тоглоом гарахаас өмнөх publisher/studio танилцуулга. Тоглоомын доторх бүрэн өгүүлэмж, дүрийн нууц, Chaos-ийн үүсэл зэрэг баталгаажаагүй lore-г нийтлэгдсэн факт мэт бичиж болохгүй.
+
+### Эцсийн дүгнэлт
+
+- Entity → Franchise холбоосын одоогийн алдаа: 0.
+- Entity → Work → Franchise холбоосын зөрүү: 0.
+- 2 шинэ draft franchise (Monster, Pluto) нэмэгдсэн.
+- 1 Overlord timeline event-ийг буруу anime scope-оос draft болгон буулгасан.
+- 6 franchise давхардал, 56 work-ийн франчайз/эх сурвалжийн дутуу байдал, Overlord entity профайлын гүнзгийрүүлэлт, published work-ийн canon шошго ба lore-ийн гүн, нийтлэлүүдийн cover болон давхардсан ANANTA сэдэв үлдсэн.
+
+Энэ аудит нь өмнө оруулсан бүх мэдээллийг бүрэн өгүүлбэр бүрээр fact-check хийсэн гэсэн баталгаа биш. Энэ бол өгөгдлийн бүтэц, эх сурвалжийн бүртгэл, нийтлэлийн бэлэн байдлын аудит бөгөөд дээрх үлдсэн ажлуудыг тусад нь редакцын судалгаагаар дуусгана.
