@@ -34,6 +34,7 @@ data class OwnerDashboardData(
     val pendingProducts: List<ModerationProduct>
 )
 
+@Serializable
 private data class OwnerStaffRole(val role: String, val active: Boolean)
 
 class OwnerDashboardRepository {
