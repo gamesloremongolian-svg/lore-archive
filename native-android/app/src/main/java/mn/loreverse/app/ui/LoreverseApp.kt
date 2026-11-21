@@ -377,53 +377,219 @@ private fun NewsScreen(modifier: Modifier = Modifier) {
 
 @Composable
 private fun BugReportScreen(modifier: Modifier = Modifier) {
-    var category by remember { mutableStateOf("Аппын алдаа") }
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val scope = rememberCoroutineScope()
+    val repository = remember { mn.loreverse.app.data.FeedbackRepository() }
+    var category by remember { mutableStateOf("bug") }
+    var section by remember { mutableStateOf("Ерөнхий") }
     var subject by remember { mutableStateOf("") }
     var details by remember { mutableStateOf("") }
-    var status by remember { mutableStateOf<String?>(null) }
+    var attachmentUri by remember { mutableStateOf<android.net.Uri?>(null) }
+    var attachmentName by remember { mutableStateOf<String?>(null) }
+    var attachmentMime by remember { mutableStateOf<String?>(null) }
+    var busy by remember { mutableStateOf(false) }
+    var message by remember { mutableStateOf<String?>(null) }
+    var selectedTab by remember { mutableStateOf("new") }
+    var tickets by remember { mutableStateOf<List<mn.loreverse.app.data.AppFeedback>>(emptyList()) }
+    var loadingTickets by remember { mutableStateOf(false) }
+    var adminMode by remember { mutableStateOf(false) }
+    var replyTarget by remember { mutableStateOf<mn.loreverse.app.data.AppFeedback?>(null) }
+    var adminReply by remember { mutableStateOf("") }
+    val imagePicker = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.GetContent()
+    ) { uri ->
+        attachmentUri = uri
+        attachmentName = uri?.lastPathSegment ?: "image"
+        attachmentMime = uri?.let { context.contentResolver.getType(it) }
+    }
+    val videoPicker = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.GetContent()
+    ) { uri ->
+        attachmentUri = uri
+        attachmentName = uri?.lastPathSegment ?: "video"
+        attachmentMime = uri?.let { context.contentResolver.getType(it) }
+    }
+    fun loadTickets(admin: Boolean = adminMode) {
+        loadingTickets = true
+        scope.launch {
+            val result = withContext(Dispatchers.IO) {
+                if (admin) repository.getAllForStaff() else repository.getMine()
+            }
+            result.onSuccess { tickets = it; message = null }
+                .onFailure { message = it.message ?: "Хүсэлтүүдийг татаж чадсангүй." }
+            loadingTickets = false
+        }
+    }
 
-    Column(
-        modifier = modifier.fillMaxSize().padding(18.dp),
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(18.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        Text("Алдаа мэдээлэх", color = TextMain, fontSize = 27.sp, fontWeight = FontWeight.Bold)
-        Text("Апп дээр тулгарсан асуудал эсвэл санал хүсэлтээ тэмдэглэнэ үү.", color = TextMuted)
-        Text("Төрөл", color = TextMain, fontWeight = FontWeight.SemiBold)
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            listOf("Аппын алдаа", "Санал хүсэлт").forEach { value ->
-                FilterChip(selected = category == value, onClick = { category = value }, label = { Text(value) })
+        item {
+            Text("Алдаа мэдээлэх", color = TextMain, fontSize = 27.sp, fontWeight = FontWeight.Bold)
+            Text("Асуудал, санал хүсэлтээ илгээж шийдвэрлэлтийг нь хянаарай.", color = TextMuted)
+        }
+        item {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FilterChip(selected = selectedTab == "new", onClick = { selectedTab = "new" }, label = { Text("Шинэ хүсэлт") })
+                FilterChip(selected = selectedTab == "mine", onClick = { selectedTab = "mine"; adminMode = false; loadTickets(false) }, label = { Text("Миний хүсэлтүүд") })
+                FilterChip(selected = selectedTab == "admin", onClick = { selectedTab = "admin"; adminMode = true; loadTickets(true) }, label = { Text("Админ хяналт") })
             }
         }
-        OutlinedTextField(
-            value = subject,
-            onValueChange = { subject = it; status = null },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Гарчиг") },
-            placeholder = { Text("Жишээ: Нэвтрэх үед алдаа гарлаа") },
-            singleLine = true
-        )
-        OutlinedTextField(
-            value = details,
-            onValueChange = { details = it; status = null },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Дэлгэрэнгүй тайлбар") },
-            placeholder = { Text("Алдаа хэрхэн гарсныг тайлбарлана уу...") },
-            minLines = 4
-        )
-        Button(
-            onClick = {
-                status = if (subject.isBlank() || details.isBlank()) {
-                    "Гарчиг болон тайлбарыг бөглөнө үү."
-                } else {
-                    "Маягт бэлэн. Илгээх серверийн холболт хараахан хийгдээгүй байна."
+        if (selectedTab == "new") {
+            item { Text("Төрөл", color = TextMain, fontWeight = FontWeight.SemiBold) }
+            item {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FilterChip(selected = category == "bug", onClick = { category = "bug" }, label = { Text("Аппын алдаа") })
+                    FilterChip(selected = category == "suggestion", onClick = { category = "suggestion" }, label = { Text("Санал хүсэлт") })
+                }
+            }
+            item {
+                Text("Аль хэсэгт гарсан бэ?", color = TextMain, fontWeight = FontWeight.SemiBold)
+                androidx.compose.material3.ExposedDropdownMenuBox(
+                    expanded = false,
+                    onExpandedChange = {}
+                ) {
+                    // The section chips below keep selection explicit and accessible.
+                }
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    listOf("Нүүр", "Дэлгүүр", "Мэдээлэл", "Профайл", "Алдаа", "Ерөнхий").forEach { value ->
+                        FilterChip(selected = section == value, onClick = { section = value }, label = { Text(value) })
+                    }
+                }
+            }
+            item {
+                OutlinedTextField(
+                    value = subject, onValueChange = { subject = it },
+                    modifier = Modifier.fillMaxWidth(), label = { Text("Гарчиг") },
+                    placeholder = { Text("Жишээ: Дэлгүүр нээгдэхгүй байна") }, singleLine = true
+                )
+            }
+            item {
+                OutlinedTextField(
+                    value = details, onValueChange = { details = it },
+                    modifier = Modifier.fillMaxWidth(), label = { Text("Дэлгэрэнгүй тайлбар") },
+                    placeholder = { Text("Алдаа гарсан алхам, хүлээж байсан үр дүн, бодит үр дүнг бичнэ үү...") },
+                    minLines = 4
+                )
+            }
+            item {
+                Text("Нотлох зураг эсвэл видео (заавал биш)", color = TextMain, fontWeight = FontWeight.SemiBold)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(onClick = { imagePicker.launch("image/*") }) { Text("Зураг сонгох") }
+                    OutlinedButton(onClick = { videoPicker.launch("video/mp4") }) { Text("Видео сонгох") }
+                }
+                attachmentName?.let { Text("Хавсаргасан: $it", color = Violet, fontSize = 12.sp) }
+                Text("Зураг 10 MB хүртэл, MP4 видео 10 MB хүртэл.", color = TextMuted, fontSize = 11.sp)
+            }
+            item {
+                Text("Автоматаар хавсаргах төхөөрөмжийн мэдээлэл", color = TextMain, fontWeight = FontWeight.SemiBold)
+                Text("Android ${android.os.Build.VERSION.RELEASE} · ${android.os.Build.MODEL} · App 2.0.0", color = TextMuted, fontSize = 12.sp)
+            }
+            item {
+                Button(
+                    enabled = !busy,
+                    onClick = {
+                        if (subject.trim().length < 3 || details.trim().length < 10) {
+                            message = "Гарчиг 3-аас, тайлбар 10-аас доошгүй тэмдэгт байна."
+                        } else {
+                            busy = true
+                            message = null
+                            scope.launch {
+                                val bytes = attachmentUri?.let { uri ->
+                                    withContext(Dispatchers.IO) { context.contentResolver.openInputStream(uri)?.use { it.readBytes() } }
+                                }
+                                val result = withContext(Dispatchers.IO) {
+                                    repository.submit(
+                                        category = category,
+                                        title = subject.trim(),
+                                        description = details.trim(),
+                                        section = section,
+                                        appVersion = "2.0.0",
+                                        androidVersion = android.os.Build.VERSION.RELEASE ?: "unknown",
+                                        deviceModel = android.os.Build.MODEL ?: "unknown",
+                                        attachmentBytes = bytes,
+                                        attachmentMime = attachmentMime
+                                    )
+                                }
+                                result.onSuccess { ticket ->
+                                    message = "Амжилттай илгээлээ. Хүсэлтийн дугаар: #${ticket.ticketNumber}"
+                                    subject = ""; details = ""; attachmentUri = null; attachmentName = null; attachmentMime = null
+                                }.onFailure { message = it.message ?: "Илгээхэд алдаа гарлаа." }
+                                busy = false
+                            }
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth().height(52.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Purple)
+                ) { Text(if (busy) "Илгээж байна..." else "Илгээх") }
+            }
+        } else {
+            item {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(if (selectedTab == "admin") "Ирсэн хүсэлтүүд" else "Миний хүсэлтүүд", color = TextMain, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                    TextButton(onClick = { loadTickets(selectedTab == "admin") }) { Text("Шинэчлэх") }
+                }
+            }
+            if (loadingTickets) item { Text("Ачаалж байна...", color = TextMuted) }
+            else if (tickets.isEmpty()) item { Text("Одоогоор хүсэлт алга.", color = TextMuted) }
+            else items(tickets, key = { it.id }) { ticket ->
+                Card(colors = CardDefaults.cardColors(containerColor = Panel), shape = RoundedCornerShape(18.dp)) {
+                    Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("#${ticket.ticketNumber}", color = Violet, fontWeight = FontWeight.Bold)
+                            Spacer(Modifier.weight(1f))
+                            Text(ticket.statusLabel, color = TextMuted, fontSize = 12.sp)
+                        }
+                        Text(ticket.title, color = TextMain, fontWeight = FontWeight.SemiBold)
+                        Text(ticket.description, color = TextMuted, fontSize = 13.sp)
+                        Text("${ticket.categoryLabel} · ${ticket.section} · ${ticket.createdAt.take(10)}", color = TextMuted, fontSize = 11.sp)
+                        if (!ticket.adminReply.isNullOrBlank()) {
+                            Card(colors = CardDefaults.cardColors(containerColor = PanelRaised)) {
+                                Column(Modifier.fillMaxWidth().padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Text("Админы хариу", color = Violet, fontWeight = FontWeight.SemiBold)
+                                    Text(ticket.adminReply, color = TextMain, fontSize = 13.sp)
+                                }
+                            }
+                        }
+                        if (selectedTab == "admin") {
+                            OutlinedButton(onClick = { replyTarget = ticket; adminReply = ticket.adminReply.orEmpty() }) { Text("Хариу / төлөв өөрчлөх") }
+                        }
+                    }
+                }
+            }
+        }
+        message?.let { item { Text(it, color = if (it.startsWith("Амжилттай")) Violet else ColorHex(0xFFFBBF24)) } }
+    }
+
+    replyTarget?.let { target ->
+        var newStatus by remember(target.id) { mutableStateOf(target.status) }
+        AlertDialog(
+            onDismissRequest = { replyTarget = null },
+            title = { Text("Хүсэлт #${target.ticketNumber}", color = TextMain) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    listOf("pending" to "Хүлээгдэж байна", "reviewing" to "Шалгаж байна", "resolved" to "Зассан", "rejected" to "Татгалзсан").forEach { (value, label) ->
+                        FilterChip(selected = newStatus == value, onClick = { newStatus = value }, label = { Text(label) })
+                    }
+                    OutlinedTextField(value = adminReply, onValueChange = { adminReply = it }, label = { Text("Админы хариу") }, minLines = 3)
                 }
             },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = Purple)
-        ) {
-            Text("Илгээх")
-        }
-        status?.let { Text(it, color = if (subject.isBlank() || details.isBlank()) ColorHex(0xFFFBBF24) else TextMuted) }
+            confirmButton = {
+                TextButton(onClick = {
+                    busy = true
+                    scope.launch {
+                        val result = withContext(Dispatchers.IO) { repository.updateAsStaff(target.id, newStatus, adminReply.trim()) }
+                        result.onSuccess { replyTarget = null; loadTickets(true); message = "Хүсэлт шинэчлэгдлээ." }
+                            .onFailure { message = it.message ?: "Шинэчлэхэд алдаа гарлаа." }
+                        busy = false
+                    }
+                }, enabled = !busy) { Text("Хадгалах") }
+            },
+            dismissButton = { TextButton(onClick = { replyTarget = null }) { Text("Болих") } },
+            containerColor = Panel
+        )
     }
 }
 
