@@ -14,7 +14,7 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('body')).toBeVisible();
     await expect(page.locator('.lv-shell-brand')).toContainText('LOREVERSE');
     await expect(page.locator('.hero h1')).toContainText('Дуртай ертөнцөө');
-    await expect(page.locator('.cards .card')).toHaveCount(3);
+    await expect(page.locator('.cards .card')).toHaveCount(5);
     await expect(page.locator('.cards [data-category="all"]')).toHaveCount(0);
     await expect(page.locator('.feature').first()).toBeVisible();
     await expect(page.locator('.feature').nth(1)).toContainText('BUG HUNTER');
@@ -89,8 +89,11 @@ test.describe('LOREVERSE website health', () => {
     expect(layout.nav.right).toBeLessThanOrEqual(layout.header.right + 1);
 
     await page.setViewportSize({ width: 1024, height: 768 });
+    await expect(nav).toBeHidden();
+    await expect(menuButton).toBeVisible();
+    await menuButton.click();
+    await expect(nav).toHaveAttribute('data-open', 'true');
     await expect(nav).toBeVisible();
-    await expect(menuButton).toBeHidden();
   });
 
   test('public sitemap and crawler rules are published', async ({ request }) => {
@@ -102,7 +105,7 @@ test.describe('LOREVERSE website health', () => {
     const robotsText = await robots.text();
     expect(sitemapText).toContain('<urlset');
     expect(sitemapText).toContain('/knowledge/');
-    expect(robotsText).toContain('Sitemap: https://lore-archive.pages.dev/sitemap.xml');
+    expect(robotsText).toContain('Sitemap: https://loreverse-ctrl.github.io/lore-archive/sitemap.xml');
     expect(robotsText).toContain('Disallow: /admin/');
     expect(robotsText).toContain('Disallow: /editorial/');
   });
@@ -155,7 +158,7 @@ test.describe('LOREVERSE website health', () => {
       'lore-ai',
       'editorial-ai-draft'
     ];
-    const origins = ['https://e-archive.pages.dev', 'https://lore-archive.pages.dev'];
+    const origins = ['https://loreverse-ctrl.github.io', 'https://e-archive.pages.dev', 'https://lore-archive.pages.dev'];
     for (const name of functions) {
       for (const origin of origins) {
         const response = await request.fetch(
@@ -211,6 +214,22 @@ test.describe('LOREVERSE website health', () => {
       await expect(page.locator('body')).toBeVisible();
       await expect(page).toHaveTitle(titlePattern);
     }
+  });
+
+  test('knowledge post deep links render the complete article body', async ({ page }) => {
+    await page.route('https://esm.sh/@supabase/supabase-js@2.119.0', route => route.fulfill({
+      status: 200,
+      contentType: 'application/javascript',
+      body: `
+        const query=table=>{const q={select(){return q},eq(){return q},order(){return q},limit(){return q},in(){return q},then(resolve,reject){const data=table==='content_posts'?[{id:'test-post',title:'Туршилтын Lore нийтлэл',slug:'test-lore-post',summary:'Товч танилцуулга',content_type:'lore',game_title:'ANANTA',character_name:null,body:{text:'Бүрэн нийтлэлийн эхний хэс\\\\n\\\\nДараагийн хэсэг.'},source_urls:[{url:'https://www.anantagame.com/','label':'Албан ёсны эх сурвалж'}],published_at:'2026-11-20T00:00:00Z'}]:[];return Promise.resolve({data,error:null}).then(resolve,reject)}};return q};
+        export function createClient(){return {from:query}}
+      `
+    }));
+    await page.goto(new URL('knowledge/?post=test-lore-post', baseURL).toString(), { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('.post-body')).toContainText('Бүрэн нийтлэлийн эхний хэс');
+    await expect(page.locator('.post-body')).toContainText('Дараагийн хэсэг');
+    await expect(page.locator('.post-body').locator('..')).toContainText('Туршилтын Lore нийтлэл');
+    await expect(page.locator('.post-body').locator('..')).toContainText('Албан ёсны эх сурвалж');
   });
 
   test('bug report page keeps submission behind authentication', async ({ page }) => {
@@ -374,6 +393,6 @@ test.describe('LOREVERSE website health', () => {
 
     await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
     await page.locator('#loreverseAppNav [data-app-route="bug"]').click();
-    await expect(page).toHaveURL(/openBugReport=1/);
+    await expect(page.locator('#bugReportModal')).toHaveClass(/open/);
   });
 });
