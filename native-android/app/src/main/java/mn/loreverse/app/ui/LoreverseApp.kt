@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -449,13 +451,7 @@ private fun BugReportScreen(modifier: Modifier = Modifier) {
             }
             item {
                 Text("Аль хэсэгт гарсан бэ?", color = TextMain, fontWeight = FontWeight.SemiBold)
-                androidx.compose.material3.ExposedDropdownMenuBox(
-                    expanded = false,
-                    onExpandedChange = {}
-                ) {
-                    // The section chips below keep selection explicit and accessible.
-                }
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     listOf("Нүүр", "Дэлгүүр", "Мэдээлэл", "Профайл", "Алдаа", "Ерөнхий").forEach { value ->
                         FilterChip(selected = section == value, onClick = { section = value }, label = { Text(value) })
                     }
