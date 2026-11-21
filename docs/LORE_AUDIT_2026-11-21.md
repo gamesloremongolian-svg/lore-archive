@@ -152,3 +152,50 @@ GitHub `loreverse-ctrl/lore-archive` репозиторын `main` салбар,
 - Research gaps/canon scope бүтэцтэй draft work: 21 (өмнө 14).
 
 Эдгээр нэмэлт бүртгэлүүд нийтлэхэд бэлэн гэж тооцогдохгүй; draft хэвээр байна. Бүлэг/анги тус бүрийн үйл явдал, бүх дүрийн профайл, хүчний систем, timeline болон adaptation ялгааг эх бүтээлтэй тулгасны дараа редакцын шалгалтад оруулна.
+
+## Нийтлэхийн өмнөх бэлтгэл — 2026-11-21
+
+### Өмнө нэмсэн контентын төлөв
+
+Эхний Genshin Impact багцын 8 дүрийн entity (Albedo, Alhaitham, Arataki Itto, Baizhu, Barbara, Bennett, Cyno, Diluc) өмнө нь нийтлэгдсэн хэвээр байна. Баталгаажуулалтаар 8/8 нь published entity + published Mongolian translation, эх сурвалжтай, дор хаяж 2 profile section-тэй.
+
+Хоёр дахь болон гурав дахь багцын 15 work дараах байдлаар нийтлэхийн өмнөх шатанд бэлтгэгдэв:
+- BLEACH — manga (2001), anime (2004)
+- BLUE LOCK — manga (2018), anime (2022)
+- Blue Period — manga (2017)
+- Bocchi the Rock! — anime (2022)
+- Boruto: Naruto Next Generations — manga (2016), Naruto франчайзтай холбосон
+- Chainsaw Man — anime (2022)
+- DANDADAN — manga (2021), anime (2024)
+- Death Note — manga (2003), одоо байгаа Death Note франчайзтай холбосон
+- Dr. STONE — manga (2017), anime (2019)
+- Dragon Ball — manga (1984), анхны TV anime (1986)
+
+### Бэлтгэлийн өөрчлөлт
+
+- 15/15 work-д release year, Монгол synopsis, 1–3 албан ёсны publisher/studio эх сурвалж нэмсэн.
+- 15/15-д world_context, 4–5 core concepts, characters, factions, canon/adaptation scope, spoiler policy, редакцын тэмдэглэл бүртгэсэн.
+- Manga бүтээлүүдийг canon; anime adaptation-уудыг canon_status=unknown гэж ялгасан. Manga болон anime continuity-г нэг work болгон нийлүүлээгүй.
+- Editorial status-ийг `review` болгосон. Archive work болон шинээр үүссэн franchise-ийн үндсэн status нь `draft` хэвээр тул public site-ийн published query-д харагдахгүй.
+- Blue Lock-ийн 3-р улирлыг албан ёсны сайтаар дахин баталгаажуулсан: `BLUE LOCK: NEO EGOIST LEAGUE` нэртэй, 2026-06-09-нд зарлагдсан; 2026-11-21-ний байдлаар албан ёсны сайт үйлдвэрлэл явагдаж байгааг харуулж байгаа боловч нэвтрүүлгийн огноо зарлаагүй.
+- Dr. STONE-ийн үндсэн TV цувралын төгсгөл болон 2026-10-10-нд зарлагдсан TERRAFORMING үргэлжлэлийг ялгасан.
+- DANDADAN-ийн 3-р улирлыг 2027 оны төлөвлөсөн улирал гэж тэмдэглэсэн; цацагдсан контент гэж тооцоогүй.
+- `knowledge/index.html` detail view-ийг шинэчилж, world context, core concepts, characters, factions, power system, locations/items, timeline, relationships, canon/adaptation, research limits болон редакцын тэмдэглэлийг харуулах болгосон.
+
+### Supabase-ийн эцсийн баталгаажуулалт
+
+- Нийтлэхийн өмнөх editorial review: 15/15.
+- Албан ёсны эх сурвалжтай: 15/15.
+- Дэлгэрэнгүй профайлтай (world context 200+ тэмдэгт, 4+ core concepts): 15/15.
+- Work status: 15/15 draft; franchise-ийн status ч мөн draft хэвээр (Boruto болон Death Note нь аль хэдийн published franchise-д холбогдсон).
+- 8 Genshin entity: 8/8 published, 8/8 эх сурвалжтай, 8/8 дор хаяж 2 profile section-тэй.
+
+### Нийтлэхийн өмнө үлдсэн хаалт
+
+Эдгээр нь автомат нийтлэхийг хориглох шалгалтын цэгүүд:
+1. Редакторын эцсийн уншлага, Монгол найруулга ба нэр томьёоны жигдрүүлэлт.
+2. Дүр, бүлэг/анги, timeline-ийн бүрэн canon mapping нь энэ товч танилцуулгын хүрээнд хийгдээгүй.
+3. Шинэ франчайзын заримд эрхтэй cover art одоогоор байхгүй. Зөвшөөрөлгүй official poster/character art хуулж оруулаагүй; сайтын gradient fallback-ийг ашиглана.
+4. Нийтлэх үед шинэ франчайз болон work status-ийг нэг deployment багцаар published болгох, sitemap болон public detail route-ийг шалгах шаардлагатай.
+
+Иймээс 15 work нь редакцын хяналтын шатанд бэлтгэгдсэн; нийтэд автоматаар publish хийгдээгүй.
