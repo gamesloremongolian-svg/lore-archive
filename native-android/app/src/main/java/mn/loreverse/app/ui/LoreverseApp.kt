@@ -393,6 +393,8 @@ private fun BugReportScreen(modifier: Modifier = Modifier) {
     var tickets by remember { mutableStateOf<List<mn.loreverse.app.data.AppFeedback>>(emptyList()) }
     var loadingTickets by remember { mutableStateOf(false) }
     var adminMode by remember { mutableStateOf(false) }
+    var canReview by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { canReview = withContext(Dispatchers.IO) { repository.isStaff() } }
     var replyTarget by remember { mutableStateOf<mn.loreverse.app.data.AppFeedback?>(null) }
     var adminReply by remember { mutableStateOf("") }
     val imagePicker = androidx.activity.compose.rememberLauncherForActivityResult(
@@ -434,7 +436,7 @@ private fun BugReportScreen(modifier: Modifier = Modifier) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 FilterChip(selected = selectedTab == "new", onClick = { selectedTab = "new" }, label = { Text("Шинэ хүсэлт") })
                 FilterChip(selected = selectedTab == "mine", onClick = { selectedTab = "mine"; adminMode = false; loadTickets(false) }, label = { Text("Миний хүсэлтүүд") })
-                FilterChip(selected = selectedTab == "admin", onClick = { selectedTab = "admin"; adminMode = true; loadTickets(true) }, label = { Text("Админ хяналт") })
+                if (canReview) FilterChip(selected = selectedTab == "admin", onClick = { selectedTab = "admin"; adminMode = true; loadTickets(true) }, label = { Text("Админ хяналт") })
             }
         }
         if (selectedTab == "new") {
