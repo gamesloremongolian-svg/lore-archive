@@ -17,8 +17,9 @@
  [...document.querySelectorAll('body nav')].forEach(n=>{if(n===nav)return;const hrefs=[...n.querySelectorAll('a')].map(a=>a.getAttribute('href')||'').join(' ');const count=['community','games','store','profile','marketplace','ai'].filter(k=>hrefs.includes(k)).length;if(count>=4){const host=n.closest('header');if(host&&host!==header)host.classList.add('lv-legacy-global-nav');else n.classList.add('lv-legacy-global-nav')}});
  document.body.insertBefore(header,document.body.firstChild);
  const toggle=header.querySelector('button');
- const close=()=>{nav.dataset.open='false';toggle.setAttribute('aria-expanded','false');toggle.textContent='☰';more.open=false};
- toggle.addEventListener('click',()=>{const open=nav.dataset.open!=='true';nav.dataset.open=String(open);toggle.setAttribute('aria-expanded',String(open));toggle.textContent=open?'×':'☰'});
+ const close=()=>{nav.dataset.open='false';toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Цэс нээх');toggle.textContent='☰';more.open=false};
+ const setOpen=open=>{nav.dataset.open=String(open);toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'Цэс хаах':'Цэс нээх');toggle.textContent=open?'×':'☰';};
+ toggle.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();setOpen(nav.dataset.open!=='true');});
  document.addEventListener('click',e=>{if(!header.contains(e.target))close()});
  nav.addEventListener('click',e=>{if(e.target.closest('a'))close()});
  document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
