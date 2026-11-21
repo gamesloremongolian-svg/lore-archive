@@ -93,6 +93,7 @@ import mn.loreverse.app.data.CommunityPost
 import mn.loreverse.app.data.NewsStoreRepository
 import mn.loreverse.app.data.PublishedNews
 import mn.loreverse.app.data.StoreProduct
+import mn.loreverse.app.data.StaffRepository
 
 private data class Destination(val id: String, val label: String, val icon: ImageVector)
 private data class LoreItem(val title: String, val category: String, val description: String, val imageUrl: String? = null)
@@ -171,7 +172,8 @@ fun LoreverseApp() {
                     selected == "store" -> StoreScreen(modifier = Modifier.padding(padding))
                     selected == "news" -> NewsScreen(modifier = Modifier.padding(padding))
                     selected == "report" -> BugReportScreen(modifier = Modifier.padding(padding))
-                    selected == "profile" -> ProfileScreen(email = signedInEmail, onSettings = { settings = true }, onAuth = { openAuthFromProfile = true; settings = true }, modifier = Modifier.padding(padding))
+                    selected == "owner" -> OwnerControlCenterScreen(onBack = { selected = "profile" }, modifier = Modifier.padding(padding))
+                    selected == "profile" -> ProfileScreen(email = signedInEmail, onSettings = { settings = true }, onAuth = { openAuthFromProfile = true; settings = true }, onOwner = { selected = "owner" }, modifier = Modifier.padding(padding))
                     else -> CategoryScreen(
                         title = when (selected) { "anime" -> "Анимэ"; "manga" -> "Манга"; "games" -> "Тоглоом"; else -> "Lore" },
                         category = when (selected) { "anime" -> "anime"; "manga" -> "manga"; "games" -> "game"; else -> null },
@@ -937,8 +939,13 @@ private fun ProfileScreen(
     email: String?,
     onSettings: () -> Unit,
     onAuth: () -> Unit,
+    onOwner: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var isOwner by remember { mutableStateOf(false) }
+    LaunchedEffect(email) {
+        isOwner = if (email.isNullOrBlank()) false else withContext(Dispatchers.IO) { StaffRepository().isActiveOwner() }
+    }
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(18.dp),
@@ -1026,6 +1033,14 @@ private fun ProfileScreen(
                     }
                 }
             }
+            if (isOwner) {
+                item {
+                    Button(onClick = onOwner, modifier = Modifier.fillMaxWidth().height(54.dp), shape = RoundedCornerShape(18.dp), colors = ButtonDefaults.buttonColors(containerColor = ColorHex(0xFF6D4AFF))) {
+                        Icon(Icons.Filled.Settings, null)
+                        Text("  Owner Control Center", fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
             item {
                 Button(onClick = onSettings, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = PanelRaised)) {
                     Icon(Icons.Filled.Settings, null)
@@ -1033,6 +1048,26 @@ private fun ProfileScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun OwnerControlCenterScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
+    LazyColumn(modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+        item {
+            Text("Owner Control Center", color = TextMain, fontSize = 25.sp, fontWeight = FontWeight.Bold)
+            Text("LOREVERSE-ийн эзэмшигчийн удирдлагын хэсэг", color = TextMuted)
+        }
+        item {
+            Card(colors = CardDefaults.cardColors(containerColor = Panel), shape = RoundedCornerShape(18.dp)) {
+                Column(Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("Эрх баталгаажсан", color = Violet, fontWeight = FontWeight.Bold)
+                    Text("Таны бүртгэл active owner эрхтэй байна.", color = TextMain)
+                    Text("Санхүү, хэрэглэгч, дэлгүүр, төлбөр болон системийн удирдлагын бодит үйлдлүүдийг сервер талын эрхийн шалгалттайгаар дараагийн шатанд холбоно.", color = TextMuted)
+                }
+            }
+        }
+        item { OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) { Text("← Профайл руу буцах") } }
     }
 }
 
