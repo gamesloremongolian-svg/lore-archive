@@ -766,6 +766,7 @@ header:has(#mainNav) .menu{border-color:#465b7c;background:#1b2941;color:#fff}
      <label>Имэйл<input name="email" type="email" autocomplete="email" required placeholder="name@example.com"></label>
      <label>Нууц үг<input name="password" type="password" minlength="8" autocomplete="current-password" required placeholder="8-аас дээш тэмдэгт"></label>
      <div class="auth-actions"><button class="btn" type="submit" data-auth-mode="signin">Нэвтрэх</button><button class="btn btn-secondary" type="button" id="createPremiumAccount">Бүртгүүлэх</button></div>
+     <button type="button" class="text-action" id="resendSignupConfirmation">Баталгаажуулах имэйлийг дахин илгээх</button>
      <button type="button" class="text-action" id="forgotPremiumPassword">Нууц үг мартсан?</button>
     </form>
     <p class="access-status" id="premiumAuthStatus" role="status"></p>
@@ -1006,7 +1007,13 @@ async function loadPremiumAccount(){
  history.innerHTML=rows.length?'<div class="payment-history-list">'+rows.map(x=>'<div class="payment-history-row"><span>'+esc(new Date(x.paid_at||x.created_at).toLocaleDateString("mn-MN"))+' · '+(x.status==="paid"?"Төлөгдсөн":x.status==="pending"?"Хүлээгдэж буй":x.status==="failed"?"Амжилтгүй":"Цуцлагдсан")+'</span><strong>'+new Intl.NumberFormat("mn-MN").format(Number(x.amount||0))+' '+esc(x.currency||"MNT")+'</strong></div>').join("")+'</div>':'<p class="auth-hint">Одоогоор төлбөрийн түүх алга.</p>';
 }
 async function refreshPremiumSession(){const {data:{session}}=await supabase.auth.getSession();setPremiumUser(session?.user||null);}
-supabase.auth.onAuthStateChange((_event,session)=>{setPremiumUser(session?.user||null);});
+supabase.auth.onAuthStateChange((event,session)=>{
+ const user=session?.user||null;
+ setPremiumUser(user);
+ if(event==="SIGNED_IN"&&user?.email_confirmed_at){
+  premiumAuthStatus.textContent="Имэйл амжилттай баталгаажлаа. LOREVERSE-д тавтай морил!";
+ }
+});
 refreshPremiumSession();
 async function loadPremiumPlans(){
  const {data,error}=await supabase.from("membership_plans").select("plan_code,name,description,duration_days,price_amount,currency,enabled").eq("enabled",true).order("duration_days");
@@ -1016,23 +1023,57 @@ async function loadPremiumPlans(){
 }
 loadPremiumPlans();
 const authForm=document.getElementById("premiumAuthForm");
+const authRedirectUrl=new URL("./",window.location.href).toString();
+function authErrorMessage(error){
+ const message=String(error?.message||"");
+ if(/email not confirmed/i.test(message))return "Имэйлээ хараахан баталгаажуулаагүй байна. Имэйл дэх холбоос дээр дарна уу, эсвэл баталгаажуулах имэйлийг дахин илгээнэ үү.";
+ if(/user already registered/i.test(message))return "Энэ имэйлээр бүртгэл үүссэн байна. Нэвтрэх эсвэл баталгаажуулах имэйлийг дахин илгээнэ үү.";
+ if(/rate limit/i.test(message))return "Хэт олон хүсэлт илгээлээ. Хэсэг хугацааны дараа дахин оролдоно уу.";
+ return message||"Хүсэлт амжилтгүй боллоо. Дахин оролдоно уу.";
+}
 async function authWithPassword(mode){
  const fd=new FormData(authForm),email=String(fd.get("email")||"").trim().toLowerCase(),password=String(fd.get("password")||"");
- if(!email||password.length<8){paymentStatus.textContent="Имэйл болон 8-аас дээш тэмдэгттэй нууц үг оруулна уу.";return;}
+ if(!email||password.length<8){premiumAuthStatus.textContent="Имэйл болон 8-аас дээш тэмдэгттэй нууц үг оруулна уу.";return;}
+ const submitButton=authForm.querySelector('button[type="submit"]'),createButton=document.getElementById("createPremiumAccount");
+ if(submitButton)submitButton.disabled=true;if(createButton)createButton.disabled=true;
  premiumAuthStatus.textContent=mode==="signup"?"Бүртгэл үүсгэж байна...":"Нэвтэрч байна...";
- const result=mode==="signup"?await supabase.auth.signUp({email,password}):await supabase.auth.signInWithPassword({email,password});
- if(result.error){premiumAuthStatus.textContent=result.error.message;return;}
- if(mode==="signup"&&!result.data.session){premiumAuthStatus.textContent="Бүртгэл үүслээ. Имэйлдээ ирсэн баталгаажуулах холбоосоор баталгаажуулаад нэвтэрнэ үү.";return;}
- premiumAuthStatus.textContent=mode==="signup"?"Бүртгэл амжилттай.":"Амжилттай нэвтэрлээ.";
- setPremiumUser(result.data.user||result.data.session?.user||null);
+ try{
+  const result=mode==="signup"
+   ?await supabase.auth.signUp({email,password,options:{emailRedirectTo:authRedirectUrl}})
+   :await supabase.auth.signInWithPassword({email,password});
+  if(result.error){premiumAuthStatus.textContent=authErrorMessage(result.error);return;}
+  if(mode==="signup"&&!result.data.session){
+   premiumAuthStatus.textContent="Бүртгэл үүслээ. "+email+" хаягийн inbox болон spam хавтсаа шалгаад баталгаажуулах холбоос дээр дарна уу. Имэйл ирээгүй бол доорх дахин илгээх товчийг ашиглаарай.";
+   return;
+  }
+  const user=result.data.user||result.data.session?.user||null;
+  if(mode==="signup"&&!user?.email_confirmed_at){
+   premiumAuthStatus.textContent="Бүртгэл үүслээ. Premium эрх ашиглахын өмнө имэйлээ баталгаажуулна уу.";
+   return;
+  }
+  premiumAuthStatus.textContent=mode==="signup"?"Бүртгэл амжилттай.":"Амжилттай нэвтэрлээ.";
+  setPremiumUser(user);
+ }catch(error){premiumAuthStatus.textContent=authErrorMessage(error);}
+ finally{if(submitButton)submitButton.disabled=false;if(createButton)createButton.disabled=false;}
 }
 authForm?.addEventListener("submit",e=>{e.preventDefault();authWithPassword("signin");});
 document.getElementById("createPremiumAccount")?.addEventListener("click",()=>authWithPassword("signup"));
+document.getElementById("resendSignupConfirmation")?.addEventListener("click",async()=>{
+ const email=String(new FormData(authForm).get("email")||"").trim().toLowerCase();
+ if(!email){premiumAuthStatus.textContent="Эхлээд бүртгүүлсэн имэйл хаягаа оруулна уу.";return;}
+ const button=document.getElementById("resendSignupConfirmation");button.disabled=true;
+ premiumAuthStatus.textContent="Баталгаажуулах имэйл дахин илгээж байна...";
+ try{
+  const {error}=await supabase.auth.resend({type:"signup",email,options:{emailRedirectTo:authRedirectUrl}});
+  premiumAuthStatus.textContent=error?authErrorMessage(error):"Баталгаажуулах имэйлийг дахин илгээлээ. Inbox болон spam хавтсаа шалгана уу.";
+ }catch(error){premiumAuthStatus.textContent=authErrorMessage(error);}
+ finally{button.disabled=false;}
+});
 document.getElementById("forgotPremiumPassword")?.addEventListener("click",async()=>{
  const email=String(new FormData(authForm).get("email")||"").trim().toLowerCase();
  if(!email){premiumAuthStatus.textContent="Эхлээд имэйл хаягаа оруулна уу.";return;}
- const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
- premiumAuthStatus.textContent=error?error.message:"Нууц үг шинэчлэх холбоос имэйлээр илгээгдлээ.";
+ const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:authRedirectUrl});
+ premiumAuthStatus.textContent=error?authErrorMessage(error):"Нууц үг шинэчлэх холбоос имэйлээр илгээгдлээ.";
 });
 document.getElementById("premiumSignOut")?.addEventListener("click",async()=>{await supabase.auth.signOut();paymentBox.hidden=true;currentPaymentId=null;paymentStatus.textContent="";});
 async function createPremiumInvoice(planCode){
