@@ -12,8 +12,8 @@ android {
         applicationId = "mn.loreverse.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 203
-        versionName = "2.0.3"
+        versionCode = 10001
+        versionName = "1.0.0-beta.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
