@@ -552,18 +552,19 @@ async function loadUsers(){
 $('reloadUsers').onclick=loadUsers;
 
 async function loadCommunity(){
+ if(!can('community'))return;
  await loadFeedReports();
  const pinBox=$('communityPins');const {data:recent,error:recentError}=await supabase.from('chat_messages').select('id,display_name,body,channel_id,is_pinned,created_at').is('deleted_at',null).order('created_at',{ascending:false}).limit(30);
- if(recentError){pinBox.textContent=recentError.message;}else{pinBox.innerHTML=(recent||[]).map(m=>'<div class="list"><b>'+esc(m.display_name)+' · #'+esc(m.channel_id)+'</b><p>'+esc(m.body)+'</p><button data-pin-id="'+m.id+'" data-pin-state="'+m.is_pinned+'">'+(m.is_pinned?'Pin цуцлах':'Pin хийх')+'</button></div>').join('')||'Мессеж алга.';pinBox.querySelectorAll('[data-pin-id]').forEach(b=>b.onclick=async()=>{const {error}=await supabase.rpc('set_chat_message_pin',{p_message_id:b.dataset.pinId,p_pinned:b.dataset.pinState!=='true'});if(error)alert(error.message);await loadCommunity();});}
+ if(recentError){pinBox.textContent=recentError.message;}else{pinBox.innerHTML=(recent||[]).map(m=>'<div class="list"><b>'+esc(m.display_name)+' · #'+esc(m.channel_id)+'</b><p>'+esc(m.body)+'</p><button data-pin-id="'+m.id+'" data-pin-state="'+m.is_pinned+'">'+(m.is_pinned?'Pin цуцлах':'Pin хийх')+'</button></div>').join('')||'Мессеж алга.';pinBox.querySelectorAll('[data-pin-id]').forEach(b=>b.onclick=async()=>{if(!can('community'))return;const {error}=await supabase.rpc('set_chat_message_pin',{p_message_id:b.dataset.pinId,p_pinned:b.dataset.pinState!=='true'});if(error)alert(error.message);await loadCommunity();});}
  const box=$('communityReports');const {data,error}=await supabase.from('chat_reports').select('id,message_id,reporter_id,reason,status,created_at').order('created_at',{ascending:false}).limit(50);
  if(error){box.textContent=error.message;return;}
  if(!data?.length){box.textContent='Нээлттэй гомдол алга.';return;}
  const ids=[...new Set(data.map(x=>x.message_id))];const {data:msgs}=await supabase.from('chat_messages').select('id,user_id,display_name,body,channel_id').in('id',ids);
  const byId=Object.fromEntries((msgs||[]).map(x=>[x.id,x]));
  box.innerHTML=data.map(r=>{const m=byId[r.message_id]||{};return '<div class="list"><b>'+esc(m.display_name||'Unknown')+' · #'+esc(m.channel_id||'')+'</b><p>'+esc(m.body||'Мессеж олдсонгүй')+'</p><p class="muted">'+esc(r.reason)+' · '+esc(r.status)+'</p><button data-resolve="'+r.id+'">Шийдвэрлэсэн</button> <button data-delete-message="'+r.message_id+'">Мессеж устгах</button> <button data-mute-user="'+esc(m.user_id||'')+'">24 цаг mute</button></div>'}).join('');
- box.querySelectorAll('[data-resolve]').forEach(b=>b.onclick=async()=>{const {error}=await supabase.from('chat_reports').update({status:'resolved'}).eq('id',b.dataset.resolve);if(error)alert(error.message);await loadCommunity()});
- box.querySelectorAll('[data-delete-message]').forEach(b=>b.onclick=async()=>{const {data:{user}}=await supabase.auth.getUser();const {error}=await supabase.from('chat_messages').update({deleted_at:new Date().toISOString(),deleted_by:user.id}).eq('id',b.dataset.deleteMessage);if(error)alert(error.message);await loadCommunity()});
- box.querySelectorAll('[data-mute-user]').forEach(b=>b.onclick=async()=>{if(!b.dataset.muteUser)return;const {data:{user}}=await supabase.auth.getUser();const {error}=await supabase.from('chat_moderation').insert({user_id:b.dataset.muteUser,action:'mute',reason:'Нийгэмлэг report',expires_at:new Date(Date.now()+86400000).toISOString(),moderator_id:user.id});if(error)alert(error.message);else alert('24 цаг mute хийлээ.');await loadCommunity()});
+ box.querySelectorAll('[data-resolve]').forEach(b=>b.onclick=async()=>{if(!can('community'))return;const {error}=await supabase.from('chat_reports').update({status:'resolved'}).eq('id',b.dataset.resolve);if(error)alert(error.message);await loadCommunity()});
+ box.querySelectorAll('[data-delete-message]').forEach(b=>b.onclick=async()=>{if(!can('community'))return;const {data:{user}}=await supabase.auth.getUser();const {error}=await supabase.from('chat_messages').update({deleted_at:new Date().toISOString(),deleted_by:user.id}).eq('id',b.dataset.deleteMessage);if(error)alert(error.message);await loadCommunity()});
+ box.querySelectorAll('[data-mute-user]').forEach(b=>b.onclick=async()=>{if(!can('community')||!b.dataset.muteUser)return;const {data:{user}}=await supabase.auth.getUser();const {error}=await supabase.from('chat_moderation').insert({user_id:b.dataset.muteUser,action:'mute',reason:'Нийгэмлэг report',expires_at:new Date(Date.now()+86400000).toISOString(),moderator_id:user.id});if(error)alert(error.message);else alert('24 цаг mute хийлээ.');await loadCommunity()});
 }
 
 async function loadFeedReports(){
@@ -801,6 +802,7 @@ $('sendNotice').onclick=async()=>{
 /* Admin support ticket desk */
 let selectedAdminTicket=null;
 async function loadAdminTickets(){
+ if(!can('support'))return;
  const status=$('supportStatusFilter').value;
  let q=supabase.from('support_tickets').select('id,ticket_number,user_id,category,subject,initial_message,attachment_url,status,priority,created_at,updated_at').order('updated_at',{ascending:false}).limit(100);
  if(status!=='all')q=q.eq('status',status);
@@ -810,14 +812,15 @@ async function loadAdminTickets(){
  $('adminTicketsList').querySelectorAll('[data-admin-ticket]').forEach(b=>b.onclick=()=>openAdminTicket(b.dataset.adminTicket));
 }
 async function openAdminTicket(id){
+ if(!can('support'))return;
  const {data:t,error}=await supabase.from('support_tickets').select('*').eq('id',id).single();
  const box=$('adminTicketThread');box.hidden=false;if(error){box.textContent=error.message;return;}selectedAdminTicket=t.id;
  const {data:replies,error:rerr}=await supabase.from('support_ticket_replies').select('*').eq('ticket_id',t.id).order('created_at');
  if(rerr){box.textContent=rerr.message;return;}
  box.innerHTML='<h3>Хүсэлт #'+t.ticket_number+' · '+esc(t.subject)+'</h3><p class="muted">Хэрэглэгч UUID: '+esc(t.user_id)+' · '+esc(t.category)+'</p><div class="list"><b>Анхны хүсэлт</b><p>'+esc(t.initial_message)+'</p>'+(t.attachment_url?'<a href="'+esc(t.attachment_url)+'" target="_blank" rel="noopener">Хавсралт нээх</a>':'')+'</div>'+(replies||[]).map(r=>'<div class="list"><b>'+(r.is_staff?'LOREVERSE Support':'Хэрэглэгч')+'</b><p>'+esc(r.message)+'</p>'+(r.attachment_url?'<a href="'+esc(r.attachment_url)+'" target="_blank" rel="noopener">Хавсралт</a>':'')+'<small class="muted">'+new Date(r.created_at).toLocaleString('mn-MN')+'</small></div>').join('')+'<label>Төлөв</label><select id="adminTicketStatus"><option value="open">Нээлттэй</option><option value="in_progress">Шалгаж байна</option><option value="waiting_user">Хэрэглэгчийн хариу хүлээж байна</option><option value="resolved">Шийдвэрлэсэн</option><option value="closed">Хаасан</option></select><button id="saveAdminTicketStatus" type="button">Төлөв хадгалах</button><label>Хэрэглэгчид хариу бичих</label><textarea id="adminTicketReply" maxlength="5000" rows="4" placeholder="Хариугаа бичнэ үү..."></textarea><button id="sendAdminTicketReply" type="button">Хариу илгээх</button><div id="adminTicketStatusMsg" class="status"></div>';
  $('adminTicketStatus').value=t.status;
- $('saveAdminTicketStatus').onclick=async()=>{const {error}=await supabase.from('support_tickets').update({status:$('adminTicketStatus').value}).eq('id',t.id);say('adminTicketStatusMsg',error?error.message:'Төлөв хадгалагдлаа.');if(!error)await loadAdminTickets();};
- $('sendAdminTicketReply').onclick=async()=>{try{const {data:{user}}=await supabase.auth.getUser();const message=$('adminTicketReply').value.trim();if(!message)throw new Error('Хариу бичнэ үү.');const {error}=await supabase.from('support_ticket_replies').insert({ticket_id:t.id,sender_id:user.id,message,is_staff:true});if(error)throw error;await openAdminTicket(t.id);await loadAdminTickets();}catch(e){say('adminTicketStatusMsg',e.message);}};
+ $('saveAdminTicketStatus').onclick=async()=>{if(!can('support'))return;const {error}=await supabase.from('support_tickets').update({status:$('adminTicketStatus').value}).eq('id',t.id);say('adminTicketStatusMsg',error?error.message:'Төлөв хадгалагдлаа.');if(!error)await loadAdminTickets();};
+ $('sendAdminTicketReply').onclick=async()=>{if(!can('support'))return;try{const {data:{user}}=await supabase.auth.getUser();const message=$('adminTicketReply').value.trim();if(!message)throw new Error('Хариу бичнэ үү.');const {error}=await supabase.from('support_ticket_replies').insert({ticket_id:t.id,sender_id:user.id,message,is_staff:true});if(error)throw error;await openAdminTicket(t.id);await loadAdminTickets();}catch(e){say('adminTicketStatusMsg',e.message);}};
 }
 async function loadBugReports(){
  if(!['owner','admin','editor'].includes(currentStaffRole))return;
