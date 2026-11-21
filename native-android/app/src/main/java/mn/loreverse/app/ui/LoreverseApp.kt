@@ -426,7 +426,6 @@ private fun DetailScreen(
     onBack: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().padding(18.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Text("← Буцах", color = Violet, modifier = Modifier.clickable(onClick = onBack).padding(6.dp))
         Box(
             modifier = Modifier.fillMaxWidth().height(190.dp).clip(RoundedCornerShape(22.dp))
                 .background(Brush.linearGradient(listOf(Purple, PanelRaised, Void))),
@@ -449,6 +448,10 @@ private fun DetailScreen(
         }
         Text("Дэлгэрэнгүй мэдээлэл", color = TextMain, fontWeight = FontWeight.Bold, fontSize = 18.sp)
         Text("Энэ хэсэгт тухайн контентын танилцуулга, Lore, түүхэн дараалал болон холбоотой мэдээлэл байрлана.", color = TextMuted)
+        Spacer(Modifier.weight(1f))
+        OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
+            Text("← Буцах")
+        }
     }
 }
 
@@ -510,7 +513,6 @@ private fun SettingsScreen(onBack: () -> Unit, onAuthSuccess: (String) -> Unit) 
     val auth = remember { AuthRepository() }
 
     Column(modifier = Modifier.fillMaxSize().padding(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-        Text("← Буцах", color = Violet, modifier = Modifier.clickable(onClick = onBack).padding(6.dp))
         Text("Тохиргоо", color = TextMain, fontSize = 25.sp, fontWeight = FontWeight.Bold)
         Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
             Row(Modifier.fillMaxWidth().padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -533,6 +535,10 @@ private fun SettingsScreen(onBack: () -> Unit, onAuthSuccess: (String) -> Unit) 
             Card(modifier = Modifier.clickable { action() }, colors = CardDefaults.cardColors(containerColor = Panel)) {
                 Text(label, color = TextMain, modifier = Modifier.fillMaxWidth().padding(18.dp))
             }
+        }
+        Spacer(Modifier.weight(1f))
+        OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
+            Text("← Буцах")
         }
     }
 
