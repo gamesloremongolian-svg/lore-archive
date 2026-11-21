@@ -547,6 +547,16 @@ private fun BugReportScreen(modifier: Modifier = Modifier) {
                         Text(ticket.title, color = TextMain, fontWeight = FontWeight.SemiBold)
                         Text(ticket.description, color = TextMuted, fontSize = 13.sp)
                         Text("${ticket.categoryLabel} · ${ticket.section} · ${ticket.createdAt.take(10)}", color = TextMuted, fontSize = 11.sp)
+                        if (!ticket.attachmentPath.isNullOrBlank()) {
+                            OutlinedButton(onClick = {
+                                scope.launch {
+                                    val link = withContext(Dispatchers.IO) { repository.createAttachmentLink(ticket.attachmentPath).getOrThrow() }
+                                    runCatching {
+                                        context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(link)))
+                                    }.onFailure { message = "Хавсралтыг нээж чадсангүй." }
+                                }
+                            }) { Text("Зураг / видео үзэх") }
+                        }
                         if (!ticket.adminReply.isNullOrBlank()) {
                             Card(colors = CardDefaults.cardColors(containerColor = PanelRaised)) {
                                 Column(Modifier.fillMaxWidth().padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
