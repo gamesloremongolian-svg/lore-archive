@@ -96,7 +96,7 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           set -euo pipefail
-          EXPECTED="1651193714a7e5610bbdc20fa228374db1728a955bc2e880b55e9def2f5ad343"
+          EXPECTED="ba74e8d5e0650850de90b08a53afab78040726c07bbf0ef14e20fb0066570550"
           KEYSTORE="$HOME/.android/loreverse-original.keystore"
           mkdir -p "$HOME/.android"
           chmod 700 "$HOME/.android"
