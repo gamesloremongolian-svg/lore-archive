@@ -32,6 +32,9 @@ data class AppFeedback(
 }
 
 @Serializable
+private data class StaffRole(val role: String, val active: Boolean)
+
+@Serializable
 private data class FeedbackInsert(
     @SerialName("user_id") val userId: String,
     val category: String,
@@ -89,6 +92,12 @@ class FeedbackRepository {
         getMine().getOrThrow().firstOrNull { it.title == title && it.description == description }
             ?: error("Хүсэлт хадгалагдсан боловч дугаарыг уншиж чадсангүй. 'Миний хүсэлтүүд' хэсгээс шалгана уу.")
     }
+
+    suspend fun isStaff(): Boolean = runCatching {
+        val uid = currentUserId()
+        val roles = SupabaseClient.instance.from("staff_members").select { filter { eq("user_id", uid); eq("active", true) } }.decodeList<StaffRole>()
+        roles.any { it.active && it.role in setOf("owner", "admin", "support") }
+    }.getOrDefault(false)
 
     suspend fun getMine(): Result<List<AppFeedback>> = runCatching {
         currentUserId()
