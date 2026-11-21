@@ -57,15 +57,17 @@ async function loadKnowledge(){
 function render(){
  const q=document.getElementById("search").value.trim().toLocaleLowerCase();
  const f=document.getElementById("filter").value;
- const requestedWork=new URLSearchParams(location.search).get("work");
+ const params=new URLSearchParams(location.search);
+ const requestedWork=params.get("work");
+ const requestedPost=params.get("post");
  const matches=works.filter(w=>{
   const t=w.translation||{},fr=w.franchise||{};
   const text=[w.canonical_title,t.title,t.synopsis,fr.name,fr.slug,w.work_type,...entities.filter(e=>e.work_id===w.id||e.franchise_id===w.franchise_id).flatMap(e=>[e.canonical_name,e.translation.display_name,e.translation.description])].join(" ").toLocaleLowerCase();
-  return requestedWork?w.slug===requestedWork:(f==="all"||w.work_type===f)&&text.includes(q);
+  return !requestedPost&&(requestedWork?w.slug===requestedWork:(f==="all"||w.work_type===f)&&text.includes(q));
  });
  const games=matches.filter(w=>["game"].includes(w.work_type));
  const anime=matches.filter(w=>["anime","manga","light_novel","web_novel","visual_novel","other"].includes(w.work_type));
- const postMatches=requestedWork?[]:archivePosts.filter(p=>{const text=[p.title,p.summary,p.game_title,p.character_name,p.content_type,JSON.stringify(p.body||{})].join(" ").toLocaleLowerCase();return (f==="all"||f===p.content_type)&&text.includes(q);});
+ const postMatches=requestedWork?[]:requestedPost?archivePosts.filter(p=>p.slug===requestedPost||p.id===requestedPost):archivePosts.filter(p=>{const text=[p.title,p.summary,p.game_title,p.character_name,p.content_type,JSON.stringify(p.body||{})].join(" ").toLocaleLowerCase();return (f==="all"||f===p.content_type)&&text.includes(q);});
  const card=w=>{
   const t=w.translation||{},fr=w.franchise||{};
   const related=entities.filter(e=>(e.work_id&&e.work_id===w.id)||(!e.work_id&&e.franchise_id===w.franchise_id));
@@ -75,17 +77,17 @@ function render(){
   const detailHtml=isSelected?'<section class="terms"><h4>Ертөнцийн дэлгэрэнгүй</h4>'+(detail.world_context?'<p>'+esc(detail.world_context)+'</p>':'')+(Array.isArray(detail.core_concepts)?'<ul>'+detail.core_concepts.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>':'')+(detail.research_limits?'<h4>Судалгааны хүрээ</h4><p>'+esc(detail.research_limits)+'</p>':'')+(detail.editorial_note?'<h4>Редакцын тэмдэглэл</h4><p>'+esc(detail.editorial_note)+'</p>':'')+'</section>':'';
   return '<article class="card"><span class="tag">'+typeLabel(w.work_type)+'</span><h3><a href="./?work='+encodeURIComponent(w.slug)+'" style="color:inherit;text-decoration:none">'+esc(t.title||w.canonical_title)+'</a></h3><div class="meta"><a class="back" href="./?work='+encodeURIComponent(w.slug)+'">Дэлгэрэнгүй хуудас нээх →</a></div><div class="meta">'+esc(fr.name||"LOREVERSE")+" · "+(w.release_year||"")+'</div><p>'+esc(t.synopsis||"Танилцуулга удахгүй нэмэгдэнэ.")+'</p>'+detailHtml+(related.length?'<details class="terms"><summary>Дүр, газар, ойлголт ('+related.length+')</summary><ul>'+related.map(e=>'<li><b>'+esc(e.translation.display_name||e.canonical_name)+'</b> — '+esc(e.translation.description||"")+'</li>').join("")+'</ul></details>':'')+(sources.length?'<div class="terms"><b>Эх сурвалж</b><ul>'+sources.map(s=>'<li><a class="back" target="_blank" rel="noopener noreferrer" href="'+esc(s.url||"#")+'">'+esc(s.label||"Эх сурвалж")+' ↗</a></li>').join("")+'</ul></div>':'')+'<div class="meta">Canon төлөв: '+esc(t.canon_status||"unknown")+' · Spoiler: '+esc(t.spoiler_level||"none")+'</div></article>';
  };
- const postCard=p=>{const type=typeNames[p.content_type]||"LORE ARCHIVE";const body=p.body&&typeof p.body==="object"?p.body:{};const cover=p.cover_image_url||body.cover_url||body.coverUrl||body.image_url||"";const desc=p.summary||"";const sources=Array.isArray(p.source_urls)?p.source_urls:[];return '<article class="card">'+(cover?'<img loading="lazy" src="'+esc(cover)+'" alt="" style="width:100%;max-height:150px;object-fit:cover;border-radius:12px"> ':"")+'<span class="tag">'+esc(type)+' · LORE ARCHIVE</span><h3>'+esc(p.title)+'</h3><div class="meta">'+esc(p.game_title||p.character_name||"LOREVERSE редакц")+(p.published_at?" · "+new Date(p.published_at).toLocaleDateString("mn-MN"):"")+'</div><p>'+esc(desc)+'</p>'+(sources.length?'<div class="terms"><b>Эх сурвалж</b><ul>'+sources.map(s=>{const u=typeof s==="string"?s:s?.url;const label=typeof s==="string"?s:(s?.label||s?.title||u);return u?'<li><a class="back" target="_blank" rel="noopener noreferrer" href="'+esc(u)+'">'+esc(label)+' ↗</a></li>':""}).join("")+'</ul></div>':"")+(p.slug?'':"")+"</article>"};
- const gamePosts=postMatches.filter(p=>p.content_type==="game");
- const otherPosts=postMatches.filter(p=>p.content_type!=="game");
+ const postCard=p=>{const type=typeNames[p.content_type]||"LORE ARCHIVE";const body=p.body&&typeof p.body==="object"?p.body:{};const cover=p.cover_image_url||body.cover_url||body.coverUrl||body.image_url||"";const desc=p.summary||"";const sources=Array.isArray(p.source_urls)?p.source_urls:[];const selected=!!requestedPost;const articleText=typeof body.text==="string"?body.text.replace(/\\n/g,"\n"):"";return '<article class="card">'+(cover?'<img loading="lazy" src="'+esc(cover)+'" alt="" style="width:100%;max-height:220px;object-fit:cover;border-radius:12px"> ':"")+'<span class="tag">'+esc(type)+' · LORE ARCHIVE</span><h3>'+esc(p.title)+'</h3><div class="meta">'+esc(p.game_title||p.character_name||"LOREVERSE редакц")+(p.published_at?" · "+new Date(p.published_at).toLocaleDateString("mn-MN"):"")+'</div><p>'+esc(desc)+'</p>'+(selected?'<div class="post-body" style="white-space:pre-wrap;line-height:1.85;margin:18px 0">'+esc(articleText)+'</div><p><a class="back" href="./">← Бүх Lore нийтлэл рүү буцах</a></p>':"")+(sources.length?'<div class="terms"><b>Эх сурвалж</b><ul>'+sources.map(s=>{const u=typeof s==="string"?s:s?.url;const label=typeof s==="string"?s:(s?.label||s?.title||u);return u?'<li><a class="back" target="_blank" rel="noopener noreferrer" href="'+esc(u)+'">'+esc(label)+' ↗</a></li>':""}).join("")+'</ul></div>':"")+"</article>"};
+ const gamePosts=postMatches.filter(p=>p.content_type==="game"||!!p.game_title);
+ const otherPosts=postMatches.filter(p=>p.content_type!=="game"&&!p.game_title);
  document.getElementById("gameGrid").innerHTML=games.map(card).join("")+gamePosts.map(postCard).join("");
  document.getElementById("animeGrid").innerHTML=anime.map(card).join("")+otherPosts.map(postCard).join("");
  document.getElementById("gameCount").textContent=(games.length+gamePosts.length)+" бүтээл";
  document.getElementById("animeCount").textContent=(anime.length+otherPosts.length)+" архивын материал";
- document.getElementById("games").style.display=(f!=="all"&&f!=="game")?"none":"block";
- document.getElementById("anime").style.display=(f==="game")?"none":"block";
+ document.getElementById("games").style.display=requestedPost?(gamePosts.length?"block":"none"):(f!=="all"&&f!=="game")?"none":"block";
+ document.getElementById("anime").style.display=requestedPost?(otherPosts.length?"block":"none"):(f==="game")?"none":"block";
  document.getElementById("empty").style.display=(matches.length+postMatches.length)?"none":"block";
- document.getElementById("empty").textContent=q?"Таны хайлтад тохирох мэдээлэл олдсонгүй.":"Одоогоор нийтлэгдсэн мэдээлэл алга.";
+ document.getElementById("empty").textContent=requestedPost?"Тухайн нийтлэл олдсонгүй эсвэл нийтлэх эрхгүй байна.":q?"Таны хайлтад тохирох мэдээлэл олдсонгүй.":"Одоогоор нийтлэгдсэн мэдээлэл алга.";
 }
 document.getElementById("search").addEventListener("input",render);
 document.getElementById("filter").addEventListener("change",render);
