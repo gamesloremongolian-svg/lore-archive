@@ -58,7 +58,6 @@
 48. The Seven Deadly Sins — Нэмэх
 49. Hellsing Ultimate — Нэмэх
 50. Monster — Нэмэх
-51. The Summer Hikaru Died — Нэмэх
 
 ## Manga (50)
 1. Berserk — Одоо байна
