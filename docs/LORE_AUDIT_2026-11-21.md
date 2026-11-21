@@ -297,3 +297,38 @@ GitHub `loreverse-ctrl/lore-archive` репозиторын `main` салбар,
 - GitHub Pages-ийн шинэ commit-уудын deploy болон browser E2E шалгалтыг тусад нь баталгаажуулах.
 
 **Анхааруулга:** DB-ийн холбоос, статуст хийсэн засварууд Supabase-д шууд хадгалагдсан. Нүүр хуудасны тоолуурын код GitHub-д commit хийгдсэн боловч энэ commit-ийн GitHub Pages deployment болон E2E үр дүн одоогоор баталгаажаагүй.
+
+
+## Entity профайлын нэмэлт шинэчлэлт — 2026-11-21
+
+Энэ хэсэг нь дээрх аудитын дараа Supabase-д хийсэн entity профайлын бүтцийн нэмэлт ажлыг бүртгэнэ.
+
+### Хийгдсэн өөрчлөлт
+
+- 167 entity-ийн Монгол орчуулгын бүртгэлийг шалгаж, өмнө profile_sections огт байгаагүй 80 entity-д 3 хэсэгтэй редакцын бүтэц нэмэв: үндсэн тодорхойлолт, лор дахь байр суурь, канон ба эх сурвалжийн хязгаар.
+- Attack on Titan, Demon Slayer, Jujutsu Kaisen-ийн 8 дүрийн профайлыг илүү дэлгэрүүлж, эх сурвалжийн холбоосыг тухайн дүрийн орчуулгад бүртгэв: Eren Yeager, Mikasa Ackermann, Tanjiro Kamado, Nezuko Kamado, Zenitsu Agatsuma, Yuji Itadori, Nobara Kugisaki, Satoru Gojo.
+- Бүх 112 draft entity-г нийтлэхгүй хэвээр үлдээв. Нийтлэгдсэн төлөвт автоматаар шилжүүлээгүй.
+
+### Supabase баталгаажуулалт
+
+| Шалгалт | Үр дүн |
+|---|---:|
+| Entity нийт | 167 |
+| Published entity | 55 |
+| Draft entity | 112 |
+| 3+ profile section-тэй entity | 123 |
+| 3+ profile section-тэй draft entity | 112/112 |
+| Монгол орчуулга дутуу | 0 |
+| Эх сурвалжгүй entity translation | 0 |
+| Хоосон profile_sections | 0 |
+| Давхардсан entity slug бүлэг | 0 |
+| Orphan entity relation | 0 |
+| Entity ↔ Work franchise mismatch | 0 |
+
+### Чухал тайлбар ба хязгаарлалт
+
+- 80 entity-д нэмсэн ерөнхий бүтэц нь бүрэн намтар, чадварын тайлбар эсвэл өгүүлэмжийн scene-by-scene баталгаажуулалт биш. Эдгээр нь редакцын ажлыг үргэлжлүүлэхэд зориулсан бүтэц, эх сурвалжийн хязгаарын тэмдэглэл юм.
+- 8 дүрийн профайл илүү дэлгэрсэн боловч бүх нарийн өгүүлбэрийг эх манга/анимэний бүх бүлэг, ангиар бүрэн fact-check хийсэн гэж үзэхгүй.
+- Сайтын `/archive/` хуудас Supabase-ээс шууд уншдаг бөгөөд зөвхөн `archive_entities.status = published`, `archive_entity_translations.editorial_status = published` бүртгэлийг харуулдаг. Иймээс энэ удаагийн draft шинэчлэлтүүд олон нийтэд харагдахгүй.
+- Энэ GitHub commit нь аудитын баримтжуулалт. Supabase-ийн өгөгдлийг статик JSON болгон хуулж оруулаагүй бөгөөд draft мэдээллийг нийтэд гаргаагүй.
+- GitHub Pages-ийн deployment болон browser E2E шалгалтыг commit-ийн дараа тусад нь шалгана.
