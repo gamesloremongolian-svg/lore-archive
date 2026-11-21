@@ -251,3 +251,49 @@ GitHub `loreverse-ctrl/lore-archive` репозиторын `main` салбар,
 - 6 franchise давхардал, 56 work-ийн франчайз/эх сурвалжийн дутуу байдал, Overlord entity профайлын гүнзгийрүүлэлт, published work-ийн canon шошго ба lore-ийн гүн, нийтлэлүүдийн cover болон давхардсан ANANTA сэдэв үлдсэн.
 
 Энэ аудит нь өмнө оруулсан бүх мэдээллийг бүрэн өгүүлбэр бүрээр fact-check хийсэн гэсэн баталгаа биш. Энэ бол өгөгдлийн бүтэц, эх сурвалжийн бүртгэл, нийтлэлийн бэлэн байдлын аудит бөгөөд дээрх үлдсэн ажлуудыг тусад нь редакцын судалгаагаар дуусгана.
+
+## Цэгцлэлтийн дараах баталгаажуулалт — 2026-11-21
+
+Хэрэглэгчийн хүсэлтээр өгөгдлийн бүтцийн засвар хийв.
+
+### Хийгдсэн засварууд
+
+1. **6 давхардсан франчайзыг нэгтгэв.** Manga/anime work-уудыг нэг canonical franchise record-ийн дор шилжүүлж, хуучин франчайзын бүртгэлийг устгалгүйгээр `archived` болгосон. Work-ийн өөрийн slug болон орчуулга хэвээр хадгалагдсан.
+   - Chainsaw Man: `chainsaw-man-manga` canonical; anime draft work-г шилжүүлэв.
+   - Demon Slayer: `demon-slayer-kimetsu-no-yaiba` canonical.
+   - Frieren: `frieren-beyond-journeys-end` canonical.
+   - Jujutsu Kaisen: `jujutsu-kaisen` canonical.
+   - Naruto: `naruto` canonical; Naruto anime/manga болон Boruto work нэг franchise-д холбогдов.
+   - One Piece: `one-piece` canonical.
+   - Canonical franchise category-г `mixed` болгож, Anime/Manga ангилалд хоёуланд нь харагдахаар тохируулсан.
+2. **56 franchise-гүй work-ийг холбов.** Байгаа франчайзтай нэр таарсан бүтээлүүдийг тухайн франчайзад холбосон; бусад бүтээлд тус тусын draft франчайз үүсгэж, anime/manga төрлөөр ангилсан. Бүгд draft хэвээр, placeholder synopsis болон эх сурвалжгүй байдлыг бодит lore мэт нийтлээгүй.
+3. **Overlord-ийн 30 entity профайлыг бүтэцжүүлэв.** 30/30 entity-д дор хаяж хоёр profile section нэмсэн. 11 гол дүрийн профайлыг албан ёсны тоглоом/анимэний дүрийн мэдээллээр баяжуулж, бусад дүр болон faction/concept/location/item-д одоо баталгаатай байгаа мэдээлэл ба судалгааны хязгаарыг ил тод ялгасан. 12 entity-д нэмэлт албан ёсны эх сурвалжийн холбоос нэмсэн.
+4. **Нүүр хуудасны архивын тоолуурыг засав.** Нийт ертөнцийн тоо published franchise-ийг бүхэлд нь тоолно. Anime болон Manga тоолуурт `mixed` франчайзыг хоёуланд нь хамруулна; Game тоолуур зөвхөн game ангиллыг тоолно.
+
+### Засварын дараах Supabase шалгалт
+
+| Шалгалт | Үр дүн |
+|---|---:|
+| Нийт franchise | 85 |
+| Published franchise | 23 |
+| Draft franchise | 56 |
+| Archived duplicate franchise | 6 |
+| Franchise холбоосгүй work | 0 |
+| Franchise холбоосгүй entity | 0 |
+| Entity ↔ Work franchise mismatch | 0 |
+| Published franchise нэрийн давхардал | 0 |
+| Overlord entity profile_sections ≥ 2 | 30/30 |
+| Published timeline event | 5 |
+| Draft timeline event | 29 |
+
+### Үлдсэн ажил
+
+- 56 draft franchise/work-ийн албан ёсны эх сурвалж, release year, бүрэн Монгол lore судалгааг тус тусад нь хийх.
+- 28 published work-ийн canon_status, synopsis, world_context болон дэлгэрэнгүй lore-г бүтээл тус бүрээр нягтлах; `unknown` утгыг таамгаар солихгүй.
+- Overlord-ийн 6 дүрийн (Aureole Omega, Gazef, Jircniv, Renner, Rubedo, Victim) тусгай анхдагч эх сурвалжийн судалгааг үргэлжлүүлэх; одоогийн профайлд баталгаагүй мэдээллийг зориуд нэмээгүй.
+- 17 published franchise-ийн cover зураг болон 27 нийтлэлийн cover зурагт зөвшөөрөлтэй/албан ёсны artwork сонгох.
+- ANANTA-ийн Nova City/Lingyun гурван нийтлэлийн агуулгын давхардлыг редакцын түвшинд бууруулах.
+- 29 draft timeline event-ийг эх сурвалжтайгаар шалгах; үйл явдлын огноо тодорхойгүй бол таамгаар бөглөхгүй.
+- GitHub Pages-ийн шинэ commit-уудын deploy болон browser E2E шалгалтыг тусад нь баталгаажуулах.
+
+**Анхааруулга:** DB-ийн холбоос, статуст хийсэн засварууд Supabase-д шууд хадгалагдсан. Нүүр хуудасны тоолуурын код GitHub-д commit хийгдсэн боловч энэ commit-ийн GitHub Pages deployment болон E2E үр дүн одоогоор баталгаажаагүй.
