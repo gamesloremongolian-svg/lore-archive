@@ -956,15 +956,16 @@ const statTargets={total:document.querySelector('[data-stat="total"]'),anime:doc
 const statsStatus=document.getElementById("archiveStatsStatus");
 async function loadArchiveStats(){
  try{
-  const [anime,manga,game,lore]=await Promise.all([
-   supabase.from("archive_franchises").select("id",{count:"exact",head:true}).eq("status","published").eq("category","anime"),
-   supabase.from("archive_franchises").select("id",{count:"exact",head:true}).eq("status","published").eq("category","manga"),
-   supabase.from("archive_franchises").select("id",{count:"exact",head:true}).eq("status","published").eq("category","game"),
+  const [total,anime,manga,game,lore]=await Promise.all([
+   supabase.from("archive_franchises").select("id",{count:"exact",head:true}).eq("status","published"),
+   supabase.from("archive_works").select("id",{count:"exact",head:true}).eq("status","published").eq("work_type","anime"),
+   supabase.from("archive_works").select("id",{count:"exact",head:true}).eq("status","published").eq("work_type","manga"),
+   supabase.from("archive_works").select("id",{count:"exact",head:true}).eq("status","published").eq("work_type","game"),
    supabase.from("content_posts").select("id",{count:"exact",head:true}).eq("status","published").eq("content_type","lore").eq("is_premium",false)
   ]);
-  const results=[anime,manga,game,lore];
+  const results=[total,anime,manga,game,lore];
   if(results.some(result=>result.error||result.count===null))throw new Error("Archive counts unavailable");
-  const values={anime:anime.count,manga:manga.count,game:game.count,lore:lore.count,total:anime.count+manga.count+game.count};
+  const values={anime:anime.count,manga:manga.count,game:game.count,lore:lore.count,total:total.count};
   Object.entries(values).forEach(([key,value])=>{if(statTargets[key])statTargets[key].textContent=new Intl.NumberFormat("mn-MN").format(value);});
   statsStatus.textContent="Нийтлэгдсэн мэдээлэлд үндэслэв · Ачаалах бүрд шинэчлэгдэнэ.";
  }catch(error){
