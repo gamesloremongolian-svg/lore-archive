@@ -117,6 +117,7 @@ fun LoreverseApp() {
     var savedTitles by remember { mutableStateOf<Set<String>>(emptySet()) }
     var favoriteTitles by remember { mutableStateOf<Set<String>>(emptySet()) }
     var signedInEmail by remember { mutableStateOf<String?>(null) }
+    var openAuthFromProfile by remember { mutableStateOf(false) }
 
     Surface(modifier = Modifier.fillMaxSize(), color = Void) {
         if (!entered) {
@@ -140,7 +141,7 @@ fun LoreverseApp() {
                 }
             ) { padding ->
                 when {
-                    settings -> SettingsScreen(onBack = { settings = false }, onAuthSuccess = { signedInEmail = it; settings = false })
+                    settings -> SettingsScreen(onBack = { settings = false; openAuthFromProfile = false }, onAuthSuccess = { signedInEmail = it; settings = false; openAuthFromProfile = false }, openAccountOnStart = openAuthFromProfile)
                     detail != null -> DetailScreen(
                         item = detail!!,
                         isSaved = detail!!.title in savedTitles,
@@ -162,7 +163,7 @@ fun LoreverseApp() {
                     selected == "store" -> StoreScreen(modifier = Modifier.padding(padding))
                     selected == "news" -> NewsScreen(modifier = Modifier.padding(padding))
                     selected == "report" -> BugReportScreen(modifier = Modifier.padding(padding))
-                    selected == "profile" -> ProfileScreen(email = signedInEmail, onSettings = { settings = true }, modifier = Modifier.padding(padding))
+                    selected == "profile" -> ProfileScreen(email = signedInEmail, onSettings = { settings = true }, onAuth = { openAuthFromProfile = true; settings = true }, modifier = Modifier.padding(padding))
                     else -> CategoryScreen(
                         title = when (selected) { "anime" -> "Анимэ"; "manga" -> "Манга"; "games" -> "Тоглоом"; else -> "Lore" },
                         category = when (selected) { "anime" -> "anime"; "manga" -> "manga"; "games" -> "game"; else -> null },
@@ -619,35 +620,105 @@ private fun DetailScreen(
 }
 
 @Composable
-private fun ProfileScreen(email: String?, onSettings: () -> Unit, modifier: Modifier = Modifier) {
-    Column(modifier = modifier.fillMaxSize().padding(18.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
-        Text("Миний профайл", color = TextMain, fontSize = 25.sp, fontWeight = FontWeight.Bold)
-        Box(
-            modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Box(
-                    modifier = Modifier.size(88.dp).clip(CircleShape).background(Brush.linearGradient(listOf(Purple, Violet))),
-                    contentAlignment = Alignment.Center
-                ) { Icon(Icons.Filled.Person, null, tint = TextMain, modifier = Modifier.size(48.dp)) }
-                Text(email ?: "Зочин хэрэглэгч", color = TextMain, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Text(if (email == null) "Зочны эрх" else "Нэвтэрсэн хэрэглэгч", color = Violet, fontSize = 12.sp)
+private fun ProfileScreen(
+    email: String?,
+    onSettings: () -> Unit,
+    onAuth: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(18.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            Text("Миний профайл", color = TextMain, fontSize = 25.sp, fontWeight = FontWeight.Bold)
+        }
+        if (email.isNullOrBlank()) {
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = CardDefaults.cardColors(containerColor = Panel)
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(22.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier.size(88.dp).clip(CircleShape)
+                                .background(Brush.linearGradient(listOf(Purple, Violet))),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(Icons.Filled.Person, null, tint = TextMain, modifier = Modifier.size(46.dp))
+                        }
+                        Text("LOREVERSE-д тавтай морил", color = TextMain, fontSize = 21.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            "Нэвтэрч эсвэл бүртгүүлж өөрийн цуглуулга, дуртай контент болон үнэлгээгээ хадгалаарай.",
+                            color = TextMuted,
+                            fontSize = 13.sp
+                        )
+                        Button(
+                            onClick = onAuth,
+                            modifier = Modifier.fillMaxWidth().height(50.dp),
+                            shape = RoundedCornerShape(24.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Purple)
+                        ) {
+                            Text("Нэвтрэх / Бүртгүүлэх", fontWeight = FontWeight.Bold)
+                        }
+                        OutlinedButton(
+                            onClick = onSettings,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(Icons.Filled.Settings, null)
+                            Text("  Тохиргоо")
+                        }
+                    }
+                }
             }
-        }
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            Metric("0", "Нийтлэл", Modifier.weight(1f))
-            Metric("0", "Дуртай", Modifier.weight(1f))
-            Metric("0", "Жагсаалт", Modifier.weight(1f))
-        }
-        listOf("Миний цуглуулга", "Үнэлгээ өгсөн", "Түүх (History)").forEach { label ->
-            Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
-                Text(label, color = TextMain, modifier = Modifier.fillMaxWidth().clickable { }.padding(18.dp))
+            item {
+                Card(colors = CardDefaults.cardColors(containerColor = Panel), shape = RoundedCornerShape(18.dp)) {
+                    Column(Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text("Зочны горим", color = Violet, fontWeight = FontWeight.SemiBold)
+                        Text("Та анимэ, манга, тоглоом болон Lore мэдээллийг үзэх боломжтой. Нийтлэл бичих, үнэлгээ өгөх, цуглуулгаа хадгалахын тулд бүртгэл үүсгэнэ үү.", color = TextMuted, fontSize = 13.sp)
+                    }
+                }
             }
-        }
-        Button(onClick = onSettings, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = PanelRaised)) {
-            Icon(Icons.Filled.Settings, null)
-            Text("  Тохиргоо")
+        } else {
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(14.dp)
+                ) {
+                    Box(
+                        modifier = Modifier.size(72.dp).clip(CircleShape)
+                            .background(Brush.linearGradient(listOf(Purple, Violet))),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(Icons.Filled.Person, null, tint = TextMain, modifier = Modifier.size(38.dp))
+                    }
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text(email, color = TextMain, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                        Text("Бүртгэлтэй хэрэглэгч", color = Violet, fontSize = 12.sp)
+                    }
+                }
+            }
+            item {
+                Card(colors = CardDefaults.cardColors(containerColor = Panel), shape = RoundedCornerShape(18.dp)) {
+                    Column(Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text("Таны LOREVERSE профайл", color = TextMain, fontWeight = FontWeight.SemiBold)
+                        Text("Цуглуулга, үнэлгээ болон хэрэглэгчийн статистикийг таны бүртгэлтэй холбосны дараа энд харуулна.", color = TextMuted, fontSize = 13.sp)
+                    }
+                }
+            }
+            item {
+                Button(onClick = onSettings, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = PanelRaised)) {
+                    Icon(Icons.Filled.Settings, null)
+                    Text("  Данс ба тохиргоо")
+                }
+            }
         }
     }
 }
@@ -663,10 +734,10 @@ private fun Metric(value: String, label: String, modifier: Modifier = Modifier) 
 }
 
 @Composable
-private fun SettingsScreen(onBack: () -> Unit, onAuthSuccess: (String) -> Unit) {
+private fun SettingsScreen(onBack: () -> Unit, onAuthSuccess: (String) -> Unit, openAccountOnStart: Boolean = false) {
     var notifications by remember { mutableStateOf(true) }
     var darkMode by remember { mutableStateOf(true) }
-    var dialog by remember { mutableStateOf<String?>(null) }
+    var dialog by remember { mutableStateOf<String?>(if (openAccountOnStart) "account" else null) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var authMode by remember { mutableStateOf("signin") }
