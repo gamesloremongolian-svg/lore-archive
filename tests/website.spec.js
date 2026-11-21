@@ -375,6 +375,30 @@ test.describe('LOREVERSE website health', () => {
   });
 
 
+  test('core pages fit common Android and tablet viewport widths without horizontal overflow', async ({ page }) => {
+    for (const route of ['/', '/community/', '/store/', '/profile/']) {
+      for (const width of [320, 360, 390, 768, 1024]) {
+        await page.setViewportSize({ width, height: 850 });
+        await page.goto(new URL(route, baseURL).toString(), { waitUntil: 'domcontentloaded' });
+        const layout = await page.evaluate(() => ({
+          viewport: document.documentElement.clientWidth,
+          document: document.documentElement.scrollWidth
+        }));
+        expect(layout.document, route + ' should not overflow horizontally at ' + width + 'px').toBeLessThanOrEqual(layout.viewport + 2);
+      }
+    }
+  });
+
+  test('direct and community chat preserve reader position when older messages are being read', async () => {
+    const fs = require('node:fs');
+    const directChat = fs.readFileSync(require('node:path').join(__dirname, '../chat/index.html'), 'utf8');
+    const communityChat = fs.readFileSync(require('node:path').join(__dirname, '../community/index.html'), 'utf8');
+    expect(directChat).toMatch(/const keepAtBottom=messageList\.scrollHeight-messageList\.scrollTop-messageList\.clientHeight<80/);
+    expect(directChat).toMatch(/if\(keepAtBottom\)\$\("messageList"\)\.scrollTop=\$\("messageList"\)\.scrollHeight/);
+    expect(communityChat).toMatch(/const keepAtBottom=messagesEl\.scrollHeight-messagesEl\.scrollTop-messagesEl\.clientHeight<80/);
+    expect(communityChat).toMatch(/if\(keepAtBottom\)\$\("messages"\)\.scrollTop=\$\("messages"\)\.scrollHeight/);
+  });
+
   test('native Android bottom navigation is visible and routes correctly in the built app', async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 800 });
     await page.addInitScript(() => {
