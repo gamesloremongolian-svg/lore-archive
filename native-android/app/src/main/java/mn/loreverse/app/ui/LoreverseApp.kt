@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Movie
@@ -147,13 +148,14 @@ fun LoreverseApp() {
                     )
                     selected == "home" -> HomeScreen(
                         onOpen = { detail = it },
-                        onCategory = { selectedCategory = it; selected = if (it == "Анимэ") "anime" else if (it == "Манга") "manga" else if (it == "Тоглоом") "games" else "lore" },
+                        onCategory = { selectedCategory = it; selected = when (it) { "Анимэ" -> "anime"; "Манга" -> "manga"; "Тоглоом" -> "games"; "Community" -> "community"; else -> "lore" } },
                         onSearch = { searchOpen = !searchOpen },
                         searchOpen = searchOpen,
                         query = query,
                         onQuery = { query = it },
                         modifier = Modifier.padding(padding)
                     )
+                    selected == "community" -> CommunityScreen(modifier = Modifier.padding(padding))
                     selected == "profile" -> ProfileScreen(email = signedInEmail, onSettings = { settings = true }, modifier = Modifier.padding(padding))
                     else -> CategoryScreen(
                         title = when (selected) { "anime" -> "Анимэ"; "manga" -> "Манга"; "games" -> "Тоглоом"; else -> "Lore" },
@@ -314,7 +316,63 @@ private fun HomeScreen(
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 CategoryTile("Тоглоом", Icons.Filled.SportsEsports, Modifier.weight(1f)) { onCategory("Тоглоом") }
-                Spacer(Modifier.weight(1f))
+                CategoryTile("Community", Icons.Filled.Forum, Modifier.weight(1f)) { onCategory("Community") }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CommunityScreen(modifier: Modifier = Modifier) {
+    var posts by remember { mutableStateOf<List<CommunityPost>>(emptyList()) }
+    var loading by remember { mutableStateOf(true) }
+    var failed by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        val result = withContext(Dispatchers.IO) { CommunityRepository().getLatestPosts() }
+        result.onSuccess { posts = it; failed = false }
+            .onFailure { failed = true }
+        loading = false
+    }
+
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        item {
+            Text("Community", color = TextMain, fontSize = 25.sp, fontWeight = FontWeight.Bold)
+            Text("Сонирхлоо хуваалцаж, хамтдаа хэлэлцье.", color = TextMuted)
+        }
+        when {
+            loading -> item { Text("Нийтлэлүүдийг ачаалж байна...", color = TextMuted) }
+            failed -> item {
+                Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
+                    Text("Нийтлэл татахад алдаа гарлаа. Дараа дахин оролдоно уу.", color = TextMuted, modifier = Modifier.padding(18.dp))
+                }
+            }
+            posts.isEmpty() -> item {
+                Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
+                    Column(Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("Одоогоор нийтлэл алга", color = TextMain, fontWeight = FontWeight.Bold)
+                        Text("Эхний хэлэлцүүлгийг эхлүүлэхийн тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.", color = TextMuted)
+                    }
+                }
+            }
+            else -> items(posts, key = { it.id }) { post ->
+                Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
+                    Column(Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(post.category.replace('_', ' ').uppercase(), color = Violet, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            Spacer(Modifier.weight(1f))
+                            Text(post.gameSlug.replace('-', ' ').uppercase(), color = TextMuted, fontSize = 10.sp)
+                        }
+                        Text(post.body, color = TextMain)
+                        if (post.spoilerLevel != "none") {
+                            Text("Спойлер: " + post.spoilerLevel, color = ColorHex(0xFFFBBF24), fontSize = 11.sp)
+                        }
+                    }
+                }
             }
         }
     }
