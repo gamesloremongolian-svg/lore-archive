@@ -90,6 +90,9 @@ import kotlinx.serialization.json.*
 import mn.loreverse.app.data.AuthRepository
 import mn.loreverse.app.data.CommunityRepository
 import mn.loreverse.app.data.CommunityPost
+import mn.loreverse.app.data.NewsStoreRepository
+import mn.loreverse.app.data.PublishedNews
+import mn.loreverse.app.data.StoreProduct
 
 private data class Destination(val id: String, val label: String, val icon: ImageVector)
 private data class LoreItem(val title: String, val category: String, val description: String, val imageUrl: String? = null)
@@ -336,21 +339,40 @@ private fun HomeScreen(
 
 @Composable
 private fun StoreScreen(modifier: Modifier = Modifier) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(18.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp)
-    ) {
+    var products by remember { mutableStateOf<List<StoreProduct>>(emptyList()) }
+    var loading by remember { mutableStateOf(true) }
+    var failed by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        val result = withContext(Dispatchers.IO) { NewsStoreRepository().getPublishedProducts() }
+        result.onSuccess { products = it; failed = false }.onFailure { failed = true }
+        loading = false
+    }
+    LazyColumn(modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
         item {
             Text("Дэлгүүр", color = TextMain, fontSize = 27.sp, fontWeight = FontWeight.Bold)
             Text("LOREVERSE-ийн бараа, цуглуулга", color = TextMuted)
         }
-        item {
-            Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
-                Column(Modifier.fillMaxWidth().padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Icon(Icons.Filled.Store, contentDescription = null, tint = Violet, modifier = Modifier.size(34.dp))
-                    Text("Дэлгүүр бэлтгэгдэж байна", color = TextMain, fontWeight = FontWeight.Bold, fontSize = 19.sp)
-                    Text("Барааны каталог, захиалга болон төлбөрийн үйлчилгээг дараагийн хөгжүүлэлтийн шатанд холбоно.", color = TextMuted)
+        when {
+            loading -> item { Text("Барааны каталог ачаалж байна...", color = TextMuted) }
+            failed -> item { Text("Барааны мэдээлэл татаж чадсангүй. Дахин оролдоно уу.", color = TextMuted) }
+            products.isEmpty() -> item {
+                Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
+                    Column(Modifier.fillMaxWidth().padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Icon(Icons.Filled.Store, contentDescription = null, tint = Violet, modifier = Modifier.size(34.dp))
+                        Text("Одоогоор худалдаанд гарсан бараа алга", color = TextMain, fontWeight = FontWeight.Bold, fontSize = 19.sp)
+                        Text("Шинэ бараа баталгаажиж нийтлэгдэхэд энд автоматаар харагдана.", color = TextMuted)
+                    }
+                }
+            }
+            else -> items(products, key = { it.id }) { product ->
+                Card(colors = CardDefaults.cardColors(containerColor = Panel), shape = RoundedCornerShape(18.dp)) {
+                    Column(Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(product.title, color = TextMain, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        Text("${product.productType} · ${product.listingType}", color = Violet, fontSize = 12.sp)
+                        product.description?.takeIf { it.isNotBlank() }?.let { Text(it, color = TextMuted) }
+                        Text(String.format("%,d₮", product.priceMnt), color = TextMain, fontWeight = FontWeight.Bold)
+                        Text(if (product.stockQuantity > 0) "Үлдэгдэл: ${product.stockQuantity}" else "Захиалгын боломжийг шалгана уу", color = TextMuted, fontSize = 11.sp)
+                    }
                 }
             }
         }
@@ -359,21 +381,43 @@ private fun StoreScreen(modifier: Modifier = Modifier) {
 
 @Composable
 private fun NewsScreen(modifier: Modifier = Modifier) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(18.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp)
-    ) {
+    var posts by remember { mutableStateOf<List<PublishedNews>>(emptyList()) }
+    var loading by remember { mutableStateOf(true) }
+    var failed by remember { mutableStateOf(false) }
+    var expandedId by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(Unit) {
+        val result = withContext(Dispatchers.IO) { NewsStoreRepository().getPublishedNews() }
+        result.onSuccess { posts = it; failed = false }.onFailure { failed = true }
+        loading = false
+    }
+    LazyColumn(modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
         item {
             Text("Мэдээлэл", color = TextMain, fontSize = 27.sp, fontWeight = FontWeight.Bold)
             Text("LOREVERSE-ийн мэдээ, зарлал, шинэчлэлт", color = TextMuted)
         }
-        item {
-            Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
-                Column(Modifier.fillMaxWidth().padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Icon(Icons.Filled.Newspaper, contentDescription = null, tint = Violet, modifier = Modifier.size(34.dp))
-                    Text("Одоогоор мэдээлэл алга", color = TextMain, fontWeight = FontWeight.Bold, fontSize = 19.sp)
-                    Text("Шинэ мэдээ болон аппын зарлалууд нийтлэгдэхэд энд харагдана.", color = TextMuted)
+        when {
+            loading -> item { Text("Мэдээлэл ачаалж байна...", color = TextMuted) }
+            failed -> item { Text("Мэдээлэл татаж чадсангүй. Дараа дахин оролдоно уу.", color = TextMuted) }
+            posts.isEmpty() -> item {
+                Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
+                    Column(Modifier.fillMaxWidth().padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Icon(Icons.Filled.Newspaper, contentDescription = null, tint = Violet, modifier = Modifier.size(34.dp))
+                        Text("Одоогоор нийтлэгдсэн мэдээ алга", color = TextMain, fontWeight = FontWeight.Bold, fontSize = 19.sp)
+                        Text("Админ мэдээ нийтлэхэд энд автоматаар харагдана.", color = TextMuted)
+                    }
+                }
+            }
+            else -> items(posts, key = { it.id }) { post ->
+                Card(colors = CardDefaults.cardColors(containerColor = Panel), shape = RoundedCornerShape(18.dp)) {
+                    Column(Modifier.fillMaxWidth().clickable { expandedId = if (expandedId == post.id) null else post.id }.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(post.title, color = TextMain, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        post.summary?.takeIf { it.isNotBlank() }?.let { Text(it, color = TextMuted) }
+                        if (expandedId == post.id) {
+                            Text(post.body?.toString()?.takeIf { it != "{}" } ?: "Дэлгэрэнгүй агуулга удахгүй нэмэгдэнэ.", color = TextMuted)
+                        } else {
+                            Text("Дэлгэрэнгүй харах", color = Violet, fontSize = 12.sp)
+                        }
+                    }
                 }
             }
         }
