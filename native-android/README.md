@@ -1,27 +1,21 @@
 # LOREVERSE Native Android v2.0
 
-A standalone Android application built with Kotlin and Jetpack Compose. It is not a WebView or Capacitor wrapper.
+Standalone Kotlin + Jetpack Compose application (not a WebView / Capacitor wrapper).
 
 ## Project
 - Application ID: `mn.loreverse.app`
-- Minimum Android: API 26
-- Compile / target SDK: API 36
-- JDK: 17
-- UI: Jetpack Compose + Material 3
-- Language: Mongolian
+- Minimum Android: API 26; compile / target SDK: API 36
+- JDK: 17; Jetpack Compose + Material 3
+- Supabase Kotlin SDK: Auth + PostgREST modules
 
 ## Build a debug APK
-From this directory:
-```bash
-gradle assembleDebug
-```
-The debug build intentionally uses the `.debug` application ID suffix so it can be installed beside the current production app during testing. The release variant retains `mn.loreverse.app`.
+From this directory run `gradle assembleDebug`. The debug build uses the `.debug` application ID suffix so it can be installed alongside the current app. Release retains `mn.loreverse.app`.
 
-## Current scope
-This initial native foundation includes onboarding, Home, Anime, Manga, Games, Lore, detail, Profile and Settings screens, plus working local navigation and sample data.
+## Supabase
+The native app points to the existing LOREVERSE Supabase project using the public publishable key already used by the website. This is not a service-role secret. Database access must remain protected by Row Level Security. `ArchiveRepository` reads only published `archive_franchises` rows.
 
-## Not yet production-connected
-Authentication, Supabase data repositories, chat, payment/membership, remote content images, push notifications and production signing are not included in this initial foundation. Do not distribute this build as a production replacement until these integrations and device tests are complete.
+## Current scope and release gates
+The UI currently has onboarding, Home, Anime, Manga, Games, Lore, detail, Profile and Settings screens with local navigation. A Supabase client and published-franchise repository are added, but sign-in/sign-up screens are not yet wired to Auth and the screens still use sample content. Chat, payments/membership, remote images, push notifications, production signing and physical-device tests are not complete. Do not distribute as a production replacement until these are implemented and tested.
 
 ## Upgrade compatibility
-A release update over an existing installation requires the same application ID and the original signing certificate/private key. The debug build uses a separate package ID. Never commit keystores or passwords.
+Updating an existing installation requires the same application ID and original signing certificate/private key. Never commit keystores or passwords.
