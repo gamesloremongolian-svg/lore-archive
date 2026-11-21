@@ -239,11 +239,11 @@ test.describe('LOREVERSE website health', () => {
       status: 200,
       contentType: 'application/javascript',
       body: `
-        const query=table=>{const q={select(){return q},eq(){return q},order(){return q},limit(){return q},in(){return q},then(resolve,reject){const data=table==='archive_entities'?[{id:'amber-id',slug:'amber',entity_type:'character',canonical_name:'Amber',metadata:{region:'Mondstadt',vision:'Pyro',weapon:'Bow'},archive_entity_translations:[{display_name:'Эмбер',description:'Фавониусын рыцариудын Outrider.',content:{profile_sections:[{heading:'Үүрэг',body:'Мондштадтын хамгаалалтад тусалдаг.'}]},sources:[{url:'https://genshin.hoyoverse.com/en/character/mondstadt?char=11&lang=en',label:'HoYoverse — Official profile'}],language_code:'mn',editorial_status:'published'}]}]:[];return Promise.resolve({data,error:null}).then(resolve,reject)}};return q};
+        const query=table=>{const q={select(){return q},eq(){return q},order(){return q},limit(){return q},in(){return q},then(resolve,reject){const data=table==='archive_entities'?[{id:'amber-id',slug:'amber',entity_type:'character',canonical_name:'Amber',metadata:{region:'Mondstadt',vision:'Pyro',weapon:'Bow'},archive_franchises:{name:'Genshin Impact',slug:'genshin-impact',status:'published'},archive_entity_translations:[{display_name:'Эмбер',description:'Фавониусын рыцариудын Outrider.',content:{profile_sections:[{heading:'Үүрэг',body:'Мондштадтын хамгаалалтад тусалдаг.'}]},sources:[{url:'https://genshin.hoyoverse.com/en/character/mondstadt?char=11&lang=en',label:'HoYoverse — Official profile'}],language_code:'mn',editorial_status:'published'}]}]:[];return Promise.resolve({data,error:null}).then(resolve,reject)}};return q};
         export function createClient(){return {from:query}}
       `
     }));
-    await page.goto(new URL('knowledge/?entity=amber', baseURL).toString(), { waitUntil: 'domcontentloaded' });
+    await page.goto(new URL('knowledge/?entity=amber&franchise=genshin-impact', baseURL).toString(), { waitUntil: 'domcontentloaded' });
     await expect(page.locator('#gameGrid')).toContainText('Эмбер');
     await expect(page.locator('#gameGrid')).toContainText('Мондштадтын хамгаалалтад тусалдаг.');
     await expect(page.locator('#gameGrid a[href^="https://genshin.hoyoverse.com/"]')).toContainText('HoYoverse — Official profile');
