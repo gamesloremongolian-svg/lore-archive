@@ -338,7 +338,6 @@ private fun CategoryTile(label: String, icon: ImageVector, modifier: Modifier = 
 
 @Composable
 private fun CategoryScreen(title: String, category: String?, onOpen: (LoreItem) -> Unit, modifier: Modifier = Modifier) {
-    var filter by remember { mutableStateOf("Бүгд") }
     var remoteItems by remember { mutableStateOf<List<PublishedFranchise>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
     var loadError by remember { mutableStateOf<String?>(null) }
@@ -373,11 +372,6 @@ private fun CategoryScreen(title: String, category: String?, onOpen: (LoreItem) 
     Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
         Text(title, fontSize = 26.sp, fontWeight = FontWeight.Bold, color = TextMain)
         Spacer(Modifier.height(12.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            listOf("Бүгд", "Үргэлжилж буй", "Дууссан").forEach {
-                FilterChip(selected = filter == it, onClick = { filter = it }, label = { Text(it) })
-            }
-        }
         if (loading) {
             Text("Мэдээлэл ачаалж байна...", color = TextMuted, modifier = Modifier.padding(top = 12.dp))
         } else if (loadError != null) {
@@ -389,7 +383,7 @@ private fun CategoryScreen(title: String, category: String?, onOpen: (LoreItem) 
             contentPadding = PaddingValues(top = 14.dp, bottom = 20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(list.filter { filter == "Бүгд" || it.description.contains(filter) }) {
+            items(list) {
                 ContentCard(item = it, onClick = { onOpen(it) })
             }
         }
