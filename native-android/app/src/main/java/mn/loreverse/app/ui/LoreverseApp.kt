@@ -562,7 +562,7 @@ private fun BugReportScreen(modifier: Modifier = Modifier) {
             }
             item {
                 Text("Автоматаар хавсаргах төхөөрөмжийн мэдээлэл", color = TextMain, fontWeight = FontWeight.SemiBold)
-                Text("Android ${android.os.Build.VERSION.RELEASE} · ${android.os.Build.MODEL} · App 2.0.0", color = TextMuted, fontSize = 12.sp)
+                Text("Android ${android.os.Build.VERSION.RELEASE} · ${android.os.Build.MODEL} · App ${BuildConfig.VERSION_NAME}", color = TextMuted, fontSize = 12.sp)
             }
             item {
                 Button(
@@ -583,7 +583,7 @@ private fun BugReportScreen(modifier: Modifier = Modifier) {
                                         title = subject.trim(),
                                         description = details.trim(),
                                         section = section,
-                                        appVersion = "2.0.0",
+                                        appVersion = BuildConfig.VERSION_NAME,
                                         androidVersion = android.os.Build.VERSION.RELEASE ?: "unknown",
                                         deviceModel = android.os.Build.MODEL ?: "unknown",
                                         attachmentBytes = bytes,
