@@ -1290,12 +1290,15 @@ html.capacitor-app #loreverseAppNav a{font-size:9px!important;gap:2px!important;
     const targetElement=event.target instanceof Element?event.target:null;
     const link=targetElement?.closest("a[data-app-route]");
     if(!link)return;
-    event.preventDefault();
     const key=link.getAttribute("data-app-route");
-    const destination=key==="bug"?"/?openBugReport=1":({home:"/index.html",community:"/community/index.html",store:"/store/index.html",profile:"/profile/index.html"}[key]||"/index.html");
-    const target=new URL(destination,location.origin);
-    if(location.pathname+location.search!==target.pathname+target.search)location.assign(target.href);
-    else if(key==="bug"&&typeof window.openBugReport==="function")window.openBugReport();
+    if(key==="bug"){
+      event.preventDefault();
+      if(typeof window.openBugReport==="function")window.openBugReport();
+      else location.assign(new URL("/?openBugReport=1",location.origin).href);
+      return;
+    }
+    // Keep ordinary same-origin anchor navigation intact; WebView history and
+    // app lifecycle handling are more reliable than manually intercepting routes.
   },{passive:false});
 })();
 </script>
