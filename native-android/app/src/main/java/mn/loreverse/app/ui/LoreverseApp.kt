@@ -78,6 +78,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 import mn.loreverse.app.data.AuthRepository
+import mn.loreverse.app.data.CommunityRepository
+import mn.loreverse.app.data.CommunityPost
 
 private data class Destination(val id: String, val label: String, val icon: ImageVector)
 private data class LoreItem(val title: String, val category: String, val description: String, val imageUrl: String? = null)
@@ -200,6 +202,15 @@ private fun HomeScreen(
     var remoteHomeItems by remember { mutableStateOf<List<PublishedFranchise>>(emptyList()) }
     var homeLoading by remember { mutableStateOf(true) }
     var homeError by remember { mutableStateOf(false) }
+    var communityPosts by remember { mutableStateOf<List<CommunityPost>>(emptyList()) }
+    var communityLoading by remember { mutableStateOf(true) }
+    var communityError by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        val communityResult = withContext(Dispatchers.IO) { CommunityRepository().getLatestPosts() }
+        communityResult.onSuccess { communityPosts = it; communityError = false }
+            .onFailure { communityError = true }
+        communityLoading = false
+    }
     LaunchedEffect(Unit) {
         val result = withContext(Dispatchers.IO) { ArchiveRepository().getPublishedFranchises() }
         result.onSuccess { remoteHomeItems = it; homeError = false }
@@ -256,11 +267,45 @@ private fun HomeScreen(
                     ).padding(20.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Text("ОНЦЛОХ КОНТЕНТ", color = ColorHex(0xFFD8B4FE), fontSize = 11.sp, fontWeight = FontWeight.Bold)
-                    Text("Genshin Impact\nLore Archive", color = TextMain, fontSize = 26.sp, fontWeight = FontWeight.Bold)
-                    Text("Тейватын нууцыг хамтдаа нээцгээе.", color = TextMuted)
-                    Button(onClick = { onOpen(sampleItems[0]) }, colors = ButtonDefaults.buttonColors(containerColor = Purple)) {
-                        Text("Дэлгэрэнгүй")
+                    Text("LOREVERSE COMMUNITY", color = ColorHex(0xFFD8B4FE), fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    Text("Сонирхлоо хуваалц.\nХамтдаа хэлэлцье.", color = TextMain, fontSize = 25.sp, fontWeight = FontWeight.Bold)
+                    Text("Анимэ, манга, тоглоомын ертөнцийн шинэ нийтлэл, асуулт, хэлэлцүүлэг.", color = TextMuted)
+                    Text("Нийгэмлэгийн нийтлэлүүд", color = Violet, fontWeight = FontWeight.SemiBold)
+                }
+            }
+        }
+        item {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Community", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextMain, modifier = Modifier.weight(1f))
+                Text("Шинэ нийтлэлүүд", color = Violet, fontSize = 12.sp)
+            }
+        }
+        if (communityLoading) {
+            item { Text("Нийтлэлүүдийг ачаалж байна...", color = TextMuted) }
+        } else if (communityError) {
+            item { Text("Community мэдээлэл ачаалж чадсангүй. Дараа дахин оролдоно уу.", color = TextMuted) }
+        } else if (communityPosts.isEmpty()) {
+            item {
+                Card(colors = CardDefaults.cardColors(containerColor = Panel), shape = RoundedCornerShape(18.dp)) {
+                    Column(Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("Одоогоор нийтлэл алга", color = TextMain, fontWeight = FontWeight.SemiBold)
+                        Text("Эхний хэлэлцүүлгийг эхлүүлэхийн тулд бүртгэлтэй хэрэглэгчээр нэвтэрнэ үү.", color = TextMuted)
+                    }
+                }
+            }
+        } else {
+            items(communityPosts) { post ->
+                Card(colors = CardDefaults.cardColors(containerColor = Panel), shape = RoundedCornerShape(18.dp)) {
+                    Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(post.category.uppercase(), color = Violet, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            Spacer(Modifier.weight(1f))
+                            Text(post.gameSlug.replace('-', ' ').uppercase(), color = TextMuted, fontSize = 10.sp)
+                        }
+                        Text(post.body, color = TextMain, maxLines = 5, overflow = TextOverflow.Ellipsis)
+                        if (post.spoilerLevel != "none") {
+                            Text("Спойлер: " + post.spoilerLevel, color = ColorHex(0xFFFBBF24), fontSize = 11.sp)
+                        }
                     }
                 }
             }
