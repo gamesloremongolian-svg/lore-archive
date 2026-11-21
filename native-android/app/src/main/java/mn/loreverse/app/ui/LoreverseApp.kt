@@ -32,6 +32,10 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
@@ -50,6 +54,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -71,6 +76,8 @@ import mn.loreverse.app.data.ArchiveRepository
 import mn.loreverse.app.data.PublishedFranchise
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
+import mn.loreverse.app.data.AuthRepository
 
 private data class Destination(val id: String, val label: String, val icon: ImageVector)
 private data class LoreItem(val title: String, val category: String, val description: String, val imageUrl: String? = null)
@@ -464,14 +471,81 @@ private fun Metric(value: String, label: String, modifier: Modifier = Modifier) 
 private fun SettingsScreen(onBack: () -> Unit) {
     var notifications by remember { mutableStateOf(true) }
     var darkMode by remember { mutableStateOf(true) }
+    var dialog by remember { mutableStateOf<String?>(null) }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var authMode by remember { mutableStateOf("signin") }
+    var authMessage by remember { mutableStateOf<String?>(null) }
+    var busy by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val auth = remember { AuthRepository() }
+
     Column(modifier = Modifier.fillMaxSize().padding(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Text("← Буцах", color = Violet, modifier = Modifier.clickable(onClick = onBack).padding(6.dp))
         Text("Тохиргоо", color = TextMain, fontSize = 25.sp, fontWeight = FontWeight.Bold)
-        listOf("Мэдэгдэл", "Дэлгэцийн загвар", "Хэл · Монгол", "Данс ба аюулгүй байдал", "Тусламж / Дэмжлэг", "Аппын тухай · v2.0.0").forEach { label ->
-            Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
+        Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
+            Row(Modifier.fillMaxWidth().padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text("Мэдэгдэл", color = TextMain, modifier = Modifier.weight(1f))
+                Switch(checked = notifications, onCheckedChange = { notifications = it })
+            }
+        }
+        Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
+            Row(Modifier.fillMaxWidth().padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text("Харанхуй загвар", color = TextMain, modifier = Modifier.weight(1f))
+                Switch(checked = darkMode, onCheckedChange = { darkMode = it })
+            }
+        }
+        listOf(
+            "Хэл · Монгол" to { dialog = "Монгол хэл одоогоор үндсэн интерфэйсийн хэл байна." },
+            "Данс ба аюулгүй байдал" to { dialog = "account" },
+            "Тусламж / Дэмжлэг" to { dialog = "Тусламжийн албан ёсны холбоос хараахан тохируулагдаагүй байна." },
+            "Аппын тухай · v2.0.0" to { dialog = "LOREVERSE Native Android\nХувилбар: 2.0.0\nМонгол хэл дээрх анимэ, манга, тоглоом, Lore архив." }
+        ).forEach { (label, action) ->
+            Card(modifier = Modifier.clickable { action() }, colors = CardDefaults.cardColors(containerColor = Panel)) {
                 Text(label, color = TextMain, modifier = Modifier.fillMaxWidth().padding(18.dp))
             }
         }
+    }
+
+    if (dialog == "account") {
+        AlertDialog(
+            onDismissRequest = { if (!busy) dialog = null },
+            title = { Text("Данс ба аюулгүй байдал", color = TextMain) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Имэйл") }, singleLine = true)
+                    OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Нууц үг") }, singleLine = true)
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        TextButton(onClick = { authMode = "signin"; authMessage = null }) { Text("Нэвтрэх") }
+                        TextButton(onClick = { authMode = "signup"; authMessage = null }) { Text("Бүртгүүлэх") }
+                    }
+                    authMessage?.let { Text(it, color = TextMuted, fontSize = 12.sp) }
+                }
+            },
+            confirmButton = {
+                TextButton(enabled = !busy, onClick = {
+                    busy = true
+                    scope.launch {
+                        val result = if (authMode == "signin") auth.signIn(email, password) else auth.signUp(email, password)
+                        authMessage = result.fold(
+                            onSuccess = { if (authMode == "signup") "Бүртгэлийн хүсэлт амжилттай. Имэйл баталгаажуулах шаардлагатай байж болно." else "Нэвтрэх хүсэлт амжилттай." },
+                            onFailure = { it.message ?: "Үйлдэл амжилтгүй. Дахин оролдоно уу." }
+                        )
+                        busy = false
+                    }
+                }) { Text(if (busy) "Түр хүлээнэ үү..." else if (authMode == "signin") "Нэвтрэх" else "Бүртгүүлэх") }
+            },
+            dismissButton = { TextButton(onClick = { if (!busy) dialog = null }) { Text("Хаах") } },
+            containerColor = Panel
+        )
+    } else if (dialog != null) {
+        AlertDialog(
+            onDismissRequest = { dialog = null },
+            title = { Text("Мэдээлэл", color = TextMain) },
+            text = { Text(dialog!!, color = TextMuted) },
+            confirmButton = { TextButton(onClick = { dialog = null }) { Text("Ойлголоо") } },
+            containerColor = Panel
+        )
     }
 }
 
