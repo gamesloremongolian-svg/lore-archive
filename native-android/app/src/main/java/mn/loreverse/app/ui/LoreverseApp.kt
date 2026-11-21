@@ -190,6 +190,23 @@ private fun HomeScreen(
     onQuery: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var remoteHomeItems by remember { mutableStateOf<List<PublishedFranchise>>(emptyList()) }
+    var homeLoading by remember { mutableStateOf(true) }
+    var homeError by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        val result = withContext(Dispatchers.IO) { ArchiveRepository().getPublishedFranchises() }
+        result.onSuccess { remoteHomeItems = it; homeError = false }
+            .onFailure { homeError = true }
+        homeLoading = false
+    }
+    val homeItems = if (remoteHomeItems.isNotEmpty()) remoteHomeItems.map {
+        LoreItem(it.name, it.category.uppercase(), it.description.ifBlank { "Тайлбар удахгүй нэмэгдэнэ." }, it.coverImageUrl)
+    } else sampleItems
+    val visibleHomeItems = homeItems.filter {
+        query.isBlank() || it.title.contains(query, ignoreCase = true) ||
+            it.description.contains(query, ignoreCase = true) ||
+            it.category.contains(query, ignoreCase = true)
+    }
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
@@ -259,8 +276,11 @@ private fun HomeScreen(
                 Text("Онцлох контент", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextMain, modifier = Modifier.weight(1f))
                 Text("Бүгд", color = Violet)
             }
+            if (homeLoading) Text("Мэдээлэл ачаалж байна...", color = TextMuted, fontSize = 11.sp)
+            else if (homeError) Text("Сервертэй холбогдож чадсангүй. Жишээ контент харуулж байна.", color = TextMuted, fontSize = 11.sp)
+            else if (remoteHomeItems.isEmpty()) Text("Нийтлэгдсэн мэдээлэл одоогоор алга. Жишээ контент харуулж байна.", color = TextMuted, fontSize = 11.sp)
         }
-        items(sampleItems) { item -> ContentCard(item = item, onClick = { onOpen(item) }) }
+        items(visibleHomeItems) { item -> ContentCard(item = item, onClick = { onOpen(item) }) }
     }
 }
 
