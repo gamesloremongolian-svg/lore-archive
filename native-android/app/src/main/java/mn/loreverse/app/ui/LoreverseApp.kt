@@ -182,7 +182,7 @@ fun LoreverseApp() {
                     selected == "store" -> StoreScreen(modifier = Modifier.padding(padding))
                     selected == "news" -> NewsScreen(modifier = Modifier.padding(padding))
                     selected == "report" -> BugReportScreen(modifier = Modifier.padding(padding))
-                    selected == "owner" -> OwnerControlCenterScreen(onBack = { selected = "profile" }, onOpenFeedback = { selected = "report" }, onOpenNews = { selected = "news" }, onOpenContent = { selected = "anime" }, modifier = Modifier.padding(padding))
+                    selected == "owner" -> OwnerControlCenterScreen(onBack = { selected = "profile" }, onOpenFeedback = { selected = "report" }, onOpenNews = { selected = "news" }, onOpenContent = { selected = "anime" }, onOpenStore = { selected = "store" }, modifier = Modifier.padding(padding))
                     selected == "profile" -> ProfileScreen(email = signedInEmail, onSettings = { settings = true }, onAuth = { openAuthFromProfile = true; settings = true }, onOwner = { selected = "owner" }, modifier = Modifier.padding(padding))
                     else -> CategoryScreen(
                         title = when (selected) { "anime" -> "Анимэ"; "manga" -> "Манга"; "games" -> "Тоглоом"; else -> "Lore" },
@@ -1137,7 +1137,7 @@ private fun ProfileScreen(
 }
 
 @Composable
-private fun OwnerControlCenterScreen(onBack: () -> Unit, onOpenFeedback: () -> Unit, onOpenNews: () -> Unit, onOpenContent: () -> Unit, modifier: Modifier = Modifier) {
+private fun OwnerControlCenterScreen(onBack: () -> Unit, onOpenFeedback: () -> Unit, onOpenNews: () -> Unit, onOpenContent: () -> Unit, onOpenStore: () -> Unit, modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
     val repository = remember { mn.loreverse.app.data.OwnerDashboardRepository() }
     var stats by remember { mutableStateOf<mn.loreverse.app.data.OwnerDashboardStats?>(null) }
@@ -1169,21 +1169,53 @@ private fun OwnerControlCenterScreen(onBack: () -> Unit, onOpenFeedback: () -> U
             }
         }
         item {
-            Text("Админ туслах цэс", color = TextMain, fontSize = 19.sp, fontWeight = FontWeight.Bold)
-            Column(verticalArrangement = Arrangement.spacedBy(9.dp), modifier = Modifier.padding(top = 8.dp)) {
-                Button(onClick = { refresh() }, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = PanelRaised)) {
-                    Icon(Icons.Filled.Settings, null); Text("  Самбарын статистик шинэчлэх")
-                }
-                OutlinedButton(onClick = onOpenContent, modifier = Modifier.fillMaxWidth()) {
-                    Icon(Icons.Filled.AutoStories, null); Text("  Контентын архив")
-                }
-                OutlinedButton(onClick = onOpenNews, modifier = Modifier.fillMaxWidth()) {
-                    Icon(Icons.Filled.Newspaper, null); Text("  Мэдээ, зарлал")
-                }
-                OutlinedButton(onClick = onOpenFeedback, modifier = Modifier.fillMaxWidth()) {
-                    Icon(Icons.Filled.BugReport, null); Text("  Алдаа, санал хүсэлтийн хяналт")
-                }
-            }
+            Text("Удирдлагын хэсгүүд", color = TextMain, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text("Үйл ажиллагааг зориулалтаар нь ангиллаа.", color = TextMuted, fontSize = 12.sp)
+        }
+        item {
+            OwnerSection(
+                title = "1. Контент ба нийтлэл",
+                description = "Lore архив, нийтлэгдсэн мэдээ, редакцын агуулга",
+                actions = listOf("Контентын архив", "Мэдээ, зарлал"),
+                onFirst = onOpenContent,
+                onSecond = onOpenNews
+            )
+        }
+        item {
+            OwnerSection(
+                title = "2. Дэлгүүр ба бараа",
+                description = "Барааны жагсаалт, нийтэд харагдах каталог, хяналтын тоо",
+                actions = listOf("Дэлгүүрийн каталог", "Бараа хянах хэсэг"),
+                onFirst = onOpenStore,
+                onSecond = { /* moderation queue remains below on this dashboard */ }
+            )
+        }
+        item {
+            OwnerSection(
+                title = "3. Хэрэглэгч ба баг",
+                description = "Хэрэглэгчийн бүртгэл, ажилтны эрх, staff хүсэлт",
+                actions = listOf("Хэрэглэгч удирдах", "Ажилтан ба эрх"),
+                onFirst = { message = "Хэрэглэгч удирдах модуль дараагийн хувилбарт нэмэгдэнэ." },
+                onSecond = { message = "Ажилтан ба эрхийн модуль дараагийн хувилбарт нэмэгдэнэ." }
+            )
+        }
+        item {
+            OwnerSection(
+                title = "4. Захиалга ба санхүү",
+                description = "Захиалга, төлбөр, гишүүнчлэлийн хяналт",
+                actions = listOf("Захиалга", "Төлбөр ба гишүүнчлэл"),
+                onFirst = { message = "Захиалгын удирдлагын дэлгэц хараахан холбогдоогүй." },
+                onSecond = { message = "Төлбөр ба гишүүнчлэлийн удирдлага хараахан холбогдоогүй." }
+            )
+        }
+        item {
+            OwnerSection(
+                title = "5. Аюулгүй байдал ба тусламж",
+                description = "Алдаа, санал хүсэлт, хэрэглэгчийн мэдээлсэн асуудал",
+                actions = listOf("Алдаа, санал хүсэлт", "Админ хяналт"),
+                onFirst = onOpenFeedback,
+                onSecond = onOpenFeedback
+            )
         }
         if (loading && stats == null) item { Text("Удирдлагын мэдээлэл ачаалж байна...", color = TextMuted) }
         stats?.let { s ->
@@ -1249,6 +1281,28 @@ private fun OwnerControlCenterScreen(onBack: () -> Unit, onOpenFeedback: () -> U
         }
         message?.let { item { Text(it, color = Violet) } }
         item { OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) { Text("← Профайл руу буцах") } }
+    }
+}
+
+@Composable
+private fun OwnerSection(
+    title: String,
+    description: String,
+    actions: List<String>,
+    onFirst: () -> Unit,
+    onSecond: () -> Unit
+) {
+    Card(colors = CardDefaults.cardColors(containerColor = Panel), shape = RoundedCornerShape(18.dp)) {
+        Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(title, color = Violet, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(description, color = TextMuted, fontSize = 12.sp)
+            OutlinedButton(onClick = onFirst, modifier = Modifier.fillMaxWidth()) {
+                Text(actions[0], color = TextMain)
+            }
+            OutlinedButton(onClick = onSecond, modifier = Modifier.fillMaxWidth()) {
+                Text(actions[1], color = TextMain)
+            }
+        }
     }
 }
 
