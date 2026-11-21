@@ -96,7 +96,7 @@ class FeedbackRepository {
     suspend fun isStaff(): Boolean = runCatching {
         val uid = currentUserId()
         val roles = SupabaseClient.instance.from("staff_members").select { filter { eq("user_id", uid); eq("active", true) } }.decodeList<StaffRole>()
-        roles.any { it.active && it.role in setOf("owner", "admin", "support") }
+        roles.any { it.active && it.role in setOf("owner", "admin", "editor") }
     }.getOrDefault(false)
 
     suspend fun getMine(): Result<List<AppFeedback>> = runCatching {
@@ -116,7 +116,7 @@ class FeedbackRepository {
         currentUserId()
         SupabaseClient.instance.from("app_feedback").update({
             set("status", status)
-            set("admin_reply", reply.ifBlank { null })
+            set("admin_reply", reply)
             set("reviewed_by", currentUserId())
             set("reviewed_at", java.time.Instant.now().toString())
             set("updated_at", java.time.Instant.now().toString())
