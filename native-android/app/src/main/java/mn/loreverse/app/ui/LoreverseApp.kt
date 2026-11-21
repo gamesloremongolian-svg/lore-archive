@@ -46,6 +46,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -66,9 +67,13 @@ import mn.loreverse.app.ui.theme.TextMain
 import mn.loreverse.app.ui.theme.TextMuted
 import mn.loreverse.app.ui.theme.Violet
 import mn.loreverse.app.ui.theme.Void
+import mn.loreverse.app.data.ArchiveRepository
+import mn.loreverse.app.data.PublishedFranchise
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 private data class Destination(val id: String, val label: String, val icon: ImageVector)
-private data class LoreItem(val title: String, val category: String, val description: String)
+private data class LoreItem(val title: String, val category: String, val description: String, val imageUrl: String? = null)
 
 private val destinations = listOf(
     Destination("home", "Нүүр", Icons.Filled.Home),
@@ -132,6 +137,7 @@ fun LoreverseApp() {
                     selected == "profile" -> ProfileScreen(onSettings = { settings = true }, modifier = Modifier.padding(padding))
                     else -> CategoryScreen(
                         title = when (selected) { "anime" -> "Анимэ"; "manga" -> "Манга"; "games" -> "Тоглоом"; else -> "Lore" },
+                        category = when (selected) { "anime" -> "anime"; "manga" -> "manga"; "games" -> "game"; else -> null },
                         onOpen = { detail = it },
                         modifier = Modifier.padding(padding)
                     )
@@ -277,9 +283,19 @@ private fun CategoryTile(label: String, icon: ImageVector, modifier: Modifier = 
 }
 
 @Composable
-private fun CategoryScreen(title: String, onOpen: (LoreItem) -> Unit, modifier: Modifier = Modifier) {
+private fun CategoryScreen(title: String, category: String?, onOpen: (LoreItem) -> Unit, modifier: Modifier = Modifier) {
     var filter by remember { mutableStateOf("Бүгд") }
-    val list = when (title) {
+    var remoteItems by remember { mutableStateOf<List<PublishedFranchise>>(emptyList()) }
+    var loading by remember { mutableStateOf(true) }
+    var loadError by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(category) {
+        loading = true
+        val result = withContext(Dispatchers.IO) { ArchiveRepository().getPublishedFranchises(category) }
+        result.onSuccess { remoteItems = it; loadError = null }
+            .onFailure { loadError = "Серверээс мэдээлэл авч чадсангүй." }
+        loading = false
+    }
+    val fallback = when (title) {
         "Манга" -> listOf(
             LoreItem("Berserk", "Манга", "Dark Fantasy · Үргэлжилж буй"),
             LoreItem("One Piece", "Манга", "Адал явдал · Үргэлжилж буй"),
@@ -297,6 +313,9 @@ private fun CategoryScreen(title: String, onOpen: (LoreItem) -> Unit, modifier: 
         )
         else -> sampleItems.filter { it.category.contains("Анимэ") }
     }
+    val list = if (remoteItems.isNotEmpty()) remoteItems.map {
+        LoreItem(it.name, title, it.description.ifBlank { "Тайлбар удахгүй нэмэгдэнэ." }, it.coverImageUrl)
+    } else fallback
     Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
         Text(title, fontSize = 26.sp, fontWeight = FontWeight.Bold, color = TextMain)
         Spacer(Modifier.height(12.dp))
@@ -304,6 +323,13 @@ private fun CategoryScreen(title: String, onOpen: (LoreItem) -> Unit, modifier: 
             listOf("Бүгд", "Үргэлжилж буй", "Дууссан").forEach {
                 FilterChip(selected = filter == it, onClick = { filter = it }, label = { Text(it) })
             }
+        }
+        if (loading) {
+            Text("Мэдээлэл ачаалж байна...", color = TextMuted, modifier = Modifier.padding(top = 12.dp))
+        } else if (loadError != null) {
+            Text(loadError!!, color = TextMuted, modifier = Modifier.padding(top = 12.dp))
+        } else if (remoteItems.isEmpty()) {
+            Text("Одоогоор нийтлэгдсэн мэдээлэл алга. Жишээ контент харуулж байна.", color = TextMuted, fontSize = 11.sp, modifier = Modifier.padding(top = 8.dp))
         }
         LazyColumn(
             contentPadding = PaddingValues(top = 14.dp, bottom = 20.dp),
