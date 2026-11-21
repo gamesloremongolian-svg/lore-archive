@@ -19,6 +19,7 @@ data class AppFeedback(
     @SerialName("app_section") val section: String,
     val status: String,
     @SerialName("admin_reply") val adminReply: String? = null,
+    @SerialName("attachment_path") val attachmentPath: String? = null,
     @SerialName("created_at") val createdAt: String = ""
 ) {
     val statusLabel: String get() = when (status) {
@@ -122,6 +123,30 @@ class FeedbackRepository {
             set("updated_at", java.time.Instant.now().toString())
         }) {
             filter { eq("id", id) }
+        }
+    }
+
+    suspend fun createAttachmentLink(path: String): Result<String> = runCatching {
+        currentUserId()
+        val safePath = path.split("/").joinToString("/") { java.net.URLEncoder.encode(it, "UTF-8").replace("+", "%20") }
+        val connection = (URL("${SupabaseClient.PROJECT_URL}/storage/v1/object/sign/app-feedback-media/$safePath").openConnection() as HttpURLConnection)
+        try {
+            connection.requestMethod = "POST"
+            connection.doOutput = true
+            connection.connectTimeout = 15000
+            connection.readTimeout = 20000
+            connection.setRequestProperty("apikey", "sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1")
+            connection.setRequestProperty("Authorization", "Bearer ${accessToken()}")
+            connection.setRequestProperty("Content-Type", "application/json")
+            connection.outputStream.use { it.write("{\\"expiresIn\\":3600}".toByteArray()) }
+            val code = connection.responseCode
+            if (code !in 200..299) error("Хавсралтын холбоос үүсгэсэнгүй ($code).")
+            val json = connection.inputStream.bufferedReader().use { it.readText() }
+            val signed = kotlinx.serialization.json.Json.parseToJsonElement(json).jsonObject["signedURL"]?.toString()?.trim('"')
+                ?: error("Хавсралтын холбоос буруу байна.")
+            if (signed.startsWith("http")) signed else SupabaseClient.PROJECT_URL + "/storage/v1" + signed
+        } finally {
+            connection.disconnect()
         }
     }
 
