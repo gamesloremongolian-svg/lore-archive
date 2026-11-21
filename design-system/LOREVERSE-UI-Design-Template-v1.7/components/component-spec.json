@@ -1,0 +1,48 @@
+{
+  "sourceScope": "Component contracts inferred from supplied CSS/HTML. Runtime behavior must be verified separately.",
+  "ShellHeader": {
+    "source": "loreverse-shell.css",
+    "states": ["desktop", "mobile-collapsed", "mobile-expanded", "active-route"],
+    "requirements": [
+      "Sticky header",
+      "Visible focus state",
+      "Mobile menu toggle exposes aria-expanded state"
+    ]
+  },
+  "Button": {
+    "variants": ["primary-gradient", "secondary-surface", "ghost"],
+    "states": ["default", "hover", "focus-visible", "disabled"],
+    "minTouchTargetDp": 48
+  },
+  "ContentCard": {
+    "surface": "theme.surface",
+    "radius": 18,
+    "slots": ["coverImage", "title", "category", "description", "metadata", "action"]
+  },
+  "CategoryChip": {
+    "variants": ["default", "selected"],
+    "selectedState": ["background", "border", "text"]
+  },
+  "NavigationItem": {
+    "states": ["default", "hover", "active", "focus-visible"],
+    "activeMustNotDependOnColorAlone": true
+  },
+  "FormField": {
+    "slots": ["label", "input", "helperText", "errorText"],
+    "states": ["default", "focus", "invalid", "disabled"]
+  },
+  "Dialog": {
+    "surface": "theme.surface",
+    "border": "theme.border",
+    "requirements": [
+      "Escape/backdrop behavior must be wired in host UI",
+      "Focus handling required"
+    ]
+  },
+  "Accessibility": {
+    "minimumTouchTargetDp": 48,
+    "keyboardFocusVisible": true,
+    "reducedMotion": true,
+    "mongolianTextWrapping": true
+  }
+}
