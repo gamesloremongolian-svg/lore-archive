@@ -375,6 +375,28 @@ test.describe('LOREVERSE website health', () => {
   });
 
 
+
+  test('premium signup requests the current site confirmation URL and can resend confirmation email', async ({ page }) => {
+    await page.route('https://esm.sh/@supabase/supabase-js@2.119.0', route => route.fulfill({
+      status: 200,
+      contentType: 'application/javascript',
+      body: "const query=table=>{const q={select(){return q},eq(){return q},in(){return q},order(){return q},limit(){return q},then(a,b){return Promise.resolve(table==='membership_plans'?{data:[],error:null}:{data:null,count:0,error:null}).then(a,b)}};return q};export function createClient(){return {from:query,auth:{getSession:async()=>({data:{session:null},error:null}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),signUp:async args=>{window.__signupArgs=args;return {data:{user:{id:'pending-user',email:args.email,email_confirmed_at:null},session:null},error:null}},resend:async args=>{window.__resendArgs=args;return {data:{},error:null}},signInWithPassword:async()=>({data:null,error:{message:'Email not confirmed'}}),resetPasswordForEmail:async()=>({data:{},error:null}),signOut:async()=>({error:null})}}}"
+    }));
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+    await page.locator('#premiumAuthForm input[name="email"]').fill('pending@loreverse.invalid');
+    await page.locator('#premiumAuthForm input[name="password"]').fill('test-password-123');
+    await page.locator('#createPremiumAccount').click();
+    await expect(page.locator('#premiumAuthStatus')).toContainText('баталгаажуулах холбоос');
+    const signup = await page.evaluate(() => window.__signupArgs);
+    expect(signup.options.emailRedirectTo).toBe(new URL('./', baseURL).toString());
+    await page.locator('#resendSignupConfirmation').click();
+    await expect(page.locator('#premiumAuthStatus')).toContainText('дахин илгээлээ');
+    const resend = await page.evaluate(() => window.__resendArgs);
+    expect(resend.type).toBe('signup');
+    expect(resend.email).toBe('pending@loreverse.invalid');
+    expect(resend.options.emailRedirectTo).toBe(new URL('./', baseURL).toString());
+  });
+
   test('native Android bottom navigation is visible and routes correctly in the built app', async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 800 });
     await page.addInitScript(() => {
