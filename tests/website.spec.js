@@ -105,6 +105,8 @@ test.describe('LOREVERSE website health', () => {
     const robotsText = await robots.text();
     expect(sitemapText).toContain('<urlset');
     expect(sitemapText).toContain('/knowledge/');
+    expect(sitemapText).toContain('?work=ananta-main');
+    expect(sitemapText).toContain('?post=ananta-acd-maniac-chaos');
     expect(robotsText).toContain('Sitemap: https://loreverse-ctrl.github.io/lore-archive/sitemap.xml');
     expect(robotsText).toContain('Disallow: /lore-archive/admin/');
     expect(robotsText).toContain('Disallow: /lore-archive/editorial/');
