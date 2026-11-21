@@ -77,3 +77,53 @@ footer{border-color:#293a58!important;color:#9eacc4!important}
  .holiday-grand{padding:14px!important}
  .holiday-grand h3{font-size:17px!important}
 }
+
+
+/* LOREVERSE app-theme completion: normalize homepage updates and APK panels */
+.updates-section,
+.updates-section .updates-panel,
+.updates-section .update-list,
+.updates-section .update-list > *,
+.updates-section .update-list article,
+.updates-section .update-list a,
+.updates-section .apk-panel,
+.updates-section .apk-actions a {
+  color: #f5f1ff !important;
+}
+.updates-section .updates-panel,
+.updates-section .update-list > *,
+.updates-section .update-list article,
+.updates-section .update-list a,
+.updates-section .apk-panel {
+  background: linear-gradient(145deg,#1a2743,#101a2e) !important;
+  border: 1px solid #3b4c70 !important;
+  border-radius: 15px !important;
+  box-shadow: 0 8px 24px #0003 !important;
+}
+.updates-section .updates-head h2,
+.updates-section .updates-panel h3,
+.updates-section .apk-panel h3,
+.updates-section .apk-version {
+  color: #f5f1ff !important;
+}
+.updates-section .updates-head p,
+.updates-section .updates-panel p,
+.updates-section .apk-detail,
+.updates-section .update-meta,
+.updates-section .updates-loading {
+  color: #b9c5dc !important;
+}
+.updates-section .apk-actions a,
+.updates-section .apk-actions a:not(.secondary) {
+  background: linear-gradient(110deg,#7540ff,#9b72ff) !important;
+  border: 1px solid #a98bff77 !important;
+  color: #fff !important;
+}
+.updates-section .apk-actions a.secondary {
+  background: #211b30 !important;
+  border: 1px solid #514365 !important;
+  color: #f5f1ff !important;
+}
+.updates-section .update-list img {
+  border-radius: 10px;
+}
