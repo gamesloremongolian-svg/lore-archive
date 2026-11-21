@@ -65,7 +65,7 @@ function render(){
  });
  const games=matches.filter(w=>["game"].includes(w.work_type));
  const anime=matches.filter(w=>["anime","manga","light_novel","web_novel","visual_novel","other"].includes(w.work_type));
- const postMatches=archivePosts.filter(p=>{const text=[p.title,p.summary,p.game_title,p.character_name,p.content_type,JSON.stringify(p.body||{})].join(" ").toLocaleLowerCase();return (f==="all"||f===p.content_type)&&text.includes(q);});
+ const postMatches=requestedWork?[]:archivePosts.filter(p=>{const text=[p.title,p.summary,p.game_title,p.character_name,p.content_type,JSON.stringify(p.body||{})].join(" ").toLocaleLowerCase();return (f==="all"||f===p.content_type)&&text.includes(q);});
  const card=w=>{
   const t=w.translation||{},fr=w.franchise||{};
   const related=entities.filter(e=>(e.work_id&&e.work_id===w.id)||(!e.work_id&&e.franchise_id===w.franchise_id));
