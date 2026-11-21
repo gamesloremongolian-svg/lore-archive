@@ -196,6 +196,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 .bubble.chat-theme-midnight{background:linear-gradient(135deg,#101b38,#202b55);border:1px solid #6379bc;box-shadow:inset 0 0 18px #6578bd18}
 .bubble.chat-theme-sakura{background:linear-gradient(135deg,#39233d,#542e50);border:1px solid #d58bbd;box-shadow:inset 0 0 18px #ffb6df18}
 
+
+@media(max-width:420px){
+ .top{align-items:flex-start}
+ .top>div{width:100%;min-width:0;max-width:100%;flex:1 1 100%;flex-wrap:wrap;justify-content:flex-start!important}
+ .top>div a,.top>div button{min-width:0;padding:6px 8px;font-size:10px;white-space:normal}
+}
 </style><style id="loreverse-global-navigation">
 .lv-global-header{position:sticky;top:0;z-index:999;background:rgba(10,15,29,.94);backdrop-filter:blur(18px);border-bottom:1px solid rgba(133,158,190,.25);box-shadow:0 8px 28px rgba(0,0,0,.22);color:#f4f7ff}
 .lv-global-inner{width:min(1200px,calc(100% - 28px));min-height:66px;margin:auto;display:flex;align-items:center;gap:20px}
@@ -209,7 +215,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 .lv-menu-btn{display:none;border:1px solid #465b7c;border-radius:10px;background:#1b2941;color:#fff;padding:9px 12px;font-weight:850}
 .lv-old-header{display:none!important}
 body{scroll-padding-top:76px}
-@media(max-width:900px){.lv-global-inner{min-height:62px;gap:10px}.lv-menu-btn{display:inline-flex;align-items:center;gap:7px;margin-left:auto}.lv-nav{display:none;position:absolute;top:calc(100% + 1px);left:0;right:0;padding:12px 14px 16px;background:#0d1526;border-bottom:1px solid #40516d;box-shadow:0 16px 28px #0007;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.lv-nav.open{display:grid}.lv-nav a{justify-content:flex-start;min-height:42px;padding:10px 12px;background:#17243a;border-color:#2b3d59}.lv-nav .lv-nav-cta{grid-column:1/-1;justify-content:center}}
+@media(max-width:1120px){.lv-global-inner{min-height:62px;gap:10px}.lv-menu-btn{display:inline-flex;align-items:center;gap:7px;margin-left:auto}.lv-nav{display:none;position:absolute;top:calc(100% + 1px);left:0;right:0;padding:12px 14px 16px;background:#0d1526;border-bottom:1px solid #40516d;box-shadow:0 16px 28px #0007;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.lv-nav.open{display:grid}.lv-nav a{justify-content:flex-start;min-height:42px;padding:10px 12px;background:#17243a;border-color:#2b3d59}.lv-nav .lv-nav-cta{grid-column:1/-1;justify-content:center}}
 @media(min-width:901px) and (max-width:1120px){.lv-global-inner{gap:10px}.lv-nav{gap:2px}.lv-nav a{font-size:11px;padding-inline:7px}}
 </style><link rel="stylesheet" href="../assets/css/loreverse-shell.css?v=20261120-4">
 </head><body><header class="lv-global-header"><div class="lv-global-inner"><a class="lv-brand" href="../"><span>✦</span> LOREVERSE</a><button class="lv-menu-btn" id="lvMenuBtn" type="button" aria-expanded="false" aria-controls="lvNav">☰ <span>ЦЭС</span></button><nav class="lv-nav" id="lvNav" aria-label="Үндсэн цэс"><a href="../">Нүүр</a><a href="../knowledge/">Lore</a><a href="../games/">Тоглоомын ертөнц</a><a href="../ai/">AI туслах</a><a href="../community/">Нийгэмлэг</a><a href="../store/">Дэлгүүр</a><a href="../marketplace/">Арилжаа</a><a href="../profile/">Профайл</a><a class="lv-nav-cta" href="../rank/">Нэвтрэх</a></nav></div></header><script id="loreverse-global-navigation-script">
@@ -389,6 +395,8 @@ async function selectChannel(id){
 }
 async function loadMessages(){
  if(!activeChannel)return;
+ const messagesEl=$("messages");
+ const keepAtBottom=messagesEl.scrollHeight-messagesEl.scrollTop-messagesEl.clientHeight<80;
  const {data,error}=await supabase.from("community_messages").select("id,author_id,body,created_at,edited_at").eq("channel_id",activeChannel.id).is("deleted_at",null).order("created_at",{ascending:true}).limit(150);
  if(error){$("messages").innerHTML='<div class="empty">'+esc(error.message)+'</div>';return}
  if(!data?.length){$("messages").innerHTML='<div class="empty"><h2>Эхний мессежээ илгээгээрэй</h2><p>Энэ сувгийн яриа энд харагдана.</p></div>';return}
@@ -434,7 +442,7 @@ async function loadMessages(){
   const {error}=await supabase.from("community_messages").update({deleted_at:new Date().toISOString()}).eq("id",b.dataset.delete);
   if(error)toast(error.message);else await loadMessages();
  });
- $("messages").scrollTop=$("messages").scrollHeight;
+ if(keepAtBottom)$("messages").scrollTop=$("messages").scrollHeight;
 }
 const stickerSets={"Бүгд":[["👋","Сайн уу"],["😂","Инээд"],["🥰","Хайр"],["😭","Уйлах"],["😎","Cool"],["🤔","Бодох"],["🔥","Гал"],["✨","Гялалзах"],["💜","Зүрх"],["👍","Гоё"],["👏","Алга таших"],["🎮","Тоглоом"],["📚","Унших"],["🐉","Луу"],["🌸","Сакура"],["💯","Яг зөв"]],"Anime":[["🥺","Өхөөрдөм"],["😍","Дурласан"],["😤","Зөрүүд"],["😭","Нулимс"],["😳","Гайхсан"],["🙇","Баярлалаа"],["💖","Хайр"],["🌸","Сакура"],["⚔️","Тулаан"],["🗡️","Илд"]],"Games":[["🎮","Тоглоё"],["🏆","Ялалт"],["⚔️","Тулаан"],["🛡️","Бамбай"],["💎","Эрдэнэ"],["🧪","Potion"],["🔥","Гал"],["❄️","Мөс"],["👾","Boss"],["🎯","Оносон"]],"Lore":[["🔮","Нууц"],["🌌","Ертөнц"],["🗝️","Түлхүүр"],["⏳","Цаг хугацаа"],["🌀","Chaos"],["🐉","Домог"],["📜","Түүх"],["🌙","Сар"]],"Reaction":[["🤣","Хаха"],["🥹","Сэтгэл хөдөллөө"],["🙄","Үнэн үү"],["🤯","Гайхалтай"],["🙏","Гуйя"],["💯","Яг зөв"],["❤️","Дэмжиж байна"],["👀","Харж байна"]]};let activeStickerTab="Бүгд";function renderStickers(){$("stickerTabs").innerHTML=Object.keys(stickerSets).map(t=>'<button type="button" class="sticker-tab '+(t===activeStickerTab?"active":"")+'" data-tab="'+esc(t)+'">'+esc(t)+'</button>').join("");$("stickerGrid").innerHTML=stickerSets[activeStickerTab].map(([e,n])=>'<button type="button" class="sticker-choice" data-emoji="'+esc(e)+'" data-label="'+esc(n)+'">'+esc(e)+'<small>'+esc(n)+'</small></button>').join("");$("stickerTabs").querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{activeStickerTab=b.dataset.tab;renderStickers()});$("stickerGrid").querySelectorAll("[data-emoji]").forEach(b=>b.onclick=async()=>{if(!activeChannel)return toast("Эхлээд чат өрөө сонгоно уу");if(activeChannel.channel_type==="announcement"&&!["owner","admin","moderator"].includes(activeServer?.role))return toast("Зарлалын сувагт зөвхөн админ, модератор нийтэлнэ");const body="[[STICKER|"+b.dataset.emoji+"|"+b.dataset.label+"]]";const {error}=await supabase.from("community_messages").insert({channel_id:activeChannel.id,author_id:user.id,body});if(error)toast(error.message);else await loadMessages();$("stickerPanel").classList.remove("open")})} $("stickerToggle").onclick=()=>$("stickerPanel").classList.toggle("open");document.addEventListener("click",e=>{if(!$("stickerPanel").contains(e.target)&&e.target!==$("stickerToggle"))$("stickerPanel").classList.remove("open")});renderStickers();
 $("sendForm").onsubmit=async e=>{
