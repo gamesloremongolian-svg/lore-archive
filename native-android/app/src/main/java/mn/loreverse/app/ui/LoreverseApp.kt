@@ -130,6 +130,11 @@ fun LoreverseApp() {
     var signedInEmail by remember { mutableStateOf<String?>(null) }
     var openAuthFromProfile by remember { mutableStateOf(false) }
 
+    // Restore the persisted Supabase session after process recreation.
+    LaunchedEffect(Unit) {
+        signedInEmail = withContext(Dispatchers.IO) { AuthRepository().currentUserEmail() }
+    }
+
     Surface(modifier = Modifier.fillMaxSize(), color = Void) {
         if (!entered) {
             WelcomeScreen(onEnter = { entered = true })
@@ -816,7 +821,16 @@ private fun ContentCard(item: LoreItem, onClick: () -> Unit) {
                     .background(Brush.linearGradient(listOf(Purple, PanelRaised))),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Filled.AutoStories, null, tint = TextMain, modifier = Modifier.size(30.dp))
+                if (!item.imageUrl.isNullOrBlank()) {
+                    AsyncImage(
+                        model = item.imageUrl,
+                        contentDescription = item.title,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Icon(Icons.Filled.AutoStories, null, tint = TextMain, modifier = Modifier.size(30.dp))
+                }
             }
             Column(modifier = Modifier.weight(1f).padding(start = 12.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
                 Text(item.category.uppercase(), color = Violet, fontSize = 10.sp, fontWeight = FontWeight.Bold)
@@ -862,7 +876,16 @@ private fun DetailScreen(
                     .background(Brush.linearGradient(listOf(Purple, PanelRaised, Void))),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Filled.AutoStories, null, tint = TextMain, modifier = Modifier.size(70.dp))
+                if (!item.imageUrl.isNullOrBlank()) {
+                    AsyncImage(
+                        model = item.imageUrl,
+                        contentDescription = item.title,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Icon(Icons.Filled.AutoStories, null, tint = TextMain, modifier = Modifier.size(70.dp))
+                }
             }
         }
         item {
