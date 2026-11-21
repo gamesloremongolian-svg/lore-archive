@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-const baseURL = process.env.BASE_URL || 'https://lore-archive.pages.dev/';
+const baseURL = process.env.BASE_URL || 'https://loreverse-ctrl.github.io/lore-archive/';
 
 test.describe('LOREVERSE website health', () => {
   test('homepage loads over HTTPS and exposes the current LOREVERSE sections', async ({ page }) => {
@@ -12,9 +12,9 @@ test.describe('LOREVERSE website health', () => {
     if (pageURL.protocol === 'http:') expect(['127.0.0.1', 'localhost']).toContain(pageURL.hostname);
     await expect(page).toHaveTitle(/LOREVERSE/i);
     await expect(page.locator('body')).toBeVisible();
-    await expect(page.locator('.brand')).toContainText('LOREVERSE');
+    await expect(page.locator('.lv-shell-brand')).toContainText('LOREVERSE');
     await expect(page.locator('.hero h1')).toContainText('Дуртай ертөнцөө');
-    await expect(page.locator('.cards .card')).toHaveCount(3);
+    await expect(page.locator('.cards .card')).toHaveCount(5);
     await expect(page.locator('.cards [data-category="all"]')).toHaveCount(0);
     await expect(page.locator('.feature').first()).toBeVisible();
     await expect(page.locator('.feature').nth(1)).toContainText('BUG HUNTER');
@@ -25,27 +25,75 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /LOREVERSE/i);
     // The homepage now uses one responsive MENU dropdown; the retired Universe Hub
     // submenu is no longer part of the current navigation.
-    await expect(page.locator('#menuBtn')).toHaveCount(1);
-    await expect(page.locator('#mainNav')).toHaveCount(1);
-    // Staff-only editorial and archive management routes are intentionally not exposed in public navigation.
-    await expect(page.locator('#mainNav a[href="./knowledge/"]')).toHaveCount(1);
-    await expect(page.locator('#mainNav a[href="./ai/"]')).toHaveCount(1);
-    await expect(page.locator('#mainNav a[href="./community/"]')).toHaveCount(1);
-    await expect(page.locator('#mainNav a[href="./store/"]')).toHaveCount(1);
-    await expect(page.locator('#mainNav a[href="./profile/"]')).toHaveCount(1);
-    await expect(page.locator('#mainNav a[href="./bug-report/"]')).toContainText('Алдаа мэдээлэх');
-    await expect(page.locator('a[href="./bug-report/"]').filter({ hasText: 'Алдаа мэдээлэх' }).first()).toBeVisible();
-    await expect(page.locator('#themeToggle')).toHaveCount(1);
+    await expect(page.locator('.lv-shell-toggle')).toHaveCount(1);
+    await expect(page.locator('.lv-shell-nav')).toHaveCount(1);
+    const shellNav = page.locator('.lv-shell-nav');
+    for (const href of ['./ai/', './community/', './store/', './profile/', './games/']) {
+      await expect(shellNav.locator(`a[href="${href}"]`)).toHaveCount(1);
+    }
+    await expect(shellNav.locator('.lv-shell-more summary')).toContainText('Бусад');
+    await shellNav.locator('.lv-shell-more summary').click();
+    await expect(shellNav.locator('a[href="./archive/"]')).toBeVisible();
+    await expect(shellNav.locator('a[href="./marketplace/"]')).toBeVisible();
+    await expect(shellNav.locator('a[href="./bug-report/"]')).toBeVisible();
 
     await page.setViewportSize({ width: 390, height: 844 });
-    const toggle = page.locator('#menuBtn');
-    const nav = page.locator('#mainNav');
+    const toggle = page.locator('.lv-shell-toggle');
+    const nav = page.locator('.lv-shell-nav');
     await toggle.click();
-    await expect(nav).toHaveClass(/open/);
+    await expect(nav).toHaveAttribute('data-open', 'true');
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
     await toggle.click();
-    await expect(nav).not.toHaveClass(/open/);
+    await expect(nav).toHaveAttribute('data-open', 'false');
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('desktop navigation is visible, fits the header and does not show the mobile MENU button', async ({ page }) => {
+    await page.setViewportSize({ width: 1366, height: 900 });
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+
+    const nav = page.locator('.lv-shell-nav');
+    const menuButton = page.locator('.lv-shell-toggle');
+    await expect(nav).toBeVisible();
+    await expect(menuButton).toBeHidden();
+
+    for (const href of ['./', './games/', './ai/', './community/', './store/', './profile/']) {
+      await expect(nav.locator(`a[href="${href}"]`).first(), href + ' should be visible in desktop navigation').toBeVisible();
+    }
+    await nav.locator('.lv-shell-more summary').click();
+    for (const href of ['./archive/', './marketplace/', './rank/', './uid-lookup/', './bug-report/', './status/', './legal/']) {
+      await expect(nav.locator(`.lv-shell-more .lv-shell-submenu a[href="${href}"]`), href + ' should be available in the More menu').toBeVisible();
+    }
+    await nav.locator('.lv-shell-more summary').click();
+
+    const layout = await page.evaluate(() => {
+      const header = document.querySelector('.lv-shell-header');
+      const nav = document.querySelector('.lv-shell-nav');
+      const brand = document.querySelector('.lv-shell-brand');
+      const toggle = document.querySelector('.lv-shell-toggle');
+      const rect = element => {
+        const r = element.getBoundingClientRect();
+        return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height};
+      };
+      return {
+        viewportWidth: document.documentElement.clientWidth,
+        documentWidth: document.documentElement.scrollWidth,
+        header: rect(header),
+        nav: rect(nav),
+        brand: rect(brand),
+        themeToggle: toggle ? rect(toggle) : null
+      };
+    });
+    expect(layout.documentWidth, 'Desktop header must not create horizontal page overflow').toBeLessThanOrEqual(layout.viewportWidth + 1);
+    expect(layout.nav.left).toBeGreaterThanOrEqual(layout.header.left);
+    expect(layout.nav.right).toBeLessThanOrEqual(layout.header.right + 1);
+
+    await page.setViewportSize({ width: 1024, height: 768 });
+    await expect(nav).toBeHidden();
+    await expect(menuButton).toBeVisible();
+    await menuButton.click();
+    await expect(nav).toHaveAttribute('data-open', 'true');
+    await expect(nav).toBeVisible();
   });
 
   test('public sitemap and crawler rules are published', async ({ request }) => {
@@ -57,9 +105,11 @@ test.describe('LOREVERSE website health', () => {
     const robotsText = await robots.text();
     expect(sitemapText).toContain('<urlset');
     expect(sitemapText).toContain('/knowledge/');
-    expect(robotsText).toContain('Sitemap: https://lore-archive.pages.dev/sitemap.xml');
-    expect(robotsText).toContain('Disallow: /admin/');
-    expect(robotsText).toContain('Disallow: /editorial/');
+    expect(sitemapText).toContain('?work=ananta-main');
+    expect(sitemapText).toContain('?post=ananta-acd-maniac-chaos');
+    expect(robotsText).toContain('Sitemap: https://loreverse-ctrl.github.io/lore-archive/sitemap.xml');
+    expect(robotsText).toContain('Disallow: /lore-archive/admin/');
+    expect(robotsText).toContain('Disallow: /lore-archive/editorial/');
   });
 
   test('internal hash links resolve to an element', async ({ page }) => {
@@ -110,7 +160,7 @@ test.describe('LOREVERSE website health', () => {
       'lore-ai',
       'editorial-ai-draft'
     ];
-    const origins = ['https://e-archive.pages.dev', 'https://lore-archive.pages.dev'];
+    const origins = ['https://loreverse-ctrl.github.io', 'https://e-archive.pages.dev', 'https://lore-archive.pages.dev'];
     for (const name of functions) {
       for (const origin of origins) {
         const response = await request.fetch(
@@ -168,6 +218,38 @@ test.describe('LOREVERSE website health', () => {
     }
   });
 
+  test('knowledge post deep links render the complete article body', async ({ page }) => {
+    await page.route('https://esm.sh/@supabase/supabase-js@2.119.0', route => route.fulfill({
+      status: 200,
+      contentType: 'application/javascript',
+      body: `
+        const query=table=>{const q={select(){return q},eq(){return q},order(){return q},limit(){return q},in(){return q},then(resolve,reject){const data=table==='content_posts'?[{id:'test-post',title:'Туршилтын Lore нийтлэл',slug:'test-lore-post',summary:'Товч танилцуулга',content_type:'lore',game_title:'ANANTA',character_name:null,body:{text:'Бүрэн нийтлэлийн эхний хэс'+String.fromCharCode(92)+'n'+String.fromCharCode(92)+'n'+'Дараагийн хэсэг.'},source_urls:[{url:'https://www.anantagame.com/','label':'Албан ёсны эх сурвалж'}],published_at:'2026-11-20T00:00:00Z'}]:[];return Promise.resolve({data,error:null}).then(resolve,reject)}};return q};
+        export function createClient(){return {from:query}}
+      `
+    }));
+    await page.goto(new URL('knowledge/?post=test-lore-post', baseURL).toString(), { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('.post-body')).toContainText('Бүрэн нийтлэлийн эхний хэс');
+    await expect(page.locator('.post-body')).toContainText('Дараагийн хэсэг');
+    await expect(page.locator('.post-body').locator('..')).toContainText('Туршилтын Lore нийтлэл');
+    await expect(page.locator('.post-body').locator('..')).toContainText('Албан ёсны эх сурвалж');
+  });
+
+  test('Genshin character entity deep links render the verified profile and official source', async ({ page }) => {
+    await page.route('https://esm.sh/@supabase/supabase-js@2.119.0', route => route.fulfill({
+      status: 200,
+      contentType: 'application/javascript',
+      body: `
+        const query=table=>{const q={select(){return q},eq(){return q},order(){return q},limit(){return q},in(){return q},then(resolve,reject){const data=table==='archive_entities'?[{id:'amber-id',slug:'amber',entity_type:'character',canonical_name:'Amber',metadata:{region:'Mondstadt',vision:'Pyro',weapon:'Bow'},archive_franchises:{name:'Genshin Impact',slug:'genshin-impact',status:'published'},archive_entity_translations:[{display_name:'Эмбер',description:'Фавониусын рыцариудын Outrider.',content:{profile_sections:[{heading:'Үүрэг',body:'Мондштадтын хамгаалалтад тусалдаг.'}]},sources:[{url:'https://genshin.hoyoverse.com/en/character/mondstadt?char=11&lang=en',label:'HoYoverse — Official profile'}],language_code:'mn',editorial_status:'published'}]}]:[];return Promise.resolve({data,error:null}).then(resolve,reject)}};return q};
+        export function createClient(){return {from:query}}
+      `
+    }));
+    await page.goto(new URL('knowledge/?entity=amber&franchise=genshin-impact', baseURL).toString(), { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#gameGrid')).toContainText('Эмбер');
+    await expect(page.locator('#gameGrid')).toContainText('Мондштадтын хамгаалалтад тусалдаг.');
+    await expect(page.locator('#gameGrid a[href^="https://genshin.hoyoverse.com/"]')).toContainText('HoYoverse — Official profile');
+    await expect(page.locator('#empty')).toBeHidden();
+  });
+
   test('bug report page keeps submission behind authentication', async ({ page }) => {
     const response = await page.goto(new URL('bug-report/', baseURL).toString(), { waitUntil: 'domcontentloaded' });
     expect(response).not.toBeNull();
@@ -181,14 +263,14 @@ test.describe('LOREVERSE website health', () => {
   test('mobile homepage navigation is keyboard accessible', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
-    const toggle = page.locator('#menuBtn');
+    const toggle = page.locator('.lv-shell-toggle');
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
     await toggle.focus();
     await page.keyboard.press('Enter');
-    await expect(page.locator('#mainNav')).toHaveClass(/open/);
+    await expect(page.locator('.lv-shell-nav')).toHaveAttribute('data-open', 'true');
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
     await page.keyboard.press('Enter');
-    await expect(page.locator('#mainNav')).not.toHaveClass(/open/);
+    await expect(page.locator('.lv-shell-nav')).toHaveAttribute('data-open', 'false');
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   });
 
@@ -292,4 +374,43 @@ test.describe('LOREVERSE website health', () => {
     await expect(page.locator('#channels')).toContainText(/НЭЭЛТТЭЙ СЕРВЕРҮҮД|нээлттэй сервер алга/i);
   });
 
+
+  test('native Android bottom navigation is visible and routes correctly in the built app', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    await page.addInitScript(() => {
+      Object.defineProperty(window, 'Capacitor', {
+        configurable: true,
+        value: { isNativePlatform: () => true, getPlatform: () => 'android' }
+      });
+    });
+
+    for (const [route, active] of [
+      ['/', 'home'],
+      ['/community/', 'community'],
+      ['/store/', 'store'],
+      ['/profile/', 'profile']
+    ]) {
+      await page.goto(new URL(route, baseURL).toString(), { waitUntil: 'domcontentloaded' });
+      const nav = page.locator('#loreverseAppNav');
+      await expect(nav, route + ' should render the native bottom menu').toBeVisible();
+      await expect(nav.locator('a[data-app-route]')).toHaveCount(5);
+      await expect(nav.locator('[data-app-route="' + active + '"]')).toHaveAttribute('aria-current', 'page');
+      const bounds = await nav.evaluate(element => {
+        const r = element.getBoundingClientRect();
+        return { left: r.left, right: r.right, bottom: r.bottom };
+      });
+      expect(bounds.left).toBeGreaterThanOrEqual(0);
+      expect(bounds.right).toBeLessThanOrEqual(361);
+      expect(bounds.bottom).toBeLessThanOrEqual(801);
+    }
+
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+    await page.locator('#loreverseAppNav [data-app-route="community"]').click();
+    await expect(page).toHaveURL(/\/community\/(?:index\.html)?$/);
+    await expect(page.locator('#loreverseAppNav')).toBeVisible();
+
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
+    await page.locator('#loreverseAppNav [data-app-route="bug"]').click();
+    await expect(page.locator('#bugReportModal')).toHaveClass(/open/);
+  });
 });
