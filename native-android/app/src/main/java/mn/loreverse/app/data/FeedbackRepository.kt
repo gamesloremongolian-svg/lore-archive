@@ -139,7 +139,7 @@ class FeedbackRepository {
             connection.setRequestProperty("apikey", "sb_publishable_hZOakxcNBY47UDgsJ0E6Aw_wJgAdLw1")
             connection.setRequestProperty("Authorization", "Bearer ${accessToken()}")
             connection.setRequestProperty("Content-Type", "application/json")
-            connection.outputStream.use { it.write("{\\"expiresIn\\":3600}".toByteArray()) }
+            connection.outputStream.use { it.write("""{"expiresIn":3600}""".toByteArray(Charsets.UTF_8)) }
             val code = connection.responseCode
             if (code !in 200..299) error("Хавсралтын холбоос үүсгэсэнгүй ($code).")
             val json = connection.inputStream.bufferedReader().use { it.readText() }
