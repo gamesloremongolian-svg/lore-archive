@@ -264,6 +264,18 @@ body{scroll-padding-top:76px}
 }
 </style>
 <link rel="stylesheet" href="../assets/css/loreverse-shell.css?v=20261120-4">
+<style id="loreverse-app-theme-overrides">
+
+:root{color-scheme:dark;--bg:#0a0911;--panel:#191627;--panel2:#211b30;--line:#3b354d;--text:#f5f1ff;--muted:#b9b1c9;--teal:#9b72ff;--violet:#7540ff}
+body{background:radial-gradient(ellipse at 50% -15%,#35205f 0,transparent 44%),#0a0911!important;color:#f5f1ff!important}
+.top{background:rgba(10,9,17,.96)!important;border-color:#3b354d!important}
+.hero,.item,.empty,.notice,.preview-dialog,.leaderboard{background:linear-gradient(145deg,#1b2741,#111a2d)!important;border-color:#3b4b6a!important;color:#f5f1ff!important}
+.wallet,.tabs,.tab,.status,.hint,.category-filter,.collector-row{background:#111a2d!important;border-color:#3b4b6a!important;color:#f5f1ff!important}
+.item-icon,.preview-art{background:linear-gradient(145deg,#211b30,#111a2d)!important;border-color:#514365!important}
+.btn.primary,.tab.active,.category-filter.active{background:linear-gradient(110deg,#7540ff,#9b72ff)!important;border-color:#9b72ff!important;color:#fff!important}
+.price,.wallet strong,.eyebrow,.preview-type,.leaderboard-intro>span{color:#c5b1ff!important}
+
+</style>
 </head><body><header class="lv-global-header"><div class="lv-global-inner"><a class="lv-brand" href="../"><span>✦</span> LOREVERSE</a><button class="lv-menu-btn" id="lvMenuBtn" type="button" aria-expanded="false" aria-controls="lvNav">☰ <span>ЦЭС</span></button><nav class="lv-nav" id="lvNav" aria-label="Үндсэн цэс"><a href="../">Нүүр</a><a href="../knowledge/">Lore</a><a href="../games/">Тоглоомын ертөнц</a><a href="../ai/">AI туслах</a><a href="../community/">Нийгэмлэг</a><a href="../store/">Дэлгүүр</a><a href="../marketplace/">Арилжаа</a><a href="../profile/">Профайл</a><a class="lv-nav-cta" href="../rank/">Нэвтрэх</a></nav></div></header><script id="loreverse-global-navigation-script">
 (()=>{const h=document.querySelector('.lv-global-header');if(!h)return;document.querySelectorAll('body header:not(.lv-global-header)').forEach(x=>x.classList.add('lv-old-header'));const p=location.pathname.replace(/index\.html$/,'').replace(/\/$/,'');const links=h.querySelectorAll('.lv-nav a');links.forEach(a=>{const u=new URL(a.href,location.href);let q=u.pathname.replace(/index\.html$/,'').replace(/\/$/,'');if(q===p||(q==='/'&&p===''))a.setAttribute('aria-current','page')});const b=document.getElementById('lvMenuBtn'),n=document.getElementById('lvNav');b?.addEventListener('click',()=>{const open=n.classList.toggle('open');b.setAttribute('aria-expanded',String(open));b.querySelector('span').textContent=open?'ХААХ':'ЦЭС'});n?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{n.classList.remove('open');b?.setAttribute('aria-expanded','false')}));})();
 </script>
