@@ -437,10 +437,13 @@ private fun BugReportScreen(modifier: Modifier = Modifier) {
             Text("Асуудал, санал хүсэлтээ илгээж шийдвэрлэлтийг нь хянаарай.", color = TextMuted)
         }
         item {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                FilterChip(selected = selectedTab == "new", onClick = { selectedTab = "new" }, label = { Text("Шинэ хүсэлт") })
-                FilterChip(selected = selectedTab == "mine", onClick = { selectedTab = "mine"; adminMode = false; loadTickets(false) }, label = { Text("Миний хүсэлтүүд") })
-                if (canReview) FilterChip(selected = selectedTab == "admin", onClick = { selectedTab = "admin"; adminMode = true; loadTickets(true) }, label = { Text("Админ хяналт") })
+            Row(
+                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                FilterChip(selected = selectedTab == "new", onClick = { selectedTab = "new" }, label = { Text("Шинэ хүсэлт", maxLines = 1) })
+                FilterChip(selected = selectedTab == "mine", onClick = { selectedTab = "mine"; adminMode = false; loadTickets(false) }, label = { Text("Миний хүсэлтүүд", maxLines = 1) })
+                if (canReview) FilterChip(selected = selectedTab == "admin", onClick = { selectedTab = "admin"; adminMode = true; loadTickets(true) }, label = { Text("Админ хяналт", maxLines = 1) })
             }
         }
         if (selectedTab == "new") {
