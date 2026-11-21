@@ -109,6 +109,8 @@ fun LoreverseApp() {
     var settings by remember { mutableStateOf(false) }
     var searchOpen by remember { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
+    var savedTitles by remember { mutableStateOf<Set<String>>(emptySet()) }
+    var favoriteTitles by remember { mutableStateOf<Set<String>>(emptySet()) }
 
     Surface(modifier = Modifier.fillMaxSize(), color = Void) {
         if (!entered) {
@@ -133,7 +135,14 @@ fun LoreverseApp() {
             ) { padding ->
                 when {
                     settings -> SettingsScreen(onBack = { settings = false })
-                    detail != null -> DetailScreen(item = detail!!, onBack = { detail = null })
+                    detail != null -> DetailScreen(
+                        item = detail!!,
+                        isSaved = detail!!.title in savedTitles,
+                        isFavorite = detail!!.title in favoriteTitles,
+                        onToggleSaved = { savedTitles = if (detail!!.title in savedTitles) savedTitles - detail!!.title else savedTitles + detail!!.title },
+                        onToggleFavorite = { favoriteTitles = if (detail!!.title in favoriteTitles) favoriteTitles - detail!!.title else favoriteTitles + detail!!.title },
+                        onBack = { detail = null }
+                    )
                     selected == "home" -> HomeScreen(
                         onOpen = { detail = it },
                         onCategory = { selectedCategory = it; selected = if (it == "Анимэ") "anime" else if (it == "Манга") "manga" else if (it == "Тоглоом") "games" else "lore" },
@@ -413,7 +422,14 @@ private fun ContentCard(item: LoreItem, onClick: () -> Unit) {
 }
 
 @Composable
-private fun DetailScreen(item: LoreItem, onBack: () -> Unit) {
+private fun DetailScreen(
+    item: LoreItem,
+    isSaved: Boolean,
+    isFavorite: Boolean,
+    onToggleSaved: () -> Unit,
+    onToggleFavorite: () -> Unit,
+    onBack: () -> Unit
+) {
     Column(modifier = Modifier.fillMaxSize().padding(18.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text("← Буцах", color = Violet, modifier = Modifier.clickable(onClick = onBack).padding(6.dp))
         Box(
@@ -427,13 +443,13 @@ private fun DetailScreen(item: LoreItem, onBack: () -> Unit) {
         Text(item.title, color = TextMain, fontSize = 26.sp, fontWeight = FontWeight.Bold)
         Text(item.description, color = TextMuted)
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            Button(onClick = {}, colors = ButtonDefaults.buttonColors(containerColor = Purple)) {
+            Button(onClick = onToggleSaved, colors = ButtonDefaults.buttonColors(containerColor = Purple)) {
                 Icon(Icons.Filled.Bookmark, null, modifier = Modifier.size(16.dp))
-                Text("  Хадгалах")
+                Text(if (isSaved) "  Хадгалсан" else "  Хадгалах")
             }
-            OutlinedButton(onClick = {}) {
+            OutlinedButton(onClick = onToggleFavorite) {
                 Icon(Icons.Filled.Favorite, null, modifier = Modifier.size(16.dp))
-                Text("  Дуртай")
+                Text(if (isFavorite) "  Дуртайд нэмсэн" else "  Дуртай")
             }
         }
         Text("Дэлгэрэнгүй мэдээлэл", color = TextMain, fontWeight = FontWeight.Bold, fontSize = 18.sp)
