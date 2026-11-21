@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-const baseURL = process.env.BASE_URL || 'https://lore-archive.pages.dev/';
+const baseURL = process.env.BASE_URL || 'https://loreverse-ctrl.github.io/lore-archive/';
 
 test.describe('LOREVERSE website health', () => {
   test('homepage loads over HTTPS and exposes the current LOREVERSE sections', async ({ page }) => {
