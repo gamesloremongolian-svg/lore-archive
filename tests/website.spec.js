@@ -399,6 +399,15 @@ test.describe('LOREVERSE website health', () => {
     expect(communityChat).toMatch(/if\(keepAtBottom\)\$\("messages"\)\.scrollTop=\$\("messages"\)\.scrollHeight/);
   });
 
+  test('profile collection exposes authenticated equip and unequip actions for supported cosmetics', async () => {
+    const fs = require('node:fs');
+    const profile = fs.readFileSync(require('node:path').join(__dirname, '../profile/index.html'), 'utf8');
+    expect(profile).toMatch(/sb\.rpc\("store_equip",\{p_item_id:equip\.dataset\.item\}\)/);
+    expect(profile).toMatch(/sb\.rpc\("store_unequip",\{p_slot:unequip\.dataset\.slot\}\)/);
+    expect(profile).toMatch(/const isOwnProfile=id===currentUserId/);
+    expect(profile).toMatch(/equipSlots\[x\.item_type\]/);
+  });
+
   test('native Android bottom navigation is visible and routes correctly in the built app', async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 800 });
     await page.addInitScript(() => {
