@@ -91,8 +91,8 @@ def main():
 
         if path == Path("index.html"):
             source = path.read_text(encoding="utf-8")
-            if "rel=\"canonical\"" not in source:
-                errors.append("index.html: missing canonical URL")
+            if 'href="https://loreverse-ctrl.github.io/lore-archive/"' not in source:
+                errors.append("index.html: canonical URL must match the GitHub Pages project URL")
             if 'class="skip-link"' not in source or 'id="main-content"' not in source:
                 errors.append("index.html: missing accessible skip navigation target")
             missing = sorted(required - set(parser.ids))
@@ -123,7 +123,7 @@ def main():
             root = ET.parse(sitemap_path).getroot()
             namespace = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
             locations = [node.text or "" for node in root.findall("sm:url/sm:loc", namespace)]
-            base = "https://lore-archive.pages.dev/"
+            base = "https://loreverse-ctrl.github.io/lore-archive/"
             if not locations:
                 errors.append("sitemap.xml: no URLs found")
             for url in locations:
@@ -138,7 +138,7 @@ def main():
             errors.append(f"sitemap.xml: invalid XML: {error}")
 
     robots_path = Path("robots.txt")
-    if not robots_path.is_file() or "Sitemap: https://lore-archive.pages.dev/sitemap.xml" not in robots_path.read_text(encoding="utf-8"):
+    if not robots_path.is_file() or "Sitemap: https://loreverse-ctrl.github.io/lore-archive/sitemap.xml" not in robots_path.read_text(encoding="utf-8"):
         errors.append("robots.txt: missing sitemap declaration")
 
     if errors:
