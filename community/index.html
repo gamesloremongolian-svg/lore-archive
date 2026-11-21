@@ -389,6 +389,8 @@ async function selectChannel(id){
 }
 async function loadMessages(){
  if(!activeChannel)return;
+ const messagesEl=$("messages");
+ const keepAtBottom=messagesEl.scrollHeight-messagesEl.scrollTop-messagesEl.clientHeight<80;
  const {data,error}=await supabase.from("community_messages").select("id,author_id,body,created_at,edited_at").eq("channel_id",activeChannel.id).is("deleted_at",null).order("created_at",{ascending:true}).limit(150);
  if(error){$("messages").innerHTML='<div class="empty">'+esc(error.message)+'</div>';return}
  if(!data?.length){$("messages").innerHTML='<div class="empty"><h2>Эхний мессежээ илгээгээрэй</h2><p>Энэ сувгийн яриа энд харагдана.</p></div>';return}
@@ -434,7 +436,7 @@ async function loadMessages(){
   const {error}=await supabase.from("community_messages").update({deleted_at:new Date().toISOString()}).eq("id",b.dataset.delete);
   if(error)toast(error.message);else await loadMessages();
  });
- $("messages").scrollTop=$("messages").scrollHeight;
+ if(keepAtBottom)$("messages").scrollTop=$("messages").scrollHeight;
 }
 const stickerSets={"Бүгд":[["👋","Сайн уу"],["😂","Инээд"],["🥰","Хайр"],["😭","Уйлах"],["😎","Cool"],["🤔","Бодох"],["🔥","Гал"],["✨","Гялалзах"],["💜","Зүрх"],["👍","Гоё"],["👏","Алга таших"],["🎮","Тоглоом"],["📚","Унших"],["🐉","Луу"],["🌸","Сакура"],["💯","Яг зөв"]],"Anime":[["🥺","Өхөөрдөм"],["😍","Дурласан"],["😤","Зөрүүд"],["😭","Нулимс"],["😳","Гайхсан"],["🙇","Баярлалаа"],["💖","Хайр"],["🌸","Сакура"],["⚔️","Тулаан"],["🗡️","Илд"]],"Games":[["🎮","Тоглоё"],["🏆","Ялалт"],["⚔️","Тулаан"],["🛡️","Бамбай"],["💎","Эрдэнэ"],["🧪","Potion"],["🔥","Гал"],["❄️","Мөс"],["👾","Boss"],["🎯","Оносон"]],"Lore":[["🔮","Нууц"],["🌌","Ертөнц"],["🗝️","Түлхүүр"],["⏳","Цаг хугацаа"],["🌀","Chaos"],["🐉","Домог"],["📜","Түүх"],["🌙","Сар"]],"Reaction":[["🤣","Хаха"],["🥹","Сэтгэл хөдөллөө"],["🙄","Үнэн үү"],["🤯","Гайхалтай"],["🙏","Гуйя"],["💯","Яг зөв"],["❤️","Дэмжиж байна"],["👀","Харж байна"]]};let activeStickerTab="Бүгд";function renderStickers(){$("stickerTabs").innerHTML=Object.keys(stickerSets).map(t=>'<button type="button" class="sticker-tab '+(t===activeStickerTab?"active":"")+'" data-tab="'+esc(t)+'">'+esc(t)+'</button>').join("");$("stickerGrid").innerHTML=stickerSets[activeStickerTab].map(([e,n])=>'<button type="button" class="sticker-choice" data-emoji="'+esc(e)+'" data-label="'+esc(n)+'">'+esc(e)+'<small>'+esc(n)+'</small></button>').join("");$("stickerTabs").querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{activeStickerTab=b.dataset.tab;renderStickers()});$("stickerGrid").querySelectorAll("[data-emoji]").forEach(b=>b.onclick=async()=>{if(!activeChannel)return toast("Эхлээд чат өрөө сонгоно уу");if(activeChannel.channel_type==="announcement"&&!["owner","admin","moderator"].includes(activeServer?.role))return toast("Зарлалын сувагт зөвхөн админ, модератор нийтэлнэ");const body="[[STICKER|"+b.dataset.emoji+"|"+b.dataset.label+"]]";const {error}=await supabase.from("community_messages").insert({channel_id:activeChannel.id,author_id:user.id,body});if(error)toast(error.message);else await loadMessages();$("stickerPanel").classList.remove("open")})} $("stickerToggle").onclick=()=>$("stickerPanel").classList.toggle("open");document.addEventListener("click",e=>{if(!$("stickerPanel").contains(e.target)&&e.target!==$("stickerToggle"))$("stickerPanel").classList.remove("open")});renderStickers();
 $("sendForm").onsubmit=async e=>{
