@@ -4,6 +4,7 @@ from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path
 import sys
+import re
 import xml.etree.ElementTree as ET
 
 
@@ -134,6 +135,10 @@ def main():
                 target = Path(relative) / "index.html" if relative else Path("index.html")
                 if not target.is_file():
                     errors.append(f"sitemap.xml: URL has no published page: {url}")
+                else:
+                    page_source = target.read_text(encoding="utf-8")
+                    if re.search(r'<meta[^>]+name=["\\']robots["\\'][^>]+content=["\\'][^"\\']*noindex', page_source, re.IGNORECASE):
+                        errors.append(f"sitemap.xml: noindex page must not be listed: {url}")
         except ET.ParseError as error:
             errors.append(f"sitemap.xml: invalid XML: {error}")
 
