@@ -1098,20 +1098,99 @@ private fun ProfileScreen(
 
 @Composable
 private fun OwnerControlCenterScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
+    val scope = rememberCoroutineScope()
+    val repository = remember { mn.loreverse.app.data.OwnerDashboardRepository() }
+    var stats by remember { mutableStateOf<mn.loreverse.app.data.OwnerDashboardStats?>(null) }
+    var pendingProducts by remember { mutableStateOf<List<mn.loreverse.app.data.ModerationProduct>>(emptyList()) }
+    var loading by remember { mutableStateOf(true) }
+    var busyProductId by remember { mutableStateOf<String?>(null) }
+    var message by remember { mutableStateOf<String?>(null) }
+    fun refresh() {
+        loading = true
+        scope.launch {
+            val result = withContext(Dispatchers.IO) { repository.loadDashboard() }
+            result.onSuccess { stats = it.stats; pendingProducts = it.pendingProducts; message = null }
+                .onFailure { message = it.message ?: "Удирдлагын мэдээлэл татаж чадсангүй." }
+            loading = false
+        }
+    }
+    LaunchedEffect(Unit) { refresh() }
     LazyColumn(modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
         item {
             Text("Owner Control Center", color = TextMain, fontSize = 25.sp, fontWeight = FontWeight.Bold)
-            Text("LOREVERSE-ийн эзэмшигчийн удирдлагын хэсэг", color = TextMuted)
+            Text("LOREVERSE-ийн эзэмшигчийн удирдлагын самбар", color = TextMuted)
         }
         item {
             Card(colors = CardDefaults.cardColors(containerColor = Panel), shape = RoundedCornerShape(18.dp)) {
-                Column(Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text("Эрх баталгаажсан", color = Violet, fontWeight = FontWeight.Bold)
-                    Text("Таны бүртгэл active owner эрхтэй байна.", color = TextMain)
-                    Text("Санхүү, хэрэглэгч, дэлгүүр, төлбөр болон системийн удирдлагын бодит үйлдлүүдийг сервер талын эрхийн шалгалттайгаар дараагийн шатанд холбоно.", color = TextMuted)
+                    Text("Owner эрхийг Supabase RLS бодлогоор давхар шалгана.", color = TextMain)
                 }
             }
         }
+        if (loading && stats == null) item { Text("Удирдлагын мэдээлэл ачаалж байна...", color = TextMuted) }
+        stats?.let { s ->
+            item { Text("Системийн тойм", color = TextMain, fontSize = 19.sp, fontWeight = FontWeight.Bold) }
+            item { Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Metric(s.users.toString(), "Хэрэглэгч", Modifier.weight(1f))
+                Metric(s.content.toString(), "Контент", Modifier.weight(1f))
+            } }
+            item { Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Metric(s.products.toString(), "Бараа", Modifier.weight(1f))
+                Metric(s.pendingProducts.toString(), "Хянах бараа", Modifier.weight(1f))
+            } }
+            item { Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Metric(s.orders.toString(), "Захиалга", Modifier.weight(1f))
+                Metric(s.pendingFeedback.toString(), "Шинэ санал/алдаа", Modifier.weight(1f))
+            } }
+            item { Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Metric(s.pendingPayments.toString(), "Хүлээгдэж буй төлбөр", Modifier.weight(1f))
+                Metric(s.publishedNews.toString(), "Нийтлэгдсэн мэдээ", Modifier.weight(1f))
+            } }
+        }
+        item {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Дэлгүүрийн барааны хяналт", color = TextMain, fontSize = 19.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                TextButton(onClick = { refresh() }, enabled = !loading) { Text("Шинэчлэх") }
+            }
+        }
+        if (loading && pendingProducts.isEmpty()) item { Text("Хүлээгдэж буй барааг шалгаж байна...", color = TextMuted) }
+        else if (pendingProducts.isEmpty()) item {
+            Card(colors = CardDefaults.cardColors(containerColor = Panel), shape = RoundedCornerShape(16.dp)) {
+                Text("Хянах шаардлагатай бараа одоогоор алга.", color = TextMuted, modifier = Modifier.padding(18.dp))
+            }
+        } else {
+            items(pendingProducts, key = { it.id }) { product ->
+                Card(colors = CardDefaults.cardColors(containerColor = Panel), shape = RoundedCornerShape(16.dp)) {
+                    Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(product.title, color = TextMain, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                        Text("${product.productType} · ${product.listingType} · ${String.format("%,d₮", product.priceMnt)}", color = Violet, fontSize = 12.sp)
+                        product.description?.let { Text(it, color = TextMuted, maxLines = 4, overflow = TextOverflow.Ellipsis) }
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Button(enabled = busyProductId == null, onClick = {
+                                busyProductId = product.id
+                                scope.launch {
+                                    val r = withContext(Dispatchers.IO) { repository.reviewProduct(product.id, "approved", null) }
+                                    r.onSuccess { message = "Барааг зөвшөөрлөө."; refresh() }.onFailure { message = it.message ?: "Барааг зөвшөөрч чадсангүй." }
+                                    busyProductId = null
+                                }
+                            }, colors = ButtonDefaults.buttonColors(containerColor = Purple), modifier = Modifier.weight(1f)) {
+                                Text(if (busyProductId == product.id) "Түр хүлээнэ үү" else "Зөвшөөрөх")
+                            }
+                            OutlinedButton(enabled = busyProductId == null, onClick = {
+                                busyProductId = product.id
+                                scope.launch {
+                                    val r = withContext(Dispatchers.IO) { repository.reviewProduct(product.id, "rejected", "Аппын Owner хяналтаар татгалзсан.") }
+                                    r.onSuccess { message = "Бараанаас татгалзлаа."; refresh() }.onFailure { message = it.message ?: "Барааг татгалзаж чадсангүй." }
+                                    busyProductId = null
+                                }
+                            }, modifier = Modifier.weight(1f)) { Text("Татгалзах") }
+                        }
+                    }
+                }
+            }
+        }
+        message?.let { item { Text(it, color = Violet) } }
         item { OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) { Text("← Профайл руу буцах") } }
     }
 }
