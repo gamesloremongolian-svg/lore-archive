@@ -39,15 +39,18 @@ data class FranchiseDetail(
 
 class ArchiveRepository {
     suspend fun getPublishedFranchises(category: String? = null): Result<List<PublishedFranchise>> = runCatching {
-        SupabaseClient.instance
+        val published = SupabaseClient.instance
             .from("archive_franchises")
             .select(Columns.list("id", "name", "category", "description", "cover_image_url")) {
-                filter {
-                    eq("status", "published")
-                    if (!category.isNullOrBlank()) eq("category", category)
-                }
+                filter { eq("status", "published") }
             }
             .decodeList<PublishedFranchise>()
+
+        if (category.isNullOrBlank()) published
+        else published.filter { franchise ->
+            franchise.category == category ||
+                (franchise.category == "mixed" && category in listOf("anime", "manga"))
+        }
     }
 
     suspend fun getPublishedFranchiseDetail(name: String): Result<FranchiseDetail?> = runCatching {
