@@ -4,6 +4,7 @@ from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path
 import sys
+from urllib.parse import urlsplit
 import xml.etree.ElementTree as ET
 
 
@@ -127,10 +128,11 @@ def main():
             if not locations:
                 errors.append("sitemap.xml: no URLs found")
             for url in locations:
-                if not url.startswith(base):
+                parsed = urlsplit(url)
+                if parsed.scheme != "https" or parsed.netloc != "loreverse-ctrl.github.io" or not parsed.path.startswith("/lore-archive/"):
                     errors.append(f"sitemap.xml: URL outside canonical site: {url}")
                     continue
-                relative = url[len(base):].strip("/")
+                relative = parsed.path[len("/lore-archive/"):].strip("/")
                 target = Path(relative) / "index.html" if relative else Path("index.html")
                 if not target.is_file():
                     errors.append(f"sitemap.xml: URL has no published page: {url}")
