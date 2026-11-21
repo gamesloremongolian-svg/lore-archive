@@ -1217,6 +1217,21 @@ private fun OwnerControlCenterScreen(onBack: () -> Unit, onOpenFeedback: () -> U
                 onSecond = onOpenFeedback
             )
         }
+        item {
+            Card(colors = CardDefaults.cardColors(containerColor = Panel), shape = RoundedCornerShape(18.dp)) {
+                Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text("6. Системийн статус", color = TextMain, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text("Үндсэн үйлчилгээ болон хяналтын ажлын төлөв", color = TextMuted, fontSize = 12.sp)
+                    OwnerStatusRow("Owner эрх", "RLS эрхийн шалгалт хийгдсэн", Violet)
+                    OwnerStatusRow("Өгөгдлийн сан", if (loading && stats == null) "Холболт шалгаж байна..." else if (stats != null) "Өгөгдөл амжилттай татагдсан" else "Холболтын алдаа", if (stats != null) Color(0xFF35C78A) else Color(0xFFE05A67))
+                    OwnerStatusRow("Барааны хяналт", if (loading) "Шинэчилж байна..." else "${stats?.pendingProducts ?: 0} бараа хүлээгдэж байна", if ((stats?.pendingProducts ?: 0) > 0) Color(0xFFE6A23C) else Color(0xFF35C78A))
+                    OwnerStatusRow("Санал хүсэлт", if (loading) "Шинэчилж байна..." else "${stats?.pendingFeedback ?: 0} шийдвэрлээгүй хүсэлт", if ((stats?.pendingFeedback ?: 0) > 0) Color(0xFFE6A23C) else Color(0xFF35C78A))
+                    OwnerStatusRow("Төлбөр", if (loading) "Шинэчилж байна..." else "${stats?.pendingPayments ?: 0} хүлээгдэж буй төлбөр", if ((stats?.pendingPayments ?: 0) > 0) Color(0xFFE6A23C) else Color(0xFF35C78A))
+                    OwnerStatusRow("Мэдээ", if (stats != null) "${stats?.publishedNews ?: 0} нийтлэгдсэн" else "Мэдээлэл алга", if ((stats?.publishedNews ?: 0) > 0) Color(0xFF35C78A) else TextMuted)
+                    OutlinedButton(onClick = { refresh() }, enabled = !loading, modifier = Modifier.fillMaxWidth()) { Text(if (loading) "Шалгаж байна..." else "Статус шинэчлэх") }
+                }
+            }
+        }
         if (loading && stats == null) item { Text("Удирдлагын мэдээлэл ачаалж байна...", color = TextMuted) }
         stats?.let { s ->
             item { Text("Системийн тойм", color = TextMain, fontSize = 19.sp, fontWeight = FontWeight.Bold) }
@@ -1284,6 +1299,14 @@ private fun OwnerControlCenterScreen(onBack: () -> Unit, onOpenFeedback: () -> U
     }
 }
 
+@Composable
+private fun OwnerStatusRow(label: String, value: String, statusColor: Color) {
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        Box(Modifier.size(8.dp).background(statusColor, CircleShape))
+        Text(label, color = TextMain, fontSize = 13.sp, modifier = Modifier.weight(1f))
+        Text(value, color = statusColor, fontSize = 12.sp, textAlign = TextAlign.End)
+    }
+}
 @Composable
 private fun OwnerSection(
     title: String,
