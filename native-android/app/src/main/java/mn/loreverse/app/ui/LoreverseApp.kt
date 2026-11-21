@@ -940,7 +940,7 @@ private fun SettingsScreen(onBack: () -> Unit, onAuthSuccess: (String) -> Unit, 
             "Хэл · Монгол" to { dialog = "Монгол хэл одоогоор үндсэн интерфэйсийн хэл байна." },
             "Данс ба аюулгүй байдал" to { dialog = "account" },
             "Тусламж / Дэмжлэг" to { dialog = "Тусламжийн албан ёсны холбоос хараахан тохируулагдаагүй байна." },
-            "Аппын тухай · v2.0.0" to { dialog = "LOREVERSE Native Android\nХувилбар: 2.0.0\nМонгол хэл дээрх анимэ, манга, тоглоом, Lore архив." }
+            "Аппын тухай · v${BuildConfig.VERSION_NAME}" to { dialog = "LOREVERSE Native Android\nХувилбар: ${BuildConfig.VERSION_NAME}\nBuild: ${BuildConfig.VERSION_CODE}\nМонгол хэл дээрх анимэ, манга, тоглоом, Lore архив." }
         ).forEach { (label, action) ->
             Card(modifier = Modifier.clickable { action() }, colors = CardDefaults.cardColors(containerColor = Panel)) {
                 Text(label, color = TextMain, modifier = Modifier.fillMaxWidth().padding(18.dp))
