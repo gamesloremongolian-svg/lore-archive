@@ -945,6 +945,10 @@ private fun DetailScreen(
                     Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         Text(translation.title, color = TextMain, fontWeight = FontWeight.Bold, fontSize = 19.sp)
                         Text(work.canonicalTitle + " · " + work.workType, color = Violet, fontSize = 12.sp)
+                        if (translation.synopsis.isNotBlank()) {
+                            Text("Товч агуулга", color = TextMain, fontWeight = FontWeight.Bold)
+                            Text(translation.synopsis, color = TextMuted)
+                        }
                         val worldContext = contentObject?.get("world_context")?.jsonPrimitive?.contentOrNull
                         if (!worldContext.isNullOrBlank()) {
                             Text("Ертөнцийн тухай", color = TextMain, fontWeight = FontWeight.Bold)
