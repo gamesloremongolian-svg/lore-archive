@@ -757,6 +757,7 @@ private fun ContentCard(item: LoreItem, onClick: () -> Unit) {
 }
 
 @Composable
+@Composable
 private fun DetailScreen(
     item: LoreItem,
     isSaved: Boolean,
@@ -765,32 +766,81 @@ private fun DetailScreen(
     onToggleFavorite: () -> Unit,
     onBack: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize().navigationBarsPadding().padding(18.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Box(
-            modifier = Modifier.fillMaxWidth().height(190.dp).clip(RoundedCornerShape(22.dp))
-                .background(Brush.linearGradient(listOf(Purple, PanelRaised, Void))),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(Icons.Filled.AutoStories, null, tint = TextMain, modifier = Modifier.size(70.dp))
+    var detail by remember(item.title) { mutableStateOf<mn.loreverse.app.data.FranchiseDetail?>(null) }
+    var loading by remember(item.title) { mutableStateOf(true) }
+    var failed by remember(item.title) { mutableStateOf(false) }
+
+    LaunchedEffect(item.title) {
+        val result = withContext(Dispatchers.IO) {
+            ArchiveRepository().getPublishedFranchiseDetail(item.title)
         }
-        Text(item.category, color = Violet, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-        Text(item.title, color = TextMain, fontSize = 26.sp, fontWeight = FontWeight.Bold)
-        Text(item.description, color = TextMuted)
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            Button(onClick = onToggleSaved, colors = ButtonDefaults.buttonColors(containerColor = Purple)) {
-                Icon(Icons.Filled.Bookmark, null, modifier = Modifier.size(16.dp))
-                Text(if (isSaved) "  Хадгалсан" else "  Хадгалах")
-            }
-            OutlinedButton(onClick = onToggleFavorite) {
-                Icon(Icons.Filled.Favorite, null, modifier = Modifier.size(16.dp))
-                Text(if (isFavorite) "  Дуртайд нэмсэн" else "  Дуртай")
+        result.onSuccess { detail = it; failed = false }
+            .onFailure { failed = true }
+        loading = false
+    }
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize().navigationBarsPadding(),
+        contentPadding = PaddingValues(18.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            Box(
+                modifier = Modifier.fillMaxWidth().height(190.dp).clip(RoundedCornerShape(22.dp))
+                    .background(Brush.linearGradient(listOf(Purple, PanelRaised, Void))),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Filled.AutoStories, null, tint = TextMain, modifier = Modifier.size(70.dp))
             }
         }
-        Text("Дэлгэрэнгүй мэдээлэл", color = TextMain, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-        Text("Энэ хэсэгт тухайн контентын танилцуулга, Lore, түүхэн дараалал болон холбоотой мэдээлэл байрлана.", color = TextMuted)
-        Spacer(Modifier.weight(1f))
-        OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
-            Text("← Буцах")
+        item {
+            Text(item.category, color = Violet, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            Text(item.title, color = TextMain, fontSize = 26.sp, fontWeight = FontWeight.Bold)
+            Text(detail?.franchise?.description ?: item.description, color = TextMuted)
+        }
+        item {
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Button(onClick = onToggleSaved, colors = ButtonDefaults.buttonColors(containerColor = Purple)) {
+                    Icon(Icons.Filled.Bookmark, null, modifier = Modifier.size(16.dp))
+                    Text(if (isSaved) "  Хадгалсан" else "  Хадгалах")
+                }
+                OutlinedButton(onClick = onToggleFavorite) {
+                    Icon(Icons.Filled.Favorite, null, modifier = Modifier.size(16.dp))
+                    Text(if (isFavorite) "  Дуртайд нэмсэн" else "  Дуртай")
+                }
+            }
+        }
+        item {
+            Text("Нийтлэгдсэн дэлгэрэнгүй", color = TextMain, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            when {
+                loading -> Text("Мэдээлэл ачаалж байна...", color = TextMuted)
+                failed -> Text("Серверийн мэдээлэл ачаалж чадсангүй. Дараа дахин оролдоно уу.", color = TextMuted)
+                detail == null -> Text("Энэ бүтээлийн нийтлэгдсэн архивын мэдээлэл одоогоор алга.", color = TextMuted)
+                detail!!.works.isEmpty() -> Text("Монгол хэл дээр нийтлэгдсэн дэлгэрэнгүй бичлэг одоогоор алга.", color = TextMuted)
+            }
+        }
+        if (!loading && !failed && detail != null) {
+            items(detail!!.works) { (work, translation) ->
+                Card(colors = CardDefaults.cardColors(containerColor = Panel), shape = RoundedCornerShape(18.dp)) {
+                    Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(translation.title, color = TextMain, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                        Text(work.canonicalTitle + " · " + work.workType, color = Violet, fontSize = 11.sp)
+                        if (translation.synopsis.isNotBlank()) {
+                            Text(translation.synopsis, color = TextMuted, fontSize = 13.sp)
+                        }
+                        Text(
+                            "Канон: ${translation.canonStatus} · Спойлер: ${translation.spoilerLevel}",
+                            color = TextMuted,
+                            fontSize = 10.sp
+                        )
+                    }
+                }
+            }
+        }
+        item {
+            OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
+                Text("← Буцах")
+            }
         }
     }
 }
