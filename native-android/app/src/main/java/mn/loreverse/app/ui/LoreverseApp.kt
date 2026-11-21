@@ -757,7 +757,6 @@ private fun ContentCard(item: LoreItem, onClick: () -> Unit) {
 }
 
 @Composable
-@Composable
 private fun DetailScreen(
     item: LoreItem,
     isSaved: Boolean,
