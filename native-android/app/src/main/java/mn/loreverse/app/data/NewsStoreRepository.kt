@@ -44,7 +44,7 @@ class NewsStoreRepository {
     suspend fun getPublishedProducts(): Result<List<StoreProduct>> = runCatching {
         SupabaseClient.instance.from("store_products")
             .select(Columns.list("id", "title", "description", "product_type", "listing_type", "price_mnt", "stock_quantity")) {
-                filter { eq("status", "published") }
+                filter { eq("status", "approved") }
                 limit(50)
             }
             .decodeList<StoreProduct>()
