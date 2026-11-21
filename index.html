@@ -958,9 +958,9 @@ async function loadArchiveStats(){
  try{
   const [total,anime,manga,game,lore]=await Promise.all([
    supabase.from("archive_franchises").select("id",{count:"exact",head:true}).eq("status","published"),
-   supabase.from("archive_works").select("id",{count:"exact",head:true}).eq("status","published").eq("work_type","anime"),
-   supabase.from("archive_works").select("id",{count:"exact",head:true}).eq("status","published").eq("work_type","manga"),
-   supabase.from("archive_works").select("id",{count:"exact",head:true}).eq("status","published").eq("work_type","game"),
+   supabase.from("archive_franchises").select("id",{count:"exact",head:true}).eq("status","published").in("category",["anime","mixed"]),
+   supabase.from("archive_franchises").select("id",{count:"exact",head:true}).eq("status","published").in("category",["manga","mixed"]),
+   supabase.from("archive_franchises").select("id",{count:"exact",head:true}).eq("status","published").eq("category","game"),
    supabase.from("content_posts").select("id",{count:"exact",head:true}).eq("status","published").eq("content_type","lore").eq("is_premium",false)
   ]);
   const results=[total,anime,manga,game,lore];
