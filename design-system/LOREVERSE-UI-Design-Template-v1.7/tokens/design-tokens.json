@@ -1,0 +1,58 @@
+{
+  "name": "LOREVERSE UI Design System",
+  "version": "1.7.0",
+  "source": "User-supplied LOREVERSE APK public UI assets; v1.6 retained as historical reference",
+  "platforms": ["Web", "Capacitor Android WebView", "Android Compose adaptation"],
+  "language": "mn",
+  "themes": {
+    "app-dark": {
+      "source": "assets/public/assets/css/loreverse-theme.css",
+      "colorScheme": "dark",
+      "colors": {
+        "background": "#101827", "surface": "#192437", "surfaceElevated": "#22324A", "border": "#34465E",
+        "textPrimary": "#EDF2F7", "textSecondary": "#AAB8C8", "violet": "#7F91B5", "cyan": "#35B6A4",
+        "blue": "#6688A8", "pink": "#7E9DBA", "orange": "#C69A62", "gold": "#E5B96B"
+      }
+    },
+    "guest-home-dark": {
+      "source": "assets/public/assets/css/loreverse-home-redesign.css",
+      "colorScheme": "dark",
+      "colors": {
+        "background": "#080D1B", "surface": "#151F39", "surfaceElevated": "#1A2743", "border": "#35476B",
+        "textPrimary": "#F3F5FF", "textSecondary": "#B8C5DD", "primary": "#6657DF", "accent": "#B34BE5",
+        "violet": "#9A8CFF", "cyan": "#269F9D", "gold": "#E5B96B"
+      }
+    },
+    "content-light": {
+      "source": "assets/public/index.html inline CSS",
+      "colorScheme": "light",
+      "colors": {
+        "background": "#FFFFFF", "surface": "#F5F7F4", "surfaceElevated": "#EDF1EB", "border": "#DCE3DA",
+        "textPrimary": "#202820", "textSecondary": "#667166", "primary": "#78985D", "accent": "#78985D",
+        "winterIce": "#EEF5F2"
+      }
+    }
+  },
+  "shared": {
+    "typography": {
+      "fontFamily": ["Inter", "Noto Sans", "system-ui", "sans-serif"],
+      "weights": {"regular":400,"medium":500,"semibold":600,"bold":700,"extraBold":800}
+    },
+    "radius": {"small":9,"medium":13,"large":18,"hero":22,"pill":999},
+    "spacing": {"xs":4,"sm":8,"md":12,"lg":16,"xl":24,"2xl":32},
+    "touchTargetMinDp": 48
+  },
+  "navigation": {
+    "webShell": "Sticky top navigation with responsive expandable mobile menu (from loreverse-shell.css)",
+    "androidTemplate": "Five-destination bottom navigation starter; adapt to actual host app navigation",
+    "items": ["Нүүр","Анимэ","Манга","Тоглоом","Профайл"]
+  },
+  "principles": [
+    "Choose theme by surface context; do not flatten the three source palettes into one global palette.",
+    "APK CSS is canonical for the current web/Capacitor interface; Compose samples are adaptations, not extracted native screens.",
+    "Mongolian-first labels and Noto Sans fallback.",
+    "Minimum 48dp interactive touch target.",
+    "Use accent gradients sparingly and preserve contrast.",
+    "Do not claim a control works until its callback/navigation is wired and tested."
+  ]
+}

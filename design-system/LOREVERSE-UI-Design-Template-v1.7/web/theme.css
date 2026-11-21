@@ -1,0 +1,14 @@
+/* LOREVERSE UI Design System v1.7.0 — values traced to supplied APK CSS */
+:root{font-family:Inter,"Noto Sans",system-ui,sans-serif;color-scheme:dark;--lr-radius-sm:9px;--lr-radius-md:13px;--lr-radius-lg:18px;--lr-radius-hero:22px;--lr-radius-pill:999px;--lr-space-xs:4px;--lr-space-sm:8px;--lr-space-md:12px;--lr-space-lg:16px;--lr-space-xl:24px;--lr-space-2xl:32px}
+:root,[data-theme="app-dark"]{color-scheme:dark;--lr-bg:#101827;--lr-surface:#192437;--lr-surface-2:#22324a;--lr-border:#34465e;--lr-text:#edf2f7;--lr-muted:#aab8c8;--lr-primary:#35b6a4;--lr-primary-strong:#55c8b6;--lr-secondary:#6688a8;--lr-accent:#e5b96b;--lr-focus:#35b6a4;--lr-gradient:linear-gradient(110deg,#35b6a4,#65c6b5)}
+[data-theme="guest-home-dark"]{color-scheme:dark;--lr-bg:#080d1b;--lr-surface:#151f39;--lr-surface-2:#1a2743;--lr-border:#35476b;--lr-text:#f3f5ff;--lr-muted:#b8c5dd;--lr-primary:#6657df;--lr-primary-strong:#9a8cff;--lr-secondary:#269f9d;--lr-accent:#b34be5;--lr-focus:#9a8cff;--lr-gradient:linear-gradient(110deg,#6657df,#b34be5)}
+[data-theme="content-light"]{color-scheme:light;--lr-bg:#fff;--lr-surface:#f5f7f4;--lr-surface-2:#edf1eb;--lr-border:#dce3da;--lr-text:#202820;--lr-muted:#667166;--lr-primary:#78985d;--lr-primary-strong:#78985d;--lr-secondary:#6595b8;--lr-accent:#c18b62;--lr-focus:#78985d;--lr-gradient:linear-gradient(110deg,#78985d,#6595b8)}
+.lr-page{min-height:100%;background:var(--lr-bg);color:var(--lr-text)}
+.lr-panel{background:var(--lr-surface);border:1px solid var(--lr-border);border-radius:var(--lr-radius-lg)}
+.lr-panel-elevated{background:var(--lr-surface-2);border:1px solid var(--lr-border);border-radius:var(--lr-radius-lg)}
+.lr-button{min-height:48px;padding:11px 18px;border:1px solid var(--lr-border);border-radius:var(--lr-radius-md);background:var(--lr-surface-2);color:var(--lr-text);font:inherit;font-weight:700;font-size:14px;line-height:1.2;cursor:pointer}
+.lr-button--primary{background:var(--lr-gradient);border-color:transparent;color:#10202a}
+.lr-chip{display:inline-flex;align-items:center;min-height:30px;padding:5px 11px;border:1px solid var(--lr-border);border-radius:var(--lr-radius-pill);color:var(--lr-muted);font-size:12px}
+.lr-chip[aria-pressed="true"]{background:color-mix(in srgb,var(--lr-primary) 14%,transparent);border-color:var(--lr-primary);color:var(--lr-text)}
+.lr-focusable:focus-visible{outline:2px solid var(--lr-focus);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}

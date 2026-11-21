@@ -1,0 +1,55 @@
+{
+  "sourceScope": "APK assets/public UI. These are page/component groups present in the supplied source archive; not every route was runtime-tested.",
+  "PublicSurfaces": {
+    "GuestHome": {
+      "source": "index.html + assets/css/loreverse-home-redesign.css",
+      "purpose": "Зочин хэрэглэгчид LOREVERSE-ийн үндсэн төрлүүд болон онцлох контентыг танилцуулах",
+      "elements": [
+        "Responsive shell header",
+        "Hero artwork and guest actions",
+        "Category strip",
+        "Featured content",
+        "Access/account section",
+        "Footer"
+      ]
+    },
+    "AppShell": {
+      "source": "assets/css/loreverse-theme.css + assets/css/loreverse-shell.css + assets/js/loreverse-shell.js",
+      "purpose": "Нэгдсэн navigation shell болон дотоод хуудсуудын өнгө, навигацийн хэв маяг",
+      "elements": [
+        "Sticky top header",
+        "Brand mark",
+        "Responsive expandable navigation",
+        "Active route indicator",
+        "Mobile navigation state"
+      ]
+    },
+    "ContentAreas": {
+      "routes": [
+        "/games/",
+        "/games/genshin-impact/",
+        "/games/ananta/",
+        "/community/",
+        "/community/feed/",
+        "/profile/",
+        "/store/",
+        "/marketplace/",
+        "/archive/",
+        "/rank/",
+        "/research/",
+        "/editorial/",
+        "/chat/",
+        "/admin/",
+        "/status/"
+      ]
+    },
+    "AndroidComposeStarter": {
+      "purpose": "Compose адаптацийн суурь дэлгэцүүд; APK нь Capacitor web app тул native Compose screen гэж үзэхгүй",
+      "screens": ["Home", "Category", "Detail", "Profile", "Settings"]
+    }
+  },
+  "Navigation": {
+    "web": "APK shell responsive top navigation; mobile menu behavior is controlled by loreverse-shell.js",
+    "composeStarter": ["Нүүр", "Анимэ", "Манга", "Тоглоом", "Профайл"]
+  }
+}
