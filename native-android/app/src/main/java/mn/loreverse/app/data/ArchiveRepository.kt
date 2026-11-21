@@ -4,6 +4,7 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 @Serializable
 data class PublishedFranchise(
@@ -26,7 +27,9 @@ data class PublishedWorkTranslation(
     val title: String,
     val synopsis: String = "",
     @SerialName("canon_status") val canonStatus: String = "unknown",
-    @SerialName("spoiler_level") val spoilerLevel: String = "none"
+    @SerialName("spoiler_level") val spoilerLevel: String = "none",
+    val content: JsonElement? = null,
+    val sources: JsonElement? = null
 )
 
 data class FranchiseDetail(
@@ -66,7 +69,7 @@ class ArchiveRepository {
 
         val translatedWorks = works.mapNotNull { work ->
             val translation = client.from("archive_work_translations")
-                .select(Columns.list("title", "synopsis", "canon_status", "spoiler_level")) {
+                .select(Columns.list("title", "synopsis", "canon_status", "spoiler_level", "content", "sources")) {
                     filter {
                         eq("work_id", work.id)
                         eq("language_code", "mn")
