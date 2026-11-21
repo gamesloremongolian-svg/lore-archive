@@ -1,21 +1,32 @@
-# LOREVERSE Native Android v2.0
+# LOREVERSE Native Android v1.0.0
 
 Standalone Kotlin + Jetpack Compose application (not a WebView / Capacitor wrapper).
 
 ## Project
 - Application ID: `mn.loreverse.app`
+- Debug application ID: `mn.loreverse.app.debug` (can coexist with the installed production app)
 - Minimum Android: API 26; compile / target SDK: API 36
 - JDK: 17; Jetpack Compose + Material 3
 - Supabase Kotlin SDK: Auth + PostgREST modules
 
 ## Build a debug APK
-From this directory run `gradle assembleDebug`. The debug build uses the `.debug` application ID suffix so it can be installed alongside the current app. Release retains `mn.loreverse.app`.
+From this directory run `gradle assembleDebug`. The GitHub Actions workflow builds the debug APK and publishes it as an artifact when the build and tests pass.
 
-## Supabase
-The native app points to the existing LOREVERSE Supabase project using the public publishable key already used by the website. This is not a service-role secret. Database access must remain protected by Row Level Security. `ArchiveRepository` reads only published `archive_franchises` rows.
+## Connected functionality
+- Supabase Auth email/password sign-in and sign-up.
+- Session restoration for the signed-in profile.
+- Published franchise and Mongolian lore translation reads.
+- Published news and store product reads.
+- Community feed and feedback submission / ticket views.
+- Owner visibility is gated by an active `owner` row in `staff_members`.
+- Coil image loading includes SVG decoder support for the archive's original SVG covers.
 
-## Current scope and release gates
-The UI currently has onboarding, Home, Anime, Manga, Games, Lore, detail, Profile and Settings screens with local navigation. A Supabase client and published-franchise repository are added, but sign-in/sign-up screens are not yet wired to Auth and the screens still use sample content. Chat, payments/membership, remote images, push notifications, production signing and physical-device tests are not complete. Do not distribute as a production replacement until these are implemented and tested.
+## Known release limitations
+- Owner Control Center is currently an access-gated placeholder, not a complete admin console.
+- Chat, payment processing / membership, push notifications, persistent favorites/bookmarks, and production signing are not complete.
+- Community posting and store checkout are not implemented in the native app.
+- Physical-device testing has not been completed. GitHub Actions success is a build check, not proof of device behavior.
+- Production release requires the original signing key for `mn.loreverse.app`; never commit keystores or passwords.
 
-## Upgrade compatibility
-Updating an existing installation requires the same application ID and original signing certificate/private key. Never commit keystores or passwords.
+## Version
+The app version is set to `1.0.0`. The debug variant appends `-debug` to the displayed version and uses the separate debug application ID.
