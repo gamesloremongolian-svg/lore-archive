@@ -117,7 +117,7 @@ const supabase=createClient("https://nfacspfctvunwbxtvvyi.supabase.co","sb_publi
   if(error){status.textContent="Архив ачаалж чадсангүй. Дараа дахин оролдоно уу.";console.error("Public archive:",error.message);return;}
   const ids=(franchises||[]).map(x=>x.id);
   if(!ids.length){records=[];status.textContent="Одоогоор нийтлэгдсэн франчайз алга. Редакторын баг шинэ мэдээлэл нийтэлсний дараа энд харагдана.";render();return;}
-  const {data:works,error:workError}=await supabase.from("archive_works").select("id,franchise_id,canonical_title,work_type").in("franchise_id",ids).eq("status","published").order("canonical_title").limit(500);
+  const {data:works,error:workError}=await supabase.from("archive_works").select("id,franchise_id,slug,canonical_title,work_type").in("franchise_id",ids).eq("status","published").order("canonical_title").limit(500);
   if(workError){status.textContent="Бүтээлийн мэдээлэл уншихад алдаа гарлаа.";console.error("Archive works:",workError.message);return;}
   const workIds=(works||[]).map(x=>x.id);
   let translations=[];
