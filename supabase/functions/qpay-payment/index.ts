@@ -335,7 +335,7 @@ Deno.serve(async (req: Request) => {
       if (receiverType === "COMPANY" && (!receiver || receiver.length > 20)) {
         return reply(400, { error: "Байгууллагын регистрийн дугаарыг зөв оруулна уу." });
       }
-      if (receiverType === "CITIZEN" && receiver && !/^\\d{8,20}$/.test(receiver)) {
+      if (receiverType === "CITIZEN" && receiver && !/^\d{8,20}$/.test(receiver)) {
         return reply(400, { error: "Иргэний EBarimt-д бүртгэлтэй утасны дугаарыг 8-20 оронтой оруулна уу." });
       }
 
