@@ -257,7 +257,6 @@ private fun HomeScreen(
                     Text("Таны дуртай ертөнц нэг дор", color = TextMuted, fontSize = 12.sp)
                 }
                 IconButton(onClick = onSearch) { Icon(Icons.Filled.Search, "Хайх", tint = TextMain) }
-                IconButton(onClick = {}) { Icon(Icons.Filled.Bookmark, "Хадгалсан", tint = TextMain) }
             }
         }
         if (searchOpen) {
@@ -274,6 +273,21 @@ private fun HomeScreen(
                         unfocusedTextColor = TextMain
                     )
                 )
+            }
+        }
+        if (searchOpen && query.isNotBlank()) {
+            val matches = sampleItems.filter {
+                it.title.contains(query.trim(), ignoreCase = true) ||
+                    it.category.contains(query.trim(), ignoreCase = true) ||
+                    it.description.contains(query.trim(), ignoreCase = true)
+            }
+            item {
+                Text("Хайлтын үр дүн (${matches.size})", color = TextMain, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            }
+            if (matches.isEmpty()) {
+                item { Text("Ийм нэртэй контент олдсонгүй. Өөр түлхүүр үг оруулна уу.", color = TextMuted) }
+            } else {
+                items(matches) { result -> ContentCard(item = result, onClick = { onOpen(result) }) }
             }
         }
         item {
