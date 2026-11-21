@@ -21,6 +21,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Store
+import androidx.compose.material.icons.filled.Newspaper
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.filled.Home
@@ -88,9 +91,9 @@ private data class LoreItem(val title: String, val category: String, val descrip
 
 private val destinations = listOf(
     Destination("home", "Нүүр", Icons.Filled.Home),
-    Destination("anime", "Анимэ", Icons.Filled.Movie),
-    Destination("manga", "Манга", Icons.Filled.MenuBook),
-    Destination("games", "Тоглоом", Icons.Filled.SportsEsports),
+    Destination("store", "Дэлгүүр", Icons.Filled.Store),
+    Destination("news", "Мэдээлэл", Icons.Filled.Newspaper),
+    Destination("report", "Алдаа мэдээлэх", Icons.Filled.BugReport),
     Destination("profile", "Профайл", Icons.Filled.Person)
 )
 
@@ -156,6 +159,9 @@ fun LoreverseApp() {
                         modifier = Modifier.padding(padding)
                     )
                     selected == "community" -> CommunityScreen(modifier = Modifier.padding(padding))
+                    selected == "store" -> StoreScreen(modifier = Modifier.padding(padding))
+                    selected == "news" -> NewsScreen(modifier = Modifier.padding(padding))
+                    selected == "report" -> BugReportScreen(modifier = Modifier.padding(padding))
                     selected == "profile" -> ProfileScreen(email = signedInEmail, onSettings = { settings = true }, modifier = Modifier.padding(padding))
                     else -> CategoryScreen(
                         title = when (selected) { "anime" -> "Анимэ"; "manga" -> "Манга"; "games" -> "Тоглоом"; else -> "Lore" },
@@ -319,6 +325,104 @@ private fun HomeScreen(
                 CategoryTile("Community", Icons.Filled.Forum, Modifier.weight(1f)) { onCategory("Community") }
             }
         }
+    }
+}
+
+@Composable
+private fun StoreScreen(modifier: Modifier = Modifier) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(18.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        item {
+            Text("Дэлгүүр", color = TextMain, fontSize = 27.sp, fontWeight = FontWeight.Bold)
+            Text("LOREVERSE-ийн бараа, цуглуулга", color = TextMuted)
+        }
+        item {
+            Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
+                Column(Modifier.fillMaxWidth().padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Icon(Icons.Filled.Store, contentDescription = null, tint = Violet, modifier = Modifier.size(34.dp))
+                    Text("Дэлгүүр бэлтгэгдэж байна", color = TextMain, fontWeight = FontWeight.Bold, fontSize = 19.sp)
+                    Text("Барааны каталог, захиалга болон төлбөрийн үйлчилгээг дараагийн хөгжүүлэлтийн шатанд холбоно.", color = TextMuted)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun NewsScreen(modifier: Modifier = Modifier) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(18.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        item {
+            Text("Мэдээлэл", color = TextMain, fontSize = 27.sp, fontWeight = FontWeight.Bold)
+            Text("LOREVERSE-ийн мэдээ, зарлал, шинэчлэлт", color = TextMuted)
+        }
+        item {
+            Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
+                Column(Modifier.fillMaxWidth().padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Icon(Icons.Filled.Newspaper, contentDescription = null, tint = Violet, modifier = Modifier.size(34.dp))
+                    Text("Одоогоор мэдээлэл алга", color = TextMain, fontWeight = FontWeight.Bold, fontSize = 19.sp)
+                    Text("Шинэ мэдээ болон аппын зарлалууд нийтлэгдэхэд энд харагдана.", color = TextMuted)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun BugReportScreen(modifier: Modifier = Modifier) {
+    var category by remember { mutableStateOf("Аппын алдаа") }
+    var subject by remember { mutableStateOf("") }
+    var details by remember { mutableStateOf("") }
+    var status by remember { mutableStateOf<String?>(null) }
+
+    Column(
+        modifier = modifier.fillMaxSize().padding(18.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        Text("Алдаа мэдээлэх", color = TextMain, fontSize = 27.sp, fontWeight = FontWeight.Bold)
+        Text("Апп дээр тулгарсан асуудал эсвэл санал хүсэлтээ тэмдэглэнэ үү.", color = TextMuted)
+        Text("Төрөл", color = TextMain, fontWeight = FontWeight.SemiBold)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            listOf("Аппын алдаа", "Санал хүсэлт").forEach { value ->
+                FilterChip(selected = category == value, onClick = { category = value }, label = { Text(value) })
+            }
+        }
+        OutlinedTextField(
+            value = subject,
+            onValueChange = { subject = it; status = null },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Гарчиг") },
+            placeholder = { Text("Жишээ: Нэвтрэх үед алдаа гарлаа") },
+            singleLine = true
+        )
+        OutlinedTextField(
+            value = details,
+            onValueChange = { details = it; status = null },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Дэлгэрэнгүй тайлбар") },
+            placeholder = { Text("Алдаа хэрхэн гарсныг тайлбарлана уу...") },
+            minLines = 4
+        )
+        Button(
+            onClick = {
+                status = if (subject.isBlank() || details.isBlank()) {
+                    "Гарчиг болон тайлбарыг бөглөнө үү."
+                } else {
+                    "Маягт бэлэн. Илгээх серверийн холболт хараахан хийгдээгүй байна."
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Purple)
+        ) {
+            Text("Илгээх")
+        }
+        status?.let { Text(it, color = if (subject.isBlank() || details.isBlank()) ColorHex(0xFFFBBF24) else TextMuted) }
     }
 }
 
