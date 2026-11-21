@@ -221,7 +221,7 @@ test.describe('LOREVERSE website health', () => {
       status: 200,
       contentType: 'application/javascript',
       body: `
-        const query=table=>{const q={select(){return q},eq(){return q},order(){return q},limit(){return q},in(){return q},then(resolve,reject){const data=table==='content_posts'?[{id:'test-post',title:'Туршилтын Lore нийтлэл',slug:'test-lore-post',summary:'Товч танилцуулга',content_type:'lore',game_title:'ANANTA',character_name:null,body:{text:'Бүрэн нийтлэлийн эхний хэс'+String.fromCharCode(92)+'n'+String.fromCharCode(92)+'n'+'Дараагийн хэс.'},source_urls:[{url:'https://www.anantagame.com/','label':'Албан ёсны эх сурвалж'}],published_at:'2026-11-20T00:00:00Z'}]:[];return Promise.resolve({data,error:null}).then(resolve,reject)}};return q};
+        const query=table=>{const q={select(){return q},eq(){return q},order(){return q},limit(){return q},in(){return q},then(resolve,reject){const data=table==='content_posts'?[{id:'test-post',title:'Туршилтын Lore нийтлэл',slug:'test-lore-post',summary:'Товч танилцуулга',content_type:'lore',game_title:'ANANTA',character_name:null,body:{text:'Бүрэн нийтлэлийн эхний хэс'+String.fromCharCode(92)+'n'+String.fromCharCode(92)+'n'+'Дараагийн хэсэг.'},source_urls:[{url:'https://www.anantagame.com/','label':'Албан ёсны эх сурвалж'}],published_at:'2026-11-20T00:00:00Z'}]:[];return Promise.resolve({data,error:null}).then(resolve,reject)}};return q};
         export function createClient(){return {from:query}}
       `
     }));
