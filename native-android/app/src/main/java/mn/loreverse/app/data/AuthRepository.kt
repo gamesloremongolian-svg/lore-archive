@@ -30,6 +30,9 @@ class AuthRepository {
         SupabaseClient.instance.auth.signOut()
     }
 
+    fun currentUserEmail(): String? =
+        SupabaseClient.instance.auth.currentSessionOrNull()?.user?.email
+
     fun hasActiveSession(): Boolean =
         SupabaseClient.instance.auth.currentSessionOrNull() != null
 }
