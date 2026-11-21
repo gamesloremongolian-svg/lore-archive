@@ -1,7 +1,7 @@
 package mn.loreverse.app.data
 
 import io.github.jan.supabase.auth.auth
-import io.github.jan.supabase.auth.providers.Email
+import io.github.jan.supabase.auth.providers.builtin.Email
 
 /**
  * Email/password authentication for the native app.
