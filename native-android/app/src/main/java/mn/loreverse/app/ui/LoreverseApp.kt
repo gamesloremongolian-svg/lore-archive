@@ -949,6 +949,27 @@ private fun DetailScreen(
                             Text("Товч агуулга", color = TextMain, fontWeight = FontWeight.Bold)
                             Text(translation.synopsis, color = TextMuted)
                         }
+                        val note = contentObject?.get("note")?.jsonPrimitive?.contentOrNull
+                        if (!note.isNullOrBlank()) {
+                            Text(note, color = TextMuted, fontSize = 13.sp)
+                        }
+                        val sections = contentObject?.get("sections") as? JsonArray
+                        sections?.forEach { sectionElement ->
+                            val section = sectionElement as? JsonObject
+                            val heading = section?.get("heading")?.jsonPrimitive?.contentOrNull
+                            val body = section?.get("body")?.jsonPrimitive?.contentOrNull
+                            if (!heading.isNullOrBlank()) {
+                                Text(heading, color = TextMain, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                            }
+                            if (!body.isNullOrBlank()) {
+                                Text(body, color = TextMuted)
+                            }
+                        }
+                        val canonPolicy = contentObject?.get("canon_policy")?.jsonPrimitive?.contentOrNull
+                        if (!canonPolicy.isNullOrBlank()) {
+                            Text("Каноныг ялгах зарчим", color = TextMain, fontWeight = FontWeight.Bold)
+                            Text(canonPolicy, color = TextMuted)
+                        }
                         val worldContext = contentObject?.get("world_context")?.jsonPrimitive?.contentOrNull
                         if (!worldContext.isNullOrBlank()) {
                             Text("Ертөнцийн тухай", color = TextMain, fontWeight = FontWeight.Bold)
